@@ -35,11 +35,20 @@ class SignalsTest( unittest.TestCase ) :
 		self.assert_( c.connected() )
 		del s
 		self.assert_( not c.connected() )
+		
+	def test2( self ) :
 	
+		def f( a, b ) :
+		
+			return a * b
+	
+		s = Gaffer.TestSignal2()
+		c = s.connect( f )
+		self.assertEqual( s( 2.0, 4.0 ), 8.0 )
+		
 	## \todo
 	# test circular references
 	# test deletion of a connection causes disconnect
-	# get bindings to work with different signals
 			
 if __name__ == "__main__":
 	unittest.main()

@@ -4,18 +4,46 @@
 namespace GafferBindings
 {
 
-struct SlotCaller
+template<int Arity, typename Signal>
+struct SlotCallerBase;
+
+template<typename Signal>
+struct SlotCallerBase<1, Signal>
 {
-	SlotCaller( Connection *connection )
+	SlotCallerBase( Connection *connection )
 		:	m_connection( connection )
 	{
 	}
 	
-	int operator()( float f )
+	typename Signal::result_type operator()( typename Signal::arg2_type a2 )
 	{
-		return boost::python::extract<int>( m_connection->slot()( f ) );
+		return boost::python::extract<typename Signal::result_type>( m_connection->slot()( a2 ) );
 	}
 	Connection *m_connection;
+};
+
+template<typename Signal>
+struct SlotCallerBase<2, Signal>
+{
+	SlotCallerBase( Connection *connection )
+		:	m_connection( connection )
+	{
+	}
+	
+	typename Signal::result_type operator()( typename Signal::arg2_type a2, typename Signal::arg2_type a3 )
+	{
+		return boost::python::extract<typename Signal::result_type>( m_connection->slot()( a2, a3 ) );
+	}
+	Connection *m_connection;
+};
+
+template<typename Signal>
+struct SlotCaller : public SlotCallerBase<Signal::slot_function_type::arity, Signal>
+{
+	SlotCaller( Connection *connection )
+		:	SlotCallerBase<Signal::slot_function_type::arity, Signal>( connection )
+	{
+	}
 };
 
 template<typename Signal>
@@ -36,7 +64,7 @@ PyObject *Connection::create( Signal &s, boost::python::object &slot )
 	boost::python::object connectionObj( boost::python::handle<>( boost::python::borrowed( connection->m_pyObject ) ) );
 	boost::python::dict d = boost::python::extract<boost::python::dict>( connectionObj.attr( "__dict__" ) );
 	d["slot"] = slot;
-	connection->m_connection = s.connect( SlotCaller( connection ) );
+	connection->m_connection = s.connect( SlotCaller<Signal>( connection ) );
 	return connection->m_pyObject;
 }
 
