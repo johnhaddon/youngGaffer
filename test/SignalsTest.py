@@ -1,5 +1,7 @@
 import unittest
+import IECore
 import Gaffer
+import gc
 
 class SignalsTest( unittest.TestCase ) :
 
@@ -45,10 +47,117 @@ class SignalsTest( unittest.TestCase ) :
 		s = Gaffer.TestSignal2()
 		c = s.connect( f )
 		self.assertEqual( s( 2.0, 4.0 ), 8.0 )
+	
+	def testCircularRef( self ) :
+	
+		def default( a ) :
 		
-	## \todo
-	# test circular references
-	# test deletion of a connection causes disconnect
+			return -1
+	
+		class A( IECore.V3f ) :
+		
+			def __init__( self ) :
+			
+				IECore.V3f.__init__( self )
+				self.signal = Gaffer.TestSignal()
+				
+			def f( self, n ) :
+				
+				return int( n * 2 )
+				
+		a1 = A()
+		a2 = A()
+		
+		# connect a signal to always return a value of -1
+		defaultConnection = a2.signal.connect( default )
+		self.assertEqual( a2.signal( 2 ), -1 )
+		
+		# connect a method in
+		a1.c = a2.signal.connect( a1.f )
+		self.assertEqual( a2.signal( 2 ), 4 )
+		
+		# connect a method of a2 to the signal on a1
+		a2.c = a1.signal.connect( a2.f )
+		self.assert_( a2.c.connected() )
+		
+		#self.assert_( a1.signal( 2 ), 4 )
+		
+		# just deleting a1 won't destroy it yet, as it has a
+		# circular reference (a1.connection holds a1.f which
+		# holds a1 which holds a1.connection)
+		del a1
+		self.assertEqual( a2.signal( 2 ), 4 )
+		# running the garbage collector will destroy a1
+		# and remove the signal
+		gc.collect()
+		self.assertEqual( a2.signal( 2 ), -1 )
+		
+		# as a1 is now dead, a2's connection to a1.signal
+		# should have died.
+		self.assert_( not a2.c.connected() )
+			
+	def deletionOfConnectionDisconnects( self ) :
+	
+		def default( a ) :
+		
+			return -1
+	
+		def f( a ) :
+		
+			return int( f * 10 )
+	
+		s = Gaffer.TestSignal()
+		dc = s.connect( default )
+		self.assertEqual( s( 1 ), -1 )
+		
+		c = s.connect( f )
+		self.assertEqual( s( 1 ), 10 )	
+	
+		del c
+		self.assertEqual( s( 1 ), -1 )
+
+	def testMany( self ) :
+	
+		class S( IECore.V3f ) :
+		
+			instances = 0
+		
+			def __init__( self, parent ) :
+			
+				IECore.V3f.__init__( self )
+			
+				S.instances += 1
+			
+				self.children = []
+				self.numConnections = 0
+				self.signal = Gaffer.TestSignal()
+				if parent :
+					self.c = parent.signal.connect( self.f )
+					parent.numConnections += 1
+					parent.children.append( self )
+					
+			def f( self, a ) :
+			
+				r = 1
+				if self.numConnections!=0 :
+					r += self.signal( a )
+					
+				return r
+					
+		def build( parent, depth=0 ) :
+		
+			if( depth > 15 ) :
+				return
+			else :
+				s1 = S( parent )
+				s2 = S( parent )
+				build( s1, depth + 1 )
+				build( s2, depth + 1 )		
+			
+		s = S( None )
+		build( s )
+		
+		s.signal( 1 )	
 			
 if __name__ == "__main__":
 	unittest.main()
