@@ -43,6 +43,7 @@ IE_CORE_FORWARDDECLARE( Node )
 ///		sizeof( signal ) = 20 bytes
 ///		100000 nodes * 20 plugs * 10 signals = 381 mbytes
 ///			-	before we even include refcounts and child maps etc
+///			-	and 20 plugs is conservative given that a color/vector plug = 4 plugs
 ///
 /// 	but :
 ///
@@ -51,6 +52,10 @@ IE_CORE_FORWARDDECLARE( Node )
 ///			2,000,000 signals = 567M = 232 bytes a signal
 ///
 ///		ie. both maps and signals use much more than sizeof( map|signal ) in any case
+///
+///		and :
+///
+///			every plug needs a value and that takes memory too
 ///
 ///		what is a reasonable target number of nodes? and plugs? and signals?
 ///		what is a reasonable memory overhead for this target?
