@@ -1,0 +1,3 @@
+#include "Gaffer/Plug.h"
+
+using namespace Gaffer;

@@ -13,5 +13,4 @@ BOOST_PYTHON_MODULE( _Gaffer )
 	typedef boost::signal<float ( float, float )> TestSignal2;
 	bindSignal<TestSignal2>( "TestSignal2" );
 
-
 }

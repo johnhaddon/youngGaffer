@@ -20,6 +20,8 @@ env = Environment(
 
 )
 
+gafferLibrary = env.SharedLibrary( "lib/Gaffer", glob.glob( "src/Gaffer/*.cpp" ) )
+
 pythonEnv = env.Copy()
 
 pythonEnv.Append(
