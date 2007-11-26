@@ -1,0 +1,93 @@
+issues
+======
+
+plugs/parameters
+
+	- plug has :
+		- connections
+		- dependencies?
+		- signals
+		- connectionValid() method
+		
+	- wrap parameters in a ParameterPlug?
+
+nodes
+
+	- nodes have :
+	
+		parent (another node)
+		children
+		compute
+		signals
+
+object naming / identification
+
+	- all objects must have a unique id
+	- use for selection, grouping, shader application etc
+	- need integers for image based selection?
+		- yes. id should be integer.
+	- is id a "user:gaffer:id" attribute or a primvar?
+		- an attribute. then ids can easily be applied to groups and procedurals.
+		- we need Renderer::getAttr to work then.
+			- RxAttribute does work for user attributes though
+	
+time
+
+	- we'd like feedback for non-photoreal shit
+	- we'd like dependencies at different times for shadow map generation
+
+proxies
+
+	- should be able to use low res standins but still have shaders work,
+		deformers work etc.	
+
+procedurals
+
+	- everything should be a procedural?
+	
+	- procedurals should be able to operate on procedurals
+		- this is where the SceneRenderer comes in
+	  
+	- how to determine bounds quickly for deformers and transform caches?
+	
+undo
+
+	- how/where do we implement this?
+		- what needs to be undoable
+			- create/delete of nodes
+			- parent/unparent of nodes
+			- add/remove of dynamic plugs
+			- set/connect of plugs
+
+basic timeline
+==============
+
+stage one :
+
+signals
+nodes/plugs
+graph ui
+tweaker ui
+script editor ui
+read node
+renderer node
+viewer node
+write node
+
+stage two :
+
+lights
+manipulators
+deformers (vertcache)
+scenes/transforms
+shader assignment
+shadow map generation
+primvars/per object shader tweaks
+expressions
+
+stage three :
+
+hardware shaders
+light linking
+trace sets
+pointcloud generation (within graph)
