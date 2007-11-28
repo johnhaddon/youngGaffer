@@ -94,6 +94,12 @@ class GraphComponentTest( unittest.TestCase ) :
 		self.assert_( GraphComponentTest.parenting[0].isSame( parent ) )
 		self.assert_( GraphComponentTest.parenting[1].isSame( child ) )
 		
+	def testMany( self ) :
+	
+		l = []
+		for i in range( 0, 100000 ) :
+			l.append( Gaffer.GraphComponent() )
+		
 if __name__ == "__main__":
 	unittest.main()
 	
