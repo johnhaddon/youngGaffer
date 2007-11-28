@@ -1,6 +1,21 @@
 #ifndef GAFFERBINDINGS_CONNECTIONBINDING_INL
 #define GAFFERBINDINGS_CONNECTIONBINDING_INL
 
+namespace boost { namespace python {
+
+/// \todo this works for now, but should blatantly be implemented as some rvalue_from_python jobby.
+template<>
+struct extract<boost::signals::detail::unusable>
+{
+	extract( PyObject *o ) { m_obj = o; };
+	extract( object const &o ) { m_obj = o.ptr();  };
+	PyObject *m_obj;
+	bool check() const { return m_obj==Py_None; };
+	boost::signals::detail::unusable operator()() const { return boost::signals::detail::unusable(); };
+};
+
+}}
+
 namespace GafferBindings
 {
 
@@ -15,9 +30,9 @@ struct SlotCallerBase<1, Signal>
 	{
 	}
 	
-	typename Signal::result_type operator()( typename Signal::arg2_type a2 )
+	typename Signal::slot_result_type operator()( typename Signal::arg2_type a2 )
 	{
-		return boost::python::extract<typename Signal::result_type>( m_connection->slot()( a2 ) );
+		return boost::python::extract<typename Signal::slot_result_type>( m_connection->slot()( a2 ) )();
 	}
 	Connection *m_connection;
 };
@@ -30,9 +45,9 @@ struct SlotCallerBase<2, Signal>
 	{
 	}
 	
-	typename Signal::result_type operator()( typename Signal::arg2_type a2, typename Signal::arg2_type a3 )
+	typename Signal::slot_result_type operator()( typename Signal::arg2_type a2, typename Signal::arg2_type a3 )
 	{
-		return boost::python::extract<typename Signal::result_type>( m_connection->slot()( a2, a3 ) );
+		return boost::python::extract<typename Signal::slot_result_type>( m_connection->slot()( a2, a3 ) )();
 	}
 	Connection *m_connection;
 };
