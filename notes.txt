@@ -47,6 +47,10 @@ procedurals
 	
 	- procedurals should be able to operate on procedurals
 		- this is where the SceneRenderer comes in
+			- not necessarily
+				- we could have a GafferProcedural base
+					class with a build() method which must return a
+					VisibleRenderable, and which is called by doRender()
 	  
 	- how to determine bounds quickly for deformers and transform caches?
 	
@@ -58,6 +62,11 @@ undo
 			- parent/unparent of nodes
 			- add/remove of dynamic plugs
 			- set/connect of plugs
+		- where undo needs to work from
+			- node tweaker
+			- graph editor
+			- script editor?
+				- trickier
 
 basic timeline
 ==============
@@ -79,11 +88,13 @@ stage two :
 lights
 manipulators
 deformers (vertcache)
+image based id selection
 scenes/transforms
 shader assignment
 shadow map generation
 primvars/per object shader tweaks
 expressions
+shader library
 
 stage three :
 
