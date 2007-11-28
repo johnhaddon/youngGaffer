@@ -31,6 +31,13 @@ IE_CORE_FORWARDDECLARE( Node )
 ///				- can we offset this by only constructing signals when they are used?
 ///					- and can we detect when signals aren't used again and destroy 'em?
 ///						- do we need to?
+///				- or can we use a funny static map from this to signal and only create the signals
+///				  as they're asked for
+///						- most signals will never be used?
+///						- we'd need to not emit signals for things that weren't asked for so
+///						 as to avoid making them just to emit nothing
+///				- maybe we can just define an interface where Hierarchical::childAddedSignal() returns
+///				 the signal, and later on we can change the implementation to be more memory efficient
 ///
 /// Threading
 ///

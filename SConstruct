@@ -16,6 +16,7 @@ env = Environment(
 	
 	LIBS = [
 		"boost_signals-1_34_1",
+		"IECore",
 	],
 
 )
@@ -32,7 +33,10 @@ pythonEnv.Append(
 	
 	LIBPATH = [ "./lib" ],
 	
-	LIBS = [ "boost_python-1_34_1" ],
+	LIBS = [
+		"boost_python-1_34_1",
+		"Gaffer",
+	],
 	
 	SHLINKFLAGS = os.popen( "python-config --ldflags" ).read().split(),
 )

@@ -35,6 +35,7 @@ IE_CORE_FORWARDDECLARE( Node )
 ///		- and input plugs revert to default (or current value) on disconnect?
 /// Expressions
 ///		- Node? or intrinsic to Plug somehow? do they dirty automatically? or compute each time?
+///		- it'd be nice not to have to call IntData::value() just to get values from Plugs in these
 /// Memory management
 ///		- Is this where we flush less often used values into a disk cache? and load 'em again when needed?
 class Plug : public IECore::RunTimeTyped

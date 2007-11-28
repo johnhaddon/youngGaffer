@@ -6,7 +6,7 @@ namespace Gaffer
 
 enum TypeId
 {
-	HierarchicalTypeId = 400000,
+	GraphComponentTypeId = 400000,
 	NodeTypeId = 400001,
 	PlugTypeId = 400002
 };
