@@ -1,0 +1,44 @@
+#include "Gaffer/Node.h"
+
+using namespace Gaffer;
+
+Node::Node()
+{
+}
+
+Node::~Node()
+{
+}
+
+Node::UnaryPlugSignal &Node::plugSetSignal()
+{
+	return m_plugSetSignal;
+}
+
+Node::UnaryPlugSignal &Node::plugDirtiedSignal()
+{
+	return m_plugDirtiedSignal;
+}
+
+Node::BinaryPlugSignal &Node::plugConnectedSignal()
+{
+	return m_plugConnectedSignal;
+}
+
+bool Node::acceptsChild( ConstGraphComponentPtr potentialChild ) const
+{
+	if( !GraphComponent::acceptsChild( potentialChild ) )
+	{
+		return false;
+	}
+	return potentialChild->isInstanceOf( (IECore::TypeId)PlugTypeId ) || potentialChild->isInstanceOf( (IECore::TypeId)NodeTypeId );
+}
+
+bool Node::acceptsParent( ConstGraphComponentPtr potentialParent ) const
+{
+	if( !GraphComponent::acceptsParent( potentialParent ) )
+	{
+		return false;
+	}
+	return potentialParent->isInstanceOf( (IECore::TypeId)NodeTypeId );
+}

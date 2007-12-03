@@ -1,11 +1,9 @@
 #ifndef GAFFER_NODE_H
 #define GAFFER_NODE_H
 
-#include "Gaffer/TypeIds.h"
+#include "Gaffer/GraphComponent.h"
 
-#include "IECore/RunTimeTyped.h"
-
-#include "boost/signals.hpp"
+#include "IECore/Object.h"
 
 namespace Gaffer
 {
@@ -13,60 +11,10 @@ namespace Gaffer
 IE_CORE_FORWARDDECLARE( Plug )
 IE_CORE_FORWARDDECLARE( Node )
 
-/// GraphComponent base class?? with userData?? and trackability - maybe not this (Plugs
-/// aren't trackable?)
-/// and Plug derives off it too?
-/// maybe not - do Plugs need userData()? do we want them to be that heavy??
-///
-/// Hierarchical base class for plugs and nodes??
-///
-///		- benefits
-///			- maintain a single namespace that maps well to python binding
-///			- reduce amount of logic in destructors
-///			- acceptsChild(), acceptsOrphaning()? - different for dynamic/static plugs
-///			- probably useful elsewhere too
-///		- downside
-///			- no grouping of plugs into input/output? or in and out CompoundPlugs instead?
-///			- increased memory usage (lots of signals for everything including plugs)
-///				- can we offset this by only constructing signals when they are used?
-///					- and can we detect when signals aren't used again and destroy 'em?
-///						- do we need to?
-///				- or can we use a funny static map from this to signal and only create the signals
-///				  as they're asked for
-///						- most signals will never be used?
-///						- we'd need to not emit signals for things that weren't asked for so
-///						 as to avoid making them just to emit nothing
-///				- maybe we can just define an interface where Hierarchical::childAddedSignal() returns
-///				 the signal, and later on we can change the implementation to be more memory efficient
-///
 /// Threading
 ///
 ///		- can we allow multiple computes() at once?
 ///		- or do we have to resort to computes() being threaded internally?
-///
-/// memory usage :
-/// 
-///		sizeof( map ) = 24 bytes
-///		sizeof( signal ) = 20 bytes
-///		100000 nodes * 20 plugs * 10 signals = 381 mbytes
-///			-	before we even include refcounts and child maps etc
-///			-	and 20 plugs is conservative given that a color/vector plug = 4 plugs
-///
-/// 	but :
-///
-///			baseline python = 123M
-///			2,000,000 maps = 194M = 38 bytes a map
-///			2,000,000 signals = 567M = 232 bytes a signal
-///
-///		ie. both maps and signals use much more than sizeof( map|signal ) in any case
-///
-///		and :
-///
-///			every plug needs a value and that takes memory too
-///
-///		what is a reasonable target number of nodes? and plugs? and signals?
-///		what is a reasonable memory overhead for this target?
-///		implement then optimise? or worry about it now?
 ///
 /// difference between dynamic and static plugs and children?
 ///		- flag in plug?
@@ -77,9 +25,10 @@ IE_CORE_FORWARDDECLARE( Node )
 ///
 /// difference between input and output plugs?
 ///		- either in and out CompoundPlug parents
+///			- not this because we want to be able just to reference node.plug
 ///		- or flags in plug
 ///			- plugs do need to know their own direction - to disallow dirtying of inputs with no input connection
-class Node : public IECore::RunTimeTyped, public boost::signals::trackable
+class Node : public GraphComponent
 {
 
 	public :
@@ -87,58 +36,51 @@ class Node : public IECore::RunTimeTyped, public boost::signals::trackable
 		Node();
 		virtual ~Node();
 
-		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( Node, NodeTypeId, IECore::RunTimeTyped );
-		IE_CORE_DECLAREMEMBERPTR( Node );
+		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( Node, NodeTypeId, GraphComponent );
 
-		IECore::CompoundDataPtr userData();
-		IECore::ConstCompoundDataPtr userData() const;
-
-		/// ??
-		const std::vector<ConstPlugPtr> &inputs() const;
-		const std::vector<ConstPlugPtr> &outputs() const;
+		typedef boost::signal<void (PlugPtr)> UnaryPlugSignal;
+		typedef boost::signal<void (PlugPtr)> BinaryPlugSignal;
 		
-		template<typename T>
-		typename T::ConstPtr plug( const std::string &name ) const;
-		template<typename T>
-		typename T::Ptr plug( const std::string &name );
-		const std::vector<ConstNodePtr> &children() const;
-		template<typename T>
-		typename T::Ptr child( const std::string &name );
+		/// @name Plug signals
+		/// These signals are emitted on events relating to child Plugs
+		/// of this Node. They are implemented on the Node rather than
+		/// on individual Plugs to limit the proliferation of huge numbers
+		/// of signals.
+		//////////////////////////////////////////////////////////////
+		//@{
+		/// Called when the value on a plug of this node is set.
+		UnaryPlugSignal &plugSetSignal();
+		/// Called when a plug of this node is dirtied.
+		UnaryPlugSignal &plugDirtiedSignal();
+		/// Called when a plug of this node is connected. First argument
+		/// to slots is the source plug and second is the destination.
+		BinaryPlugSignal &plugConnectedSignal();
+		//@}
 		
-		typedef boost::signal<void ( NodePtr, PlugPtr )> NodePlugSignal;
-
-		NodePlugSignal plugAddedSignal;
-		NodePlugSignal plugRemovedSignal;
-		/// if we can make their use cheap do these belong on the Plug?
-		/// or do we have them on the node so you can get all signals at a time?
-		/// or do we have them both on the node and the plug?
-		NodePlugSignal plugSetSignal;
-		NodePlugSignal plugDirtiedSignal;
-		NodePlugSignal plugConnectedSignal;
-
-		typedef boost::signal<void ( NodePtr, NodePtr )> NodeNodeSignal;
-
-		NodeNodeSignal childAddedSignal;
-		NodeNodeSignal childRemovedSignal;
+		/// Accepts only Nodes and Plugs.
+		virtual bool acceptsChild( ConstGraphComponentPtr potentialChild ) const;
+		/// Accepts only Nodes.
+		virtual bool acceptsParent( ConstGraphComponentPtr potentialParent ) const;
 		
 	protected :
-	
-		// ??
-		void addPlug( PlugPtr plug );
-		void addInput( PlugPtr plug );
-		void addOutput( PlugPtr plug );
-	
+		
+		/// Called when an input plug becomes dirty. Must be implemented to dirty any
+		/// output plugs which depend on the input.
 		virtual void dirty( ConstPlugPtr dirty ) const = 0;
-		virtual ObjectPtr compute( ConstPlugPtr output ) const = 0;
-
+		/// Called when getValue() is called on an output plug which is dirty. Must
+		/// be implemented to calculate and return the value for this Plug.
+		/// \todo Consider this : if we didn't
+		/// have this return ObjectPtr then we could have Plugs storing values in any way -
+		/// it would be the Node's responsibility to set the value in any way appropriate.
+		virtual IECore::ObjectPtr compute( ConstPlugPtr output ) const = 0;
+		
 	private :
 	
 		friend class Plug;
 	
-		IECore::CompoundDataPtr m_userData;
-	
-		Node *m_parent;
-		std::vector<NodePtr> m_children;
+		UnaryPlugSignal m_plugSetSignal;
+		UnaryPlugSignal m_plugDirtiedSignal;
+		BinaryPlugSignal m_plugConnectedSignal;
 
 };
 

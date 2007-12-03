@@ -62,6 +62,7 @@ undo
 			- parent/unparent of nodes
 			- add/remove of dynamic plugs
 			- set/connect of plugs
+			- renaming of nodes and plugs
 		- where undo needs to work from
 			- node tweaker
 			- graph editor

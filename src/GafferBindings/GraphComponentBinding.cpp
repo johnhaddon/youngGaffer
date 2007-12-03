@@ -42,4 +42,7 @@ void GafferBindings::bindGraphComponent()
 	bindSignal<GraphComponent::UnarySignal>( "UnarySignal" );
 	bindSignal<GraphComponent::BinarySignal>( "BinarySignal" );
 	
+	implicitly_convertible<GraphComponentPtr, IECore::RunTimeTypedPtr>();
+	implicitly_convertible<GraphComponentPtr, ConstGraphComponentPtr>();
+
 }

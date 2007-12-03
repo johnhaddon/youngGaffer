@@ -1,6 +1,10 @@
 #ifndef GAFFER_PLUG_H
 #define GAFFER_PLUG_H
 
+#include "Gaffer/GraphComponent.h"
+
+#include "IECore/Object.h"
+
 namespace Gaffer
 {
 
@@ -38,7 +42,9 @@ IE_CORE_FORWARDDECLARE( Node )
 ///		- it'd be nice not to have to call IntData::value() just to get values from Plugs in these
 /// Memory management
 ///		- Is this where we flush less often used values into a disk cache? and load 'em again when needed?
-class Plug : public IECore::RunTimeTyped
+///
+/// Image plugs with partial computation - how would they work????
+class Plug : public GraphComponent
 {
 
 	public :
@@ -46,38 +52,50 @@ class Plug : public IECore::RunTimeTyped
 		Plug();
 		virtual ~Plug();
 
-		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( Plug, PlugTypeId, IECore::RunTimeTyped );
-		IE_CORE_DECLAREMEMBERPTR( Plug );
+		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( Plug, PlugTypeId, GraphComponent );
 
+		/// Just returns parent<Node>() as a syntactic convenience.
 		NodePtr node();
+		/// Just returns parent<Node>() as a syntactic convenience.
 		ConstNodePtr node() const;
 
-		virtual const std::string &name() const;
+		/// Do we need this one? How about we make custom setValue( int ) type things on each
+		/// Plug?
+		bool acceptsInput( IECore::ConstObjectPtr input ) const;
+		virtual bool acceptsInput( ConstPlugPtr input, std::string &reason ) const;
 
 		PlugPtr input();
+		ConstPlugPtr input() const;
 		const std::vector<const Plug *> outputs() const;
 		
-		bool acceptsValue( ConstObjectPtr value ) const;
-		virtual bool acceptsValue( ConstObjectPtr value, std::string &reason ) const;
+		/// does all this value stuff belong in a ValuePlug base class????
+		bool acceptsValue( IECore::ConstObjectPtr value ) const;
+		virtual bool acceptsValue( IECore::ConstObjectPtr value, std::string &reason ) const;
 		/// Propagates through connections and triggers dirty(). is a copy taken? - if yes
-		/// then IntPlug can store int
+		/// then IntPlug can store int? Throws an Exception if an output plug.
 		void setValue();
 		/// Triggers compute if needed. I don't think you can ever have non-const access
 		/// to the value either - this could allow IntPlug to store int rather than IntData
-		ConstObjectPtr getValue() const;
+		IECore::ConstObjectPtr getValue() const;
+		bool isDirty() const;
 		
-		bool acceptsInput( ConstObjectPtr input ) const;
-		virtual bool acceptsInput( ConstPlugPtr input, std::string &reason ) const;
-
+		/// Accepts no children.
+		virtual bool acceptsChild( ConstGraphComponentPtr potentialChild ) const;
+		/// Accepts only Nodes or Plugs as a parent.
+		virtual bool acceptsParent( ConstGraphComponentPtr potentialParent ) const;
+		
 	protected :
 	
-
+		void dirty();
+		
 	private :
 
+		friend class Node;
+		
 		Node *m_node;
 
 		Plug *m_input;
-		std::vector<Plug *> m_outputs;
+		std::list<Plug *> m_outputs;
 				
 };
 
