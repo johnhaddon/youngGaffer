@@ -1,3 +1,0 @@
-#include "Gaffer/Node.h"
-
-using namespace Gaffer;
