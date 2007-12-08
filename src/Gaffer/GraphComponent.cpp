@@ -23,6 +23,9 @@ GraphComponent::~GraphComponent()
 	// to prevent the second death. the alternative would be
 	// to prevent the emission of the childRemoved signal during
 	// death - that might turn out to be a better option.
+	/// \todo this needs serious thought. as smart pointers are passed
+	/// to the signals, they might reasonably expect to be allowed
+	/// to hold onto the object, which doesn't make any sense.
 	addRef();
 	while( m_children.begin()!=m_children.end() )
 	{
