@@ -44,6 +44,8 @@ IE_CORE_FORWARDDECLARE( Node )
 ///		- Is this where we flush less often used values into a disk cache? and load 'em again when needed?
 ///
 /// Image plugs with partial computation - how would they work????
+///
+/// \todo we need direction on these bad boys
 class Plug : public GraphComponent
 {
 
@@ -54,50 +56,45 @@ class Plug : public GraphComponent
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( Plug, PlugTypeId, GraphComponent );
 
-		/// Just returns parent<Node>() as a syntactic convenience.
-		NodePtr node();
-		/// Just returns parent<Node>() as a syntactic convenience.
-		ConstNodePtr node() const;
-
-		/// Do we need this one? How about we make custom setValue( int ) type things on each
-		/// Plug?
-		bool acceptsInput( IECore::ConstObjectPtr input ) const;
-		virtual bool acceptsInput( ConstPlugPtr input, std::string &reason ) const;
-
-		PlugPtr input();
-		ConstPlugPtr input() const;
-		const std::vector<const Plug *> outputs() const;
-		
-		/// does all this value stuff belong in a ValuePlug base class????
-		bool acceptsValue( IECore::ConstObjectPtr value ) const;
-		virtual bool acceptsValue( IECore::ConstObjectPtr value, std::string &reason ) const;
-		/// Propagates through connections and triggers dirty(). is a copy taken? - if yes
-		/// then IntPlug can store int? Throws an Exception if an output plug.
-		void setValue();
-		/// Triggers compute if needed. I don't think you can ever have non-const access
-		/// to the value either - this could allow IntPlug to store int rather than IntData
-		IECore::ConstObjectPtr getValue() const;
-		bool isDirty() const;
-		
+		/// @name Parent-child relationships
+		//////////////////////////////////////////////////////////////////////
+		//@{
 		/// Accepts no children.
 		virtual bool acceptsChild( ConstGraphComponentPtr potentialChild ) const;
 		/// Accepts only Nodes or Plugs as a parent.
 		virtual bool acceptsParent( ConstGraphComponentPtr potentialParent ) const;
-		
-	protected :
-	
-		void dirty();
-		
+		/// Just returns parent<Node>() as a syntactic convenience.
+		NodePtr node();
+		/// Just returns parent<Node>() as a syntactic convenience.
+		ConstNodePtr node() const;
+		//@}
+
+		/// @name Connections
+		///////////////////////////////////////////////////////////////////////
+		//@{
+		typedef std::list<Plug *> OutputContainer;
+		virtual bool acceptsInput( ConstPlugPtr input ) const;
+		/// Pass input as 0 to remove any existing inputs.
+		void setInput( PlugPtr input );
+		template<typename T>
+		typename T::Ptr getInput();
+		template<typename T>
+		typename T::ConstPtr getInput() const;
+		const OutputContainer &outputs() const;
+		//@}
+					
 	private :
 
-		friend class Node;
-		
-		Node *m_node;
+		void setInput( PlugPtr input, bool emit );
 
 		Plug *m_input;
-		std::list<Plug *> m_outputs;
+		OutputContainer m_outputs;
 				
 };
+
+IE_CORE_DECLAREPTR( Plug );
+
+#include "Gaffer/Plug.inl"
 
 } // namespace Gaffer
 

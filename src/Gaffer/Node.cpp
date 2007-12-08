@@ -20,9 +20,9 @@ Node::UnaryPlugSignal &Node::plugDirtiedSignal()
 	return m_plugDirtiedSignal;
 }
 
-Node::BinaryPlugSignal &Node::plugConnectedSignal()
+Node::UnaryPlugSignal &Node::plugInputChangedSignal()
 {
-	return m_plugConnectedSignal;
+	return m_plugInputChangedSignal;
 }
 
 bool Node::acceptsChild( ConstGraphComponentPtr potentialChild ) const

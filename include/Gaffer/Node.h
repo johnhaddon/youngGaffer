@@ -39,7 +39,7 @@ class Node : public GraphComponent
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( Node, NodeTypeId, GraphComponent );
 
 		typedef boost::signal<void (PlugPtr)> UnaryPlugSignal;
-		typedef boost::signal<void (PlugPtr)> BinaryPlugSignal;
+		typedef boost::signal<void (PlugPtr, PlugPtr)> BinaryPlugSignal;
 		
 		/// @name Plug signals
 		/// These signals are emitted on events relating to child Plugs
@@ -52,9 +52,8 @@ class Node : public GraphComponent
 		UnaryPlugSignal &plugSetSignal();
 		/// Called when a plug of this node is dirtied.
 		UnaryPlugSignal &plugDirtiedSignal();
-		/// Called when a plug of this node is connected. First argument
-		/// to slots is the source plug and second is the destination.
-		BinaryPlugSignal &plugConnectedSignal();
+		/// Called when the input changes on a plug of this node.
+		UnaryPlugSignal &plugInputChangedSignal();
 		//@}
 		
 		/// Accepts only Nodes and Plugs.
@@ -80,8 +79,8 @@ class Node : public GraphComponent
 	
 		UnaryPlugSignal m_plugSetSignal;
 		UnaryPlugSignal m_plugDirtiedSignal;
-		BinaryPlugSignal m_plugConnectedSignal;
-
+		UnaryPlugSignal m_plugInputChangedSignal;
+		
 };
 
 } // namespace Gaffer

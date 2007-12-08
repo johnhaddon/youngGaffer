@@ -51,11 +51,11 @@ void GafferBindings::bindNode()
 	scope s = NodePyClass( "Node" )
 		.def( "plugSetSignal", &Node::plugSetSignal, return_internal_reference<1>() )
 		.def( "plugDirtiedSignal", &Node::plugDirtiedSignal, return_internal_reference<1>() )
-		.def( "plugConnectedSignal", &Node::plugConnectedSignal, return_internal_reference<1>() )
+		.def( "plugInputChangedSignal", &Node::plugInputChangedSignal, return_internal_reference<1>() )
 	;
 	
-	//bindSignal<Node::UnaryPlugSignal>( "UnaryPlugSignal" );
-	//bindSignal<Node::BinaryPlugSignal>( "BinaryPlugSignal" );
+	bindSignal<Node::UnaryPlugSignal>( "UnaryPlugSignal" );
+	bindSignal<Node::BinaryPlugSignal>( "BinaryPlugSignal" );
 	
 	IECore::WrapperToPython<NodePtr>();
 	INTRUSIVE_PTR_PATCH( Node, NodePyClass );
