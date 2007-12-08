@@ -28,12 +28,19 @@ void GafferBindings::bindPlug()
 {
 	typedef class_<Plug, PlugPtr, boost::noncopyable, bases<GraphComponent> > PlugPyClass;
 
-	PlugPyClass( "Plug" )
+	scope s = PlugPyClass( "Plug" )
+		.def( init<Plug::Direction>() )
 		.def( "node", (NodePtr (Plug::*)())&Plug::node )
+		.def( "direction", &Plug::direction )
 		.def( "acceptsInput", &Plug::acceptsInput )
 		.def( "setInput", (void (Plug::*)(PlugPtr))&Plug::setInput )
 		.def( "getInput", (PlugPtr (Plug::*)())&Plug::getInput<Plug> )
 		.def( "outputs", &outputs )
+	;
+
+	enum_<Plug::Direction>( "Direction" )
+		.value( "In", Plug::In )
+		.value( "Out", Plug::Out )
 	;
 
 	INTRUSIVE_PTR_PATCH( Plug, PlugPyClass );

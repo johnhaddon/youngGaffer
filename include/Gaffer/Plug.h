@@ -45,13 +45,18 @@ IE_CORE_FORWARDDECLARE( Node )
 ///
 /// Image plugs with partial computation - how would they work????
 ///
-/// \todo we need direction on these bad boys
 class Plug : public GraphComponent
 {
 
 	public :
 	
-		Plug();
+		enum Direction
+		{
+			In = 0,
+			Out = 1
+		};
+	
+		Plug( Direction direction=In );
 		virtual ~Plug();
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( Plug, PlugTypeId, GraphComponent );
@@ -68,6 +73,8 @@ class Plug : public GraphComponent
 		/// Just returns parent<Node>() as a syntactic convenience.
 		ConstNodePtr node() const;
 		//@}
+
+		Direction direction() const;
 
 		/// @name Connections
 		///////////////////////////////////////////////////////////////////////
@@ -87,6 +94,7 @@ class Plug : public GraphComponent
 
 		void setInput( PlugPtr input, bool emit );
 
+		Direction m_direction;
 		Plug *m_input;
 		OutputContainer m_outputs;
 				

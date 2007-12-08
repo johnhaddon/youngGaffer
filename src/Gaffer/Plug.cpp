@@ -7,7 +7,8 @@
 
 using namespace Gaffer;
 
-Plug::Plug()
+Plug::Plug( Direction direction )
+	:	m_direction( direction ), m_input( 0 )
 {
 }
 
@@ -44,10 +45,17 @@ ConstNodePtr Plug::node() const
 {
 	return parent<const Node>();
 }
+
+Plug::Direction Plug::direction() const
+{
+	return m_direction;
+}
 		
 bool Plug::acceptsInput( ConstPlugPtr input ) const
 {
-	return true;
+	/// \todo Possibly allow in->out connections as long
+	/// as the Plugs share the same parent (for internal shortcuts).
+	return m_direction!=Out;
 }
 
 void Plug::setInput( PlugPtr input )
@@ -55,14 +63,13 @@ void Plug::setInput( PlugPtr input )
 	setInput( input, true );
 }
 
-
 void Plug::setInput( PlugPtr input, bool emit )
 {
 	if( input.get()==m_input )
 	{
 		return;
 	}
-	if( !acceptsInput( input ) )
+	if( input && !acceptsInput( input ) )
 	{
 		std::string what = boost::str( boost::format( "Plug \"%s\" rejects input \"%s\"." ) % fullName() % input->fullName() );
 		throw IECore::Exception( what );
