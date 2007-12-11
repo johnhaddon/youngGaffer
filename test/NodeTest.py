@@ -102,15 +102,24 @@ class NodeTest( unittest.TestCase ) :
 		# connect another add node onto the output of this one
 		
 		n2 = AddNode()
-		n2.getChild( "op1" ).setInput( n1.getChild( "sum" ) )
+		n2.setName( "Add2" )
+		cb.append( n2.plugSetSignal().connect( setCallback ) )
+		cb.append( n2.plugDirtiedSignal().connect( dirtyCallback) )
 		
+		n2.getChild( "op1" ).setInput( n1.getChild( "sum" ) )
+		self.assertEqual( NodeTest.lastSet,"Add2.op1" )
+		self.assertEqual( NodeTest.lastDirtied,"Add2.sum" )
 		self.assertEqual( n2.getChild( "op1" ).getValue(), 5 )
 		self.assertEqual( n2.getChild( "sum" ).getDirty(), True )
 		
+		self.assertEqual( n2.getChild( "sum" ).getValue(), 5 )
 		
-		## \todo fix value and dirty propagation for connections 
+	def testAccess( self ) :
+	
 		## \todo either node.plug or node["plug"] notation to get
-		# rid of all this getChild() nonsense
+		# rid of all this getChild() nonsense.
+		
+		raise NotImplementedError
 		
 if __name__ == "__main__":
 	unittest.main()

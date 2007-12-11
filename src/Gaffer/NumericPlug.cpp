@@ -89,7 +89,7 @@ NumericPlug<T>::~NumericPlug()
 template<class T>
 bool NumericPlug<T>::acceptsInput( ConstPlugPtr input ) const
 {
-	if( !Plug::acceptsInput( input ) )
+	if( !ValuePlug::acceptsInput( input ) )
 	{
 		return false;
 	}

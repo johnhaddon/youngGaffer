@@ -20,7 +20,22 @@ bool ValuePlug::acceptsInput( ConstPlugPtr input ) const
 	{
 		return false;
 	}
-	return typeId()==input->typeId();
+	return input->isInstanceOf( staticTypeId() );
+}
+
+void ValuePlug::setInput( PlugPtr input )
+{
+	Plug::setInput( input );
+	// cast safe because acceptsInput checks type.
+	ValuePlugPtr vInput = boost::static_pointer_cast<ValuePlug>( input );
+	if( vInput->getDirty() )
+	{
+		setDirty();
+	}
+	else
+	{
+		setFromInput();
+	}
 }
 
 void ValuePlug::setDirty()

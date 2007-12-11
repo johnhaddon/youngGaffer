@@ -22,10 +22,14 @@ class ValuePlug : public Plug
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( ValuePlug, ValuePlugTypeId, Plug );
 
-		/// Accepts the input only if it is of precisely the same
-		/// type as this Plug. Derived classes may accept more types
-		/// provided they can deal with them in setFromInput().
+		/// Accepts the input only if it is derived from ValuePlug.
+		/// Derived classes may accept more types provided they
+		/// derive from ValuePlug too, and they can deal with them
+		/// in setFromInput().
 		virtual bool acceptsInput( ConstPlugPtr input ) const;
+		/// Reimplemented so that values and dirty status can be
+		/// propagated from inputs.
+		virtual void setInput( PlugPtr input );
 
 		/// Must be implemented by derived classes to set the value
 		/// to the default for this Plug.
@@ -36,7 +40,7 @@ class ValuePlug : public Plug
 		/// Marks the Plug as dirty (ie the value not being up to
 		/// date) and propagates the dirty status to any dependent
 		/// Plugs. This takes no arguments as a Plug is made clean
-		/// by using the Plug specific setValue() function.
+		/// by using the implementation specific setValue() function.
 		void setDirty();
 		/// Returns true if the Plug is dirty - ie the value held is
 		/// not valid.
