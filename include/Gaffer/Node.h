@@ -9,6 +9,7 @@ namespace Gaffer
 {
 
 IE_CORE_FORWARDDECLARE( Plug )
+IE_CORE_FORWARDDECLARE( ValuePlug )
 IE_CORE_FORWARDDECLARE( Node )
 
 /// Threading
@@ -67,15 +68,13 @@ class Node : public GraphComponent
 		/// output plugs which depend on the input.
 		virtual void dirty( ConstPlugPtr dirty ) const = 0;
 		/// Called when getValue() is called on an output plug which is dirty. Must
-		/// be implemented to calculate and return the value for this Plug.
-		/// \todo Consider this : if we didn't
-		/// have this return ObjectPtr then we could have Plugs storing values in any way -
-		/// it would be the Node's responsibility to set the value in any way appropriate.
-		virtual IECore::ObjectPtr compute( ConstPlugPtr output ) const = 0;
+		/// be implemented to calculate and set the value for this Plug.
+		virtual void compute( PlugPtr output ) const = 0;
 		
 	private :
 	
 		friend class Plug;
+		friend class ValuePlug;
 	
 		UnaryPlugSignal m_plugSetSignal;
 		UnaryPlugSignal m_plugDirtiedSignal;

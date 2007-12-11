@@ -31,13 +31,12 @@ class NodeWrapper : public Node, public IECore::Wrapper<Node>
 			}
 		}
 		
-		virtual IECore::ObjectPtr compute( ConstPlugPtr output ) const
+		virtual void compute( PlugPtr output ) const
 		{
 			if( override f = this->get_override( "compute" ) )
 			{
-				return f( boost::const_pointer_cast<Plug>( output ) );
+				f( boost::const_pointer_cast<Plug>( output ) );
 			}
-			return 0;	
 		}
 
 };

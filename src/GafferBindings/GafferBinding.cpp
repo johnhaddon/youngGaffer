@@ -3,6 +3,8 @@
 #include "GafferBindings/GraphComponentBinding.h"
 #include "GafferBindings/NodeBinding.h"
 #include "GafferBindings/PlugBinding.h"
+#include "GafferBindings/ValuePlugBinding.h"
+#include "GafferBindings/NumericPlugBinding.h"
 
 using namespace GafferBindings;
 
@@ -13,6 +15,8 @@ BOOST_PYTHON_MODULE( _Gaffer )
 	bindGraphComponent();
 	bindNode();
 	bindPlug();
+	bindValuePlug();
+	bindNumericPlug();
 	
 	typedef boost::signal<int ( float )> TestSignal;
 	bindSignal<TestSignal>( "TestSignal" );

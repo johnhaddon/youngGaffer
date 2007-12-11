@@ -22,7 +22,7 @@ nodes
 
 object naming / identification
 
-	- all objects must have a unique id
+	- all objects must have a (unique? - not necessarily - could be useful to have groups) id
 	- use for selection, grouping, shader application etc
 	- need integers for image based selection?
 		- yes. id should be integer.
@@ -68,6 +68,29 @@ undo
 			- graph editor
 			- script editor?
 				- trickier
+
+viewer
+======
+
+gl layer with hardware shading and shadowing
+
+final render layer
+
+	- with fast tweaking based on secondary output munging
+	- click raises shader editor for object
+		- using id pass
+
+norman lighting layer?
+
+features
+========
+
+save all shader parameters with each rendered image
+	
+	- revert
+	- mix back
+	
+parameter value overlays on saved images?
 
 basic timeline
 ==============

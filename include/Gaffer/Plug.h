@@ -80,6 +80,7 @@ class Plug : public GraphComponent
 		///////////////////////////////////////////////////////////////////////
 		//@{
 		typedef std::list<Plug *> OutputContainer;
+		/// Accepts any input, provided that direction()==In.
 		virtual bool acceptsInput( ConstPlugPtr input ) const;
 		/// Pass input as 0 to remove any existing inputs.
 		void setInput( PlugPtr input );
