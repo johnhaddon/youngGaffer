@@ -8,6 +8,7 @@ node["childNode"] = blah
 	* 	syntax doesn't match blah.fullName()
 	*	does an implicit setName()
 		*	has to remove existing children of the same name
+	* no need for names in constructors
 	
 node.childNode = blah
 
@@ -17,6 +18,7 @@ node.childNode = blah
 	*	does an implicit setName()
 		*	has to remove existing children of the same name
 	* gives us the syntax we want in the script editor
+	* no need for names in constructors
 	
 or blah.setName( "childNode" ); node.addChild( "blah" )
 
@@ -24,6 +26,11 @@ or blah.setName( "childNode" ); node.addChild( "blah" )
 	* ugly
 	* verbose
 	* node.addChild may rename child
+	* blah.setName( "something" ) is a very good way of renaming nodes
+		* otherwise what do you do?
+			a = node["a"]
+			del node["a"]
+			node["b"] = a
 
 * is implicit setName() bad?
 * is name change on addChild() bad?
@@ -31,6 +38,9 @@ or blah.setName( "childNode" ); node.addChild( "blah" )
 * is there a bug where setName() can be used to make a non-unique name?
 * whatever syntax we use we can have a node.childNode syntax in python by making special access objects
 	-	like the one we need to make anyway to allow undo/redo
+* we shouldn't do n["a"] and n.a 
+	* confusion and inconsistent scripting
+		* ["setName"] can create names which mask methods when the attribute notation is used
 
 undo/redo
 =========
