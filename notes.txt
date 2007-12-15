@@ -1,3 +1,73 @@
+the naming problem :
+====================
+
+node["childNode"] = blah
+
+	*	no name clashes
+	*	not that pretty
+	* 	syntax doesn't match blah.fullName()
+	*	does an implicit setName()
+		*	has to remove existing children of the same name
+	
+node.childNode = blah
+
+	*	can't have child nodes with names matching method names
+	*	pretty though
+	*	and matches blah.fullName()
+	*	does an implicit setName()
+		*	has to remove existing children of the same name
+	* gives us the syntax we want in the script editor
+	
+or blah.setName( "childNode" ); node.addChild( "blah" )
+
+	* non ambiguous
+	* ugly
+	* verbose
+	* node.addChild may rename child
+
+* is implicit setName() bad?
+* is name change on addChild() bad?
+* should orphans have no name?
+* is there a bug where setName() can be used to make a non-unique name?
+* whatever syntax we use we can have a node.childNode syntax in python by making special access objects
+	-	like the one we need to make anyway to allow undo/redo
+
+undo/redo
+=========
+
+* would be beautiful to see every action taken using the ui go through the script editor.
+	* regardless of how we implement undo
+* this single point of execution could then implement the undo layer too. is probably pretty doable to make an execution context
+(a locals dictionary) that gives exactly the same api as the bindings but implements everything with an undo stack
+behind the scenes. this would be awesome - scripts could run with or without undo just by giving them different
+contexts.
+* interactive dragging (slider/manipulators) probably doesn't enter an undoable action for every substep, but just
+an undoable event on release?
+* we need to batch a series of events into a single undo action (e.g. the results of a script execution)
+* either that or we implement undo as a core part of the api anyway  - setValue, setInput, rename, addChild etc
+all take some undoContext that they place undo/redo commands into
+
+ui controls
+===========
+
+* consistency!!!
+	* hotkeys + modifiers behave similarly everywhere
+	* right click is context sensitive menu
+	* ctrl-right click is context sensitive menu to modify the ui
+
+* file path control
+	* tab completion
+	* ctrl delete removes one path level
+	* right click on a path component pops up all other options at that level
+		* selecting an option changes that component
+			* but attempts to keep the following components the same if they exist
+				* so you can change to the same directory in a different shot
+
+* float/int control
+	* no wasting of space with the rubbish +- buttons on the right
+		* up/down cursors increment/decrement the digit to the right of the cursor
+	* virtual slider?
+	
 issues
 ======
 
