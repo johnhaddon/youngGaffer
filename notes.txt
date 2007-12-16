@@ -85,6 +85,8 @@ all take some undoContext that they place undo/redo commands into
 									  conceptually deleted. which is an interesting point - how do we delete nodes?
 									  	* i thought we could just unparent them, but that's not enough because they'll
 										  remain in the undo queue, so connections and wotnot won't be broken
+											* we could have del node.child implemented with a __delattr__ method
+											  which performs the appropriate disconnections
 					
 	* if we can do this then :
 		* ctrl-z undoes the last action from the global list
