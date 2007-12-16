@@ -8,6 +8,7 @@ node["childNode"] = blah
 	* 	syntax doesn't match blah.fullName()
 	*	does an implicit setName()
 		*	has to remove existing children of the same name
+			* or throw on clashes
 	* no need for names in constructors
 	
 node.childNode = blah
@@ -17,8 +18,14 @@ node.childNode = blah
 	*	and matches blah.fullName()
 	*	does an implicit setName()
 		*	has to remove existing children of the same name
+			* or throw on clashes
 	* gives us the syntax we want in the script editor
 	* no need for names in constructors
+	* how the hell will python nodes have data members that aren't children?
+		* 	does node.childNode just work for reading? and you have to do addChild( "name", child )
+			to write?
+				* or do we detect GraphComponents in setattr and store those as children?
+					* yes
 	
 or blah.setName( "childNode" ); node.addChild( "blah" )
 
@@ -41,6 +48,7 @@ or blah.setName( "childNode" ); node.addChild( "blah" )
 * we shouldn't do n["a"] and n.a 
 	* confusion and inconsistent scripting
 		* ["setName"] can create names which mask methods when the attribute notation is used
+* should the objects themselves just have addChild() etc and we implement the . syntax in the undo layer type thing?
 
 undo/redo
 =========
@@ -51,24 +59,84 @@ undo/redo
 (a locals dictionary) that gives exactly the same api as the bindings but implements everything with an undo stack
 behind the scenes. this would be awesome - scripts could run with or without undo just by giving them different
 contexts.
+	* or we implement that in the standard bindings
+		* but then you can't write c++ stuff which is undoable
 * interactive dragging (slider/manipulators) probably doesn't enter an undoable action for every substep, but just
 an undoable event on release?
 * we need to batch a series of events into a single undo action (e.g. the results of a script execution)
 * either that or we implement undo as a core part of the api anyway  - setValue, setInput, rename, addChild etc
 all take some undoContext that they place undo/redo commands into
+	* they probably find the undo context by finding their parent script node
+		* they shouldn't be passed the undo context, as different actions can't
+		  be put into different undo contexts - it would cause havoc
+		* which is where the undo context is?
+			* or is there one undo context for everything?
+				* how do you reparent nodes into one script from another?
+					* can't undo in one script but not the other
+						* maybe can't move node from one script to another?
+	* is undo way easier to implement in python though?
+* is it possible to have a singleton undo list, and undo just bits of it nonlinearly?
+	* 0 1 2 3 4 5	* undo 1 undoes 54321 and redoes 2345
+					* as long as each action has refcounted pointers to the things it operates on this should work?
+						* do we even need to unwind and rewind?
+							* each undo element will have refcounted pointers to what it needs anyway
+								* so even if the objects involved are deleted it'll do the right thing?
+									* not really - you could end up connecting things back up to objects which are
+									  conceptually deleted. which is an interesting point - how do we delete nodes?
+									  	* i thought we could just unparent them, but that's not enough because they'll
+										  remain in the undo queue, so connections and wotnot won't be broken
+					
+	* if we can do this then :
+		* ctrl-z undoes the last action from the global list
+		* shift-ctrl-z undoes the last action local to a particular control
 
-ui controls
+cut + paste
 ===========
+
+* serialise and read
+		
+script node
+===========
+
+* filename plug
+* execute( string pythonCode, bool undoable ) method
+	* this is what all ui controls use to perform their work, and this is where the undo queue is
+	implemented
+* undo(), redo() methods
+* save/load methods
+
+extendd node constructors
+=========================
+
+* take keyword arguments for setting plugs and connecting things
+	* AddNode( op1 = 10, op2 = 20 )
+* can implement **kwargs in boost python using the undocumented class_.def_raw method
+
+ui
+==
+
+* no menu bar?
+	* waste of space
+	* context sensitive menus should do
+		* really? what is the context for file->open?
+			* an empty graph window?
+	
+* fullscreen mode
 
 * consistency!!!
 	* hotkeys + modifiers behave similarly everywhere
 	* right click is context sensitive menu
 	* ctrl-right click is context sensitive menu to modify the ui
+	* middle mouse don't do nuffink
+		* cos scroll wheels aren't very clickable
+		* maybe the scroll wheel can be used for stuff though
 
 * file path control
 	* tab completion
 	* ctrl delete removes one path level
 	* right click on a path component pops up all other options at that level
+		* have submenus based on alphabetic ranges when there are too many options
+		  at a level
 		* selecting an option changes that component
 			* but attempts to keep the following components the same if they exist
 				* so you can change to the same directory in a different shot
