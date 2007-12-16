@@ -17,12 +17,12 @@ class PlugTest( unittest.TestCase ) :
 	
 	def testConnectionAcceptance( self ) :
 	
-		p1 = Gaffer.Plug( Gaffer.Plug.Direction.In )
-		p2 = Gaffer.Plug( Gaffer.Plug.Direction.Out )
+		p1 = Gaffer.Plug( direction=Gaffer.Plug.Direction.In )
+		p2 = Gaffer.Plug( direction=Gaffer.Plug.Direction.Out )
 		self.assert_( p1.acceptsInput( p2 ) )
 		
-		p1 = Gaffer.Plug( Gaffer.Plug.Direction.In )
-		p2 = Gaffer.Plug( Gaffer.Plug.Direction.In )
+		p1 = Gaffer.Plug( direction=Gaffer.Plug.Direction.In )
+		p2 = Gaffer.Plug( direction=Gaffer.Plug.Direction.In )
 		self.assert_( p1.acceptsInput( p2 ) )
 		
 	def testConnection( self ) :
@@ -55,11 +55,11 @@ class PlugTest( unittest.TestCase ) :
 			PlugTest.__connection = ( p, p.getInput() )
 			
 		n1 = Gaffer.Node()
-		p1 = Gaffer.Plug( Gaffer.Plug.Direction.Out )
+		p1 = Gaffer.Plug( direction=Gaffer.Plug.Direction.Out )
 		n1.addChild( p1 )
 		
 		n2 = Gaffer.Node()
-		p2 = Gaffer.Plug( Gaffer.Plug.Direction.In )
+		p2 = Gaffer.Plug( direction=Gaffer.Plug.Direction.In )
 		n2.addChild( p2 )
 		
 		c = n2.plugInputChangedSignal().connect( f )
@@ -73,9 +73,9 @@ class PlugTest( unittest.TestCase ) :
 		
 	def testDirectionality( self ) :
 	
-		p = Gaffer.Plug( Gaffer.Plug.Direction.In )
+		p = Gaffer.Plug( direction=Gaffer.Plug.Direction.In )
 		self.assertEqual( p.direction(), Gaffer.Plug.Direction.In )
-		p = Gaffer.Plug( Gaffer.Plug.Direction.Out )
+		p = Gaffer.Plug( direction=Gaffer.Plug.Direction.Out )
 		self.assertEqual( p.direction(), Gaffer.Plug.Direction.Out )
 		
 if __name__ == "__main__":

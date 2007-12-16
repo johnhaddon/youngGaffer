@@ -17,7 +17,7 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 
 	public :
 
-		GraphComponent();
+		GraphComponent( const std::string &name=staticTypeName() );
 		virtual ~GraphComponent();
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( GraphComponent, GraphComponentTypeId, IECore::RunTimeTyped );
@@ -27,8 +27,7 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		
 		/// @name Naming
 		/// All GraphComponents have a name, which must be unique among
-		/// siblings. The default name for a given component is the result
-		/// of typeName().
+		/// siblings.
 		/// \todo Enforce name constraints.
 		////////////////////////////////////////////////////////////////////
 		//@{

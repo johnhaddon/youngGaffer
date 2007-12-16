@@ -22,6 +22,7 @@ static boost::python::tuple children( GraphComponent &c )
 void GafferBindings::bindGraphComponent()
 {
 	scope s = class_<GraphComponent, boost::noncopyable, GraphComponentPtr, bases<IECore::RunTimeTyped> >( "GraphComponent" )
+		.def( init<const std::string &>() )
 		.def( "setName", &GraphComponent::setName, return_value_policy<copy_const_reference>() )
 		.def( "getName", &GraphComponent::getName, return_value_policy<copy_const_reference>() )
 		.def( "fullName", &GraphComponent::fullName )

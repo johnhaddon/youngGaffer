@@ -24,23 +24,39 @@ static boost::python::tuple outputs( Plug &p )
 	return boost::python::tuple( l );
 }
 
+static PlugPtr constructor( const std::string &name, Plug::Direction direction )
+{
+	return new Plug( name, direction );
+}
+
 void GafferBindings::bindPlug()
 {
 	typedef class_<Plug, PlugPtr, boost::noncopyable, bases<GraphComponent> > PlugPyClass;
 
-	scope s = PlugPyClass( "Plug" )
-		.def( init<Plug::Direction>() )
+	PlugPyClass c( "Plug" );
+	{
+		scope s( c );
+		enum_<Plug::Direction>( "Direction" )
+			.value( "In", Plug::In )
+			.value( "Out", Plug::Out )
+		;
+	}
+	
+	c.def( "__init__", make_constructor(
+				&constructor,
+				default_call_policies(),
+				(
+					boost::python::arg_( "name" )=Plug::staticTypeName(),
+					boost::python::arg_( "direction" )=Plug::In
+				)
+			)
+		)
 		.def( "node", (NodePtr (Plug::*)())&Plug::node )
 		.def( "direction", &Plug::direction )
 		.def( "acceptsInput", &Plug::acceptsInput )
 		.def( "setInput", (void (Plug::*)(PlugPtr))&Plug::setInput )
 		.def( "getInput", (PlugPtr (Plug::*)())&Plug::getInput<Plug> )
 		.def( "outputs", &outputs )
-	;
-
-	enum_<Plug::Direction>( "Direction" )
-		.value( "In", Plug::In )
-		.value( "Out", Plug::Out )
 	;
 
 	INTRUSIVE_PTR_PATCH( Plug, PlugPyClass );

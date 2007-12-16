@@ -56,7 +56,7 @@ class Plug : public GraphComponent
 			Out = 1
 		};
 	
-		Plug( Direction direction=In );
+		Plug( const std::string &name=staticTypeName(), Direction direction=In );
 		virtual ~Plug();
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( Plug, PlugTypeId, GraphComponent );

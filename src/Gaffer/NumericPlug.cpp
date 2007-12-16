@@ -68,12 +68,13 @@ bool NumericPlug<T>::inheritsFrom( const std::string &typeName )
 
 template<class T>
 NumericPlug<T>::NumericPlug(
+	const std::string &name,
 	Direction direction,
 	T defaultValue,
 	T minValue,
 	T maxValue
 )
-	:	ValuePlug( direction ),
+	:	ValuePlug( name, direction ),
 		m_value( defaultValue ),
 		m_defaultValue( defaultValue ),
 		m_minValue( minValue ),

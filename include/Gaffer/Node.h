@@ -23,18 +23,12 @@ IE_CORE_FORWARDDECLARE( Node )
 ///			- don't thing plugs need to know their dynamic/static status
 ///			- but nodes do for serialisation i think
 ///				- or they do clever addition of plugs during parsing
-///
-/// difference between input and output plugs?
-///		- either in and out CompoundPlug parents
-///			- not this because we want to be able just to reference node.plug
-///		- or flags in plug
-///			- plugs do need to know their own direction - to disallow dirtying of inputs with no input connection
 class Node : public GraphComponent
 {
 
 	public :
 
-		Node();
+		Node( const std::string &name=staticTypeName() );
 		virtual ~Node();
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( Node, NodeTypeId, GraphComponent );

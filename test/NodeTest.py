@@ -23,9 +23,6 @@ class NodeTest( unittest.TestCase ) :
 	
 	def testNaming( self ) :
 	
-		## How can we fix this? Everything named "" until
-		# parented to something, at which point they're named
-		# typeName()? And things named "" are roots? Rubbish?
 		n = Gaffer.Node()
 		self.assertEqual( n.getName(), "Node" )	
 	
@@ -39,16 +36,13 @@ class NodeTest( unittest.TestCase ) :
 				
 				self.setName( "Add" )
 				
-				p1 = Gaffer.IntPlug( Gaffer.Plug.Direction.In )
-				p1.setName( "op1" )
-				p2 = Gaffer.IntPlug( Gaffer.Plug.Direction.In )
-				p2.setName( "op2" )
+				p1 = Gaffer.IntPlug( "op1", Gaffer.Plug.Direction.In )
+				p2 = Gaffer.IntPlug( "op2", Gaffer.Plug.Direction.In )
 				
 				self.addChild( p1 )
 				self.addChild( p2 )
 				
-				p3 = Gaffer.IntPlug( Gaffer.Plug.Direction.Out )
-				p3.setName( "sum" )
+				p3 = Gaffer.IntPlug( "sum", Gaffer.Plug.Direction.Out )
 				
 				self.addChild( p3 )
 				
@@ -118,6 +112,8 @@ class NodeTest( unittest.TestCase ) :
 	
 		## \todo either node.plug or node["plug"] notation to get
 		# rid of all this getChild() nonsense.
+		## \todo fix the node/plug name problem by having a name argument
+		# to the constructor, with it defaulting to staticTypeName()
 		
 		raise NotImplementedError
 		

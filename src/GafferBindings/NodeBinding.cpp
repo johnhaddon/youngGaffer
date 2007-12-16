@@ -18,8 +18,8 @@ class NodeWrapper : public Node, public IECore::Wrapper<Node>
 
 	public :
 		
-		NodeWrapper( PyObject *self )
-			:	IECore::Wrapper<Node>( self, this )
+		NodeWrapper( PyObject *self, const std::string &name=staticTypeName() )
+			:	Node( name ), IECore::Wrapper<Node>( self, this )
 		{
 		}		
 		
@@ -48,6 +48,7 @@ void GafferBindings::bindNode()
 	typedef class_<Node, NodeWrapperPtr, boost::noncopyable, bases<GraphComponent> > NodePyClass;
 
 	scope s = NodePyClass( "Node" )
+		.def( init<const std::string &>() )
 		.def( "plugSetSignal", &Node::plugSetSignal, return_internal_reference<1>() )
 		.def( "plugDirtiedSignal", &Node::plugDirtiedSignal, return_internal_reference<1>() )
 		.def( "plugInputChangedSignal", &Node::plugInputChangedSignal, return_internal_reference<1>() )

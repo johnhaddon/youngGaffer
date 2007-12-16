@@ -8,8 +8,8 @@ using namespace Gaffer;
 using namespace IECore;
 using namespace std;
 
-GraphComponent::GraphComponent()
-	: m_name( typeName() ), m_parent( 0 )
+GraphComponent::GraphComponent( const std::string &name )
+	: m_name( name ), m_parent( 0 )
 {
 }
 

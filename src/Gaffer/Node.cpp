@@ -2,7 +2,8 @@
 
 using namespace Gaffer;
 
-Node::Node()
+Node::Node( const std::string &name )
+	:	GraphComponent( name )
 {
 }
 

@@ -17,7 +17,7 @@ class ValuePlug : public Plug
 
 	public :
 	
-		ValuePlug( Direction direction=In );
+		ValuePlug( const std::string &name=staticTypeName(), Direction direction=In );
 		virtual ~ValuePlug();
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( ValuePlug, ValuePlugTypeId, Plug );

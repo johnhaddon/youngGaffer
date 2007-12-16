@@ -5,8 +5,8 @@
 
 using namespace Gaffer;
 
-ValuePlug::ValuePlug( Direction direction )
-	:	Plug( direction ), m_dirty( false )
+ValuePlug::ValuePlug( const std::string &name, Direction direction )
+	:	Plug( name, direction ), m_dirty( false )
 {
 }
 

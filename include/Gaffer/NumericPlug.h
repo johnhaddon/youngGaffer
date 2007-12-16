@@ -19,6 +19,7 @@ class NumericPlug : public ValuePlug
 		typedef boost::intrusive_ptr<NumericPlug> ConstPtr;
 
 		NumericPlug(
+			const std::string &name = staticTypeName(),
 			Direction direction=In,
 			T defaultValue = T(),
 			T minValue = Imath::limits<T>::min(),

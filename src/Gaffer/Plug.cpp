@@ -7,8 +7,8 @@
 
 using namespace Gaffer;
 
-Plug::Plug( Direction direction )
-	:	m_direction( direction ), m_input( 0 )
+Plug::Plug( const std::string &name, Direction direction )
+	:	GraphComponent( name ), m_direction( direction ), m_input( 0 )
 {
 }
 
