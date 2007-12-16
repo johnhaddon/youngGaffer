@@ -46,7 +46,6 @@ static object setAttr( object &self, const char *n, object c )
 		d[n] = c;
 	}
 
-	
 	return c;
 }
 
