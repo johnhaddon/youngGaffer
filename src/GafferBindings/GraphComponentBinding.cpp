@@ -1,4 +1,5 @@
 #include "boost/python.hpp"
+#include "boost/format.hpp"
 
 #include "GafferBindings/GraphComponentBinding.h"
 #include "GafferBindings/SignalBinding.h"
@@ -18,7 +19,37 @@ static boost::python::tuple children( GraphComponent &c )
 	}
 	return boost::python::tuple( l );
 }
- 
+
+static object setAttr( object &self, const char *n, object c )
+{
+	GraphComponent &g = extract<GraphComponent &>( self );
+	// we won't allow any attribute assignment to mask an existing GraphComponent child
+	if( g.getChild<GraphComponent>( n ) )
+	{
+		std::string error = boost::str( boost::format( "\"%s\" already has a child named \"%s\"." ) % g.getName() % n );
+		PyErr_SetString( PyExc_NameError, error.c_str() );
+		throw_error_already_set();
+	}
+
+	extract<GraphComponentPtr> e( c );
+	if( e.check() )
+	{
+		// add as a GraphComponent child
+		GraphComponentPtr gc = e();
+		gc->setName( n );
+		g.addChild( gc );
+	}
+	else
+	{
+		// add as a normal attribute
+		dict d = extract<dict>( self.attr( "__dict__" ) );
+		d[n] = c;
+	}
+
+	
+	return c;
+}
+
 void GafferBindings::bindGraphComponent()
 {
 	scope s = class_<GraphComponent, boost::noncopyable, GraphComponentPtr, bases<IECore::RunTimeTyped> >( "GraphComponent" )
@@ -33,6 +64,7 @@ void GafferBindings::bindGraphComponent()
 		.def( "removeChild", &GraphComponent::removeChild )
 		.def( "getChild", (GraphComponentPtr (GraphComponent::*)( const std::string & ))&GraphComponent::getChild<GraphComponent> )
 		.def( "__getattr__", (GraphComponentPtr (GraphComponent::*)( const std::string & ))&GraphComponent::getChild<GraphComponent> )
+		.def( "__setattr__", setAttr )
 		.def( "children", &children )
 		.def( "parent", (GraphComponentPtr (GraphComponent::*)())&GraphComponent::parent<GraphComponent> )
 		.def( "childAddedSignal", &GraphComponent::childAddedSignal, return_internal_reference<1>() )

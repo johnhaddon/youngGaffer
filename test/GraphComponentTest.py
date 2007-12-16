@@ -99,6 +99,31 @@ class GraphComponentTest( unittest.TestCase ) :
 		l = []
 		for i in range( 0, 100000 ) :
 			l.append( Gaffer.GraphComponent() )
+			
+	def testChildrenAsAttributes( self ) :
+	
+		p = Gaffer.GraphComponent()
+		c = Gaffer.GraphComponent()
+		cc = p.c = c
+		self.assert_( p.getChild( "c" ).isSame( c ) )
+		self.assert_( p.c.isSame( c ) )
+		self.assert_( cc is c )
+		
+		# check that we can still have normal attributes not
+		# as children
+		s = "s"
+		ss = p.s = "s"
+		self.assertEqual( p.getChild( "s" ), None )
+		self.assertEqual( p.s, "s" )
+		self.assert_( ss is s )
+		
+		# we don't allow the replacing of existing children
+		self.assertRaises( NameError, p.__setattr__, "c", Gaffer.GraphComponent() )
+		self.assertRaises( NameError, p.__setattr__, "c", "ss" )
+		# but we do allow the replacing of existing attributes
+		a = "a"
+		p.s = a
+		self.assert_( p.s is a )
 		
 if __name__ == "__main__":
 	unittest.main()

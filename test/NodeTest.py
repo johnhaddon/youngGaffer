@@ -107,16 +107,7 @@ class NodeTest( unittest.TestCase ) :
 		self.assertEqual( n2.getChild( "sum" ).getDirty(), True )
 		
 		self.assertEqual( n2.getChild( "sum" ).getValue(), 5 )
-		
-	def testAccess( self ) :
-	
-		## \todo either node.plug or node["plug"] notation to get
-		# rid of all this getChild() nonsense.
-		## \todo fix the node/plug name problem by having a name argument
-		# to the constructor, with it defaulting to staticTypeName()
-		
-		raise NotImplementedError
-		
+				
 if __name__ == "__main__":
 	unittest.main()
 	
