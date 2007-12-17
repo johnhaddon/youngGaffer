@@ -2,6 +2,20 @@
 undo/redo
 =========
 
+	- how/where do we implement this?
+		- what needs to be undoable
+			- create/delete of nodes
+			- parent/unparent of nodes
+			- add/remove of dynamic plugs
+			- set/connect of plugs
+			- renaming of nodes and plugs
+		- where undo needs to work from
+			- node tweaker
+			- graph editor
+			- script editor?
+				- trickier
+
+
 * would be beautiful to see every action taken using the ui go through the script editor.
 	* regardless of how we implement undo
 * this single point of execution could then implement the undo layer too. is probably pretty doable to make an execution context
@@ -36,10 +50,13 @@ all take some undoContext that they place undo/redo commands into
 										  remain in the undo queue, so connections and wotnot won't be broken
 											* we could have del node.child implemented with a __delattr__ method
 											  which performs the appropriate disconnections
-					
 	* if we can do this then :
 		* ctrl-z undoes the last action from the global list
 		* shift-ctrl-z undoes the last action local to a particular control
+
+	* is this really desirable?
+		* there are plenty of nasty cases
+		* will saving node states with each rendered preview give us equivalent functionality cleanly?					
 
 cut + paste
 ===========
@@ -50,13 +67,14 @@ script node
 ===========
 
 * filename plug
-* execute( string pythonCode, bool undoable ) method
+* execute( string pythonCode, bool undoable ??? ) method
 	* this is what all ui controls use to perform their work, and this is where the undo queue is
-	implemented
+	implemented?????
+		* i don't think so anymore
 * undo(), redo() methods
 * save/load methods
 
-extendd node constructors
+extended node constructors
 =========================
 
 * take keyword arguments for setting plugs and connecting things
@@ -153,21 +171,6 @@ procedurals
 	  
 	- how to determine bounds quickly for deformers and transform caches?
 	
-undo
-
-	- how/where do we implement this?
-		- what needs to be undoable
-			- create/delete of nodes
-			- parent/unparent of nodes
-			- add/remove of dynamic plugs
-			- set/connect of plugs
-			- renaming of nodes and plugs
-		- where undo needs to work from
-			- node tweaker
-			- graph editor
-			- script editor?
-				- trickier
-
 viewer
 ======
 
@@ -181,6 +184,19 @@ final render layer
 
 norman lighting layer?
 
+lights
+======
+
+* basic point, distant, spot and environment bases
+* pluggable light components to modify those lights
+	* shadows (manipulator for framing etc)
+		* light can have many shadows
+	* falloff
+	* blockers
+	* gobos
+* a light component may be connected to any number of lights
+* how do we do map generation??
+
 features
 ========
 
@@ -190,6 +206,22 @@ save all shader parameters with each rendered image
 	- mix back
 	
 parameter value overlays on saved images?
+
+geometry support
+================
+
+* polys/subdees
+	* done already
+* nurbs
+	* need IECoreMaya export support
+* curves
+	* need IECore and IECoreMaya support
+* spheres, disks etc
+	* need IECore support
+* blobbies
+	* need IECore support
+* hierarchical subdees
+	* hold off for the moment
 
 basic timeline
 ==============
