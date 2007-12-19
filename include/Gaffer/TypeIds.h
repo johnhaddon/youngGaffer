@@ -11,7 +11,8 @@ enum TypeId
 	PlugTypeId = 400002,
 	ValuePlugTypeId = 400003,
 	FloatPlugTypeId = 400004,
-	IntPlugTypeId = 400005
+	IntPlugTypeId = 400005,
+	StringPlugTypeId = 400006,
 };
 
 } // namespace Gaffer

@@ -179,6 +179,9 @@ gl layer with hardware shading and shadowing
 final render layer
 
 	- with fast tweaking based on secondary output munging
+		- possibly without even raising a tweaker window
+			- just drag on the image with hotkeys to make a virtual
+			  diffuse/spec/whatever slider for the object under the mouse
 	- click raises shader editor for object
 		- using id pass
 

@@ -5,6 +5,7 @@
 #include "GafferBindings/PlugBinding.h"
 #include "GafferBindings/ValuePlugBinding.h"
 #include "GafferBindings/NumericPlugBinding.h"
+#include "GafferBindings/TypedPlugBinding.h"
 
 using namespace GafferBindings;
 
@@ -17,6 +18,7 @@ BOOST_PYTHON_MODULE( _Gaffer )
 	bindPlug();
 	bindValuePlug();
 	bindNumericPlug();
+	bindTypedPlug();
 	
 	typedef boost::signal<int ( float )> TestSignal;
 	bindSignal<TestSignal>( "TestSignal" );
