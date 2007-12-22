@@ -5,6 +5,8 @@
 #include "GafferBindings/SignalBinding.h"
 #include "Gaffer/GraphComponent.h"
 
+#include "IECore/bindings/IntrusivePtrPatch.h"
+
 using namespace boost::python;
 using namespace GafferBindings;
 using namespace Gaffer;
@@ -51,7 +53,9 @@ static object setAttr( object &self, const char *n, object c )
 
 void GafferBindings::bindGraphComponent()
 {
-	scope s = class_<GraphComponent, boost::noncopyable, GraphComponentPtr, bases<IECore::RunTimeTyped> >( "GraphComponent" )
+	typedef class_<GraphComponent, GraphComponentPtr, boost::noncopyable, bases<IECore::RunTimeTyped> > GraphComponentPyClass;
+
+	scope s = GraphComponentPyClass( "GraphComponent" )
 		.def( init<const std::string &>() )
 		.def( "setName", &GraphComponent::setName, return_value_policy<copy_const_reference>() )
 		.def( "getName", &GraphComponent::getName, return_value_policy<copy_const_reference>() )
@@ -73,6 +77,8 @@ void GafferBindings::bindGraphComponent()
 	
 	bindSignal<GraphComponent::UnarySignal>( "UnarySignal" );
 	bindSignal<GraphComponent::BinarySignal>( "BinarySignal" );
+		
+	INTRUSIVE_PTR_PATCH( GraphComponent, GraphComponentPyClass );
 	
 	implicitly_convertible<GraphComponentPtr, IECore::RunTimeTypedPtr>();
 	implicitly_convertible<GraphComponentPtr, ConstGraphComponentPtr>();
