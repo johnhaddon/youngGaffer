@@ -54,7 +54,7 @@ class Node : public GraphComponent
 		/// Accepts only Nodes and Plugs.
 		virtual bool acceptsChild( ConstGraphComponentPtr potentialChild ) const;
 		/// Accepts only Nodes.
-		virtual bool acceptsParent( ConstGraphComponentPtr potentialParent ) const;
+		virtual bool acceptsParent( const GraphComponent *potentialParent ) const;
 		
 	protected :
 		

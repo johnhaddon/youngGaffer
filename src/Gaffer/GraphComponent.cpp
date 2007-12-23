@@ -96,7 +96,7 @@ bool GraphComponent::acceptsChild( ConstGraphComponentPtr potentialChild ) const
 	return true;
 }
 
-bool GraphComponent::acceptsParent( ConstGraphComponentPtr potentialParent ) const
+bool GraphComponent::acceptsParent( const GraphComponent *potentialParent ) const
 {
 	return true;
 }
@@ -120,8 +120,8 @@ void GraphComponent::addChild( GraphComponentPtr child )
 	m_children.push_back( child );
 	child->m_parent = this;
 	child->setName( child->m_name ); // to force uniqueness
-	childAddedSignal()( this, child );
-	child->parentChangedSignal()( child );
+	childAddedSignal()( this, child.get() );
+	child->parentChangedSignal()( child.get() );
 }
 
 void GraphComponent::removeChild( GraphComponentPtr child )
@@ -132,8 +132,8 @@ void GraphComponent::removeChild( GraphComponentPtr child )
 	}
 	m_children.remove( child );
 	child->m_parent = 0;
-	childRemovedSignal()( this, child );
-	child->parentChangedSignal()( child );
+	childRemovedSignal()( this, child.get() );
+	child->parentChangedSignal()( child.get() );
 }
 
 const GraphComponent::ChildContainer &GraphComponent::children()

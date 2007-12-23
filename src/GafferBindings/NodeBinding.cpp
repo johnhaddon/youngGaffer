@@ -54,8 +54,8 @@ void GafferBindings::bindNode()
 		.def( "plugInputChangedSignal", &Node::plugInputChangedSignal, return_internal_reference<1>() )
 	;
 	
-	bindSignal<Node::UnaryPlugSignal>( "UnaryPlugSignal" );
-	bindSignal<Node::BinaryPlugSignal>( "BinaryPlugSignal" );
+	SignalBinder<Node::UnaryPlugSignal>::bind( "UnaryPlugSignal" );
+	SignalBinder<Node::BinaryPlugSignal>::bind( "BinaryPlugSignal" );
 	
 	IECore::WrapperToPython<NodePtr>();
 	INTRUSIVE_PTR_PATCH( Node, NodePyClass );

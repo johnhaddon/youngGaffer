@@ -15,7 +15,7 @@ class Connection : public boost::noncopyable
 		
 		~Connection();
 		
-		template<typename Signal>
+		template<typename Signal, typename SlotCaller>
 		static PyObject *create( Signal &s, boost::python::object &slot );
 		
 		void disconnect() const;

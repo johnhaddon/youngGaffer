@@ -22,8 +22,8 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( GraphComponent, GraphComponentTypeId, IECore::RunTimeTyped );
 
-		typedef boost::signal<void (GraphComponentPtr)> UnarySignal;
-		typedef boost::signal<void (GraphComponentPtr, GraphComponentPtr)> BinarySignal;
+		typedef boost::signal<void (GraphComponent *)> UnarySignal;
+		typedef boost::signal<void (GraphComponent *, GraphComponent *)> BinarySignal;
 		
 		/// @name Naming
 		/// All GraphComponents have a name, which must be unique among
@@ -54,7 +54,7 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		virtual bool acceptsChild( ConstGraphComponentPtr potentialChild ) const;
 		/// Components can accept or reject potential parents by implementing this
 		/// call.
-		virtual bool acceptsParent( ConstGraphComponentPtr potentialParent ) const;
+		virtual bool acceptsParent( const GraphComponent *potentialParent ) const;
 		/// Adds a child to this component. If the child already has a parent it
 		/// will first be removed from it. Note that the child may be renamed to
 		/// preserve uniqueness, and an exception is thrown if the child or

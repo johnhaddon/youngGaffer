@@ -51,6 +51,23 @@ static object setAttr( object &self, const char *n, object c )
 	return c;
 }
 
+struct UnarySlotCaller
+{
+	boost::signals::detail::unusable operator()( boost::python::object slot, GraphComponentPtr g )
+	{
+		slot( g );
+	}
+};
+
+struct BinarySlotCaller
+{
+
+	boost::signals::detail::unusable operator()( boost::python::object slot, GraphComponentPtr g, GraphComponentPtr gg )
+	{
+		slot( g, gg );
+	}
+};
+
 void GafferBindings::bindGraphComponent()
 {
 	typedef class_<GraphComponent, GraphComponentPtr, boost::noncopyable, bases<IECore::RunTimeTyped> > GraphComponentPyClass;
@@ -75,8 +92,8 @@ void GafferBindings::bindGraphComponent()
 		.def( "parentChangedSignal", &GraphComponent::parentChangedSignal, return_internal_reference<1>() )
 	;
 	
-	bindSignal<GraphComponent::UnarySignal>( "UnarySignal" );
-	bindSignal<GraphComponent::BinarySignal>( "BinarySignal" );
+	SignalBinder<GraphComponent::UnarySignal, DefaultSignalCaller<GraphComponent::UnarySignal>, UnarySlotCaller>::bind( "UnarySignal" );
+	SignalBinder<GraphComponent::BinarySignal, DefaultSignalCaller<GraphComponent::BinarySignal>, BinarySlotCaller>::bind( "BinarySignal" );
 		
 	INTRUSIVE_PTR_PATCH( GraphComponent, GraphComponentPyClass );
 	

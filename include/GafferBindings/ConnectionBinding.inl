@@ -20,51 +20,74 @@ namespace GafferBindings
 {
 
 template<int Arity, typename Signal>
-struct SlotCallerBase;
+struct DefaultSlotCallerBase;
 
 template<typename Signal>
-struct SlotCallerBase<1, Signal>
+struct DefaultSlotCallerBase<1, Signal>
 {
-	SlotCallerBase( Connection *connection )
+	typename Signal::slot_result_type operator()( boost::python::object slot, typename Signal::arg2_type a2 )
+	{
+		return boost::python::extract<typename Signal::slot_result_type>( slot( a2 ) )();
+	}
+};
+
+template<typename Signal>
+struct DefaultSlotCallerBase<2, Signal>
+{
+	typename Signal::slot_result_type operator()( boost::python::object slot, typename Signal::arg2_type a2, typename Signal::arg3_type a3 )
+	{
+		return boost::python::extract<typename Signal::slot_result_type>( slot( a2, a3 ) )();
+	}
+};
+
+template<typename Signal>
+struct DefaultSlotCaller : public DefaultSlotCallerBase<Signal::slot_function_type::arity, Signal>
+{
+};
+
+template<int Arity, typename Signal, typename Caller>
+struct SlotBase;
+
+template<typename Signal, typename Caller>
+struct SlotBase<1, Signal, Caller>
+{
+	SlotBase( Connection *connection )
 		:	m_connection( connection )
 	{
 	}
-	
 	typename Signal::slot_result_type operator()( typename Signal::arg2_type a2 )
 	{
-		return boost::python::extract<typename Signal::slot_result_type>( m_connection->slot()( a2 ) )();
+		return Caller()( m_connection->slot(), a2 );
 	}
 	Connection *m_connection;
 };
 
-template<typename Signal>
-struct SlotCallerBase<2, Signal>
+template<typename Signal, typename Caller>
+struct SlotBase<2, Signal, Caller>
 {
-	SlotCallerBase( Connection *connection )
+	SlotBase( Connection *connection )
 		:	m_connection( connection )
 	{
 	}
-	
-	typename Signal::slot_result_type operator()( typename Signal::arg2_type a2, typename Signal::arg2_type a3 )
+	typename Signal::slot_result_type operator()( typename Signal::arg2_type a2, typename Signal::arg3_type a3 )
 	{
-		return boost::python::extract<typename Signal::slot_result_type>( m_connection->slot()( a2, a3 ) )();
+		return Caller()( m_connection->slot(), a2, a3 );
 	}
 	Connection *m_connection;
 };
 
-template<typename Signal>
-struct SlotCaller : public SlotCallerBase<Signal::slot_function_type::arity, Signal>
+template<typename Signal, typename Caller>
+struct Slot : public SlotBase<Signal::slot_function_type::arity, Signal, Caller>
 {
-	SlotCaller( Connection *connection )
-		:	SlotCallerBase<Signal::slot_function_type::arity, Signal>( connection )
+	Slot( Connection *connection )
+		:	SlotBase<Signal::slot_function_type::arity, Signal, Caller>( connection )
 	{
 	}
 };
 
-template<typename Signal>
+template<typename Signal, typename SlotCaller>
 PyObject *Connection::create( Signal &s, boost::python::object &slot )
 {
-
 	Connection *connection = new Connection;
 	
 	typedef boost::python::manage_new_object::apply<Connection *>::type ResultConverter;
@@ -79,7 +102,7 @@ PyObject *Connection::create( Signal &s, boost::python::object &slot )
 	boost::python::object connectionObj( boost::python::handle<>( boost::python::borrowed( connection->m_pyObject ) ) );
 	boost::python::dict d = boost::python::extract<boost::python::dict>( connectionObj.attr( "__dict__" ) );
 	d["slot"] = slot;
-	connection->m_connection = s.connect( SlotCaller<Signal>( connection ) );
+	connection->m_connection = s.connect( Slot<Signal, SlotCaller>( connection ) );
 	return connection->m_pyObject;
 }
 

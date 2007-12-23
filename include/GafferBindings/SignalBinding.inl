@@ -7,10 +7,10 @@ namespace GafferBindings
 {
 
 template<int Arity, typename Signal>
-struct SignalCallerBase;
+struct DefaultSignalCallerBase;
 
 template<typename Signal>
-struct SignalCallerBase<1, Signal>
+struct DefaultSignalCallerBase<1, Signal>
 {
 	static typename Signal::result_type call( Signal &s, typename Signal::arg2_type a2 )
 	{
@@ -19,7 +19,7 @@ struct SignalCallerBase<1, Signal>
 };
 
 template<typename Signal>
-struct SignalCallerBase<2, Signal>
+struct DefaultSignalCallerBase<2, Signal>
 {
 	static typename Signal::result_type call( Signal &s, typename Signal::arg2_type a2, typename Signal::arg3_type a3 )
 	{
@@ -28,18 +28,18 @@ struct SignalCallerBase<2, Signal>
 };
 
 template<typename Signal>
-struct SignalCaller : public SignalCallerBase<Signal::slot_function_type::arity, Signal>
+struct DefaultSignalCaller : public DefaultSignalCallerBase<Signal::slot_function_type::arity, Signal>
 {
 
 };
 
-template<typename Signal>
-void bindSignal( const char *className )
+template<typename Signal, typename SignalCaller, typename SlotCaller>
+void SignalBinder<Signal, SignalCaller, SlotCaller>::bind( const char *className )
 {
 
 	boost::python::class_<Signal, boost::noncopyable>( className )
-		.def( "connect", &Connection::create<Signal> )
-		.def( "__call__", &SignalCaller<Signal>::call )
+		.def( "connect", &Connection::create<Signal, SlotCaller> )
+		.def( "__call__", &SignalCaller::call )
 	;
 
 }

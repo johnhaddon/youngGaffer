@@ -35,7 +35,7 @@ bool Node::acceptsChild( ConstGraphComponentPtr potentialChild ) const
 	return potentialChild->isInstanceOf( (IECore::TypeId)PlugTypeId ) || potentialChild->isInstanceOf( (IECore::TypeId)NodeTypeId );
 }
 
-bool Node::acceptsParent( ConstGraphComponentPtr potentialParent ) const
+bool Node::acceptsParent( const GraphComponent *potentialParent ) const
 {
 	if( !GraphComponent::acceptsParent( potentialParent ) )
 	{

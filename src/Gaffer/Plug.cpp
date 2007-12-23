@@ -26,7 +26,7 @@ bool Plug::acceptsChild( ConstGraphComponentPtr potentialChild ) const
 	return false;
 }
 
-bool Plug::acceptsParent( ConstGraphComponentPtr potentialParent ) const
+bool Plug::acceptsParent( const GraphComponent *potentialParent ) const
 {
 	if( !GraphComponent::acceptsParent( potentialParent ) )
 	{
