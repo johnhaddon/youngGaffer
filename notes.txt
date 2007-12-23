@@ -58,6 +58,11 @@ all take some undoContext that they place undo/redo commands into
 		* there are plenty of nasty cases
 		* will saving node states with each rendered preview give us equivalent functionality cleanly?					
 
+ui implementation
+=================
+
+* there must be no gtk in the public api for the ui library
+
 cut + paste
 ===========
 
