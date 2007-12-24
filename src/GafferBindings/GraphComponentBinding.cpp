@@ -56,6 +56,7 @@ struct UnarySlotCaller
 	boost::signals::detail::unusable operator()( boost::python::object slot, GraphComponentPtr g )
 	{
 		slot( g );
+		return boost::signals::detail::unusable();
 	}
 };
 
@@ -65,6 +66,7 @@ struct BinarySlotCaller
 	boost::signals::detail::unusable operator()( boost::python::object slot, GraphComponentPtr g, GraphComponentPtr gg )
 	{
 		slot( g, gg );
+		return boost::signals::detail::unusable();
 	}
 };
 

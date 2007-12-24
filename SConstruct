@@ -10,6 +10,11 @@ env = Environment(
 		"/opt/local/include/boost-1_34_1",
 	],
 	
+	CXXFLAGS = [
+		"-Wall",
+		"-Werror"
+	],
+	
 	LIBPATH = [
 		"/opt/local/lib"
 	],
