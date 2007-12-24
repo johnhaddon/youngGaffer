@@ -37,3 +37,23 @@ void ScriptNode::compute( PlugPtr output ) const
 {
 	assert( 0 );
 }
+
+void ScriptNode::execute( const std::string &pythonScript )
+{
+	throw IECore::Exception( "Cannot execute scripts on a ScriptNode not created in Python." );
+}
+
+ScriptNode::ScriptExecutedSignal &ScriptNode::scriptExecutedSignal()
+{
+	return m_scriptExecutedSignal;
+}
+
+PyObject *ScriptNode::evaluate( const std::string &pythonExpression )
+{
+	throw IECore::Exception( "Cannot execute scripts on a ScriptNode not created in Python." );
+}
+
+ScriptNode::ScriptEvaluatedSignal &ScriptNode::scriptEvaluatedSignal()
+{
+	return m_scriptEvaluatedSignal;
+}
