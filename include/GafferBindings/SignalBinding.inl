@@ -28,6 +28,15 @@ struct DefaultSignalCallerBase<2, Signal>
 };
 
 template<typename Signal>
+struct DefaultSignalCallerBase<3, Signal>
+{
+	static typename Signal::result_type call( Signal &s, typename Signal::arg2_type a2, typename Signal::arg3_type a3, typename Signal::arg4_type a4 )
+	{
+		return s( a2, a3, a4 );
+	}
+};
+
+template<typename Signal>
 struct DefaultSignalCaller : public DefaultSignalCallerBase<Signal::slot_function_type::arity, Signal>
 {
 

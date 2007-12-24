@@ -41,6 +41,15 @@ struct DefaultSlotCallerBase<2, Signal>
 };
 
 template<typename Signal>
+struct DefaultSlotCallerBase<3, Signal>
+{
+	typename Signal::slot_result_type operator()( boost::python::object slot, typename Signal::arg2_type a2, typename Signal::arg3_type a3, typename Signal::arg4_type a4 )
+	{
+		return boost::python::extract<typename Signal::slot_result_type>( slot( a2, a3, a4 ) )();
+	}
+};
+
+template<typename Signal>
 struct DefaultSlotCaller : public DefaultSlotCallerBase<Signal::slot_function_type::arity, Signal>
 {
 };
@@ -72,6 +81,20 @@ struct SlotBase<2, Signal, Caller>
 	typename Signal::slot_result_type operator()( typename Signal::arg2_type a2, typename Signal::arg3_type a3 )
 	{
 		return Caller()( m_connection->slot(), a2, a3 );
+	}
+	Connection *m_connection;
+};
+
+template<typename Signal, typename Caller>
+struct SlotBase<3, Signal, Caller>
+{
+	SlotBase( Connection *connection )
+		:	m_connection( connection )
+	{
+	}
+	typename Signal::slot_result_type operator()( typename Signal::arg2_type a2, typename Signal::arg3_type a3, typename Signal::arg4_type a4 )
+	{
+		return Caller()( m_connection->slot(), a2, a3, a4 );
 	}
 	Connection *m_connection;
 };
