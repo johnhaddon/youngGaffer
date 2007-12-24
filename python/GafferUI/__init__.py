@@ -2,6 +2,7 @@ import pygtk
 pygtk.require( "2.0" )
 
 from Menu import Menu
+from ScriptEditor import ScriptEditor
 
 
 ## \todo Move the settings munging somewhere else
