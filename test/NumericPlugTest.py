@@ -21,6 +21,7 @@ class NumericPlugTest( unittest.TestCase ) :
 		f = Gaffer.FloatPlug( defaultValue=10, name="a" )
 		self.assertEqual( f.defaultValue(), 10 )
 		self.assertEqual( f.getName(), "a" )
+		self.assertEqual( f.typeName(), "FloatPlug" )
 				
 if __name__ == "__main__":
 	unittest.main()
