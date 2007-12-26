@@ -246,6 +246,18 @@ save all shader parameters with each rendered image
 	
 parameter value overlays on saved images?
 
+colorspace management
+=====================
+
+* need unified colorspace support everywhere
+
+	-	gtk representations of color
+	-	gl representations of color
+		-	imager shader? append code onto other shaders as they're compiled?
+	-	image transforms
+	
+* implement as cube luts? then can work anywhere easily
+
 geometry support
 ================
 
