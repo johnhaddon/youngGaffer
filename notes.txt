@@ -15,6 +15,37 @@ undo/redo
 			- script editor?
 				- trickier
 
+* Command class or built into C++ API?
+
+	* 	Command (Action? Doable?) class
+		- then non undoable things don't become undo actions
+			- like the addition of static plugs to a node
+		- bindings use the command class to do their work
+		
+	* 	If we want everything to be echoable through the script editor
+		then commands must be implemented via ScriptNode::execute?
+		
+		*	Or just echo the script equivalent while doing it via C++?
+		
+	*	If we want scripting to be undoable then the bindings must use
+		Commands
+		
+		* This makes an infinite loop if Commands are implemented via
+		  the ScriptNode::execute
+		  
+		  	* Unless either :
+			
+				* ScriptNode::execute takes a "bool undoable" argument
+					
+					-	and this is somehow reflected in the bindings
+					
+				or :
+				
+				* Command class just echoes the script equivalent of what
+				  it does and actually uses C++ for the work
+				  
+				  	-	but that means a doubling of implementation work,
+						and the potential for bugs
 
 * would be beautiful to see every action taken using the ui go through the script editor.
 	* regardless of how we implement undo
