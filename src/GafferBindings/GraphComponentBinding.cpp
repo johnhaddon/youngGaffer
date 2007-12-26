@@ -6,6 +6,7 @@
 #include "Gaffer/GraphComponent.h"
 
 #include "IECore/bindings/IntrusivePtrPatch.h"
+#include "IECore/bindings/RunTimeTypedBinding.h"
 
 using namespace boost::python;
 using namespace GafferBindings;
@@ -92,6 +93,7 @@ void GafferBindings::bindGraphComponent()
 		.def( "childAddedSignal", &GraphComponent::childAddedSignal, return_internal_reference<1>() )
 		.def( "childRemovedSignal", &GraphComponent::childRemovedSignal, return_internal_reference<1>() )
 		.def( "parentChangedSignal", &GraphComponent::parentChangedSignal, return_internal_reference<1>() )
+		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( GraphComponent )
 	;
 	
 	SignalBinder<GraphComponent::UnarySignal, DefaultSignalCaller<GraphComponent::UnarySignal>, UnarySlotCaller>::bind( "UnarySignal" );

@@ -8,6 +8,7 @@
 #include "IECore/bindings/Wrapper.h"
 #include "IECore/bindings/WrapperToPython.h"
 #include "IECore/bindings/IntrusivePtrPatch.h"
+#include "IECore/bindings/RunTimeTypedBinding.h"
 
 using namespace boost::python;
 using namespace GafferBindings;
@@ -52,6 +53,7 @@ void GafferBindings::bindNode()
 		.def( "plugSetSignal", &Node::plugSetSignal, return_internal_reference<1>() )
 		.def( "plugDirtiedSignal", &Node::plugDirtiedSignal, return_internal_reference<1>() )
 		.def( "plugInputChangedSignal", &Node::plugInputChangedSignal, return_internal_reference<1>() )
+		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( Node )
 	;
 	
 	SignalBinder<Node::UnaryPlugSignal>::bind( "UnaryPlugSignal" );

@@ -7,6 +7,7 @@
 #include "IECore/bindings/Wrapper.h"
 #include "IECore/bindings/WrapperToPython.h"
 #include "IECore/bindings/IntrusivePtrPatch.h"
+#include "IECore/bindings/RunTimeTypedBinding.h"
 
 using namespace boost::python;
 using namespace Gaffer;
@@ -77,6 +78,7 @@ void bindScriptNode()
 		.def( "evaluate", &ScriptNode::evaluate )
 		.def( "scriptExecutedSignal", &ScriptNode::scriptExecutedSignal, return_internal_reference<1>() )
 		.def( "scriptEvaluatedSignal", &ScriptNode::scriptEvaluatedSignal, return_internal_reference<1>() )
+		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( ScriptNode )
 	;
 	
 	SignalBinder<ScriptNode::ScriptExecutedSignal>::bind( "ScriptExecutedSignal" );

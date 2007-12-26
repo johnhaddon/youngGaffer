@@ -8,6 +8,7 @@
 #include "IECore/bindings/Wrapper.h"
 #include "IECore/bindings/WrapperToPython.h"
 #include "IECore/bindings/IntrusivePtrPatch.h"
+#include "IECore/bindings/RunTimeTypedBinding.h"
 
 using namespace boost::python;
 using namespace GafferBindings;
@@ -57,6 +58,7 @@ void GafferBindings::bindPlug()
 		.def( "setInput", (void (Plug::*)(PlugPtr))&Plug::setInput )
 		.def( "getInput", (PlugPtr (Plug::*)())&Plug::getInput<Plug> )
 		.def( "outputs", &outputs )
+		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( Plug )
 	;
 
 	INTRUSIVE_PTR_PATCH( Plug, PlugPyClass );
