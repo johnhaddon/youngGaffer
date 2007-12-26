@@ -3,6 +3,7 @@ import gtk
 ## \todo This needs to derive off something which provides the editing context and wotnot
 ## \todo Output redirection of both python stderr and stdout and IECore::msg
 ## \todo Fix the horizontal bar so it doesn't move unless asked - the subwindows should scroll instead
+## \todo Custom right click menu with script load, save, execute file, cut, copy, paste, undo, redo etc.
 class ScriptEditor :
 
 	def __init__( self, scriptNode ) :

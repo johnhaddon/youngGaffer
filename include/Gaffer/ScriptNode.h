@@ -17,6 +17,7 @@ IE_CORE_FORWARDDECLARE( ScriptNode );
 /// \todo fileValid() plug or summink - bool which is true when the file is saved and
 /// false when it's modified in memory. this means attaching a plugchanged callback to every
 /// node.
+/// \todo Save/load (load should just be clear() followed by executeFile().
 class ScriptNode : public Node
 {
 
