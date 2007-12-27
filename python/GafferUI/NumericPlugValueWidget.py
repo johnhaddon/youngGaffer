@@ -15,6 +15,7 @@ import gtk
 #
 ## \todo Maths expressions to modify the existing value
 ## \todo Enter names of other plugs to create a connection
+## \todo Color change for connected plugs
 class NumericPlugValueWidget( PlugValueWidget ) :
 
 	def __init__( self, plug ) :
