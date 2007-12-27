@@ -62,7 +62,6 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 			if event.state & gtk.gdk.SHIFT_MASK :
 				step = -1
 			
-			print cursor[0], step
 			self.__incrementIndex( cursor[0], step )
 			
 			return True
@@ -111,7 +110,6 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 		# accept - only as the first character, and only if
 		# it's the only one
 		if event.keyval==45 :
-			print self.gtkWidget.get_position()
 			if self.gtkWidget.get_position()!=0 :
 				return True
 			text = self.gtkWidget.get_text()
