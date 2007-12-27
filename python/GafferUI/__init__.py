@@ -3,7 +3,8 @@ pygtk.require( "2.0" )
 
 from Menu import Menu
 from ScriptEditor import ScriptEditor
-
+from PlugValueWidget import PlugValueWidget
+from NumericPlugValueWidget import NumericPlugValueWidget
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?
