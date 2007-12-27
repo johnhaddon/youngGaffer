@@ -18,6 +18,7 @@ import gtk
 ## \todo Color change for connected plugs
 ## \todo Reject drag and drop of anything that's not a number
 ## \todo Fix bug caused by trying to set an empty string as the value
+## \todo Add support for Ctrl-A, and any other hotkeys we're masking
 class NumericPlugValueWidget( PlugValueWidget ) :
 
 	def __init__( self, plug ) :
