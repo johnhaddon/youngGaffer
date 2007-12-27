@@ -16,6 +16,8 @@ import gtk
 ## \todo Maths expressions to modify the existing value
 ## \todo Enter names of other plugs to create a connection
 ## \todo Color change for connected plugs
+## \todo Reject drag and drop of anything that's not a number
+## \todo Fix bug caused by trying to set an empty string as the value
 class NumericPlugValueWidget( PlugValueWidget ) :
 
 	def __init__( self, plug ) :
@@ -65,6 +67,8 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 			self.__incrementIndex( cursor[0], step )
 			
 			return True
+			
+		return False
 	
 	def __keyPress( self, widget, event ) :
 	
