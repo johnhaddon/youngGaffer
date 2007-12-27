@@ -9,11 +9,13 @@ import IECore
 
 ## User docs :
 #
-# Tab does shell style auto completion
+# Tab does shell style auto completion.
+# Control left click brings up a menu for all options at that path level.
 #
 ## \todo I'm not entirely sure this should derive from
 # StringPlugValueWidget and not just PlugValueWidget
 ## \todo And does it really have it's own button?
+## \todo Filter on extension, file or dir etc
 class FileNamePlugValueWidget( StringPlugValueWidget ) :
 
 	def __init__( self, plug ) :
