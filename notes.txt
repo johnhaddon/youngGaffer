@@ -128,6 +128,10 @@ ui
 	
 * fullscreen mode
 
+* CompoundPlugWidget or GroupPlugWidget or whatever
+	* String in label to summarise the state of the contents
+		* Customisable with a callback function
+
 * consistency!!!
 	* hotkeys + modifiers behave similarly everywhere
 	* right click is context sensitive menu
