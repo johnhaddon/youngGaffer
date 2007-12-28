@@ -135,7 +135,6 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 		
 		# pass through ctrl shortcuts we want to be processed normally
 		if event.state & gtk.gdk.CONTROL_MASK :
-			print event.keyval
 			keysWeLike = [
 				97, # A
 				99, # C
@@ -214,3 +213,7 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 		if newIndex < 0 :
 			newIndex = 0
 		self.gtkWidget.set_position( newIndex )
+
+PlugValueWidget.registerType( Gaffer.FloatPlug.staticTypeId(), NumericPlugValueWidget )
+PlugValueWidget.registerType( Gaffer.IntPlug.staticTypeId(), NumericPlugValueWidget )
+

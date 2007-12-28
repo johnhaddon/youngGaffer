@@ -19,6 +19,23 @@ class PlugValueWidget() :
 	def updateFromPlug( self ) :
 	
 		raise NotImplementedError
+			
+	@classmethod
+	def create( cls, plug ) :
+
+		typeId = plug.typeId()
+		if typeId in cls.__typesToCreators :
+		
+			return cls.__typesToCreators[typeId]( plug )
+			
+		return None
+	
+	@classmethod
+	def registerType( cls, typeId, creator ) :
+	
+		cls.__typesToCreators[typeId] = creator
+	
+	__typesToCreators = {}	
 		
 	def __plugSetSlot( self, plug ) :
 	

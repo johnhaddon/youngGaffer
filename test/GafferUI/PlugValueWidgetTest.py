@@ -19,10 +19,10 @@ node.intPlug = Gaffer.IntPlug()
 node.stringPlug = Gaffer.StringPlug()
 
 floatPlugWidget = GafferUI.NumericPlugValueWidget( node.floatPlug )
-floatPlugWidget2 = GafferUI.NumericPlugValueWidget( node.floatPlug )
+floatPlugWidget2 = GafferUI.PlugValueWidget.create( node.floatPlug )
 intPlugWidget = GafferUI.NumericPlugValueWidget( node.intPlug )
-intPlugWidget2 = GafferUI.NumericPlugValueWidget( node.intPlug )
-stringPlugWidget = GafferUI.StringPlugValueWidget( node.stringPlug )
+intPlugWidget2 = GafferUI.PlugValueWidget.create( node.intPlug )
+stringPlugWidget = GafferUI.PlugValueWidget.create( node.stringPlug )
 stringPlugWidget2 = GafferUI.FileNamePlugValueWidget( node.stringPlug )
 
 column.pack_start( floatPlugWidget.gtkWidget, False )

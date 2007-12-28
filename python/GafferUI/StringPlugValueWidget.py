@@ -1,4 +1,5 @@
 from PlugValueWidget import PlugValueWidget
+import Gaffer
 import gtk
 
 ## User docs :
@@ -48,3 +49,5 @@ class StringPlugValueWidget( PlugValueWidget ) :
 	
 		text = self.gtkEntry.get_text()
 		self.getPlug().setValue( text )
+
+PlugValueWidget.registerType( Gaffer.StringPlug.staticTypeId(), StringPlugValueWidget )
