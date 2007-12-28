@@ -18,7 +18,6 @@ import gtk
 ## \todo Enter names of other plugs to create a connection
 ## \todo Color change for connected plugs
 ## \todo Reject drag and drop of anything that's not a number
-## \todo Add support for Ctrl-A, and any other hotkeys we're masking
 class NumericPlugValueWidget( PlugValueWidget ) :
 
 	def __init__( self, plug ) :
@@ -134,6 +133,18 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 		if event.keyval in keysWeLike :
 			return False
 		
+		# pass through ctrl shortcuts we want to be processed normally
+		if event.state & gtk.gdk.CONTROL_MASK :
+			print event.keyval
+			keysWeLike = [
+				97, # A
+				99, # C
+				118, # V
+				120, # X
+			]
+			if event.keyval in keysWeLike :
+				return False
+				
 		# suppress processing of all other keypresses so we don't get unwanted text
 		return True
 		
