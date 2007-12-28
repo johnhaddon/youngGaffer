@@ -12,12 +12,12 @@ import gtk
 # Return commits any changes
 # Tab commits any changes and moves focus to the next widget
 # Escape abandons any uncommitted changes
+# Deleting all text and committing reverts to the default value.
 #
 ## \todo Maths expressions to modify the existing value
 ## \todo Enter names of other plugs to create a connection
 ## \todo Color change for connected plugs
 ## \todo Reject drag and drop of anything that's not a number
-## \todo Fix bug caused by trying to set an empty string as the value
 ## \todo Add support for Ctrl-A, and any other hotkeys we're masking
 class NumericPlugValueWidget( PlugValueWidget ) :
 
@@ -156,7 +156,14 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 	def __setPlugValue( self ) :
 	
 		text = self.gtkEntry.get_text()
-		self.getPlug().setValue( self.__numericType()( text ) )		
+		if text=="" :
+			# revert to default
+			self.getPlug().setValue( self.getPlug().defaultValue() )
+		
+		try :	
+			self.getPlug().setValue( self.__numericType()( text ) )
+		except :
+			self.updateFromPlug()	
 	
 	def __decimalPointIndex( self, s ) :
 	
