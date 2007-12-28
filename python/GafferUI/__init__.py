@@ -7,6 +7,7 @@ from PlugValueWidget import PlugValueWidget
 from NumericPlugValueWidget import NumericPlugValueWidget
 from StringPlugValueWidget import StringPlugValueWidget
 from FileNamePlugValueWidget import FileNamePlugValueWidget
+from PlugWidget import PlugWidget
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?
