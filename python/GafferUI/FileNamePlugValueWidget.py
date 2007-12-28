@@ -14,7 +14,7 @@ import IECore
 #
 ## \todo I'm not entirely sure this should derive from
 # StringPlugValueWidget and not just PlugValueWidget
-## \todo And does it really have it's own button?
+## \todo And does it really have it's own button? - if it does then at least make it do something
 ## \todo Filter on extension, file or dir etc
 class FileNamePlugValueWidget( StringPlugValueWidget ) :
 
