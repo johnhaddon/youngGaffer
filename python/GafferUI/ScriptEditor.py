@@ -1,7 +1,9 @@
 import gtk
+from Panel import Panel
+from Gaffer import ScriptNode
 
 ## \todo This needs to derive off something which provides the editing context and wotnot
-## \todo Output redirection of both python stderr and stdout and IECore::msg
+## \todo Output redirection of both python stderr and stdout and IECore::msg - with the option to still output to the shell as well
 ## \todo Fix the horizontal bar so it doesn't move unless asked - the subwindows should scroll instead
 ## \todo Custom right click menu with script load, save, execute file, cut, copy, paste, undo, redo etc.
 class ScriptEditor :
@@ -69,3 +71,5 @@ class ScriptEditor :
 			return True
 			
 		return False
+
+Panel.registerContentCreator( "Script Editor", lambda : ScriptEditor( ScriptNode() ) )

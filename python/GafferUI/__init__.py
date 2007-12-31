@@ -23,12 +23,13 @@ except Exception, e :
 ###################################################################################################
 
 from Menu import Menu
-from ScriptEditor import ScriptEditor
 from PlugValueWidget import PlugValueWidget
 from NumericPlugValueWidget import NumericPlugValueWidget
 from StringPlugValueWidget import StringPlugValueWidget
 from FileNamePlugValueWidget import FileNamePlugValueWidget
 from PlugWidget import PlugWidget
+from Panel import Panel
+from ScriptEditor import ScriptEditor
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?
