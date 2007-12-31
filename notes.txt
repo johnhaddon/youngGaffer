@@ -237,6 +237,8 @@ lights
 	* falloff
 	* blockers
 	* gobos
+	* specular reflection card for spotlight
+* reflection cards
 * a light component may be connected to any number of lights
 * how do we do map generation??
 
