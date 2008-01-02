@@ -12,10 +12,10 @@ class StringPlugValueWidget( PlugValueWidget ) :
 	
 		PlugValueWidget.__init__( self, plug )
 
-		self.gtkWidget = gtk.Entry()
-		self.gtkEntry = self.gtkWidget
+		self.gtkEntry = gtk.Entry()
 		self.gtkEntry.connect( "key-press-event", self.__keyPress )
 		self.gtkEntry.connect( "focus-out-event", self.__focusOut )
+		self.setGTKWidget( self.gtkEntry )
 
 		self.updateFromPlug()
 

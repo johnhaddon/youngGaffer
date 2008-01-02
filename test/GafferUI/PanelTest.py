@@ -14,7 +14,7 @@ window.connect( "delete_event", gtk.main_quit )
 s = GafferUI.Panel()
 assert( not s.isSplit() )
 
-window.add( s.gtkWidget )
+window.add( s.getGTKWidget() )
 
 window.show_all()
 

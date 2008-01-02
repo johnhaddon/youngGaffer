@@ -24,11 +24,12 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 	
 		PlugValueWidget.__init__( self, plug )
 
-		self.gtkWidget = gtk.Entry()
-		self.gtkEntry = self.gtkWidget
+		self.gtkEntry = gtk.Entry()
 		self.gtkEntry.connect( "key-press-event", self.__keyPress )
 		self.gtkEntry.connect( "button-press-event", self.__buttonPress )
 		self.gtkEntry.connect( "focus-out-event", self.__focusOut )
+		self.setGTKWidget( self.gtkEntry )
+		
 		## \todo Consider the style of these widgets
 		# self.gtkEntry.set_has_frame( False )
 		self.updateFromPlug()
@@ -114,9 +115,9 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 		# accept - only as the first character, and only if
 		# it's the only one
 		if event.keyval==45 :
-			if self.gtkWidget.get_position()!=0 :
+			if self.gtkEntry.get_position()!=0 :
 				return True
-			text = self.gtkWidget.get_text()
+			text = self.gtkEntry.get_text()
 			if '-' in text :
 				return True
 			return False
@@ -212,7 +213,7 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 			newIndex = len( newText ) - 1 - powIndex
 		if newIndex < 0 :
 			newIndex = 0
-		self.gtkWidget.set_position( newIndex )
+		self.gtkEntry.set_position( newIndex )
 
 PlugValueWidget.registerType( Gaffer.FloatPlug.staticTypeId(), NumericPlugValueWidget )
 PlugValueWidget.registerType( Gaffer.IntPlug.staticTypeId(), NumericPlugValueWidget )

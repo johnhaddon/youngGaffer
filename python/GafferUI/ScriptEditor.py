@@ -3,21 +3,25 @@ import IECore
 from Panel import Panel
 from Gaffer import ScriptNode
 from Menu import Menu
+from Widget import Widget
 
 ## \todo This needs to derive off something which provides the editing context and wotnot
 ## \todo Output redirection of both python stderr and stdout and IECore::msg - with the option to still output to the shell as well
 ## \todo Fix the horizontal bar so it doesn't move unless asked - the subwindows should scroll instead
 ## \todo Custom right click menu with script load, save, execute file, undo, redo etc.
 ## \todo Standard way for users to customise all menus
-class ScriptEditor :
+class ScriptEditor( Widget ) :
 
 	def __init__( self, scriptNode ) :
+	
+		Widget.__init__( self )
 	
 		self.__scriptNode = scriptNode
 		self.__execConnection = self.__scriptNode.scriptExecutedSignal().connect( self.__execSlot )
 		self.__evalConnection = self.__scriptNode.scriptEvaluatedSignal().connect( self.__evalSlot )
 	
-		self.gtkWidget = gtk.VPaned()
+		self.__paned = gtk.VPaned()
+		self.setGTKWidget( self.__paned )
 		
 		self.gtkOutputBuffer = gtk.TextBuffer()
 		self.gtkOutputWidget = gtk.TextView( self.gtkOutputBuffer )
@@ -26,16 +30,16 @@ class ScriptEditor :
 		self.gtkOutputWidget.connect( "button-press-event", self.__buttonPress )
 		## \todo set the colors appropriately
 		#self.gtkOutputWidget.modify_base( gtk.STATE_NORMAL, gtk.gdk.Color() )
-		self.gtkWidget.pack1( self.gtkOutputWidget, True )
+		self.__paned.pack1( self.gtkOutputWidget, True )
 		
 		self.gtkInputBuffer = gtk.TextBuffer()
 		self.gtkInputWidget = gtk.TextView( self.gtkInputBuffer )
 		self.gtkInputWidget.connect( "key-press-event", self.__keyPress )
 		self.gtkInputWidget.connect( "button-press-event", self.__buttonPress )
 		
-		self.gtkWidget.pack2( self.gtkInputWidget, True )
+		self.__paned.pack2( self.gtkInputWidget, True )
 			
-		self.gtkWidget.show_all()
+		self.__paned.show_all()
 	
 	def __execSlot( self, scriptNode, script ) :
 	
@@ -102,7 +106,7 @@ class ScriptEditor :
 				m.append( "/Delete", { "command" : IECore.curry( widget.get_buffer().cut_clipboard, clipboard, editable ), "active" : haveSelection } )	
 			
 			m = Menu( m )
-			m.gtkWidget.popup( None, None, None, event.button, event.time )
+			m.popup()
 			
 			return True
 			

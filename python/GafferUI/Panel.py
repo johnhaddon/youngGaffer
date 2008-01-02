@@ -2,19 +2,22 @@ import IECore
 import gtk
 
 from Menu import Menu
+from Widget import Widget
 
 ## \todo Add splitting/joining to the menus and make sure they work
 ## \todo Implement an option to float in a new window
 ## \todo Figure out how to get the menu showing when the child wants their own
 # goddam menu/event handler
-class Panel() :
+class Panel( Widget ) :
 
 	SplitDirection = IECore.Enum.create( "None", "Vertical", "Horizontal" )
 
 	def __init__( self ) :
 	
-		self.gtkWidget = gtk.EventBox()
-		self.gtkWidget.connect( "button-press-event", self.__buttonPress )
+		self.__eventBox = gtk.EventBox()
+		self.__eventBox.connect( "button-press-event", self.__buttonPress )
+		self.setGTKWidget( self.__eventBox )
+		
 		self.__paned = None
 		
 	def setChild( self, child, index=0 ) :
@@ -25,21 +28,21 @@ class Panel() :
 				raise IndexError()
 		
 			if index==0 :
-				self.__paned.pack1( child.gtkWidget, True, True )
+				self.__paned.pack1( child.getGTKWidget(), True, True )
 			else :
-				self.__paned.pack2( child.gtkWidget, True, True )
+				self.__paned.pack2( child.getGTKWidget(), True, True )
 						
 		else :
 		
 			if index != 0 :
 				raise IndexError()
 			
-			oldChild = self.gtkWidget.get_child()
+			oldChild = self.__eventBox.get_child()
 			if oldChild :
-				self.gtkWidget.remove( oldChild )
+				self.__eventBox.remove( oldChild )
 				
-			child.gtkWidget.show_all()
-			self.gtkWidget.add( child.gtkWidget )
+			child.getGTKWidget().show_all()
+			self.__eventBox.add( child.getGTKWidget() )
 
 	def getChild( self, index=0 ) :
 	
@@ -58,7 +61,7 @@ class Panel() :
 			if index != 0 :
 				raise IndexError()
 				
-			return self.gtkWidget.get_child()
+			return self.__eventBox.get_child()
 		
 		
 	def isSplit( self ) :
@@ -80,8 +83,8 @@ class Panel() :
 		else :
 			self.__paned = gtk.VPaned()
 			
-		self.gtkWidget.remove( child )
-		self.gtkWidget.add( self.__paned )
+		self.__eventBox.remove( child )
+		self.__eventBox.add( self.__paned )
 		
 		self.setChild( child, childIndex )
 	
@@ -120,7 +123,7 @@ class Panel() :
 			# right click
 			
 			m = Menu( self.menuDefinition() )
-			m.gtkWidget.popup( None, None, None, event.button, event.time )
+			m.getGTKWidget().popup( None, None, None, event.button, event.time )
 
 	__contentCreators = {}
 	@classmethod
@@ -128,11 +131,14 @@ class Panel() :
 	
 		cls.__contentCreators[label] = creator
 
-class EmptyThing() :
+class EmptyThing( Widget ) :
 
 	def __init__( self ) :
 		
-		self.gtkWidget = gtk.Frame()
-		self.gtkWidget.set_shadow_type( gtk.SHADOW_OUT )
-
+		Widget.__init__( self )
+		
+		self.__frame = gtk.Frame()
+		self.__frame.set_shadow_type( gtk.SHADOW_OUT )
+		self.setGTKWidget( self.__frame )
+		
 Panel.registerContentCreator( "Empty", EmptyThing )	

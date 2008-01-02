@@ -1,16 +1,26 @@
 import gtk
 from IECore import curry
+from Widget import Widget
 
 ## \todo Decide how this interacts with the other UI components to
 # popup when wanted.
-class Menu() :
+class Menu( Widget ) :
 
 	def __init__( self, definition ) :
 	
+		Widget.__init__( self )
+	
 		self.definition = definition
-		self.gtkWidget = gtk.Menu()
+		self.__menu = gtk.Menu()
 		
-		self.gtkWidget.connect( "show", self.__show, self.definition )
+		self.__menu.connect( "show", self.__show, self.definition )
+		
+		self.setGTKWidget( self.__menu )
+
+	def popup( self ) :
+	
+		event = gtk.get_current_event()
+		self.__menu.popup( None, None, None, event.button, event.time )
 
 	@staticmethod
 	def __commandWrapper( command, menuItem ) :

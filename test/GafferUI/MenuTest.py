@@ -55,7 +55,7 @@ button.show()
 
 def popup( widget, event, menu ) :
 		
-	menu.gtkWidget.popup( None, None, None, event.button, event.time )
+	menu.popup()
 
 button.connect( "button-press-event", popup, menu )
 

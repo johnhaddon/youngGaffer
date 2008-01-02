@@ -1,6 +1,10 @@
-class PlugValueWidget() :
+from Widget import Widget
+
+class PlugValueWidget( Widget ) :
 
 	def __init__( self, plug ) :
+	
+		Widget.__init__( self )
 	
 		self.setPlug( plug )
 		

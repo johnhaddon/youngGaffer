@@ -22,15 +22,16 @@ class FileNamePlugValueWidget( StringPlugValueWidget ) :
 	
 		StringPlugValueWidget.__init__( self, plug )
 
-		self.gtkWidget = gtk.HBox()
-		self.gtkRow = self.gtkWidget
-		self.gtkButton = gtk.Button()
+		self.__row = gtk.HBox()
+		self.__button = gtk.Button()
 
-		self.gtkRow.pack_start( self.gtkEntry, False )
-		self.gtkRow.pack_start( self.gtkButton, False )
+		self.__row.pack_start( self.gtkEntry, False )
+		self.__row.pack_start( self.__button, False )
 		
-		self.gtkEntry.connect( "key-press-event", self.__keyPress )
-		self.gtkEntry.connect( "button-press-event", self.__buttonPress )
+		self.__row.connect( "key-press-event", self.__keyPress )
+		self.__row.connect( "button-press-event", self.__buttonPress )
+		
+		self.setGTKWidget( self.__row )
 
 	def __keyPress( self, widget, event ) :
 	

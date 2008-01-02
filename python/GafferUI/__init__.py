@@ -22,6 +22,7 @@ except Exception, e :
 # gtk imported ok. bring in the GafferUI components
 ###################################################################################################
 
+from Widget import Widget
 from Menu import Menu
 from PlugValueWidget import PlugValueWidget
 from NumericPlugValueWidget import NumericPlugValueWidget
