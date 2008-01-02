@@ -4,6 +4,7 @@ from Panel import Panel
 from Gaffer import ScriptNode
 from Menu import Menu
 from Widget import Widget
+from Panel import Panel
 
 ## \todo This needs to derive off something which provides the editing context and wotnot
 ## \todo Output redirection of both python stderr and stdout and IECore::msg - with the option to still output to the shell as well
@@ -104,6 +105,12 @@ class ScriptEditor( Widget ) :
 					pasteActive = False
 				m.append( "/Paste", { "command" : IECore.curry( widget.get_buffer().paste_clipboard, clipboard, None, editable ), "active" : pasteActive } )	
 				m.append( "/Delete", { "command" : IECore.curry( widget.get_buffer().cut_clipboard, clipboard, editable ), "active" : haveSelection } )	
+			
+			parent = self.parent()
+			if isinstance( parent, Panel ) :
+			
+				m.append( "/PanelDivider", { "divider" : True } )
+				m.append( "/Panel", { "subMenu" : parent.menuDefinition() } )
 			
 			m = Menu( m )
 			m.popup()
