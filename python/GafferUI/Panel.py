@@ -14,6 +14,8 @@ class Panel( Widget ) :
 
 	def __init__( self ) :
 	
+		Widget.__init__( self )
+		
 		self.__eventBox = gtk.EventBox()
 		self.__eventBox.connect( "button-press-event", self.__buttonPress )
 		self.setGTKWidget( self.__eventBox )
@@ -117,13 +119,12 @@ class Panel( Widget ) :
 	
 	def __buttonPress( self, widget, event ) :
 	
-		print "BUTTON PRESS"
 		if event.button==3 :
 		
 			# right click
 			
 			m = Menu( self.menuDefinition() )
-			m.getGTKWidget().popup( None, None, None, event.button, event.time )
+			m.popup()
 
 	__contentCreators = {}
 	@classmethod
