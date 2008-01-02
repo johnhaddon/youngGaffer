@@ -1,11 +1,14 @@
 import gtk
+import IECore
 from Panel import Panel
 from Gaffer import ScriptNode
+from Menu import Menu
 
 ## \todo This needs to derive off something which provides the editing context and wotnot
 ## \todo Output redirection of both python stderr and stdout and IECore::msg - with the option to still output to the shell as well
 ## \todo Fix the horizontal bar so it doesn't move unless asked - the subwindows should scroll instead
-## \todo Custom right click menu with script load, save, execute file, cut, copy, paste, undo, redo etc.
+## \todo Custom right click menu with script load, save, execute file, undo, redo etc.
+## \todo Standard way for users to customise all menus
 class ScriptEditor :
 
 	def __init__( self, scriptNode ) :
@@ -19,6 +22,8 @@ class ScriptEditor :
 		self.gtkOutputBuffer = gtk.TextBuffer()
 		self.gtkOutputWidget = gtk.TextView( self.gtkOutputBuffer )
 		self.gtkOutputWidget.set_editable( False )
+		self.gtkOutputWidget.set_cursor_visible( False )
+		self.gtkOutputWidget.connect( "button-press-event", self.__buttonPress )
 		## \todo set the colors appropriately
 		#self.gtkOutputWidget.modify_base( gtk.STATE_NORMAL, gtk.gdk.Color() )
 		self.gtkWidget.pack1( self.gtkOutputWidget, True )
@@ -26,6 +31,7 @@ class ScriptEditor :
 		self.gtkInputBuffer = gtk.TextBuffer()
 		self.gtkInputWidget = gtk.TextView( self.gtkInputBuffer )
 		self.gtkInputWidget.connect( "key-press-event", self.__keyPress )
+		self.gtkInputWidget.connect( "button-press-event", self.__buttonPress )
 		
 		self.gtkWidget.pack2( self.gtkInputWidget, True )
 			
@@ -72,4 +78,34 @@ class ScriptEditor :
 			
 		return False
 
+	def __buttonPress( self, widget, event ) :
+		
+		if event.button == 3 :
+		
+			haveSelection = False
+			if widget.get_buffer().get_selection_bounds() :
+				haveSelection = True
+			editable = widget.get_editable()
+			clipboard = gtk.Clipboard()
+						
+			m = IECore.MenuDefinition()
+			
+			if editable :
+				m.append( "/Cut", { "command" : IECore.curry( widget.get_buffer().cut_clipboard, clipboard, editable ), "active" : haveSelection } )	
+			m.append( "/Copy", { "command" : IECore.curry( widget.get_buffer().copy_clipboard, clipboard ), "active" : haveSelection } )	
+			if editable :
+				if clipboard.wait_for_text() :
+					pasteActive = True
+				else :
+					pasteActive = False
+				m.append( "/Paste", { "command" : IECore.curry( widget.get_buffer().paste_clipboard, clipboard, None, editable ), "active" : pasteActive } )	
+				m.append( "/Delete", { "command" : IECore.curry( widget.get_buffer().cut_clipboard, clipboard, editable ), "active" : haveSelection } )	
+			
+			m = Menu( m )
+			m.gtkWidget.popup( None, None, None, event.button, event.time )
+			
+			return True
+			
+		return False
+		
 Panel.registerContentCreator( "Script Editor", lambda : ScriptEditor( ScriptNode() ) )
