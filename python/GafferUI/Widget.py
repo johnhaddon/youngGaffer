@@ -1,3 +1,5 @@
+import weakref
+
 ## The Widget class provides a base class for all widgets in GafferUI.
 # GafferUI.Widget subclasses are implemented using gtk widgets, but the public API
 # exposed by the GafferUI classes never includes gtk functions or classes directly - this
@@ -12,7 +14,22 @@ class Widget() :
 	
 		self.__gtkWidget = None
 
-	## Returns the parent gtk.Widget instance used to implement
+	## Returns the GafferUI.Widget which is the parent for this
+	# Widget, or None if it has no parent.
+	def parent( self ) :
+	
+		w = self.getGTKWidget()
+		w = w.get_parent()
+		while w :
+		
+			if w in Widget.__gtkWidgetOwners :
+				return Widget.__gtkWidgetOwners[w]()
+				
+			w = w.get_parent()
+
+		return None
+		
+	## Returns the top level gtk.Widget instance used to implement
 	# the GafferUI.Widget functionality.
 	def getGTKWidget( self ) :
 	
@@ -21,4 +38,10 @@ class Widget() :
 	## Must be called by subclasses. Should be considered protected.	
 	def setGTKWidget( self, w ) :
 		
+		if self.__gtkWidget :
+			del Widget.__gtkWidgetOwners[w]
+			
 		self.__gtkWidget = w
+		Widget.__gtkWidgetOwners[w] = weakref.ref( self )
+		
+	__gtkWidgetOwners = {}
