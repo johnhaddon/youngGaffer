@@ -39,7 +39,7 @@ class Widget() :
 	def setGTKWidget( self, w ) :
 		
 		if self.__gtkWidget :
-			del Widget.__gtkWidgetOwners[w]
+			del Widget.__gtkWidgetOwners[self.__gtkWidget]
 			
 		self.__gtkWidget = w
 		Widget.__gtkWidgetOwners[w] = weakref.ref( self )
