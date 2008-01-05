@@ -9,6 +9,7 @@ from Widget import Widget
 ## \todo Ctrl drag moves divider and other close by dividers, or the opposite way round
 ## \todo Figure out the size allocation to work better - moving one slider doesn't move the others
 ## \todo Click and drag based interactive splitting rather than menu based?
+## \todo Serialisation using __repr__ (requires serialisation of children too)
 class Panel( Widget ) :
 
 	SplitDirection = IECore.Enum.create( "None", "Vertical", "Horizontal" )
