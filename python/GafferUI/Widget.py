@@ -43,5 +43,18 @@ class Widget() :
 			
 		self.__gtkWidget = w
 		Widget.__gtkWidgetOwners[w] = weakref.ref( self )
+	
+	## Returns the GafferUI.Widget that owns the specified gtk.Widget
+	@classmethod
+	def owner( cls, gtkWidget ) :
+	
+		while gtkWidget :
+	
+			if gtkWidget in cls.__gtkWidgetOwners :
+				return cls.__gtkWidgetOwners[gtkWidget]()
+		
+			gtkWidget = gtkWidget.get_parent()
+			
+		return None
 		
 	__gtkWidgetOwners = {}
