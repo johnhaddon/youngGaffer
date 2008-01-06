@@ -123,8 +123,15 @@ class Panel( Widget ) :
 
 	def join( self, childIndexToKeep=0 ) :
 	
-		raise NotImplementedError
+		assert( self.isSplit() )
 		
+		childToKeep = self.getChild( childIndexToKeep )
+		
+		self.__eventBox.remove( self.__paned )
+		self.__paned = None
+		
+		self.setChild( childToKeep )
+					
 	def menuDefinition( self ) :
 	
 		m = IECore.MenuDefinition()
@@ -134,6 +141,19 @@ class Panel( Widget ) :
 			m.append( "/" + l, { "command" : IECore.curry( self.__cc, c, 0 ) } )
 		
 		m.append( "/divider", { "divider" : True } )
+		
+		parent = self.parent()
+		if isinstance( parent, Panel ) :
+		
+			m.append( "remove", { "command" : IECore.curry( parent.join, 0 ) } )		
+					
+		else :
+				
+			if not self.isSplit() :
+			
+				m.append( "remove", { "command" : IECore.curry( self.setChild, None, 0 ), "active" : self.getChild()!=None } )		
+		
+		m.append( "/divider2", { "divider" : True } )
 	
 		m.append( "/splitLeft", { "command" : IECore.curry( self.split, self.SplitDirection.Vertical, 1 ) } )
 		m.append( "/splitRight", { "command" : IECore.curry( self.split, self.SplitDirection.Vertical, 0 ) } )

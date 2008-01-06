@@ -1,5 +1,7 @@
 from Widget import Widget
 from PlugValueWidget import PlugValueWidget
+import CamelCase
+
 import gtk
 
 ## \todo Make tooltips work
@@ -17,7 +19,7 @@ class PlugWidget( Widget ) :
 		self.__gtkHBox = gtk.HBox( spacing = 5 )
 		self.setGTKWidget( self.__gtkHBox )
 		
-		label = gtk.Label( label or plugValueWidget.getPlug().getName() )
+		label = gtk.Label( label or CamelCase.toSpaced( plugValueWidget.getPlug().getName() ) )
 		label.set_width_chars( 15 )
 		label.set_alignment( 1, 0.5 )
 
