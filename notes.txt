@@ -264,6 +264,16 @@ colorspace management
 	
 * implement as cube luts? then can work anywhere easily
 
+display drivers
+===============
+
+* define a DisplayDriver interface class which is prettier than that DSpy nonsense
+	* simple
+	* force floats for everything? or do ints need support?
+* implement DSpy * in terms of that
+* implement a SocketDisplayDriver
+	* can talk to any other DisplayDriver on the other side
+
 geometry support
 ================
 

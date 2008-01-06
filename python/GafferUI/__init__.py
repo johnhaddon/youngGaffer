@@ -29,6 +29,7 @@ from NumericPlugValueWidget import NumericPlugValueWidget
 from StringPlugValueWidget import StringPlugValueWidget
 from FileNamePlugValueWidget import FileNamePlugValueWidget
 from PlugWidget import PlugWidget
+from Window import Window
 from Panel import Panel
 from ScriptEditor import ScriptEditor
 
