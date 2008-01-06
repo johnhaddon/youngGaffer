@@ -14,6 +14,14 @@ class Widget() :
 	
 		self.__gtkWidget = None
 
+	def show( self ) :
+	
+		self.getGTKWidget().show()
+		
+	def hide( self ) :
+	
+		self.getGTKWidget().hide()
+
 	## Returns the GafferUI.Widget which is the parent for this
 	# Widget, or None if it has no parent.
 	def parent( self ) :
