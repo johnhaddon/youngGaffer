@@ -6,7 +6,7 @@ class ContainerWidget( Widget ) :
 
 	def __init__( self, gtkWidget ) :
 	
-		GafferUI.Widget.__init__( self, gtkWidget )
+		Widget.__init__( self, gtkWidget )
 	
 	## Must be implemented in subclasses to remove
 	# any references to the specified child. This allows
