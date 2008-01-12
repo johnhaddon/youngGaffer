@@ -30,6 +30,7 @@ from NumericPlugValueWidget import NumericPlugValueWidget
 from StringPlugValueWidget import StringPlugValueWidget
 from FileNamePlugValueWidget import FileNamePlugValueWidget
 from PlugWidget import PlugWidget
+from ContainerWidget import ContainerWidget
 from Window import Window
 from Panel import Panel
 from ScriptEditor import ScriptEditor

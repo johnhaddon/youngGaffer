@@ -36,13 +36,33 @@ class WindowTest( unittest.TestCase ) :
 		self.assert_( w.getChild() is t )
 		self.assert_( w.getChild().gtkWidget() is t.gtkWidget() )
 		self.assert_( t.parent() is w )
+		#w.show()
+		#gtk.main()		
 		
 		w.setChild( None )
 		self.assert_( w.getChild() is None )
 		self.assert_( t.parent() is None )
-		# w.show()
-		# gtk.main()		
+	
+	def testReparent( self ) :
+	
+		w1 = GafferUI.Window()
+		w2 = GafferUI.Window()
 		
+		t = TestWidget()
+		
+		w1.setChild( t )
+		self.assert_( t.parent() is w1 )
+		self.assert_( w1.getChild() is t )
+		self.assert_( w2.getChild() is None )
+		self.assert_( GafferUI.Widget.owner( t.gtkWidget() ) is t )
+		
+		w2.setChild( t )
+		self.assert_( t.parent() is w2 )
+		self.assert_( w1.getChild() is None )
+		self.assert_( w2.getChild() is t )
+		self.assert_( GafferUI.Widget.owner( t.gtkWidget() ) is t )
+		
+			
 if __name__ == "__main__":
 	unittest.main()
 	
