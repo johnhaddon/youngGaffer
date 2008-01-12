@@ -10,23 +10,29 @@ import weakref
 # \todo Consider how this relates to the other Widget class we'll be making for the GL editors
 class Widget() :
 
-	def __init__( self ) :
+	## Derived classes must create an appropriate gtk widget to be the top
+	# level for their implementation and pass it to the Widget.__init__ method.
+	# The widget can subsequently be accessed using gtkWidget() but it cannot be
+	# replaced with another.
+	def __init__( self, gtkWidget ) :
 	
-		self.__gtkWidget = None
+		self.__gtkWidget = gtkWidget
+		Widget.__gtkWidgetOwners[gtkWidget] = weakref.ref( self )
 
+	## \todo Should be setVisible() and getVisible() for consistency
 	def show( self ) :
 	
-		self.getGTKWidget().show()
+		self.gtkWidget().show()
 		
 	def hide( self ) :
 	
-		self.getGTKWidget().hide()
+		self.gtkWidget().hide()
 
 	## Returns the GafferUI.Widget which is the parent for this
 	# Widget, or None if it has no parent.
 	def parent( self ) :
 	
-		w = self.getGTKWidget()
+		w = self.gtkWidget()
 		w = w.get_parent()
 		while w :
 		
@@ -39,19 +45,10 @@ class Widget() :
 		
 	## Returns the top level gtk.Widget instance used to implement
 	# the GafferUI.Widget functionality.
-	def getGTKWidget( self ) :
+	def gtkWidget( self ) :
 	
 		return self.__gtkWidget
-	
-	## Must be called by subclasses. Should be considered protected.	
-	def setGTKWidget( self, w ) :
 		
-		if self.__gtkWidget :
-			del Widget.__gtkWidgetOwners[self.__gtkWidget]
-			
-		self.__gtkWidget = w
-		Widget.__gtkWidgetOwners[w] = weakref.ref( self )
-	
 	## Returns the GafferUI.Widget that owns the specified gtk.Widget
 	@classmethod
 	def owner( cls, gtkWidget ) :
@@ -65,4 +62,4 @@ class Widget() :
 			
 		return None
 		
-	__gtkWidgetOwners = {}
+	__gtkWidgetOwners = weakref.WeakKeyDictionary()
