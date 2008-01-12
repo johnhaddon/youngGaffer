@@ -10,6 +10,14 @@ from Widget import Widget
 ## \todo Figure out the size allocation to work better - moving one slider doesn't move the others
 ## \todo Click and drag based interactive splitting rather than menu based?
 ## \todo Serialisation using __repr__ (requires serialisation of children too)
+## 
+#!!!!!!!!!! THIS IS FUCKED!!!!!!!!!!!!
+#!!!!!!!!!! I THINK WE NEED TO CONSIDER OWNERSHIP OF THE GAFFERUI AND GTK WIDGETS MORE THOROUGHLY
+#!!!!!!!!!! AND MAYBE HAVE AN ADD() AND REMOVE() METHOD IN THE BASE CLASS?
+#!!!!!!!!!! TRY THIS :
+#!!!!!!!!!! MAKE SCRIPT EDITOR
+#!!!!!!!!!! SPLIT LEFT
+#!!!!!!!!!! IN LEFT PANEL CHOOSE REMOVE - THE SCRIPT EDITOR DISAPPEARS
 class Panel( Widget ) :
 
 	SplitDirection = IECore.Enum.create( "None", "Vertical", "Horizontal" )
@@ -18,97 +26,73 @@ class Panel( Widget ) :
 	
 		Widget.__init__( self )
 		
+		# an event box is always our top level gtk widget
 		self.__eventBox = gtk.EventBox()
 		self.__eventBox.connect( "button-press-event", self.__buttonPress )
-		self.setGTKWidget( self.__eventBox )
 		self.__eventBox.show()
+		self.setGTKWidget( self.__eventBox )
 		
+		# when we aren't split we might have a child
+		self.__child = None
+		
+		# when we are split we have a pane and two Panels
 		self.__paned = None
+		self.__subPanels = None
 		
-	def setChild( self, child, index=0 ) :
-				
-		if self.isSplit() :
+	def setChild( self, child ) :
 		
-			if index < 0 or index > 1 :
-				raise IndexError()
+		assert( not self.isSplit() )
 		
-			if index==0 :
-				pack = self.__paned.pack1
-				get = self.__paned.get_child1
-			else :
-				pack = self.__paned.pack2
-				get = self.__paned.get_child2
+		if self.__child :
+			self.__eventBox.remove( self.__child.getGTKWidget() )
 		
-			if child :
-				pack( child.getGTKWidget(), True, True )
-			else :
-				oldChild = get()
-				if oldChild :
-					self.__paned.remove( oldChild )
-						
-		else :
-		
-			if index != 0 :
-				raise IndexError()
+		self.__child = child				
+		if self.__child :
+			self.__eventBox.add( self.__child.getGTKWidget() )
+			self.__eventBox.show_all()
 			
-			oldChild = self.__eventBox.get_child()
-			if oldChild :
-				self.__eventBox.remove( oldChild )
-				
-			if child :
-				child.getGTKWidget().show_all()
-				self.__eventBox.add( child.getGTKWidget() )
-			
-		assert( child is self.getChild( index ) )
+		assert( child is self.getChild() )
 
-	def getChild( self, index=0 ) :
+	def getChild( self ) :
 	
-		if self.isSplit() :
+		assert( not self.isSplit() )
+	
+		if self.__child :
+			assert( Widget.owner( self.__eventBox.get_child() ) is self.__child )
 		
-			if index < 0 or index > 1 :
-				raise IndexError()
-			
-			if index==0 :
-				return Widget.owner( self.__paned.get_child1() )
-			else :
-				return Widget.owner( self.__paned.get_child2() )
-				
-		else :
-		
-			if index != 0 :
-				raise IndexError()
-				
-			return Widget.owner( self.__eventBox.get_child() )
-		
+		return self.__child
+	
 	def isSplit( self ) :
 	
 		return not self.__paned is None
 		
-	def split( self, direction, childIndex=0 ) :
+	def split( self, direction, childSubPanelIndex=0 ) :
 
-		if self.isSplit() :
-			raise Exception( "Cannot call split() when isSplit() is True." )
+		assert( not self.isSplit() )
 		
 		if not isinstance( direction, Panel.SplitDirection ) or not direction :
 			raise TypeError( "Split direction not valid" )
 			
-		child = self.getChild( 0 )
+		if childSubPanelIndex < 0 or childSubPanelIndex > 1 :
+			raise IndexError( "Panel index out of range." )
+			
+		child = self.getChild()
+		if child :
+			self.setChild( None )
 
 		if direction==self.SplitDirection.Vertical :
 			self.__paned = gtk.HPaned()
 		else :
 			self.__paned = gtk.VPaned()
+		
+		self.__subPanels = [ Panel(), Panel() ]
+		self.__paned.pack1( self.__subPanels[0].getGTKWidget() )
+		self.__paned.pack2( self.__subPanels[1].getGTKWidget() )
 			
 		if child :
-			self.__eventBox.remove( child.getGTKWidget() )
-		
-		self.setChild( Panel(), 0 )
-		self.setChild( Panel(), 1 )
-		
-		if child :
-			self.getChild( childIndex ).setChild( child )
-				
-		self.__paned.show_all()
+			self.__subPanels[childSubPanelIndex].setChild( child )
+							
+		self.__paned.show()
 		self.__eventBox.add( self.__paned )
 	
 	def splitDirection( self ) :
@@ -121,60 +105,91 @@ class Panel( Widget ) :
 			
 		return self.SplitDirection.Horizontal
 
-	def join( self, childIndexToKeep=0 ) :
+	def subPanel( self, index ) :
 	
 		assert( self.isSplit() )
 		
-		childToKeep = self.getChild( childIndexToKeep )
+		if index < 0 or index > 1 :
+			raise IndexError( "Panel index out of range." )
+		
+		return self.__subPanels[index]
+
+	def join( self, childToKeepPanelIndex=0 ) :
+	
+		assert( self.isSplit() )
+		
+		childToKeep = self.__subPanels[childToKeepPanelIndex].getChild()
+		print "KEEPING", childToKeep
 		
 		self.__eventBox.remove( self.__paned )
 		self.__paned = None
+		self.__subPanels[0].setChild( None )
+		self.__subPanels[1].setChild( None )
+		self.__subPanels = None
 		
 		self.setChild( childToKeep )
+		
+		print "JOINED", self.getChild(), self.getChild().getGTKWidget(), self.__eventBox.get_child()
+		self.getChild().getGTKWidget().show_all()
 					
 	def menuDefinition( self ) :
 	
-		m = IECore.MenuDefinition()
-						
-		for l, c in self.__contentCreators.items() :
-		
-			m.append( "/" + l, { "command" : IECore.curry( self.__cc, c, 0 ) } )
-		
-		m.append( "/divider", { "divider" : True } )
-		
-		parent = self.parent()
-		if isinstance( parent, Panel ) :
-		
-			m.append( "remove", { "command" : IECore.curry( parent.join, 0 ) } )		
-					
-		else :
-				
-			if not self.isSplit() :
+		## we can only really do useful things to leaf panels
+		if self.isSplit() :
+			return None
 			
-				m.append( "remove", { "command" : IECore.curry( self.setChild, None, 0 ), "active" : self.getChild()!=None } )		
+		m = IECore.MenuDefinition()
+									
+		for l, c in self.__contentCreators.items() :
+			m.append( "/" + l, { "command" : IECore.curry( self.__setChildCallback, c ) } )
+
+		m.append( "/divider", { "divider" : True } )
+
+		m.append( "remove", { "command" : self.__removeCallback } )		
 		
 		m.append( "/divider2", { "divider" : True } )
-	
+
 		m.append( "/splitLeft", { "command" : IECore.curry( self.split, self.SplitDirection.Vertical, 1 ) } )
 		m.append( "/splitRight", { "command" : IECore.curry( self.split, self.SplitDirection.Vertical, 0 ) } )
 		m.append( "/splitBottom", { "command" : IECore.curry( self.split, self.SplitDirection.Horizontal, 0 ) } )
 		m.append( "/splitTop", { "command" : IECore.curry( self.split, self.SplitDirection.Horizontal, 1 ) } )
-	
+
 		return m
 	
-	def __cc( self, childCreator, childIndex ) :
+	def __setChildCallback( self, childCreator ) :
 	
-		self.setChild( childCreator(), childIndex )
+		import weakref
+		def cb( a ) :
+			print "DYING!", a
+			
+		child = childCreator()
+		self.__w = weakref.ref( child, cb )
+		
+		self.setChild( child )
+		
+	def __removeCallback( self ) :
+	
+		parent = self.parent()
+		if isinstance( parent, Panel ) :
+			print "PARENT IS PANEL"
+			if self is parent.subPanel( 0 ) :
+				print "CALLING JOIN 1"
+				parent.join( 1 )
+			else :
+				print "CALLING JOIN 0"
+				parent.join( 0 )
+		else :
+			self.setChild( None )
 	
 	def __buttonPress( self, widget, event ) :
 	
 		if event.button==3 :
-		
 			# right click
-			m = Menu( self.menuDefinition() )
-			m.popup()
-			
-			return True
+			m = self.menuDefinition()
+			if m :
+				m = Menu( m )
+				m.popup()
+				return True
 		
 		return False
 
