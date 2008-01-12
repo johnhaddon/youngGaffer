@@ -1,11 +1,11 @@
-from Widget import Widget
+from ContainerWidget import ContainerWidget
 import gtk
 
-class Window( Widget ) :
+class Window( ContainerWidget ) :
 
 	def __init__( self, title="GafferUI.Window" ) :
 	
-		Widget.__init__( self, gtk.Window( gtk.WINDOW_TOPLEVEL ) )
+		ContainerWidget.__init__( self, gtk.Window( gtk.WINDOW_TOPLEVEL ) )
 		
 		self.__gtkWindow = self.gtkWidget()
 		self.__child = None
