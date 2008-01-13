@@ -14,11 +14,12 @@ class PlugWidget( Widget ) :
 
 		self.__gtkHBox = self.gtkWidget()
 	
-		plugValueWidget = plugOrPlugValueWidget
-		if not isinstance( plugValueWidget, PlugValueWidget ) :
-			plugValueWidget = PlugValueWidget.create( plugValueWidget )
-		
-		label = gtk.Label( label or CamelCase.toSpaced( plugValueWidget.getPlug().getName() ) )
+		if isinstance( plugOrPlugValueWidget, PlugValueWidget ) :
+			self.__valueWidget = plugOrPlugValueWidget
+		else :
+			self.__valueWidget = PlugValueWidget.create( plugOrPlugValueWidget )
+
+		label = gtk.Label( label or CamelCase.toSpaced( self.__valueWidget.getPlug().getName() ) )
 		label.set_width_chars( 15 )
 		label.set_alignment( 1, 0.5 )
 
@@ -26,7 +27,7 @@ class PlugWidget( Widget ) :
 		labelEventBox.add( label )
 		
 		self.__gtkHBox.pack_start( labelEventBox, False )			
-		self.__gtkHBox.pack_start( plugValueWidget.gtkWidget() )
+		self.__gtkHBox.pack_start( self.__valueWidget.gtkWidget() )
 
 		if description :
 			self.__tooltips = gtk.Tooltips()
