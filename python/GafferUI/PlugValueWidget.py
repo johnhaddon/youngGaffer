@@ -2,9 +2,9 @@ from Widget import Widget
 
 class PlugValueWidget( Widget ) :
 
-	def __init__( self, plug ) :
+	def __init__( self, gtkWidget, plug ) :
 	
-		Widget.__init__( self )
+		Widget.__init__( self, gtkWidget )
 	
 		self.setPlug( plug )
 		

@@ -1,3 +1,4 @@
+from PlugValueWidget import PlugValueWidget
 from StringPlugValueWidget import StringPlugValueWidget
 from Menu import Menu
 import gtk
@@ -11,36 +12,45 @@ import IECore
 #
 # Tab does shell style auto completion.
 # Control left click brings up a menu for all options at that path level.
+# Return commits any changes onto the plug.
+# Escape abandons any uncommitted changes.
 #
-## \todo I'm not entirely sure this should derive from
-# StringPlugValueWidget and not just PlugValueWidget
-## \todo And does it really have it's own button? - if it does then at least make it do something
-## \todo Filter on extension, file or dir etc
-class FileNamePlugValueWidget( StringPlugValueWidget ) :
+## \todo Make the button do somethin
+## \todo Filter on extension, sequence, file or dir etc
+class FileNamePlugValueWidget( PlugValueWidget ) :
 
 	def __init__( self, plug ) :
 	
-		StringPlugValueWidget.__init__( self, plug )
+		PlugValueWidget.__init__( self, gtk.HBox(), plug )
 
-		self.__row = gtk.HBox()
+		self.__row = self.gtkWidget()
 		self.__button = gtk.Button()
+		self.__stringValueWidget = StringPlugValueWidget( plug )
 
-		self.__row.pack_start( self.gtkEntry, False )
+		self.__row.pack_start( self.__stringValueWidget.gtkWidget(), False )
 		self.__row.pack_start( self.__button, False )
 		
 		self.__row.connect( "key-press-event", self.__keyPress )
-		self.__row.connect( "button-press-event", self.__buttonPress )
+		self.__entry().connect( "button-press-event", self.__buttonPress )
+	
+	def updateFromPlug( self ) :
+	
+		# We don't need to do anything, as the StringPlugValueWidget
+		# we hold will do the work
+		pass
+	
+	def __entry( self ) :
+	
+		return self.__stringValueWidget.gtkWidget()
 		
-		self.setGTKWidget( self.__row )
-
 	def __keyPress( self, widget, event ) :
 	
 		# do tab completion
 		if event.keyval==65289 :
 
-			position = self.gtkEntry.get_position()
+			position = self.__entry().get_position()
 			
-			text = self.gtkEntry.get_text()
+			text = self.__entry().get_text()
 			completions = glob.glob( text[:position]+"*" )
 			completions = [os.path.basename( x ) for x in completions ]
 			completion = os.path.commonprefix( completions )		
@@ -63,30 +73,30 @@ class FileNamePlugValueWidget( StringPlugValueWidget ) :
 						newText += "/"
 					newText += suffix
 				
-				self.gtkEntry.set_text( newText )
-				self.gtkEntry.set_position( newPosition )
+				self.__entry().set_text( newText )
+				self.__entry().set_position( newPosition )
 
 			return True	
 		
 		return False
 		
 	def __buttonPress( self, widget, event ) :
-		
+				
 		if event.button==1 and event.state & gtk.gdk.CONTROL_MASK :
 		
 			# ctrl left click
 			
 			## \todo Put this code somewhere so it can be shared with
 			# the NumericPlugValueWidget code
-			layout = self.gtkEntry.get_layout()
-			offset = self.gtkEntry.get_layout_offsets()
+			layout = self.__entry().get_layout()
+			offset = self.__entry().get_layout_offsets()
 			cursor = layout.xy_to_index(
 				int( (event.x - offset[0]) * pango.SCALE ),
 				int( (event.y - offset[1]) * pango.SCALE )
 			)
 			
 			position = cursor[0] + 1
-			text = self.gtkEntry.get_text()
+			text = self.__entry().get_text()
 			dir = os.path.dirname( text[:position] )
 			if dir=="" :
 				dir = "."
@@ -105,14 +115,13 @@ class FileNamePlugValueWidget( StringPlugValueWidget ) :
 					)
 					
 				m = Menu( md )
-				## \todo Add a method to the Menu class to do this for us
-				m.gtkWidget.popup( None, None, None, event.button, event.time )
+				m.popup()
 			
 		return False
 		
 	def __replacePathEntry( self, position, newEntry ) :
 	
-		text = self.gtkEntry.get_text()
+		text = self.__entry().get_text()
 		prefix = os.path.dirname( text[:position] )
 		suffixStartIndex = text.find( "/", position )
 		if suffixStartIndex!=-1 :
@@ -124,6 +133,6 @@ class FileNamePlugValueWidget( StringPlugValueWidget ) :
 		while not os.path.exists( path ) :
 			path = os.path.dirname( path )
 			
-		self.gtkEntry.set_text( path )
-		self.gtkEntry.set_position( position )
+		self.__entry().set_text( path )
+		self.__entry().set_position( position )
 		

@@ -8,15 +8,13 @@ class Menu( Widget ) :
 
 	def __init__( self, definition ) :
 	
-		Widget.__init__( self )
+		Widget.__init__( self, gtk.Menu() )
 	
 		self.definition = definition
-		self.__menu = gtk.Menu()
+		self.__menu = self.gtkWidget()
 		
 		self.__menu.connect( "show", self.__show, self.definition )
 		
-		self.setGTKWidget( self.__menu )
-
 	def popup( self ) :
 	
 		event = gtk.get_current_event()

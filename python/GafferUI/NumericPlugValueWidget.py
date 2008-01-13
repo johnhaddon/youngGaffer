@@ -22,13 +22,12 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 
 	def __init__( self, plug ) :
 	
-		PlugValueWidget.__init__( self, plug )
+		PlugValueWidget.__init__( self, gtk.Entry(), plug )
 
-		self.gtkEntry = gtk.Entry()
+		self.gtkEntry = self.gtkWidget()
 		self.gtkEntry.connect( "key-press-event", self.__keyPress )
 		self.gtkEntry.connect( "button-press-event", self.__buttonPress )
 		self.gtkEntry.connect( "focus-out-event", self.__focusOut )
-		self.setGTKWidget( self.gtkEntry )
 		
 		## \todo Consider the style of these widgets
 		# self.gtkEntry.set_has_frame( False )

@@ -6,16 +6,17 @@ import gtk
 #
 # Return commits any changes onto the plug.
 # Escape abandons any uncommitted changes.
+#
+# \todo Right click menu for cut and paste
 class StringPlugValueWidget( PlugValueWidget ) :
 
 	def __init__( self, plug ) :
 	
-		PlugValueWidget.__init__( self, plug )
+		PlugValueWidget.__init__( self, gtk.Entry(), plug )
 
-		self.gtkEntry = gtk.Entry()
+		self.gtkEntry = self.gtkWidget()
 		self.gtkEntry.connect( "key-press-event", self.__keyPress )
 		self.gtkEntry.connect( "focus-out-event", self.__focusOut )
-		self.setGTKWidget( self.gtkEntry )
 
 		self.updateFromPlug()
 

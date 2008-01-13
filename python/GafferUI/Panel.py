@@ -2,7 +2,7 @@ import IECore
 import gtk
 
 from Menu import Menu
-from Widget import Widget
+from ContainerWidget import ContainerWidget
 
 ## \todo Add joining to the menus and make sure it works
 ## \todo Implement an option to float in a new window, and an option to anchor back
@@ -18,19 +18,18 @@ from Widget import Widget
 #!!!!!!!!!! MAKE SCRIPT EDITOR
 #!!!!!!!!!! SPLIT LEFT
 #!!!!!!!!!! IN LEFT PANEL CHOOSE REMOVE - THE SCRIPT EDITOR DISAPPEARS
-class Panel( Widget ) :
+class Panel( ContainerWidget ) :
 
 	SplitDirection = IECore.Enum.create( "None", "Vertical", "Horizontal" )
 
 	def __init__( self ) :
 	
-		Widget.__init__( self )
+		ContainerWidget.__init__( self, gtk.EventBox() )
 		
 		# an event box is always our top level gtk widget
-		self.__eventBox = gtk.EventBox()
+		self.__eventBox = self.gtkWidget()
 		self.__eventBox.connect( "button-press-event", self.__buttonPress )
 		self.__eventBox.show()
-		self.setGTKWidget( self.__eventBox )
 		
 		# when we aren't split we might have a child
 		self.__child = None
@@ -44,11 +43,11 @@ class Panel( Widget ) :
 		assert( not self.isSplit() )
 		
 		if self.__child :
-			self.__eventBox.remove( self.__child.getGTKWidget() )
+			self.__eventBox.remove( self.__child.gtkWidget() )
 		
 		self.__child = child				
 		if self.__child :
-			self.__eventBox.add( self.__child.getGTKWidget() )
+			self.__eventBox.add( self.__child.gtkWidget() )
 			self.__eventBox.show_all()
 			
 		assert( child is self.getChild() )
@@ -86,8 +85,8 @@ class Panel( Widget ) :
 			self.__paned = gtk.VPaned()
 		
 		self.__subPanels = [ Panel(), Panel() ]
-		self.__paned.pack1( self.__subPanels[0].getGTKWidget() )
-		self.__paned.pack2( self.__subPanels[1].getGTKWidget() )
+		self.__paned.pack1( self.__subPanels[0].gtkWidget() )
+		self.__paned.pack2( self.__subPanels[1].gtkWidget() )
 			
 		if child :
 			self.__subPanels[childSubPanelIndex].setChild( child )
@@ -129,8 +128,8 @@ class Panel( Widget ) :
 		
 		self.setChild( childToKeep )
 		
-		print "JOINED", self.getChild(), self.getChild().getGTKWidget(), self.__eventBox.get_child()
-		self.getChild().getGTKWidget().show_all()
+		print "JOINED", self.getChild(), self.getChild().gtkWidget(), self.__eventBox.get_child()
+		self.getChild().gtkWidget().show_all()
 					
 	def menuDefinition( self ) :
 	
