@@ -15,15 +15,14 @@ class ScriptEditor( Widget ) :
 
 	def __init__( self, scriptNode ) :
 	
-		Widget.__init__( self )
+		Widget.__init__( self, gtk.VPaned() )
 	
+		self.__paned = self.gtkWidget()
+
 		self.__scriptNode = scriptNode
 		self.__execConnection = self.__scriptNode.scriptExecutedSignal().connect( self.__execSlot )
 		self.__evalConnection = self.__scriptNode.scriptEvaluatedSignal().connect( self.__evalSlot )
-	
-		self.__paned = gtk.VPaned()
-		self.setGTKWidget( self.__paned )
-		
+			
 		self.gtkOutputBuffer = gtk.TextBuffer()
 		self.gtkOutputWidget = gtk.TextView( self.gtkOutputBuffer )
 		self.gtkOutputWidget.set_editable( False )

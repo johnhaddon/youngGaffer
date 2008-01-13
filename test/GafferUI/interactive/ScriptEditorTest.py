@@ -8,7 +8,7 @@ import gtk
 
 window = GafferUI.Window( title="Script editor test" )
 
-window.getGTKWidget().connect( "delete_event", gtk.main_quit )
+window.gtkWidget().connect( "delete_event", gtk.main_quit )
 
 s = GafferUI.ScriptEditor( Gaffer.ScriptNode() )
 window.setChild( s )
