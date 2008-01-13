@@ -3,21 +3,13 @@ import gtk
 
 from Menu import Menu
 from ContainerWidget import ContainerWidget
+from Widget import Widget
 
-## \todo Add joining to the menus and make sure it works
 ## \todo Implement an option to float in a new window, and an option to anchor back
 ## \todo Ctrl drag moves divider and other close by dividers, or the opposite way round
 ## \todo Figure out the size allocation to work better - moving one slider doesn't move the others
 ## \todo Click and drag based interactive splitting rather than menu based?
 ## \todo Serialisation using __repr__ (requires serialisation of children too)
-## 
-#!!!!!!!!!! THIS IS FUCKED!!!!!!!!!!!!
-#!!!!!!!!!! I THINK WE NEED TO CONSIDER OWNERSHIP OF THE GAFFERUI AND GTK WIDGETS MORE THOROUGHLY
-#!!!!!!!!!! AND MAYBE HAVE AN ADD() AND REMOVE() METHOD IN THE BASE CLASS?
-#!!!!!!!!!! TRY THIS :
-#!!!!!!!!!! MAKE SCRIPT EDITOR
-#!!!!!!!!!! SPLIT LEFT
-#!!!!!!!!!! IN LEFT PANEL CHOOSE REMOVE - THE SCRIPT EDITOR DISAPPEARS
 class Panel( ContainerWidget ) :
 
 	SplitDirection = IECore.Enum.create( "None", "Vertical", "Horizontal" )
@@ -42,13 +34,18 @@ class Panel( ContainerWidget ) :
 		
 		assert( not self.isSplit() )
 		
-		if self.__child :
-			self.__eventBox.remove( self.__child.gtkWidget() )
+		oldChild = self.getChild()
+		if oldChild :
+			self.removeChild( oldChild )
 		
-		self.__child = child				
-		if self.__child :
+		if child :
+		
+			oldParent = child.parent()
+			if oldParent :
+				oldParent.removeChild( child )
+				
+			self.__child = child				
 			self.__eventBox.add( self.__child.gtkWidget() )
-			self.__eventBox.show_all()
 			
 		assert( child is self.getChild() )
 
@@ -60,7 +57,16 @@ class Panel( ContainerWidget ) :
 			assert( Widget.owner( self.__eventBox.get_child() ) is self.__child )
 		
 		return self.__child
+		
+	def removeChild( self, child ) :
 	
+		assert( not self.isSplit() )
+		
+		assert( child is self.__child )
+		
+		self.__eventBox.remove( self.__child.gtkWidget() )
+		self.__child = None
+
 	def isSplit( self ) :
 	
 		return not self.__paned is None
@@ -117,20 +123,15 @@ class Panel( ContainerWidget ) :
 	
 		assert( self.isSplit() )
 		
-		childToKeep = self.__subPanels[childToKeepPanelIndex].getChild()
-		print "KEEPING", childToKeep
-		
-		self.__eventBox.remove( self.__paned )
-		self.__paned = None
+		childToKeep = self.subPanel( childToKeepPanelIndex ).getChild()
+		self.__eventBox.remove( self.__paned )		
 		self.__subPanels[0].setChild( None )
 		self.__subPanels[1].setChild( None )
 		self.__subPanels = None
+		self.__paned = None
 		
 		self.setChild( childToKeep )
-		
-		print "JOINED", self.getChild(), self.getChild().gtkWidget(), self.__eventBox.get_child()
-		self.getChild().gtkWidget().show_all()
-					
+							
 	def menuDefinition( self ) :
 	
 		## we can only really do useful things to leaf panels
@@ -157,25 +158,16 @@ class Panel( ContainerWidget ) :
 	
 	def __setChildCallback( self, childCreator ) :
 	
-		import weakref
-		def cb( a ) :
-			print "DYING!", a
-			
 		child = childCreator()
-		self.__w = weakref.ref( child, cb )
-		
 		self.setChild( child )
 		
 	def __removeCallback( self ) :
 	
 		parent = self.parent()
 		if isinstance( parent, Panel ) :
-			print "PARENT IS PANEL"
 			if self is parent.subPanel( 0 ) :
-				print "CALLING JOIN 1"
 				parent.join( 1 )
 			else :
-				print "CALLING JOIN 0"
 				parent.join( 0 )
 		else :
 			self.setChild( None )
