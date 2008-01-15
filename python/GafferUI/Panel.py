@@ -119,18 +119,25 @@ class Panel( ContainerWidget ) :
 		
 		return self.__subPanels[index]
 
+	## Note that isSplit() may still be True following this call. This
+	# occurs in the case where the sub panel being kept is itself split.
 	def join( self, childToKeepPanelIndex=0 ) :
 	
 		assert( self.isSplit() )
+
+		subPanelToKeep = self.subPanel( childToKeepPanelIndex )
+
+		c = subPanelToKeep.__eventBox.get_child()
+		if c :
+			subPanelToKeep.__eventBox.remove( c )
+							
+		self.__eventBox.remove( self.__paned )
+		self.__subPanels = subPanelToKeep.__subPanels
+		self.__paned = subPanelToKeep.__paned
+		self.__child = subPanelToKeep.__child
 		
-		childToKeep = self.subPanel( childToKeepPanelIndex ).getChild()
-		self.__eventBox.remove( self.__paned )		
-		self.__subPanels[0].setChild( None )
-		self.__subPanels[1].setChild( None )
-		self.__subPanels = None
-		self.__paned = None
-		
-		self.setChild( childToKeep )
+		if c :
+			self.__eventBox.add( c )
 							
 	def menuDefinition( self ) :
 	
@@ -165,10 +172,8 @@ class Panel( ContainerWidget ) :
 	
 		parent = self.parent()
 		if isinstance( parent, Panel ) :
-			if self is parent.subPanel( 0 ) :
-				parent.join( 1 )
-			else :
-				parent.join( 0 )
+			toKeep = 1 if self is parent.subPanel( 0 ) else 0
+			parent.join( toKeep )
 		else :
 			self.setChild( None )
 	
