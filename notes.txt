@@ -290,6 +290,12 @@ geometry support
 * hierarchical subdees
 	* hold off for the moment
 
+64 bit
+======
+
+* should start testing a 64 bit version as soon as possible
+	* buy a cheap ass box and shove centos on it?
+
 basic timeline
 ==============
 
