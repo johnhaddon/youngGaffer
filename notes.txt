@@ -227,8 +227,8 @@ final render layer
 
 norman lighting layer?
 
-lights
-======
+lights + shading
+================
 
 * basic point, distant, spot and environment bases
 * pluggable light components to modify those lights
@@ -241,6 +241,11 @@ lights
 * reflection cards
 * a light component may be connected to any number of lights
 * how do we do map generation??
+* what units do we use for light intensity, diffuse reflectance etc?
+	* exposure based?
+	* physically accurate?
+	* usual nonsense?
+	* force reflectances below a sum of 1?
 
 features
 ========
