@@ -20,6 +20,8 @@ class Widget() :
 		Widget.__gtkWidgetOwners[gtkWidget] = weakref.ref( self )
 
 	## \todo Should be setVisible() and getVisible() for consistency
+	# \todo Define whether a widget is shown or not by default and make sure
+	# they all behave that way - right now i'm preferring shown by default.
 	def show( self ) :
 	
 		self.gtkWidget().show()
