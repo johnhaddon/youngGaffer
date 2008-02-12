@@ -32,3 +32,5 @@ class PlugWidget( Widget ) :
 		if description :
 			self.__tooltips = gtk.Tooltips()
 			self.__tooltips.set_tip( labelEventBox, "hi there" )
+
+		self.__gtkHBox.show_all()
