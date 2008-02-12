@@ -257,6 +257,13 @@ save all shader parameters with each rendered image
 	
 parameter value overlays on saved images?
 
+obvious things not to forget
+============================
+
+* sideways render
+* overscan render (using displaywindow/datawindow difference as an option)
+* playblasting
+
 colorspace management
 =====================
 
@@ -278,6 +285,7 @@ display drivers
 * implement DSpy * in terms of that
 * implement a SocketDisplayDriver
 	* can talk to any other DisplayDriver on the other side
+* implement an exr driver with sideways rerotate and checkpointing
 
 geometry support
 ================
