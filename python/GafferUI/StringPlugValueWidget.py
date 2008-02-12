@@ -18,6 +18,8 @@ class StringPlugValueWidget( PlugValueWidget ) :
 		self.gtkEntry.connect( "key-press-event", self.__keyPress )
 		self.gtkEntry.connect( "focus-out-event", self.__focusOut )
 
+		self.gtkEntry.show()
+
 		self.updateFromPlug()
 
 	def updateFromPlug( self ) :

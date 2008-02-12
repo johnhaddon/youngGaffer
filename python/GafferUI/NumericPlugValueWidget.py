@@ -29,6 +29,8 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 		self.gtkEntry.connect( "button-press-event", self.__buttonPress )
 		self.gtkEntry.connect( "focus-out-event", self.__focusOut )
 		
+		self.gtkEntry.show()
+		
 		## \todo Consider the style of these widgets
 		# self.gtkEntry.set_has_frame( False )
 		self.updateFromPlug()

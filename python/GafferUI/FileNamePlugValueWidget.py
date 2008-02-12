@@ -32,6 +32,8 @@ class FileNamePlugValueWidget( PlugValueWidget ) :
 		
 		self.__row.connect( "key-press-event", self.__keyPress )
 		self.__entry().connect( "button-press-event", self.__buttonPress )
+		
+		self.__row.show_all()
 	
 	def updateFromPlug( self ) :
 	
