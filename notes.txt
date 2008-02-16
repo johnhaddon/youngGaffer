@@ -15,60 +15,27 @@ undo/redo
 			- script editor?
 				- trickier
 
-* Command class or built into C++ API?
+* Undoable class
 
-	* 	Command (Action? Doable?) class
-		- then non undoable things don't become undo actions
-			- like the addition of static plugs to a node
-		- bindings use the command class to do their work
-		
-	* 	If we want everything to be echoable through the script editor
-		then commands must be implemented via ScriptNode::execute?
-		
-		*	Or just echo the script equivalent while doing it via C++?
-		
-	*	If we want scripting to be undoable then the bindings must use
-		Commands
-		
-		* This makes an infinite loop if Commands are implemented via
-		  the ScriptNode::execute
-		  
-		  	* Unless either :
-			
-				* ScriptNode::execute takes a "bool undoable" argument
-					
-					-	and this is somehow reflected in the bindings
-					
-				or :
-				
-				* Command class just echoes the script equivalent of what
-				  it does and actually uses C++ for the work
-				  
-				  	-	but that means a doubling of implementation work,
-						and the potential for bugs
+	* do()
+	* undo()
+	* script() ??
+	
+	* CompoundUndoable stores many actions as a single one
+	
+* UndoList 
 
-* would be beautiful to see every action taken using the ui go through the script editor.
-	* regardless of how we implement undo
-* this single point of execution could then implement the undo layer too. is probably pretty doable to make an execution context
-(a locals dictionary) that gives exactly the same api as the bindings but implements everything with an undo stack
-behind the scenes. this would be awesome - scripts could run with or without undo just by giving them different
-contexts.
-	* or we implement that in the standard bindings
-		* but then you can't write c++ stuff which is undoable
+* ScriptNode holds an UndoList
+
+	* API commands which must be undoable find the appropriate
+	  ScriptNode and add an Undoable object to the CompoundUndable at
+	  the top of the UndoList
+	  
+	* UI actions push a new CompoundUndoable so that whatever actions they
+	  take are batched together as one.
 * interactive dragging (slider/manipulators) probably doesn't enter an undoable action for every substep, but just
 an undoable event on release?
-* we need to batch a series of events into a single undo action (e.g. the results of a script execution)
-* either that or we implement undo as a core part of the api anyway  - setValue, setInput, rename, addChild etc
-all take some undoContext that they place undo/redo commands into
-	* they probably find the undo context by finding their parent script node
-		* they shouldn't be passed the undo context, as different actions can't
-		  be put into different undo contexts - it would cause havoc
-		* which is where the undo context is?
-			* or is there one undo context for everything?
-				* how do you reparent nodes into one script from another?
-					* can't undo in one script but not the other
-						* maybe can't move node from one script to another?
-	* is undo way easier to implement in python though?
+
 * is it possible to have a singleton undo list, and undo just bits of it nonlinearly?
 	* 0 1 2 3 4 5	* undo 1 undoes 54321 and redoes 2345
 					* as long as each action has refcounted pointers to the things it operates on this should work?
