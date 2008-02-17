@@ -6,22 +6,21 @@ import gtk
 
 ## \todo Rejig this to remove all gtk specific code, and use only GafferUI classes instead
 
-window = gtk.Window( gtk.WINDOW_TOPLEVEL )
-window.set_size_request( 200, 300 )
-window.set_title( "Plug widget test" )
-window.connect( "delete_event", gtk.main_quit )
-column = gtk.VBox()
-window.add( column )
+window = GafferUI.Window( "Plug widget test")
+column = GafferUI.ListContainer( GafferUI.ListContainer.Orientation.Vertical )
+column.show()
+window.setChild( column )
 
 node = Gaffer.Node()
 node.floatPlug = Gaffer.FloatPlug()
 node.intPlug = Gaffer.IntPlug()
 node.stringPlug = Gaffer.StringPlug()
 
-column.pack_start( GafferUI.PlugWidget( node.floatPlug, "Float", "I am a description" ).gtkWidget(), False )
-column.pack_start( GafferUI.PlugWidget( node.intPlug, "Int", "I am a description too" ).gtkWidget(), False )
-column.pack_start( GafferUI.PlugWidget( node.stringPlug ).gtkWidget(), False )
-column.pack_start( GafferUI.PlugWidget( GafferUI.FileNamePlugValueWidget( node.stringPlug ) ).gtkWidget(), False )
+column.append( GafferUI.PlugWidget( node.floatPlug, "Float", "I am a description" ) )
+column.append( GafferUI.PlugWidget( node.intPlug, "Int", "I am a description too" ) )
+column.append( GafferUI.PlugWidget( node.stringPlug ) )
+column.append( GafferUI.PlugWidget( GafferUI.FileNamePlugValueWidget( node.stringPlug ) ) )
 
-window.show_all()
+window.show()
+
 gtk.main()

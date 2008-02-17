@@ -34,12 +34,14 @@ from ContainerWidget import ContainerWidget
 from Window import Window
 from Panel import Panel
 from ScriptEditor import ScriptEditor
+from ListContainer import ListContainer
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?
 settings = gtk.settings_get_default()
 
 # stop gtk menus feeling sluggish
+## \todo Should we not be doing this in the Menu code somewhere rather than here?
 m = gtk.Menu() # have to make a menu for the property to be created
 del m
 settings.set_property( "gtk-menu-popup-delay", 0 )
