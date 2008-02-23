@@ -310,3 +310,8 @@ hardware shaders
 light linking
 trace sets
 pointcloud generation (within graph)
+
+nagging problems
+================
+
+* incompatibilities between tiff library in /opt/local/lib and the one in the ImageIO framework
