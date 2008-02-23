@@ -276,6 +276,14 @@ geometry support
 * should start testing a 64 bit version as soon as possible
 	* buy a cheap ass box and shove centos on it?
 
+packaging
+=========
+
+* need build script to package up a version for release/distribution
+* include python and all modules within the package
+* precompile .py files into .pyc
+* keep mac package in the unix style for the moment
+
 basic timeline
 ==============
 
