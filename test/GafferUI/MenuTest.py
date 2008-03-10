@@ -1,3 +1,5 @@
+import IECore
+import Gaffer
 import GafferUI
 import IECore
 import unittest

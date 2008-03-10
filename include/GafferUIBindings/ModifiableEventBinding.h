@@ -1,0 +1,11 @@
+#ifndef GAFFERUIBINDINGS_MODIFIABLEEVENTBINDING_H
+#define GAFFERUIBINDINGS_MODIFIABLEEVENTBINDING_H
+
+namespace GafferUIBindings
+{
+
+void bindModifiableEvent();
+
+} // namespace GafferUIBindings
+
+#endif // GAFFERUIBINDINGS_MODIFIABLEEVENTBINDING_H

@@ -12,6 +12,8 @@ namespace Gaffer
 
 IE_CORE_FORWARDDECLARE( GraphComponent )
 
+/// \todo Might this be better named Hierarchical or something now that it forms
+/// the base for the Gadget tree too?
 class GraphComponent : public IECore::RunTimeTyped, public boost::signals::trackable
 {
 

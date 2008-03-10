@@ -1,0 +1,11 @@
+#ifndef GAFFERUIBINDINGS_BUTTONEVENTBINDING_H
+#define GAFFERUIBINDINGS_BUTTONEVENTBINDING_H
+
+namespace GafferUIBindings
+{
+
+void bindButtonEvent();
+
+} // namespace GafferUIBindings
+
+#endif // GAFFERUIBINDINGS_BUTTONEVENTBINDING_H

@@ -28,6 +28,14 @@ env = Environment(
 
 gafferLibrary = env.SharedLibrary( "lib/Gaffer", glob.glob( "src/Gaffer/*.cpp" ) )
 
+uiEnv = env.Copy()
+uiEnv.Append(
+
+	LIBS = [ gafferLibrary ],
+
+)
+gafferUILibrary = uiEnv.SharedLibrary( "lib/GafferUI", glob.glob( "src/GafferUI/*.cpp" ) )
+
 pythonEnv = env.Copy()
 
 pythonEnv.Append(
@@ -46,10 +54,33 @@ pythonEnv.Append(
 	SHLINKFLAGS = os.popen( "python-config --ldflags" ).read().split(),
 )
 
-pythonEnv["SHLIBPREFIX"] = ""
-pythonEnv["SHLIBSUFFIX"] = ".so"
-
 if pythonEnv["PLATFORM"]=="darwin" :
 	pythonEnv.Append( SHLINKFLAGS = "-single_module" )
 
-pythonEnv.SharedLibrary( "python/Gaffer/_Gaffer", glob.glob( "src/GafferBindings/*.cpp" ) )
+gafferBindingsLibrary = pythonEnv.SharedLibrary( "lib/GafferBindings", glob.glob( "src/GafferBindings/*.cpp" ) )
+
+pythonUIEnv = pythonEnv.Copy()
+pythonUIEnv.Append(
+	LIBS = [ "GafferUI", "GafferBindings" ],
+)
+gafferUIBindingsLibrary = pythonUIEnv.SharedLibrary( "lib/GafferUIBindings", glob.glob( "src/GafferUIBindings/*.cpp" ) )
+
+pythonModuleEnv = pythonEnv.Copy()
+pythonModuleEnv.Append(
+
+	LIBS = [
+		"GafferBindings",
+	]
+
+)
+
+pythonModuleEnv["SHLIBPREFIX"] = ""
+pythonModuleEnv["SHLIBSUFFIX"] = ".so"
+
+pythonModuleEnv.SharedLibrary( "python/Gaffer/_Gaffer", glob.glob( "src/GafferModule/*.cpp" ) )
+
+pythonUIModuleEnv = pythonModuleEnv.Copy()
+pythonUIModuleEnv.Append(
+	LIBS = [ "GafferUI", "GafferUIBindings" ],
+)
+pythonUIModuleEnv.SharedLibrary( "python/GafferUI/_GafferUI", glob.glob( "src/GafferUIModule/*.cpp" ) )

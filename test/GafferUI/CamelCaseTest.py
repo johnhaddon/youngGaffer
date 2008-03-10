@@ -1,3 +1,5 @@
+import IECore
+import Gaffer
 import unittest
 from GafferUI.CamelCase import *
 

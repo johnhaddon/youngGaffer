@@ -22,6 +22,7 @@ except Exception, e :
 # gtk imported ok. bring in the GafferUI components
 ###################################################################################################
 
+from _GafferUI import *
 import CamelCase
 from Widget import Widget
 from Menu import Menu
@@ -36,6 +37,7 @@ from Panel import Panel
 from ScriptEditor import ScriptEditor
 from ListContainer import ListContainer
 from GLWidget import GLWidget
+from GadgetWidget import GadgetWidget
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?
