@@ -136,7 +136,7 @@ void GraphComponent::removeChild( GraphComponentPtr child )
 	child->parentChangedSignal()( child.get() );
 }
 
-const GraphComponent::ChildContainer &GraphComponent::children()
+const GraphComponent::ChildContainer &GraphComponent::children() const
 {
 	return m_children;
 }

@@ -74,7 +74,7 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		typename T::ConstPtr getChild( const std::string &name ) const;
 		/// Read only access to the internal container of children. This
 		/// is useful for iteration over children.
-		const ChildContainer &children();
+		const ChildContainer &children() const;
 		/// Returns the parent for this component, performing a runTimeCast to T.
 		template<typename T>
 		typename T::Ptr parent();
