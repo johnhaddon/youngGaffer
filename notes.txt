@@ -178,6 +178,14 @@ procedurals
 	  
 	- how to determine bounds quickly for deformers and transform caches?
 	
+referencing 
+
+	- so one person can build a scene and release it as a script
+		- and another can bring that in as a single node and apply shading and wotnot afterwards
+	- should be implemented as a ScriptNode embedded within the script - so ScriptNodes can 
+	  have at least one input and output plug...they'll be like groups but they'll save/load
+	  to a separate file...
+	
 viewer
 ======
 
