@@ -4,6 +4,7 @@
 #include "GafferUI/TypeIds.h"
 #include "GafferUI/ButtonEvent.h"
 #include "GafferUI/KeyEvent.h"
+#include "GafferUI/EventSignalCombiner.h"
 
 #include "Gaffer/GraphComponent.h"
 
@@ -23,6 +24,21 @@ IE_CORE_FORWARDDECLARE( Gadget );
 /// Renderer interface for real time display and provide suitable events - the GadgetWidget
 /// python class is an example of such a host.
 /// \todo Should there be some base class for this and the Widget class?
+///
+/// BASIC PLAN :
+///
+///	* The Gadget passed as the argument to signals is the leaf gadget that received the event.
+/// * But events are passed first to the topmost parent of that leaf - and then down the
+///   hierarchy till the child is reached.
+/// * If any handler returns true then the entire traversal is cut short there.
+/// * It is the responsibility of the host (GadgetWidget) to perform this traversal.
+/// * ContainerGadget is a base class for all Gadgets which have children. It has a
+///   virtual method to return the transform for any given child? It is the responsibility
+///   of the host to use this transform to convert the coordinates in the event into the
+///   widgets own object space before calling the event? This is my least favourite bit of this
+///   scheme, but otherwise the container widget is responsible for passing events on itself, and
+///   it gets slightly ugly.
+///
 class Gadget : public Gaffer::GraphComponent
 {
 
@@ -36,9 +52,8 @@ class Gadget : public Gaffer::GraphComponent
 		/// @name Parent-child relationships
 		////////////////////////////////////////////////////////////////////
 		//@{
-		/// By default Gadgets do not accept children. Derived classes which
-		/// wish to act as containers for other Gadgets may reimplement this
-		/// method to accept any children they wish.
+		/// By default Gadgets do not accept children. Derive from ContainerGadget
+		/// if you wish to accept children.
 		virtual bool acceptsChild( Gaffer::ConstGraphComponentPtr potentialChild ) const;
 		/// Gadgets only accept other Gadgets as parent.
 		virtual bool acceptsParent( const Gaffer::GraphComponent *potentialParent ) const;		
@@ -61,13 +76,13 @@ class Gadget : public Gaffer::GraphComponent
 		////////////////////////////////////////////////////////////////////
 		//@{
 		/// A signal used to represent button related events.
-		typedef boost::signal<bool ( GadgetPtr, const ButtonEvent &event )> ButtonSignal; 
+		typedef boost::signal<bool ( GadgetPtr, const ButtonEvent &event ), EventSignalCombiner> ButtonSignal; 
 		/// The signal triggered by a button press event.
 		ButtonSignal &buttonPressSignal();
 		/// The signal triggered by a button release event.
 		ButtonSignal &buttonReleaseSignal();
 		/// A signal used to represent key related events.
-		typedef boost::signal<bool ( GadgetPtr, const KeyEvent &key )> KeySignal;
+		typedef boost::signal<bool ( GadgetPtr, const KeyEvent &key ), EventSignalCombiner> KeySignal;
 		/// The signal triggered by a key press event.
 		KeySignal &keyPressSignal();
 		/// The signal triggered by a key release event.
