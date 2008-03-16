@@ -4,8 +4,6 @@ import GafferUI
 import IECore
 import unittest
 
-## \todo Rejig this to remove all gtk specific code, and use only GafferUI classes instead
-
 class MenuTest( unittest.TestCase ) :
 
 	def test( self ) :
