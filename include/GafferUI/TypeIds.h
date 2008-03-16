@@ -8,7 +8,8 @@ enum TypeId
 {
 	GadgetTypeId = 410000,
 	NodeGadgetTypeId = 410001,
-	GraphGadgetTypeId = 410002
+	GraphGadgetTypeId = 410002,
+	ContainerGadgetTypeId = 410003
 };
 
 } // namespace GafferUI

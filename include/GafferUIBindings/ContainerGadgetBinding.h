@@ -1,0 +1,11 @@
+#ifndef GAFFERUIBINDINGS_CONTAINERGADGETBINDING_H
+#define GAFFERUIBINDINGS_CONTAINERGADGETBINDING_H
+
+namespace GafferUIBindings
+{
+
+void bindContainerGadget();
+
+} // namespace GafferUIBindings
+
+#endif // GAFFERUIBINDINGS_CONTAINERGADGETBINDING_H

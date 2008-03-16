@@ -6,6 +6,8 @@
 #include "GafferUIBindings/KeyEventBinding.h"
 #include "GafferUIBindings/ButtonEventBinding.h"
 #include "GafferUIBindings/NodeGadgetBinding.h"
+#include "GafferUIBindings/ContainerGadgetBinding.h"
+#include "GafferUIBindings/GraphGadgetBinding.h"
 
 using namespace GafferUIBindings;
 
@@ -18,5 +20,7 @@ BOOST_PYTHON_MODULE( _GafferUI )
 	bindKeyEvent();
 	bindButtonEvent();
 	bindNodeGadget();
+	bindContainerGadget();
+	bindGraphGadget();
 
 }

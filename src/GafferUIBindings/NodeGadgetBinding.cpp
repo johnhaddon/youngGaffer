@@ -14,7 +14,7 @@ void GafferUIBindings::bindNodeGadget()
 {
 	typedef class_<NodeGadget, NodeGadgetPtr, boost::noncopyable, bases<Gadget> > NodeGadgetPyClass;
 
-	NodeGadgetPyClass( "NodeGadget" )
+	NodeGadgetPyClass( "NodeGadget", init<Gaffer::NodePtr>() )
 		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( NodeGadget )
 	;
 		

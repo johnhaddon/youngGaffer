@@ -34,10 +34,13 @@ from PlugWidget import PlugWidget
 from ContainerWidget import ContainerWidget
 from Window import Window
 from Panel import Panel
+from EditorWidget import EditorWidget
 from ScriptEditor import ScriptEditor
 from ListContainer import ListContainer
 from GLWidget import GLWidget
 from GadgetWidget import GadgetWidget
+from GraphEditor import GraphEditor
+from ApplicationWindow import ApplicationWindow
 from MenuBar import MenuBar
 
 ## \todo Move the settings munging somewhere else

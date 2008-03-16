@@ -5,23 +5,23 @@ from Gaffer import ScriptNode
 from Menu import Menu
 from Widget import Widget
 from Panel import Panel
+from EditorWidget import EditorWidget
 
 ## \todo This needs to derive off something which provides the editing context and wotnot
 ## \todo Output redirection of both python stderr and stdout and IECore::msg - with the option to still output to the shell as well
 ## \todo Fix the horizontal bar so it doesn't move unless asked - the subwindows should scroll instead
 ## \todo Custom right click menu with script load, save, execute file, undo, redo etc.
 ## \todo Standard way for users to customise all menus
-class ScriptEditor( Widget ) :
+class ScriptEditor( EditorWidget ) :
 
 	def __init__( self, scriptNode ) :
 	
-		Widget.__init__( self, gtk.VPaned() )
+		EditorWidget.__init__( self, gtk.VPaned(), scriptNode )
 	
 		self.__paned = self.gtkWidget()
 
-		self.__scriptNode = scriptNode
-		self.__execConnection = self.__scriptNode.scriptExecutedSignal().connect( self.__execSlot )
-		self.__evalConnection = self.__scriptNode.scriptEvaluatedSignal().connect( self.__evalSlot )
+		self.__execConnection = self.scriptNode().scriptExecutedSignal().connect( self.__execSlot )
+		self.__evalConnection = self.scriptNode().scriptEvaluatedSignal().connect( self.__evalSlot )
 			
 		self.gtkOutputBuffer = gtk.TextBuffer()
 		self.gtkOutputWidget = gtk.TextView( self.gtkOutputBuffer )
@@ -43,12 +43,12 @@ class ScriptEditor( Widget ) :
 	
 	def __execSlot( self, scriptNode, script ) :
 	
-		assert( scriptNode.isSame( self.__scriptNode ) )
+		assert( scriptNode.isSame( self.scriptNode() ) )
 		self.gtkOutputBuffer.insert( self.gtkOutputBuffer.get_bounds()[1], script + "\n" )
 
 	def __evalSlot( self, scriptNode, script, result ) :
 	
-		assert( scriptNode.isSame( self.__scriptNode ) )
+		assert( scriptNode.isSame( self.scriptNode() ) )
 		text = script + "\nResult : " + str( result ) + "\n"
 		self.gtkOutputBuffer.insert( self.gtkOutputBuffer.get_bounds()[1], text )
 		
@@ -69,7 +69,7 @@ class ScriptEditor( Widget ) :
 			
 			try :
 			
-				self.__scriptNode.execute( toExecute )
+				self.scriptNode().execute( toExecute )
 				if not haveSelection :
 					bounds = self.gtkInputBuffer.get_bounds()
 					self.gtkInputBuffer.delete( bounds[0], bounds[1] )

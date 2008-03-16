@@ -3,6 +3,8 @@
 
 #include "GafferUI/Gadget.h"
 
+#include "Gaffer/Node.h"
+
 namespace GafferUI
 {
 
@@ -11,8 +13,11 @@ class NodeGadget : public Gadget
 
 	public :
 
-		NodeGadget();
+		NodeGadget( Gaffer::NodePtr node );
 		virtual ~NodeGadget();
+
+		Gaffer::NodePtr node();
+		Gaffer::ConstNodePtr node() const;
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( NodeGadget, NodeGadgetTypeId, Gadget );
 
@@ -21,6 +26,10 @@ class NodeGadget : public Gadget
 	protected :
 	
 		virtual void doRender( IECore::RendererPtr renderer ) const;
+
+	private :
+		
+		Gaffer::Node *m_node;
 		
 };
 

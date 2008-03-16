@@ -21,6 +21,7 @@ env = Environment(
 	
 	LIBS = [
 		"boost_signals-1_34_1",
+		"Imath",
 		"IECore",
 	],
 
