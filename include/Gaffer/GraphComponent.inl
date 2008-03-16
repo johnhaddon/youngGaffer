@@ -42,7 +42,10 @@ typename T::ConstPtr GraphComponent::getChild( const std::string &name ) const
 	{
 		if( (*it)->getName()==name )
 		{
-			return IECore::runTimeCast<const T>( *it );
+			if( (*it)->isInstanceOf( T::staticTypeId() ) )
+			{
+				return static_cast<const T *>( (*it).get() );
+			}
 		}
 	}
 	return 0;
