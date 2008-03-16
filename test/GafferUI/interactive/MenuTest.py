@@ -1,3 +1,5 @@
+import IECore
+import Gaffer
 import GafferUI
 import IECore
 import gtk
@@ -20,13 +22,17 @@ definition = IECore.MenuDefinition(
 )
 
 menu = GafferUI.Menu( definition )
+menuBar = GafferUI.MenuBar( definition )
 
 window = gtk.Window( gtk.WINDOW_TOPLEVEL )
 window.set_size_request( 200, 100 )
 window.set_title( "Menu test" )
 window.connect( "delete_event", gtk.main_quit )
+vbox = gtk.VBox()
 button = gtk.Button( "button" )
-window.add( button )
+vbox.add( menuBar.gtkWidget() )
+vbox.add( button )
+window.add( vbox )
 button.show()
 
 ## \todo Use one of the methods below to apply
@@ -59,6 +65,6 @@ def popup( widget, event, menu ) :
 
 button.connect( "button-press-event", popup, menu )
 
-window.show()
+window.show_all()
 
 gtk.main()
