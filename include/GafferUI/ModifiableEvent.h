@@ -18,7 +18,7 @@ struct ModifiableEvent : public Event
 		None = 0,
 		Shift = 1,
 		Control = 2,
-		Alt = 3,
+		Alt = 4,
 		ShiftControl = Shift | Control,
 		ShiftAlt = Shift | Alt,
 		ControlAlt = Control | Alt,
