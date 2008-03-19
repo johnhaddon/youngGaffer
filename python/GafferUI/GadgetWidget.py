@@ -18,13 +18,20 @@ class GadgetWidget( GLWidget ) :
 		self.gtkWidget().add_events( gtk.gdk.BUTTON_PRESS_MASK )
 		self.gtkWidget().add_events( gtk.gdk.BUTTON_RELEASE_MASK )
 		self.gtkWidget().add_events( gtk.gdk.POINTER_MOTION_MASK )
+		self.gtkWidget().add_events( gtk.gdk.KEY_PRESS_MASK )
+		self.gtkWidget().add_events( gtk.gdk.KEY_RELEASE_MASK )
+		self.gtkWidget().add_events( gtk.gdk.ENTER_NOTIFY_MASK )
+		self.gtkWidget().set_flags( gtk.CAN_FOCUS )
+				
 		self.gtkWidget().connect( "button_press_event", self.__buttonPress )
 		self.gtkWidget().connect( "button_release_event", self.__buttonRelease )
 		self.gtkWidget().connect( "motion_notify_event", self.__motion )
+		self.gtkWidget().connect( "key_press_event", self.__keyPress )
 		self.gtkWidget().connect( "configure_event", self.__configure )
+		self.gtkWidget().connect( "enter_notify_event", self.__enterNotify )
 
 		self.__camera = IECore.Camera()
-		self.__camera.parameters()["projection"] = IECore.StringData( "orthographic" )
+		self.__camera.parameters()["projection"] = IECore.StringData( "perspective" )
 		self.__cameraController = IECore.CameraController( self.__camera )
 		
 		self.setGadget( gadget )
@@ -120,6 +127,23 @@ class GadgetWidget( GLWidget ) :
 		gadgets = self.__select( event )
 		return True
 
+	def __enterNotify( self, widget, event ) :
+	
+		widget.grab_focus()
+		return True
+		
+	def __keyPress( self, widget, event ) :
+	
+		if not self.__gadget :
+			return True
+			
+		if event.keyval==102 :
+			self.__cameraController.frame( self.__gadget.bound( None ) )
+			widget.queue_draw()
+			return True
+		
+		return True
+		
 	def __dispatchEvent( self, gadgets, signalName, gadgetEvent ) :
 	
 		for i in range( 0, len( gadgets ) ) :
@@ -249,7 +273,7 @@ class GadgetWidget( GLWidget ) :
 		
 	@staticmethod
 	def __gtkStateToEventModifiers( gtkState ) :
-		
+				
 		result = ModifiableEvent.Modifiers.None
 		if gtkState & gtk.gdk.CONTROL_MASK :
 			result = result | ModifiableEvent.Modifiers.Control
@@ -259,7 +283,7 @@ class GadgetWidget( GLWidget ) :
 		
 		if gtkState & gtk.gdk.MOD1_MASK :
 			result = result | ModifiableEvent.Modifiers.Alt
-		
+				
 		return ModifiableEvent.Modifiers( result )
 
 	@staticmethod
