@@ -1,0 +1,11 @@
+#ifndef GAFFERUIBINDINGS_RENDERABLEGADGETBINDING_H
+#define GAFFERUIBINDINGS_RENDERABLEGADGETBINDING_H
+
+namespace GafferUIBindings
+{
+
+void bindRenderableGadget();
+
+} // namespace GafferUIBindings
+
+#endif // GAFFERUIBINDINGS_RENDERABLEGADGETBINDING_H
