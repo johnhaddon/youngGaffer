@@ -288,9 +288,41 @@ packaging
 =========
 
 * need build script to package up a version for release/distribution
+	* have a build setup which builds everything from scratch
+			
 * include python and all modules within the package
 * precompile .py files into .pyc
 * keep mac package in the unix style for the moment
+* potential layout
+
+	- gaffer
+		bin
+			gaffer 	- tcsh script
+					- somehow this launches some python for each app - possibly like do?
+		python
+			# could we just merge these in with the main directories?
+			# or is it best to keep it very separate?
+			bin
+			lib
+				python2.5
+					site-packages
+						pygtk
+						IECore
+						...
+						GafferUI
+		lib
+			libIECore
+			...
+			libGafferUI
+		include
+			IECore
+			...
+			GafferUI
+		test
+			# why not distribute the unit tests?
+			IECore
+			..
+			GafferUI
 
 basic timeline
 ==============
