@@ -11,7 +11,9 @@ import gtk
 # Gadgets are implemented on top of the Cortex infrastructure.
 class GadgetWidget( GLWidget ) :
 
-	def __init__( self, gadget=None ) :
+	CameraMode = IECore.Enum.create( "None", "Mode2D", "Mode3D" )
+
+	def __init__( self, gadget=None, cameraMode=CameraMode.Mode2D ) :
 		
 		GLWidget.__init__( self )
 		
@@ -31,9 +33,9 @@ class GadgetWidget( GLWidget ) :
 		self.gtkWidget().connect( "enter_notify_event", self.__enterNotify )
 
 		self.__camera = IECore.Camera()
-		self.__camera.parameters()["projection"] = IECore.StringData( "perspective" )
 		self.__cameraController = IECore.CameraController( self.__camera )
 		
+		self.setCameraMode( cameraMode )
 		self.setGadget( gadget )
 		
 	def setGadget( self, gadget ) :
@@ -45,7 +47,22 @@ class GadgetWidget( GLWidget ) :
 	def getGadget( self ) :
 	
 		return self.__gadget
+	
+	def setCameraMode( self, cameraMode ) :
+	
+		self.__cameraMode = cameraMode
+		if cameraMode==self.CameraMode.Mode2D :
+			self.__camera.parameters()["projection"] = IECore.StringData( "orthographic" )
+		else :
+			self.__camera.parameters()["projection"] = IECore.StringData( "perspective" )
 		
+		# force the controller to update
+		self.__cameraController.setCamera( self.__camera )
+				
+	def getCameraMode( self ) :
+	
+		return self.__cameraMode	
+	
 	def draw( self ) :
 	
 		glClearColor( 0.0, 0.0, 0.0, 0.0 )
@@ -70,7 +87,6 @@ class GadgetWidget( GLWidget ) :
 		renderer.worldBegin()
 		if 1 :
 			
-			renderer.concatTransform( IECore.M44f.createTranslated( IECore.V3f( 0, 0, -1 ) ) )			
 			renderer.setAttribute( "gl:primitive:wireframe", IECore.BoolData( 1 ) )
 			self.__gadget.render( renderer )
 
@@ -216,10 +232,27 @@ class GadgetWidget( GLWidget ) :
 	
 	def __cameraButtonPress( self, event ) :
 				
+		motionType = IECore.CameraController.MotionType.None
 		if event.button==1 :
-			self.__cameraController.motionStart( IECore.CameraController.MotionType.Track, IECore.V2i( int(event.x), int(event.y) ) )
+			if event.state & gtk.gdk.CONTROL_MASK :
+				motionType = IECore.CameraController.MotionType.Dolly
+			elif event.state & gtk.gdk.SHIFT_MASK :
+				motionType = IECore.CameraController.MotionType.Track
+			elif event.state & gtk.gdk.BUTTON2_MASK :
+				motionType = IECore.CameraController.MotionType.Dolly
+			else :
+				motionType = IECore.CameraController.MotionType.Tumble
 		elif event.button==2 :
-			self.__cameraController.motionStart( IECore.CameraController.MotionType.Dolly, IECore.V2i( int(event.x), int(event.y) ) )
+			if event.state & gtk.gdk.BUTTON1_MASK :
+				motionType = IECore.CameraController.MotionType.Dolly
+			else :
+				motionType = IECore.CameraController.MotionType.Track
+				
+		if motionType==IECore.CameraController.MotionType.Tumble and self.__cameraMode==self.CameraMode.Mode2D :
+			motionType = IECore.CameraController.MotionType.Track
+				
+		if motionType :
+			self.__cameraController.motionStart( motionType, IECore.V2i( int(event.x), int(event.y) ) )
 			
 		return True
 	

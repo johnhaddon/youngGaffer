@@ -1,3 +1,9 @@
+ui rules
+========
+
+* need to make modifier/button use consistent everywhere
+	* ALT will be used purely for camera movement and nothing else
+	* the apple/windows keys will not be used
 
 undo/redo
 =========
