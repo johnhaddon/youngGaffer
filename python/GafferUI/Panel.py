@@ -9,7 +9,9 @@ from Widget import Widget
 ## \todo Ctrl drag moves divider and other close by dividers, or the opposite way round
 ## \todo Figure out the size allocation to work better - moving one slider doesn't move the others
 ## \todo Click and drag based interactive splitting rather than menu based?
-## \todo Serialisation using __repr__ (requires serialisation of children too)
+## \todo Serialisation using __repr__ (requires serialisation of children too) Actually, move
+## the menu into an EditorPanel derived class, and enforce that only editors can go in the panels
+## for this class. Then implement serialisation.
 class Panel( ContainerWidget ) :
 
 	SplitDirection = IECore.Enum.create( "None", "Vertical", "Horizontal" )
