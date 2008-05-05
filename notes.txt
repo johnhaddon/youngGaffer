@@ -227,6 +227,7 @@ lights + shading
 	* physically accurate?
 	* usual nonsense?
 	* force reflectances below a sum of 1?
+* hdri creation tools needed
 
 features
 ========
