@@ -21,7 +21,7 @@ class NodeGadget : public Gadget
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( NodeGadget, NodeGadgetTypeId, Gadget );
 
-		virtual Imath::Box3f bound( IECore::RendererPtr renderer ) const;
+		virtual Imath::Box3f bound() const;
 
 	protected :
 	

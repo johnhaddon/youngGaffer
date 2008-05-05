@@ -17,7 +17,7 @@ RenderableGadget::~RenderableGadget()
 {
 }
 
-Imath::Box3f RenderableGadget::bound( IECore::RendererPtr renderer ) const
+Imath::Box3f RenderableGadget::bound() const
 {
 	return m_renderable->bound();
 }

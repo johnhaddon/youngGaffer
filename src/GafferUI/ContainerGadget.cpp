@@ -18,14 +18,14 @@ bool ContainerGadget::acceptsChild( Gaffer::ConstGraphComponentPtr potentialChil
 	return potentialChild->isInstanceOf( Gadget::staticTypeId() );
 }
 
-Imath::Box3f ContainerGadget::bound( IECore::RendererPtr renderer ) const
+Imath::Box3f ContainerGadget::bound() const
 {
 	Imath::Box3f result;
 	for( ChildContainer::const_iterator it=children().begin(); it!=children().end(); it++ )
 	{
 		// cast is safe because of the guarantees acceptsChild() gives us
 		ConstGadgetPtr c = boost::static_pointer_cast<const Gadget>( *it );
-		Imath::Box3f b = c->bound( renderer );
+		Imath::Box3f b = c->bound();
 		Imath::M44f m = childTransform( c );
 		Imath::transform( b, m );
 		result.extendBy( b );

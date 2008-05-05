@@ -66,7 +66,7 @@ class Gadget : public Gaffer::GraphComponent
 		/// Renders the Gadget.
 		void render( IECore::RendererPtr renderer ) const;
 		/// The bounding box of the Gadget.
-		virtual Imath::Box3f bound( IECore::RendererPtr renderer ) const = 0;
+		virtual Imath::Box3f bound() const = 0;
 		//@}
 		
 		/// @name Events
@@ -98,9 +98,7 @@ class Gadget : public Gaffer::GraphComponent
 		virtual void doRender( IECore::RendererPtr renderer ) const = 0;
 		
 	private :
-	
-		Gadget *m_parent;
-		
+			
 		ButtonSignal m_buttonPressSignal;
 		ButtonSignal m_buttonReleaseSignal;
 

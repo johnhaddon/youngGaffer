@@ -42,7 +42,10 @@ class GadgetWidget( GLWidget ) :
 	
 		self.__gadget = gadget
 		self.__scene = None
-		self.__cameraController.frame( self.__gadget.bound( None ) )
+		
+		bound = self.__gadget.bound()
+		if not bound.isEmpty() :
+			self.__cameraController.frame( bound )
 		
 	def getGadget( self ) :
 	
@@ -154,8 +157,10 @@ class GadgetWidget( GLWidget ) :
 			return True
 			
 		if event.keyval==102 :
-			self.__cameraController.frame( self.__gadget.bound( None ) )
-			widget.queue_draw()
+			bound = self.__gadget.bound()
+			if not bound.isEmpty() :
+				self.__cameraController.frame( self.__gadget.bound() )
+				widget.queue_draw()
 			return True
 		
 		return True

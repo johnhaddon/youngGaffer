@@ -29,9 +29,10 @@ void NodeGadget::doRender( IECore::RendererPtr renderer ) const
 {
 	MeshPrimitivePtr plane = MeshPrimitive::createPlane( Box2f( V2f( -0.5, -0.5 ), V2f( 0.5, 0.5 ) ) );
 	plane->render( renderer );
+	renderer->text( "Vera.ttf", m_node->getName() );
 }
 
-Imath::Box3f NodeGadget::bound( IECore::RendererPtr renderer ) const
+Imath::Box3f NodeGadget::bound() const
 {
 	return Box3f( V3f( -1, -1, 0 ), V3f( 1, 1, 0 ) );
 }

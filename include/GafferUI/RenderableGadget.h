@@ -20,7 +20,7 @@ class RenderableGadget : public Gadget
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( RenderableGadget, RenderableGadgetTypeId, Gadget );
 
-		virtual Imath::Box3f bound( IECore::RendererPtr renderer ) const;
+		virtual Imath::Box3f bound() const;
 		
 		void setRenderable( IECore::VisibleRenderablePtr renderable );
 		IECore::VisibleRenderablePtr getRenderable();
