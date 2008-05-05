@@ -1,13 +1,15 @@
 import os
 import glob
 
+boostLibSuffix = "-mt-1_35"
+
 env = Environment(
 
 	CPPPATH = [
 		"include",
 		"/opt/local/include",
 		"/opt/local/include/OpenEXR",
-		"/opt/local/include/boost-1_34_1",
+		"/opt/local/include/boost-1_35",
 	],
 	
 	CXXFLAGS = [
@@ -20,7 +22,14 @@ env = Environment(
 	],
 	
 	LIBS = [
-		"boost_signals-1_34_1",
+		"boost_signals" + boostLibSuffix,
+		"boost_iostreams" + boostLibSuffix,
+		"boost_filesystem" + boostLibSuffix,
+		"boost_date_time" + boostLibSuffix,
+		"boost_thread" + boostLibSuffix,
+		"boost_wave" + boostLibSuffix,
+		"boost_regex" + boostLibSuffix,		
+		"boost_system" + boostLibSuffix,
 		"Imath",
 		"IECore",
 	],
@@ -48,7 +57,7 @@ pythonEnv.Append(
 	LIBPATH = [ "./lib" ],
 	
 	LIBS = [
-		"boost_python-1_34_1",
+		"boost_python" + boostLibSuffix,
 		"Gaffer",
 	],
 	
