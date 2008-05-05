@@ -31,6 +31,7 @@ class GadgetWidget( GLWidget ) :
 		self.gtkWidget().connect( "key_press_event", self.__keyPress )
 		self.gtkWidget().connect( "configure_event", self.__configure )
 		self.gtkWidget().connect( "enter_notify_event", self.__enterNotify )
+		self.gtkWidget().connect( "scroll_event", self.__scroll )
 
 		self.__camera = IECore.Camera()
 		self.__cameraController = IECore.CameraController( self.__camera )
@@ -276,6 +277,23 @@ class GadgetWidget( GLWidget ) :
 		self.__cameraController.motionEnd( IECore.V2i( int(event.x), int(event.y) ) )
 		self.gtkWidget().queue_draw()	
 		return True
+		
+	def __scroll( self, widget, event ) :
+	
+		if event.direction in (gtk.gdk.SCROLL_UP, gtk.gdk.SCROLL_DOWN) :
+		
+			position = IECore.V2i( int(event.x), int(event.y) )
+			self.__cameraController.motionStart( IECore.CameraController.MotionType.Dolly, position )
+			
+			if event.direction==gtk.gdk.SCROLL_UP :
+				position.x += 20
+			else :
+				position.x -= 20
+			self.__cameraController.motionUpdate( position )
+			
+			self.__cameraController.motionEnd( position )
+			self.gtkWidget().queue_draw()
+			
 	
 	#########################################################################################################
 	# conversion of gtk events to gadget events
