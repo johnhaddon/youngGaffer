@@ -12,6 +12,7 @@ from EditorWidget import EditorWidget
 ## \todo Fix the horizontal bar so it doesn't move unless asked - the subwindows should scroll instead
 ## \todo Custom right click menu with script load, save, execute file, undo, redo etc.
 ## \todo Standard way for users to customise all menus
+## \todo Tab completion and popup help. rlcompleter module should be useful for tab completion.
 class ScriptEditor( EditorWidget ) :
 
 	def __init__( self, scriptNode ) :
