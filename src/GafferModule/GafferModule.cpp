@@ -7,6 +7,7 @@
 #include "GafferBindings/NumericPlugBinding.h"
 #include "GafferBindings/TypedPlugBinding.h"
 #include "GafferBindings/ScriptNodeBinding.h"
+#include "GafferBindings/ApplicationBinding.h"
 
 using namespace GafferBindings;
 
@@ -21,6 +22,7 @@ BOOST_PYTHON_MODULE( _Gaffer )
 	bindNumericPlug();
 	bindTypedPlug();
 	bindScriptNode();
+	bindApplication();
 	
 	typedef boost::signal<int ( float )> TestSignal;
 	SignalBinder<TestSignal>::bind( "TestSignal" );
