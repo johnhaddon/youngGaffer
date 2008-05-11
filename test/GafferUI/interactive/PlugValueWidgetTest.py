@@ -8,8 +8,6 @@ import gtk
 
 window = GafferUI.Window( "Plug value widget test")
 column = GafferUI.ListContainer( GafferUI.ListContainer.Orientation.Vertical )
-column.show()
-window.setChild( column )
 
 node = Gaffer.Node()
 node.floatPlug = Gaffer.FloatPlug()
@@ -23,5 +21,7 @@ column.append( GafferUI.PlugValueWidget.create( node.intPlug ) )
 column.append( GafferUI.PlugValueWidget.create( node.stringPlug ) )
 column.append( GafferUI.FileNamePlugValueWidget( node.stringPlug ) )
 
-window.show()
+window.gtkWidget().show_all()
+window.setChild( column )
+
 gtk.main()

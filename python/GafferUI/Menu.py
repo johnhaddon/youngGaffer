@@ -15,6 +15,10 @@ class Menu( Widget ) :
 		
 		self.__menu.connect( "show", self.__show, self.definition )
 		
+		# otherwise the __show callback isn't triggered the first
+		# time the menu is shown
+		self.hide()
+		
 	def popup( self ) :
 	
 		event = gtk.get_current_event()
@@ -27,7 +31,7 @@ class Menu( Widget ) :
 
 	@staticmethod
 	def __show( menu, definition ) :
-		
+				
 		if callable( definition ) :
 			definition = definition()
 			
