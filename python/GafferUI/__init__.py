@@ -40,7 +40,7 @@ from ListContainer import ListContainer
 from GLWidget import GLWidget
 from GadgetWidget import GadgetWidget
 from GraphEditor import GraphEditor
-from ApplicationWindow import ApplicationWindow
+from ScriptWindow import ScriptWindow
 from MenuBar import MenuBar
 
 ## \todo Move the settings munging somewhere else
