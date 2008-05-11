@@ -45,7 +45,6 @@ const std::string &GraphComponent::setName( const std::string &name )
 			if( suffix!=0 )
 			{
 				newName = boost::str( boost::format( "%s%d" ) % name % suffix );
-				suffix++;
 			}
 			unique = true;
 			for( ChildContainer::const_iterator it=m_parent->m_children.begin(); it!=m_parent->m_children.end(); it++ )

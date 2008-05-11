@@ -124,7 +124,27 @@ class GraphComponentTest( unittest.TestCase ) :
 		a = "a"
 		p.s = a
 		self.assert_( p.s is a )
+	
+	def testUniqueNaming( self ) :
+	
+		p = Gaffer.GraphComponent()
+		c1 = Gaffer.GraphComponent()
+		c2 = Gaffer.GraphComponent()
+		c3 = Gaffer.GraphComponent()
 		
+		c1.setName( "a" )
+		c2.setName( "a" )
+		c3.setName( "a" )
+		
+		p.addChild( c1 )
+		self.assertEqual( c1.getName(), "a" )
+		
+		p.addChild( c2 )
+		self.assertEqual( c2.getName(), "a1" )
+		
+		p.addChild( c3 )
+		self.assertEqual( c3.getName(), "a2" )
+	
 if __name__ == "__main__":
 	unittest.main()
 	
