@@ -3,6 +3,7 @@ from _GafferUI import ButtonEvent, ModifiableEvent
 from OpenGL.GL import *
 from IECoreGL import Renderer
 import IECore
+import IECoreGL
 import gtk
 
 ## The GadgetWidget class provides a means of
@@ -43,6 +44,7 @@ class GadgetWidget( GLWidget ) :
 	
 		self.__gadget = gadget
 		self.__scene = None
+		self.__renderRequestConnection = gadget.renderRequestSignal().connect( self.__renderRequest )
 		
 		bound = self.__gadget.bound()
 		if not bound.isEmpty() :
@@ -76,17 +78,28 @@ class GadgetWidget( GLWidget ) :
 		self.__updateScene()
 		if self.__scene :
 			
+			self.__scene.setCamera( IECoreGL.ToGLCameraConverter( self.__camera ).convert() )
 			self.__scene.render()
+	
+	def __renderRequest( self, gadget ) :
+	
+		# the gadget we're holding has requested to be rerendered.
+		# destroy our scene so we'll have to rebuild it, and ask
+		# that we're redrawn.
+		self.__scene = None
+		self.gtkWidget().queue_draw()
 			
 	def __updateScene( self ) :
 	
 		if not self.__gadget :
 			self.__scene = None
 			return
+			
+		if self.__scene :
+			return
 
 		renderer = Renderer()
 		renderer.setOption( "gl:mode", IECore.StringData( "deferred" ) )
-		self.__camera.render( renderer )
 				
 		renderer.worldBegin()
 		if 1 :

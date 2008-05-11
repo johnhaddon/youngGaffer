@@ -33,6 +33,11 @@ void Gadget::render( IECore::RendererPtr renderer ) const
 	doRender( renderer );
 }
 
+Gadget::RenderRequestSignal &Gadget::renderRequestSignal()
+{
+	return m_renderRequestSignal;
+}
+
 Gadget::ButtonSignal &Gadget::buttonPressSignal()
 {
 	return m_buttonPressSignal;

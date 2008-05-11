@@ -7,6 +7,8 @@ using namespace GafferUI;
 ContainerGadget::ContainerGadget( const std::string &name )
 	:	Gadget( name )
 {
+	childAddedSignal().connect( &childAdded );
+	childRemovedSignal().connect( &childRemoved );
 }
 
 ContainerGadget::~ContainerGadget()
@@ -44,4 +46,24 @@ void ContainerGadget::doRender( IECore::RendererPtr renderer ) const
 			c->render( renderer );
 		renderer->attributeEnd();
 	}
+}
+
+void ContainerGadget::childAdded( GraphComponent *us, GraphComponent *child )
+{
+	static_cast<Gadget *>( child )->renderRequestSignal().connect( &childRenderRequest );
+	ContainerGadget *p = static_cast<ContainerGadget *>( us );
+	p->renderRequestSignal()( p );
+}
+
+void ContainerGadget::childRemoved( GraphComponent *us, GraphComponent *child )
+{
+	static_cast<Gadget *>( child )->renderRequestSignal().disconnect( &childRenderRequest );
+}
+
+void ContainerGadget::childRenderRequest( GadgetPtr child )
+{
+	std::cerr << "CHILD RENDER REQUEST" << std::endl;
+	ContainerGadgetPtr p = child->parent<ContainerGadget>();
+	assert( p );
+	p->renderRequestSignal()( p );
 }

@@ -32,6 +32,12 @@ class ContainerGadget : public Gadget
 		/// Implemented to render each child with it's appropriate transform.
 		virtual void doRender( IECore::RendererPtr renderer ) const;
 		
+	private :
+	
+		static void childAdded( GraphComponent *us, GraphComponent *child );
+		static void childRemoved( GraphComponent *us, GraphComponent *child );
+		static void childRenderRequest( GadgetPtr child );
+		
 };
 
 IE_CORE_DECLAREPTR( ContainerGadget );

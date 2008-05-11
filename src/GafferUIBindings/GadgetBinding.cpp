@@ -20,6 +20,7 @@ void GafferUIBindings::bindGadget()
 	scope s = GadgetPyClass( "Gadget", no_init )
 		.def( "render",&Gadget::render )
 		.def( "bound", &Gadget::bound )
+		.def( "renderRequestSignal", &Gadget::renderRequestSignal, return_internal_reference<1>() )
 		.def( "buttonPressSignal", &Gadget::buttonPressSignal, return_internal_reference<1>() )
 		.def( "buttonReleaseSignal", &Gadget::buttonReleaseSignal, return_internal_reference<1>() )
 		.def( "keyPressSignal", &Gadget::keyPressSignal, return_internal_reference<1>() )
@@ -27,6 +28,7 @@ void GafferUIBindings::bindGadget()
 		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( Gadget )
 	;
 	
+	SignalBinder<Gadget::RenderRequestSignal>::bind( "RenderRequestSignal" );
 	SignalBinder<Gadget::ButtonSignal>::bind( "ButtonSignal" );
 	SignalBinder<Gadget::KeySignal>::bind( "KeySignal" );
 	
