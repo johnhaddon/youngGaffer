@@ -3,6 +3,7 @@
 
 #include "Gaffer/Node.h"
 #include "Gaffer/TypedPlug.h"
+#include "Gaffer/Container.h"
 
 typedef struct _object PyObject;
 
@@ -10,6 +11,9 @@ namespace Gaffer
 {
 
 IE_CORE_FORWARDDECLARE( ScriptNode );
+
+typedef Container<GraphComponent, ScriptNode> ScriptContainer;
+IE_CORE_DECLAREPTR( ScriptContainer );
 
 /// The ScriptNode class represents a script - that is a single collection of
 /// nodes which are stored in a single file.
@@ -28,12 +32,7 @@ class ScriptNode : public Node
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( ScriptNode, ScriptNodeTypeId, Node );
 				
-		/// Accepts no parent.
-		/// \todo In the future it should probably accept parenting to some sort
-		/// of ApplicationNode - which represents a whole application. This would
-		/// have children which are scripts, global preferences nodes etc. We might
-		/// have different ApplicationNode subclasses for different apps - gaffer,
-		/// shader builder etc...or we might not...
+		/// Accepts parenting only to a ScriptContainer.
 		virtual bool acceptsParent( const GraphComponent *potentialParent ) const;
 		
 		//! @name Script evaluation
