@@ -69,6 +69,8 @@ class Plug : public GraphComponent
 		/// Accepts only Nodes or Plugs as a parent.
 		virtual bool acceptsParent( const GraphComponent *potentialParent ) const;
 		/// Just returns parent<Node>() as a syntactic convenience.
+		/// \todo This will be incorrect when we have CompoundPlugs - in this case
+		/// we'll need to return ancestor<Node>().
 		NodePtr node();
 		/// Just returns parent<Node>() as a syntactic convenience.
 		ConstNodePtr node() const;
