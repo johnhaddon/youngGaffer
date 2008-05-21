@@ -6,7 +6,7 @@ using namespace Gaffer;
 GAFFER_DECLARECONTAINERSPECIALISATIONS( ScriptContainer, ScriptContainerTypeId )
 
 ScriptNode::ScriptNode( const std::string &name )
-	:	Node( name )
+	:	Node( name ), m_selection( new NodeSet )
 {
 	m_fileNamePlug = new StringPlug( "fileName", Plug::In, "" );
 	addChild( m_fileNamePlug );
@@ -19,6 +19,16 @@ ScriptNode::~ScriptNode()
 bool ScriptNode::acceptsParent( const GraphComponent *potentialParent ) const
 {
 	return potentialParent->isInstanceOf( ScriptContainer::staticTypeId() );
+}
+
+NodeSetPtr ScriptNode::selection()
+{
+	return m_selection;
+}
+
+ConstNodeSetPtr ScriptNode::selection() const
+{
+	return m_selection;
 }
 
 StringPlugPtr ScriptNode::fileNamePlug()

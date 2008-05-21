@@ -74,6 +74,7 @@ void bindScriptNode()
 
 	scope s = ScriptNodePyClass( "ScriptNode" )
 		.def( init<const std::string &>() )
+		.def( "selection", (NodeSetPtr (ScriptNode::*)())&ScriptNode::selection )
 		.def( "execute", &ScriptNode::execute )
 		.def( "evaluate", &ScriptNode::evaluate )
 		.def( "scriptExecutedSignal", &ScriptNode::scriptExecutedSignal, return_internal_reference<1>() )

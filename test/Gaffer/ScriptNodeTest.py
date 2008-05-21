@@ -59,6 +59,10 @@ class ScriptNodeTest( unittest.TestCase ) :
 		del p
 		del ScriptNodeTest.lastResult
 		
+	def testSelection( self ) :
+	
+		s = Gaffer.ScriptNode()
+		self.assert_( isinstance( s.selection(), Gaffer.NodeSet ) )		
 						
 if __name__ == "__main__":
 	unittest.main()

@@ -4,6 +4,7 @@
 #include "Gaffer/Node.h"
 #include "Gaffer/TypedPlug.h"
 #include "Gaffer/Container.h"
+#include "Gaffer/Set.h"
 
 typedef struct _object PyObject;
 
@@ -22,6 +23,8 @@ IE_CORE_DECLAREPTR( ScriptContainer );
 /// false when it's modified in memory. this means attaching a plugchanged callback to every
 /// node.
 /// \todo Save/load (load should just be clear() followed by executeFile().
+/// But as save/load should be a repr() and parse in python they will only be available on scripts
+/// created from python.
 class ScriptNode : public Node
 {
 
@@ -34,6 +37,21 @@ class ScriptNode : public Node
 				
 		/// Accepts parenting only to a ScriptContainer.
 		virtual bool acceptsParent( const GraphComponent *potentialParent ) const;
+		
+		//! @name Selection
+		/// The ScriptNode maintains a list of child Nodes which are considered
+		/// to be selected - actions performing on the script can then use that
+		/// selection any way they see fit.
+		/// \todo We need to figure out how deleted nodes are removed from the
+		/// selection. Ideally just doing an unparent would deselect them i
+		/// reckon, so del script.nodeName in python would work straight off.
+		/// \todo Make sure that selected nodes are appropriate children of
+		/// the script.
+		////////////////////////////////////////////////////////////////////
+		//@{
+		NodeSetPtr selection();
+		ConstNodeSetPtr selection() const;
+		//@}
 		
 		//! @name Script evaluation
 		/// These methods allow the execution of python scripts in the
@@ -69,6 +87,8 @@ class ScriptNode : public Node
 		virtual void compute( PlugPtr output ) const;
 			
 	private :
+	
+		NodeSetPtr m_selection;
 	
 		ScriptExecutedSignal m_scriptExecutedSignal;
 		ScriptEvaluatedSignal m_scriptEvaluatedSignal;

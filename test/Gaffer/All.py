@@ -6,6 +6,7 @@ from PlugTest import *
 from NumericPlugTest import *
 from TypedPlugTest import *
 from ScriptNodeTest import *
+from SetTest import *
 
 if __name__ == "__main__":
 	unittest.main()
