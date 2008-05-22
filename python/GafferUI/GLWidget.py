@@ -10,7 +10,7 @@ class GLWidget( Widget ) :
 
 	def __init__( self ) :
 	
-		displayMode = gtk.gdkgl.MODE_RGB | gtk.gdkgl.MODE_DEPTH | gtk.gdkgl.MODE_DOUBLE
+		displayMode = gtk.gdkgl.MODE_RGBA | gtk.gdkgl.MODE_DEPTH | gtk.gdkgl.MODE_DOUBLE
 		glConfig = gtk.gdkgl.Config( mode=displayMode )
 		drawingArea = gtk.gtkgl.DrawingArea( glConfig )
 		Widget.__init__( self, drawingArea )
