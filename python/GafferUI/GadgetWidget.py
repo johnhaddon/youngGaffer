@@ -100,11 +100,11 @@ class GadgetWidget( GLWidget ) :
 
 		renderer = Renderer()
 		renderer.setOption( "gl:mode", IECore.StringData( "deferred" ) )
-				
+			
 		renderer.worldBegin()
 		if 1 :
 			
-			renderer.setAttribute( "gl:primitive:wireframe", IECore.BoolData( 1 ) )
+			renderer.shader( "surface", "constant", {} )
 			self.__gadget.render( renderer )
 
 		renderer.worldEnd()
