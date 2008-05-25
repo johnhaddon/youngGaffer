@@ -47,8 +47,6 @@ static Imath::Rand32 r;
 
 void GraphGadget::childAdded( GraphComponent *parent, GraphComponent *child )
 {
-	std::cerr << "CHILD ADDED !! " << parent->getName() << " " << child->getName() << std::endl;
-	
 	Gaffer::FloatPlugPtr x = new Gaffer::FloatPlug( "__uiX" );
 	x->setValue( r.nextf( -1, 1 ) );
 	
@@ -59,5 +57,4 @@ void GraphGadget::childAdded( GraphComponent *parent, GraphComponent *child )
 	child->addChild( y );
 	
 	addChild( new NodeGadget( static_cast<Gaffer::Node *>( child ) ) );
-	
 }

@@ -1,0 +1,11 @@
+#ifndef GAFFERUIBINDINGS_INDIVIDUALCONTAINERBINDING_H
+#define GAFFERUIBINDINGS_INDIVIDUALCONTAINERBINDING_H
+
+namespace GafferUIBindings
+{
+
+void bindIndividualContainer();
+
+} // namespace GafferUIBindings
+
+#endif // GAFFERUIBINDINGS_INDIVIDUALCONTAINERBINDING_H

@@ -1,4 +1,5 @@
 #include "GafferUI/NodeGadget.h"
+#include "GafferUI/NameGadget.h"
 
 #include "IECore/MeshPrimitive.h"
 
@@ -6,8 +7,9 @@ using namespace GafferUI;
 using namespace Imath;
 using namespace IECore;
 
+/// \todo I suspect there should be a central resource class providing the font to all gadgets.
 NodeGadget::NodeGadget( Gaffer::NodePtr node )
-	:	m_node( node.get() )
+	:	Frame( new NameGadget( new Font( "/usr/X11R6/lib/X11/fonts/TTF/Vera.ttf" ), node ) ), m_node( node.get() )
 {
 }
 
@@ -24,15 +26,8 @@ Gaffer::ConstNodePtr NodeGadget::node() const
 {
 	return m_node;
 }
-		
-void NodeGadget::doRender( IECore::RendererPtr renderer ) const
-{
-	MeshPrimitivePtr plane = MeshPrimitive::createPlane( Box2f( V2f( -0.5, -0.5 ), V2f( 0.5, 0.5 ) ) );
-	plane->render( renderer );
-	renderer->text( "Vera.ttf", m_node->getName() );
-}
 
-Imath::Box3f NodeGadget::bound() const
+bool NodeGadget::acceptsChild( Gaffer::ConstGraphComponentPtr potentialChild ) const
 {
-	return Box3f( V3f( -1, -1, 0 ), V3f( 1, 1, 0 ) );
+	return children().size()==0;
 }

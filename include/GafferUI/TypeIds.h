@@ -10,7 +10,11 @@ enum TypeId
 	NodeGadgetTypeId = 410001,
 	GraphGadgetTypeId = 410002,
 	ContainerGadgetTypeId = 410003,
-	RenderableGadgetTypeId = 410004
+	RenderableGadgetTypeId = 410004,
+	TextGadgetTypeId = 410005,
+	NameGadgetTypeId = 410006,
+	IndividualContainerTypeId = 410007,
+	FrameTypeId = 410008
 };
 
 } // namespace GafferUI

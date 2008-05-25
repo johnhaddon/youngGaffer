@@ -9,6 +9,10 @@
 #include "GafferUIBindings/ContainerGadgetBinding.h"
 #include "GafferUIBindings/GraphGadgetBinding.h"
 #include "GafferUIBindings/RenderableGadgetBinding.h"
+#include "GafferUIBindings/IndividualContainerBinding.h"
+#include "GafferUIBindings/FrameBinding.h"
+#include "GafferUIBindings/TextGadgetBinding.h"
+#include "GafferUIBindings/NameGadgetBinding.h"
 
 using namespace GafferUIBindings;
 
@@ -24,5 +28,9 @@ BOOST_PYTHON_MODULE( _GafferUI )
 	bindContainerGadget();
 	bindGraphGadget();
 	bindRenderableGadget();
+	bindIndividualContainer();
+	bindFrame();
+	bindTextGadget();
+	bindNameGadget();
 
 }

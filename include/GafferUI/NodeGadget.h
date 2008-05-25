@@ -1,14 +1,14 @@
 #ifndef GAFFERUI_NODEGADGET_H
 #define GAFFERUI_NODEGADGET_H
 
-#include "GafferUI/Gadget.h"
+#include "GafferUI/Frame.h"
 
 #include "Gaffer/Node.h"
 
 namespace GafferUI
 {
 
-class NodeGadget : public Gadget
+class NodeGadget : public Frame
 {
 
 	public :
@@ -16,16 +16,13 @@ class NodeGadget : public Gadget
 		NodeGadget( Gaffer::NodePtr node );
 		virtual ~NodeGadget();
 
+		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( NodeGadget, NodeGadgetTypeId, Frame );
+		
 		Gaffer::NodePtr node();
 		Gaffer::ConstNodePtr node() const;
 
-		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( NodeGadget, NodeGadgetTypeId, Gadget );
-
-		virtual Imath::Box3f bound() const;
-
-	protected :
-	
-		virtual void doRender( IECore::RendererPtr renderer ) const;
+		/// Accepts no children.
+		virtual bool acceptsChild( Gaffer::ConstGraphComponentPtr potentialChild ) const;
 
 	private :
 		
