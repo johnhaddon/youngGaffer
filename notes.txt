@@ -54,6 +54,8 @@ an undoable event on release?
 										  remain in the undo queue, so connections and wotnot won't be broken
 											* we could have del node.child implemented with a __delattr__ method
 											  which performs the appropriate disconnections
+											* or we could have nodes use a parentChanged callback to remove all connections
+											  when they are removed
 	* if we can do this then :
 		* ctrl-z undoes the last action from the global list
 		* shift-ctrl-z undoes the last action local to a particular control
@@ -309,6 +311,7 @@ packaging
 		python
 			# could we just merge these in with the main directories?
 			# or is it best to keep it very separate?
+				- I SAY MERGE 'EM!
 			bin
 			lib
 				python2.5
@@ -327,6 +330,7 @@ packaging
 			GafferUI
 		test
 			# why not distribute the unit tests?
+			# why not have 'em as python modules in the python directory though?
 			IECore
 			..
 			GafferUI
