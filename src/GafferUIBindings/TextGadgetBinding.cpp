@@ -14,7 +14,7 @@ void GafferUIBindings::bindTextGadget()
 {
 	typedef class_<TextGadget, TextGadgetPtr, boost::noncopyable, bases<Gadget> > TextGadgetPyClass;
 
-	TextGadgetPyClass( "TextGadget", init<IECore::FontPtr, const std::string &>() )
+	TextGadgetPyClass( "TextGadget", init<const std::string &>() )
 		.def( "getFont", &TextGadget::getFont )
 		.def( "setFont", &TextGadget::setFont )
 		.def( "getText", &TextGadget::getText, return_value_policy<copy_const_reference>() )

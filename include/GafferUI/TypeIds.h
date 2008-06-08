@@ -14,7 +14,10 @@ enum TypeId
 	TextGadgetTypeId = 410005,
 	NameGadgetTypeId = 410006,
 	IndividualContainerTypeId = 410007,
-	FrameTypeId = 410008
+	FrameTypeId = 410008,
+	StyleTypeId = 410009,
+	StandardStyleTypeId = 410010,
+	NoduleTypeId = 410011,
 };
 
 } // namespace GafferUI

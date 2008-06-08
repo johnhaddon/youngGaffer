@@ -13,12 +13,18 @@ class TextGadget : public Gadget
 
 	public :
 
-		TextGadget( IECore::FontPtr font, const std::string &text );
+		TextGadget( const std::string &text );
 		virtual ~TextGadget();
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( TextGadget, TextGadgetTypeId, Gadget );
 
-		IECore::FontPtr getFont();
+		/// Returns the font that will be used to display the text.
+		/// If this has not been set it will default to getStyle()->labelFont().
+		/// \todo This should return ConstFontPtr, but there are non-const methods
+		/// which should be const in IECore::Font.
+		IECore::FontPtr getFont() const;
+		/// Sets the font used to display the text - this overrides the font
+		/// set by the Style. Passing 0 reverts to the font from the Style.
 		void setFont( IECore::FontPtr font );
 		
 		const std::string &getText() const;

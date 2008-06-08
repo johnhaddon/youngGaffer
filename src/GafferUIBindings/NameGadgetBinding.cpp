@@ -14,7 +14,7 @@ void GafferUIBindings::bindNameGadget()
 {
 	typedef class_<NameGadget, NameGadgetPtr, boost::noncopyable, bases<TextGadget> > NameGadgetPyClass;
 
-	NameGadgetPyClass( "NameGadget", init<IECore::FontPtr, Gaffer::GraphComponentPtr>() )
+	NameGadgetPyClass( "NameGadget", init<Gaffer::GraphComponentPtr>() )
 		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( NameGadget )
 	;
 		

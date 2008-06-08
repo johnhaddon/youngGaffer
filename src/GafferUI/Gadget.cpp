@@ -1,4 +1,5 @@
 #include "GafferUI/Gadget.h"
+#include "GafferUI/Style.h"
 
 #include "IECore/SimpleTypedData.h"
 
@@ -9,7 +10,7 @@ using namespace Imath;
 using namespace std;
 
 Gadget::Gadget( const std::string &name )
-	:	GraphComponent( name )
+	:	GraphComponent( name ), m_style( Style::getDefaultStyle() )
 {
 }
 
@@ -25,6 +26,20 @@ bool Gadget::acceptsChild( Gaffer::ConstGraphComponentPtr potentialChild ) const
 bool Gadget::acceptsParent( const Gaffer::GraphComponent *potentialParent ) const
 {
 	return potentialParent->isInstanceOf( staticTypeId() );
+}
+
+ConstStylePtr Gadget::getStyle() const
+{
+	return m_style;
+}
+
+void Gadget::setStyle( ConstStylePtr style )
+{
+	if( style!=m_style )
+	{
+		m_style = style;
+		renderRequestSignal()( this );
+	}
 }
 
 void Gadget::render( IECore::RendererPtr renderer ) const

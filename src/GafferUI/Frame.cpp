@@ -1,4 +1,5 @@
 #include "GafferUI/Frame.h"
+#include "GafferUI/Style.h"
 
 #include "IECore/CurvesPrimitive.h"
 #include "IECore/MeshPrimitive.h"
@@ -16,7 +17,7 @@ static const int cornerSegments = 10;
 /// \todo I suspect there should be a central resource class providing these shapes to all
 /// Gadgets. Maybe it's a Style class? And it has methods to draw these elements straight
 /// to a renderer?
-static CurvesPrimitivePtr cornerCurve()
+/*static CurvesPrimitivePtr cornerCurve()
 {
 	static CurvesPrimitivePtr c = 0;
 	if( !c )
@@ -60,7 +61,7 @@ static MeshPrimitivePtr cornerMesh()
 		m = new MeshPrimitive( vertsPerFace, vertIds, "linear", points );
 	}
 	return m;
-}
+}*/
 
 /*static CurvesPrimitivePtr horizonalLine()
 {
@@ -93,7 +94,7 @@ static CurvesPrimitivePtr verticalLine()
 	}
 	return c;
 }*/
-
+/*
 static MeshPrimitivePtr rectangleMesh()
 {
 	static MeshPrimitivePtr m = 0;
@@ -118,7 +119,7 @@ static MeshPrimitivePtr rectangleMesh()
 		m = new MeshPrimitive( vertsPerFace, vertIds, "linear", points );
 	}
 	return m;
-}
+}*/
 
 Frame::Frame( GadgetPtr child )
 	:	IndividualContainer( child ), m_border( 1 )
@@ -150,7 +151,10 @@ void Frame::doRender( IECore::RendererPtr renderer ) const
 		renderer->setAttribute( "gl:curvesPrimitive:useGLLines", new IECore::BoolData( true ) );
 		renderer->setAttribute( "color", new IECore::Color3fData( Color3f( 0.2 ) ) );
 	
-		M44f m;
+		getStyle()->renderFrame( renderer, Box2f( V2f( b.min.x, b.min.y ), V2f( b.max.x, b.max.y ) ), m_border );
+	
+		/// \todo Remove All this dead code. It's just here in case it needs moving into the Style class at some point.
+		/*M44f m;
 		MeshPrimitivePtr rectangle = rectangleMesh();
 		V3fVectorDataPtr p = static_pointer_cast<V3fVectorData>( rectangle->variables["P"].data );
 		p->writable()[0] = V3f( b.min.x, b.min.y - m_border, 0 );
@@ -200,7 +204,7 @@ void Frame::doRender( IECore::RendererPtr renderer ) const
 			renderer->concatTransform( m );
 			cornerCurve()->render( renderer );
 			cornerMesh()->render( renderer );
-		renderer->transformEnd();
+		renderer->transformEnd();*/
 	
 	renderer->attributeEnd();
 	

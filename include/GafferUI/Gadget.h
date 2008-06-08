@@ -17,6 +17,7 @@ namespace GafferUI
 {
 
 IE_CORE_FORWARDDECLARE( Gadget );
+IE_CORE_FORWARDDECLARE( Style );
 
 /// Gadgets are UI elements implemented on top of the Cortex project infrastructure - 
 /// they draw themselves using the Renderer interface, and provide an interface for
@@ -57,6 +58,16 @@ class Gadget : public Gaffer::GraphComponent
 		virtual bool acceptsChild( Gaffer::ConstGraphComponentPtr potentialChild ) const;
 		/// Gadgets only accept other Gadgets as parent.
 		virtual bool acceptsParent( const Gaffer::GraphComponent *potentialParent ) const;		
+		//@}
+
+		/// @name Style
+		/// Every Gadget has a Style object to define its appearance. This is set
+		/// to the result of Style::getDefaultStyle() on construction but can be
+		/// subsequently changed if necessary.
+		////////////////////////////////////////////////////////////////////
+		//{@
+		ConstStylePtr getStyle() const;
+		void setStyle( ConstStylePtr style );
 		//@}
 
 		/// @name Display
@@ -100,6 +111,10 @@ class Gadget : public Gaffer::GraphComponent
 		virtual void doRender( IECore::RendererPtr renderer ) const = 0;
 		
 	private :
+		
+		Gadget();
+		
+		ConstStylePtr m_style;
 		
 		RenderRequestSignal m_renderRequestSignal;
 			

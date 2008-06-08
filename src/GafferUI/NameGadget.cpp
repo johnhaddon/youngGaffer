@@ -5,8 +5,8 @@
 
 using namespace GafferUI;
 
-NameGadget::NameGadget( IECore::FontPtr font, Gaffer::GraphComponentPtr object )
-	:	TextGadget( font, object->getName() )
+NameGadget::NameGadget( Gaffer::GraphComponentPtr object )
+	:	TextGadget( object->getName() )
 {
 	object->nameChangedSignal().connect( boost::bind( &NameGadget::nameChanged, this, ::_1 ) );
 }

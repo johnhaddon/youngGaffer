@@ -1,5 +1,6 @@
 #include "GafferUI/NodeGadget.h"
 #include "GafferUI/NameGadget.h"
+#include "GafferUI/Style.h"
 
 #include "IECore/MeshPrimitive.h"
 
@@ -7,9 +8,8 @@ using namespace GafferUI;
 using namespace Imath;
 using namespace IECore;
 
-/// \todo I suspect there should be a central resource class providing the font to all gadgets.
 NodeGadget::NodeGadget( Gaffer::NodePtr node )
-	:	Frame( new NameGadget( new Font( "/usr/X11R6/lib/X11/fonts/TTF/Vera.ttf" ), node ) ), m_node( node.get() )
+	:	Frame( new NameGadget( node ) ), m_node( node.get() )
 {
 }
 

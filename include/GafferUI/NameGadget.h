@@ -13,7 +13,7 @@ class NameGadget : public TextGadget
 
 	public :
 
-		NameGadget( IECore::FontPtr font, Gaffer::GraphComponentPtr object );
+		NameGadget( Gaffer::GraphComponentPtr object );
 		virtual ~NameGadget();
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( NameGadget, NameGadgetTypeId, TextGadget );
