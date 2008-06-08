@@ -11,6 +11,7 @@ namespace Gaffer
 IE_CORE_FORWARDDECLARE( Plug )
 IE_CORE_FORWARDDECLARE( ValuePlug )
 IE_CORE_FORWARDDECLARE( Node )
+IE_CORE_FORWARDDECLARE( ScriptNode )
 
 /// Threading
 ///
@@ -50,6 +51,11 @@ class Node : public GraphComponent
 		/// Called when the input changes on a plug of this node.
 		UnaryPlugSignal &plugInputChangedSignal();
 		//@}
+		
+		/// Convenience function which simply returns ancestor<ScriptNode>()
+		ScriptNodePtr scriptNode();
+		/// Convenience function which simply returns ancestor<ScriptNode>()
+		ConstScriptNodePtr scriptNode() const;
 		
 		/// Accepts only Nodes and Plugs.
 		virtual bool acceptsChild( ConstGraphComponentPtr potentialChild ) const;

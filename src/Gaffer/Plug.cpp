@@ -37,13 +37,13 @@ bool Plug::acceptsParent( const GraphComponent *potentialParent ) const
 
 NodePtr Plug::node()
 {
-	return parent<Node>();
+	return ancestor<Node>();
 }
 
 
 ConstNodePtr Plug::node() const
 {
-	return parent<const Node>();
+	return ancestor<Node>();
 }
 
 Plug::Direction Plug::direction() const

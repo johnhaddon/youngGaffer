@@ -1,4 +1,5 @@
 #include "Gaffer/Node.h"
+#include "Gaffer/ScriptNode.h"
 
 using namespace Gaffer;
 
@@ -26,6 +27,16 @@ Node::UnaryPlugSignal &Node::plugInputChangedSignal()
 	return m_plugInputChangedSignal;
 }
 
+ScriptNodePtr Node::scriptNode()
+{
+	return ancestor<ScriptNode>();
+}
+
+ConstScriptNodePtr Node::scriptNode() const
+{
+	return ancestor<ScriptNode>();
+}
+		
 bool Node::acceptsChild( ConstGraphComponentPtr potentialChild ) const
 {
 	if( !GraphComponent::acceptsChild( potentialChild ) )

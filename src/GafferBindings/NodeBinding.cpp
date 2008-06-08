@@ -2,7 +2,7 @@
 
 #include "GafferBindings/NodeBinding.h"
 #include "GafferBindings/SignalBinding.h"
-#include "Gaffer/Node.h"
+#include "Gaffer/ScriptNode.h"
 #include "Gaffer/Plug.h"
 
 #include "IECore/bindings/Wrapper.h"
@@ -50,6 +50,7 @@ void GafferBindings::bindNode()
 
 	scope s = NodePyClass( "Node" )
 		.def( init<const std::string &>() )
+		.def( "scriptNode", (ScriptNodePtr (Node::*)())&Node::scriptNode )
 		.def( "plugSetSignal", &Node::plugSetSignal, return_internal_reference<1>() )
 		.def( "plugDirtiedSignal", &Node::plugDirtiedSignal, return_internal_reference<1>() )
 		.def( "plugInputChangedSignal", &Node::plugInputChangedSignal, return_internal_reference<1>() )

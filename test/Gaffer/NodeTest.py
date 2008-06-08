@@ -107,7 +107,18 @@ class NodeTest( unittest.TestCase ) :
 		self.assertEqual( n2.getChild( "sum" ).getDirty(), True )
 		
 		self.assertEqual( n2.getChild( "sum" ).getValue(), 5 )
-				
+	
+	def testScriptNode( self ) :
+	
+		n = Gaffer.Node()
+		self.assertEqual( n.scriptNode(), None )
+		
+		sn = Gaffer.ScriptNode()
+		sn.n1 = Gaffer.Node()
+		sn.n1.n = n
+		
+		self.assert_( n.scriptNode().isSame( sn ) )		
+					
 if __name__ == "__main__":
 	unittest.main()
 	

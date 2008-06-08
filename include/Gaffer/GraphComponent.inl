@@ -1,22 +1,6 @@
 #ifndef GAFFER_GRAPHCOMPONENT_INL
 #define GAFFER_GRAPHCOMPONENT_INL
 
-/// \todo Move me to IECore
-namespace IECore
-{
-
-template<typename T>
-T *runTimeCast( RunTimeTyped *src )
-{
-	if( !src )
-	{
-		return 0;
-	}
-	return src->isInstanceOf( T::staticTypeId() ) ? static_cast<T *>( src ) : 0;
-}
-
-}
-
 namespace Gaffer
 {
 
@@ -61,6 +45,38 @@ template<typename T>
 typename T::ConstPtr GraphComponent::parent() const
 {
 	return IECore::runTimeCast<const T>( m_parent );
+}
+
+template<typename T>
+typename T::Ptr GraphComponent::ancestor()
+{
+	GraphComponentPtr ancestor = m_parent;
+	while( ancestor )
+	{
+		typename T::Ptr typedAncestor = IECore::runTimeCast<T>( ancestor );
+		if( typedAncestor )
+		{
+			return typedAncestor;
+		}
+		ancestor = ancestor->m_parent;
+	}
+	return 0;
+}
+
+template<typename T>
+typename T::ConstPtr GraphComponent::ancestor() const
+{
+	GraphComponentPtr ancestor = m_parent;
+	while( ancestor )
+	{
+		typename T::Ptr typedAncestor = IECore::runTimeCast<T>( ancestor );
+		if( typedAncestor )
+		{
+			return typedAncestor;
+		}
+		ancestor = ancestor->m_parent;
+	}
+	return 0;
 }
 
 } // namespace Gaffer

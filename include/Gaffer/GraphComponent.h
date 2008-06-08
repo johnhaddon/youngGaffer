@@ -77,8 +77,16 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		template<typename T>
 		typename T::Ptr parent();
 		/// Returns the parent for this component, performing a runTimeCast to T.
+		/// \todo Create an equivalent function in the python binding, but have it
+		/// be passed a typeid for the required return type.
 		template<typename T>
 		typename T::ConstPtr parent() const;
+		/// Returns the first ancestor of type T.
+		template<typename T>
+		typename T::Ptr ancestor();
+		/// Returns the first ancestor of type T.
+		template<typename T>
+		typename T::ConstPtr ancestor() const;
 		/// A signal emitted when a child is added to this component. Slots should
 		/// be of the form void ( parent, child ).
 		BinarySignal &childAddedSignal();
