@@ -3,14 +3,33 @@ import gtk
 import gtk.gtkgl
 from OpenGL.GL import *
 import IECoreGL
+import IECore
 
 ## The GLWidget is a base class for all widgets which wish to draw using OpenGL.
 # Derived classes override the draw() method to achieve this.
 class GLWidget( Widget ) :
 
-	def __init__( self ) :
+	## This enum defines the optional elements of the GL buffer used
+	# for display.
+	BufferOptions = IECore.Enum.create(
+		"Alpha",
+		"Depth",
+		"Double"
+	)	
 	
-		displayMode = gtk.gdkgl.MODE_RGBA | gtk.gdkgl.MODE_DEPTH | gtk.gdkgl.MODE_DOUBLE
+	def __init__( self, bufferOptions = () ) :
+	
+		if self.BufferOptions.Alpha in bufferOptions :
+			displayMode = gtk.gdkgl.MODE_RGBA
+		else :
+			displayMode = gtk.gdkgl.MODE_RGB
+		
+		if self.BufferOptions.Depth in bufferOptions :
+			displayMode |= gtk.gdkgl.MODE_DEPTH 
+		
+		if self.BufferOptions.Double in bufferOptions :
+			displayMode |= gtk.gdkgl.MODE_DOUBLE 
+			
 		glConfig = gtk.gdkgl.Config( mode=displayMode )
 		drawingArea = gtk.gtkgl.DrawingArea( glConfig )
 		Widget.__init__( self, drawingArea )
