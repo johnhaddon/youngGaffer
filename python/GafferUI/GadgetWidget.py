@@ -210,7 +210,7 @@ class GadgetWidget( GLWidget ) :
 		
 		drawable = self.gtkWidget().get_gl_drawable()
 		context = self.gtkWidget().get_gl_context()
-		
+				
 		if not drawable.gl_begin( context )  :
 			return []
 		
@@ -229,9 +229,13 @@ class GadgetWidget( GLWidget ) :
 
 		if not len( selection ) :
 			return []
+		
+		if context.get_gl_config().has_depth_buffer() :
+			selection.sort()
+			name = selection[0].name.value()
+		else :
+			name = selection[-1].name.value()
 			
-		selection.sort()
-		name = selection[0].name.value()
 		nameComponents = name.split( "." )
 		result = [ self.__gadget ]
 		assert( result[0].getName() == nameComponents[0] )
