@@ -16,13 +16,15 @@ class GraphGadget : public ContainerGadget
 		GraphGadget( Gaffer::NodePtr parent );
 		virtual ~GraphGadget();
 
-		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( GraphGadget, GraphGadgetTypeId, Gadget );
+		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( GraphGadget, GraphGadgetTypeId, ContainerGadget );
 
 		virtual Imath::M44f childTransform( ConstGadgetPtr child ) const;
 
 	protected :
 
+		bool keyPressed( GadgetPtr gadget, const KeyEvent &event );
 		void childAdded( GraphComponent *parent, GraphComponent *child );
+		void childRemoved( GraphComponent *parent, GraphComponent *child );
 			
 };
 

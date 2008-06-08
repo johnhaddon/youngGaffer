@@ -13,12 +13,16 @@
 using namespace GafferUI;
 using namespace Imath;
 using namespace IECore;
+using namespace std;
 
 GraphGadget::GraphGadget( Gaffer::NodePtr parent )
 {
 	
 	parent->childAddedSignal().connect( boost::bind( &GraphGadget::childAdded, this, ::_1,  ::_2 ) );
+	parent->childRemovedSignal().connect( boost::bind( &GraphGadget::childRemoved, this, ::_1,  ::_2 ) );
 
+	keyPressSignal().connect( boost::bind( &GraphGadget::keyPressed, this, ::_1,  ::_2 ) );
+	
 }
 
 GraphGadget::~GraphGadget()
@@ -43,8 +47,13 @@ Imath::M44f GraphGadget::childTransform( ConstGadgetPtr child ) const
 	return result;
 }
 
-static Imath::Rand32 r;
+bool GraphGadget::keyPressed( GadgetPtr gadget, const KeyEvent &event )
+{
+	cerr << "KEYPRESS" << endl;
+	return false;
+}
 
+static Imath::Rand32 r;
 void GraphGadget::childAdded( GraphComponent *parent, GraphComponent *child )
 {
 	Gaffer::FloatPlugPtr x = new Gaffer::FloatPlug( "__uiX" );
@@ -57,4 +66,9 @@ void GraphGadget::childAdded( GraphComponent *parent, GraphComponent *child )
 	child->addChild( y );
 	
 	addChild( new NodeGadget( static_cast<Gaffer::Node *>( child ) ) );
+}
+
+void GraphGadget::childRemoved( GraphComponent *parent, GraphComponent *child )
+{
+	
 }

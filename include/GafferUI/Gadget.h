@@ -95,6 +95,7 @@ class Gadget : public Gaffer::GraphComponent
 		/// The signal triggered by a button release event.
 		ButtonSignal &buttonReleaseSignal();
 		/// A signal used to represent key related events.
+		/// \todo We need some sort of focus model to say who gets the events.
 		typedef boost::signal<bool ( GadgetPtr, const KeyEvent &key ), EventSignalCombiner> KeySignal;
 		/// The signal triggered by a key press event.
 		KeySignal &keyPressSignal();

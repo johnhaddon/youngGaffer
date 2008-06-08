@@ -148,8 +148,9 @@ void Frame::doRender( IECore::RendererPtr renderer ) const
 	
 	renderer->attributeBegin();
 	
+		/// \todo These shouldn't be here
 		renderer->setAttribute( "gl:curvesPrimitive:useGLLines", new IECore::BoolData( true ) );
-		renderer->setAttribute( "color", new IECore::Color3fData( Color3f( 0.2 ) ) );
+		//renderer->setAttribute( "color", new IECore::Color3fData( Color3f( 0.2 ) ) );
 	
 		getStyle()->renderFrame( renderer, Box2f( V2f( b.min.x, b.min.y ), V2f( b.max.x, b.max.y ) ), m_border );
 	

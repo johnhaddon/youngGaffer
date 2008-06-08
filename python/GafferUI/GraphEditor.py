@@ -12,11 +12,13 @@ class GraphEditor( EditorWidget ) :
 		
 		self.__gadgetWidget.gtkWidget().connect( "button-press-event", self.makeNode )
 		
+	## \todo Remove me
 	def makeNode( self, widget, event ) :
 	
-		print "MAKING NODE!"
-		
-		self.scriptNode().addChild( Node() )
+		if event.state & gtk.gdk.MOD2_MASK :
+			print "MAKING NODE!"
+			self.scriptNode().addChild( Node() )
+			return True
 	
 		return False
 

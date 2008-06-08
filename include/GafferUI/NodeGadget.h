@@ -3,7 +3,7 @@
 
 #include "GafferUI/Frame.h"
 
-#include "Gaffer/Node.h"
+#include "Gaffer/ScriptNode.h"
 
 namespace GafferUI
 {
@@ -24,9 +24,16 @@ class NodeGadget : public Frame
 		/// Accepts no children.
 		virtual bool acceptsChild( Gaffer::ConstGraphComponentPtr potentialChild ) const;
 
+	protected :
+	
+		virtual void doRender( IECore::RendererPtr renderer ) const;
+		
 	private :
 		
 		Gaffer::Node *m_node;
+		
+		bool buttonPressed( GadgetPtr gadget, const ButtonEvent &event );
+		void selectionChanged( Gaffer::NodeSetPtr selection, Gaffer::NodePtr node );
 		
 };
 
