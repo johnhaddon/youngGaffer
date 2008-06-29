@@ -3,7 +3,7 @@
 
 #include "GafferUI/ModifiableEvent.h"
 
-#include "OpenEXR/ImathVec.h"
+#include "IECore/LineSegment.h"
 
 namespace GafferUI
 {
@@ -26,17 +26,15 @@ struct ButtonEvent : public ModifiableEvent
 
 	ButtonEvent(
 		Buttons b=None,
-		const Imath::V3f &rayOrigin = Imath::V3f( 0.0f ),
-		const Imath::V3f &rayDirection = Imath::V3f( 0.0f ),
+		const IECore::LineSegment3f &Line=IECore::LineSegment3f(),
 		Modifiers m = ModifiableEvent::None
 	)
-		:	ModifiableEvent( m ), buttons( b ), origin( rayOrigin ), direction( rayDirection )
+		:	ModifiableEvent( m ), buttons( b ), line( Line )
 	{
 	};
 	
 	Buttons buttons;
-	Imath::V3f origin;
-	Imath::V3f direction;
+	IECore::LineSegment3f line;
 	
 };
 

@@ -11,11 +11,10 @@ void GafferUIBindings::bindButtonEvent()
 {
 	scope s = class_<ButtonEvent, bases<ModifiableEvent> >( "ButtonEvent" )
 		.def( init<ButtonEvent::Buttons>() )
-		.def( init<ButtonEvent::Buttons, const Imath::V3f &, const Imath::V3f &>() )
-		.def( init<ButtonEvent::Buttons, const Imath::V3f &, const Imath::V3f &, ModifiableEvent::Modifiers>() )
+		.def( init<ButtonEvent::Buttons, const IECore::LineSegment3f &>() )
+		.def( init<ButtonEvent::Buttons, const IECore::LineSegment3f &, ModifiableEvent::Modifiers>() )
 		.def_readwrite( "buttons", &ButtonEvent::buttons )
-		.def_readwrite( "origin", &ButtonEvent::origin )
-		.def_readwrite( "direction", &ButtonEvent::direction )
+		.def_readwrite( "line", &ButtonEvent::line )
 	;
 	
 	enum_<ButtonEvent::Buttons>( "Buttons" )
