@@ -29,7 +29,7 @@ Imath::Box3f ContainerGadget::bound() const
 		ConstGadgetPtr c = boost::static_pointer_cast<const Gadget>( *it );
 		Imath::Box3f b = c->bound();
 		Imath::M44f m = childTransform( c );
-		Imath::transform( b, m );
+		b = Imath::transform( b, m );
 		result.extendBy( b );
 	}
 	return result;
