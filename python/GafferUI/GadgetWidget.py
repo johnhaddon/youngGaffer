@@ -1,7 +1,6 @@
 from GLWidget import GLWidget
 from _GafferUI import ButtonEvent, ModifiableEvent
 from OpenGL.GL import *
-from IECoreGL import Renderer
 import IECore
 import IECoreGL
 import gtk
@@ -36,7 +35,10 @@ class GadgetWidget( GLWidget ) :
 
 		self.__camera = IECore.Camera()
 		self.__cameraController = IECore.CameraController( self.__camera )
-		
+
+		self.__renderer = IECoreGL.Renderer()
+		self.__renderer.setOption( "gl:mode", IECore.StringData( "deferred" ) )
+				
 		self.setCameraMode( cameraMode )
 		self.setGadget( gadget )
 		
@@ -97,19 +99,16 @@ class GadgetWidget( GLWidget ) :
 			
 		if self.__scene :
 			return
-
-		renderer = Renderer()
-		renderer.setOption( "gl:mode", IECore.StringData( "deferred" ) )
 			
-		renderer.worldBegin()
+		self.__renderer.worldBegin()
 		if 1 :
 			
-			renderer.shader( "surface", "constant", {} )
-			self.__gadget.render( renderer )
+			self.__renderer.shader( "surface", "constant", {} )
+			self.__gadget.render( self.__renderer )
 
-		renderer.worldEnd()
+		self.__renderer.worldEnd()
 		
-		self.__scene = renderer.scene()
+		self.__scene = self.__renderer.scene()
 
 	def __buttonPress( self, widget, event ) :
 			
