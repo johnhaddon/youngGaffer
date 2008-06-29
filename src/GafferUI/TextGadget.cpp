@@ -1,6 +1,8 @@
 #include "GafferUI/TextGadget.h"
 #include "GafferUI/Style.h"
 
+#include "IECore/SimpleTypedData.h"
+
 using namespace GafferUI;
 using namespace IECore;
 using namespace boost;
@@ -46,5 +48,10 @@ Imath::Box3f TextGadget::bound() const
 
 void TextGadget::doRender( IECore::RendererPtr renderer ) const
 {
-	renderer->text( getFont()->fileName(), m_text );
+	renderer->attributeBegin();
+		/// \todo Have the color and wotnot come from the style.
+		renderer->setAttribute( "color", new IECore::Color3fData( Imath::Color3f( 1, 1, 0 ) ) );
+		renderer->setAttribute( "gl:textPrimitive:type", new IECore::StringData( "sprite" ) );
+		renderer->text( getFont()->fileName(), m_text );
+	renderer->attributeEnd();
 }
