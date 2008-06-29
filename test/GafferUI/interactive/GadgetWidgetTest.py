@@ -7,7 +7,8 @@ import gtk
 window = GafferUI.Window( title="GadgetWidget test" )
 window.gtkWidget().connect( "delete_event", gtk.main_quit )
 
-s = GafferUI.GadgetWidget( GafferUI.NodeGadget() )
+n = Gaffer.Node()
+s = GafferUI.GadgetWidget( GafferUI.NodeGadget( n ) )
 window.setChild( s )
 
 window.show()
