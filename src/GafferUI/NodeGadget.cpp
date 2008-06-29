@@ -46,14 +46,13 @@ bool NodeGadget::acceptsChild( Gaffer::ConstGraphComponentPtr potentialChild ) c
 
 void NodeGadget::doRender( IECore::RendererPtr renderer ) const
 {
-	cerr << "RENDER!" << endl;
+	/// \todo Sort this mess out - where is the push/pop of attributes for a start?
 	Gaffer::ScriptNodePtr script = m_node->scriptNode();
 	if( script && script->selection()->contains( m_node ) )
 	{
 		/// \todo The Style should be doing this or the frame should have a colour member
 		/// that can be set (and which falls through to style?)
 		renderer->setAttribute( "color", new Color3fData( Color3f( 1 ) ) );
-		cerr << "SET COLOR!" << endl;
 	}
 	else
 	{

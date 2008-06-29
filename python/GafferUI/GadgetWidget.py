@@ -1,5 +1,5 @@
 from GLWidget import GLWidget
-from _GafferUI import ButtonEvent, ModifiableEvent
+from _GafferUI import ButtonEvent, ModifiableEvent, ContainerGadget
 from OpenGL.GL import *
 import IECore
 import IECoreGL
@@ -41,6 +41,9 @@ class GadgetWidget( GLWidget ) :
 				
 		self.setCameraMode( cameraMode )
 		self.setGadget( gadget )
+		
+		self.__lastButtonPressGadgets = None
+		self.__dragSourceGadget = None
 		
 	def setGadget( self, gadget ) :
 	
@@ -123,10 +126,10 @@ class GadgetWidget( GLWidget ) :
 			return self.__cameraButtonPress( event );
 
 		gadgets = self.__select( event )
+		self.__lastButtonPressGadgets = gadgets
 		for gadget in gadgets :
 			
 			handled = gadget.buttonPressSignal()( gadgets[-1], gadgetEvent )
-			print gadget, handled
 			if handled :
 				return True
 		
@@ -145,6 +148,11 @@ class GadgetWidget( GLWidget ) :
 			return self.__cameraButtonRelease( event );
 
 		gadgets = self.__select( event )
+		self.__lastButtonPressGadgets = False
+		if self.__dragSourceGadget :
+			## \todo Send some kind of dragEnd/drop signal
+			self.__dragSourceGadget = False
+			
 		return True
 
 	def __motion( self, widget, event ) :
@@ -156,7 +164,16 @@ class GadgetWidget( GLWidget ) :
 		if gadgetEvent.modifiers & ModifiableEvent.Modifiers.Alt :
 			return self.__cameraMotion( event );
 
-		gadgets = self.__select( event )
+		if self.__lastButtonPressGadgets and not self.__dragSourceGadget :
+			# try to start a new drag
+			g, d = self.__dispatchEvent( self.__lastButtonPressGadgets, "dragBeginSignal", gadgetEvent )
+			if d :
+				self.__dragSourceGadget = g
+			self.__lastButtonPressGadgets = None
+		elif self.__dragSourceGadget :
+			# update an existing drag
+			self.__dragSourceGadget.dragUpdateSignal()( self.__dragSourceGadget, gadgetEvent )
+		
 		return True
 
 	def __enterNotify( self, widget, event ) :
@@ -179,25 +196,23 @@ class GadgetWidget( GLWidget ) :
 		return True
 		
 	def __dispatchEvent( self, gadgets, signalName, gadgetEvent ) :
-	
+		
 		for i in range( 0, len( gadgets ) ) :
-		
-			if i > 0 :
-				if hasattr( gadgetEvent, "rayOrigin" ) :
-					m = gadgets[i-1].childTransform( gadgets[i] )
-					m.invert()
-					gadgetEvent.rayOrigin *= m
-					gadgetEvent.rayDirection = m.multDirMatrix( gadgetEvent.rayDirection )
-					gadgetEvent.rayDirection = gadgetEvent.rayDirection.normalized()
-		
-			signal = getattr( gadgets[i], signalName )()
-			
-			handled = signal( gadgets[-1], gadgetEvent )
-			print gadget, handled
-			if handled :
-				return handled
 				
-		return False
+			if i > 0 :
+				parent = gadgets[i-1]
+				if hasattr( gadgetEvent, "line" ) and parent.isInstanceOf( ContainerGadget.staticTypeId() ) :
+					m = parent.childTransform( gadgets[i] )
+					m.invert( True )
+					gadgetEvent.line *= m
+					
+			signal = getattr( gadgets[i], signalName )()
+
+			result = signal( gadgets[-1], gadgetEvent )
+			if result :
+				return gadgets[i], result
+				
+		return None, None
 
 	# Returns a list containing the gadget hierarchy under event.x, event.y.
 	# The top level parent is the first element in the list and the leaf gadget
@@ -338,8 +353,7 @@ class GadgetWidget( GLWidget ) :
 		
 			if hasattr( gtkEvent, "x" ) :
 			
-				event.rayOrigin, event.rayDirection = self.__cameraController.unproject( IECore.V2i( int(gtkEvent.x), int(gtkEvent.y) ) )
-				event.rayDirection = ( event.rayDirection - event.rayOrigin ).normalized()
+				event.line.p0, event.line.p1 = self.__cameraController.unproject( IECore.V2i( int(gtkEvent.x), int(gtkEvent.y) ) )
 		
 		return event
 		

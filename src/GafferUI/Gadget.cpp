@@ -63,6 +63,21 @@ Gadget::ButtonSignal &Gadget::buttonReleaseSignal()
 	return m_buttonReleaseSignal;
 }
 
+Gadget::ButtonSignal &Gadget::dragBeginSignal()
+{
+	return m_dragBeginSignal;
+}
+
+Gadget::ButtonSignal &Gadget::dragUpdateSignal()
+{
+	return m_dragUpdateSignal;
+}
+
+Gadget::ButtonSignal &Gadget::dropSignal()
+{
+	return m_dropSignal;
+}
+		
 Gadget::KeySignal &Gadget::keyPressSignal()
 {
 	return m_keyPressSignal;

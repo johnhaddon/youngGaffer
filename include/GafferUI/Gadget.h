@@ -94,6 +94,12 @@ class Gadget : public Gaffer::GraphComponent
 		ButtonSignal &buttonPressSignal();
 		/// The signal triggered by a button release event.
 		ButtonSignal &buttonReleaseSignal();
+		
+		/// \todo Document me! Add specific drag/drop events too
+		ButtonSignal &dragBeginSignal();
+		ButtonSignal &dragUpdateSignal();
+		ButtonSignal &dropSignal();
+		
 		/// A signal used to represent key related events.
 		/// \todo We need some sort of focus model to say who gets the events.
 		typedef boost::signal<bool ( GadgetPtr, const KeyEvent &key ), EventSignalCombiner> KeySignal;
@@ -121,6 +127,10 @@ class Gadget : public Gaffer::GraphComponent
 			
 		ButtonSignal m_buttonPressSignal;
 		ButtonSignal m_buttonReleaseSignal;
+
+		ButtonSignal m_dragBeginSignal;
+		ButtonSignal m_dragUpdateSignal;
+		ButtonSignal m_dropSignal;
 
 		KeySignal m_keyPressSignal;
 		KeySignal m_keyReleaseSignal;

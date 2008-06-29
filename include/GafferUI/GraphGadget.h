@@ -13,7 +13,7 @@ class GraphGadget : public ContainerGadget
 
 	public :
 
-		GraphGadget( Gaffer::NodePtr parent );
+		GraphGadget( Gaffer::NodePtr graphRoot );
 		virtual ~GraphGadget();
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( GraphGadget, GraphGadgetTypeId, ContainerGadget );
@@ -25,7 +25,16 @@ class GraphGadget : public ContainerGadget
 		bool keyPressed( GadgetPtr gadget, const KeyEvent &event );
 		void childAdded( GraphComponent *parent, GraphComponent *child );
 		void childRemoved( GraphComponent *parent, GraphComponent *child );
-			
+		
+		bool dragBegin( GadgetPtr gadget, const ButtonEvent &event );	
+		bool dragUpdate( GadgetPtr gadget, const ButtonEvent &event );
+		
+	private :
+	
+		Gaffer::Node *m_graphRoot;
+	
+		Imath::V2f m_lastDragPosition;
+
 };
 
 IE_CORE_DECLAREPTR( GraphGadget );
