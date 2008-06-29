@@ -24,7 +24,6 @@ BOOST_PYTHON_MODULE( _GafferUI )
 	bindModifiableEvent();
 	bindKeyEvent();
 	bindButtonEvent();
-	bindNodeGadget();
 	bindContainerGadget();
 	bindGraphGadget();
 	bindRenderableGadget();
@@ -32,5 +31,6 @@ BOOST_PYTHON_MODULE( _GafferUI )
 	bindFrame();
 	bindTextGadget();
 	bindNameGadget();
+	bindNodeGadget();
 
 }
