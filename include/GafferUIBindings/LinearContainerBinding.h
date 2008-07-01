@@ -1,0 +1,11 @@
+#ifndef GAFFERUIBINDINGS_LINEARCONTAINERBINDING_H
+#define GAFFERUIBINDINGS_LINEARCONTAINERBINDING_H
+
+namespace GafferUIBindings
+{
+
+void bindLinearContainer();
+
+} // namespace GafferUIBindings
+
+#endif // GAFFERUIBINDINGS_LINEARCONTAINERBINDING_H

@@ -13,6 +13,7 @@
 #include "GafferUIBindings/FrameBinding.h"
 #include "GafferUIBindings/TextGadgetBinding.h"
 #include "GafferUIBindings/NameGadgetBinding.h"
+#include "GafferUIBindings/LinearContainerBinding.h"
 
 using namespace GafferUIBindings;
 
@@ -32,5 +33,5 @@ BOOST_PYTHON_MODULE( _GafferUI )
 	bindTextGadget();
 	bindNameGadget();
 	bindNodeGadget();
-
+	bindLinearContainer();
 }
