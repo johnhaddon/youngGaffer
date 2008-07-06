@@ -27,36 +27,6 @@ class NodeTest( unittest.TestCase ) :
 		self.assertEqual( n.getName(), "Node" )	
 	
 	def testOperation( self ) :
-	
-		class AddNode( Gaffer.Node ) :
-		
-			def __init__( self ) :
-			
-				Gaffer.Node.__init__( self )
-				
-				self.setName( "Add" )
-				
-				p1 = Gaffer.IntPlug( "op1", Gaffer.Plug.Direction.In )
-				p2 = Gaffer.IntPlug( "op2", Gaffer.Plug.Direction.In )
-				
-				self.addChild( p1 )
-				self.addChild( p2 )
-				
-				p3 = Gaffer.IntPlug( "sum", Gaffer.Plug.Direction.Out )
-				
-				self.addChild( p3 )
-				
-			def dirty( self, plug ) :
-						
-				if plug.getName()=="op1" or plug.getName()=="op2" :
-					
-					self.getChild( "sum" ).setDirty()
-					
-			def compute( self, plug ) :
-			
-				assert( plug.isSame( self.getChild( "sum" ) ) )
-				
-				plug.setValue( self.getChild("op1").getValue() + self.getChild("op2").getValue() )
 		
 		def dirtyCallback( plug ) :
 		
@@ -66,7 +36,7 @@ class NodeTest( unittest.TestCase ) :
 		
 			NodeTest.lastSet = plug.fullName()
 						
-		n1 = AddNode()
+		n1 = Gaffer.AddNode()
 		
 		cb = []
 		cb.append( n1.plugSetSignal().connect( setCallback ) )	
@@ -95,7 +65,7 @@ class NodeTest( unittest.TestCase ) :
 		
 		# connect another add node onto the output of this one
 		
-		n2 = AddNode()
+		n2 = Gaffer.AddNode()
 		n2.setName( "Add2" )
 		cb.append( n2.plugSetSignal().connect( setCallback ) )
 		cb.append( n2.plugDirtiedSignal().connect( dirtyCallback) )
