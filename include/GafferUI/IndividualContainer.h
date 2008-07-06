@@ -13,7 +13,7 @@ class IndividualContainer : public ContainerGadget
 
 	public :
 
-		IndividualContainer( GadgetPtr child );
+		IndividualContainer( GadgetPtr child=0 );
 		virtual ~IndividualContainer();
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( IndividualContainer, IndividualContainerTypeId, ContainerGadget );
