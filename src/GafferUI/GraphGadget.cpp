@@ -82,7 +82,7 @@ bool GraphGadget::dragBegin( GadgetPtr gadget, const ButtonEvent &event )
 	V3f i;
 	if( event.line.intersect( Plane3f( V3f( 0, 0, 1 ), 0 ), i ) )
 	{
-		m_lastDragPosition = V2i( i.x, i.y );
+		m_lastDragPosition = V2f( i.x, i.y );
 		return true;
 	}
 	return false;
