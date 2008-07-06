@@ -49,6 +49,7 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		//@{
 		/// The datatype used internally to store children.
 		typedef std::list<GraphComponentPtr> ChildContainer;
+		typedef ChildContainer::const_iterator ChildIterator;
 		/// Components can accept or reject potential children by implementing this
 		/// call.
 		virtual bool acceptsChild( ConstGraphComponentPtr potentialChild ) const;
