@@ -38,6 +38,7 @@ void GafferBindings::bindPlug()
 	{
 		scope s( c );
 		enum_<Plug::Direction>( "Direction" )
+			.value( "Invalid", Plug::Invalid )
 			.value( "In", Plug::In )
 			.value( "Out", Plug::Out )
 		;

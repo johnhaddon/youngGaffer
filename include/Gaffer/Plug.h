@@ -52,8 +52,9 @@ class Plug : public GraphComponent
 	
 		enum Direction
 		{
-			In = 0,
-			Out = 1
+			Invalid = 0,
+			In = 1,
+			Out = 2
 		};
 	
 		Plug( const std::string &name=staticTypeName(), Direction direction=In );
