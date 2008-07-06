@@ -37,7 +37,7 @@ void GafferUIBindings::bindGadget()
 	
 	INTRUSIVE_PTR_PATCH( Gadget, GadgetPyClass );
 	
-	implicitly_convertible<GadgetPtr, IECore::RunTimeTypedPtr>();
+	implicitly_convertible<GadgetPtr, Gaffer::GraphComponentPtr>();
 	implicitly_convertible<GadgetPtr, ConstGadgetPtr>();
 
 }
