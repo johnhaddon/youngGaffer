@@ -33,5 +33,8 @@ void IndividualContainer::setChild( GadgetPtr child )
 	{
 		removeChild( c );
 	}
-	addChild( child );
+	if( child )
+	{
+		addChild( child );
+	}
 }
