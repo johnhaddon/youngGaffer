@@ -1,5 +1,5 @@
 import gtk
-from Gaffer import ScriptNode, Node
+from Gaffer import ScriptNode, AddNode
 from GafferUI import EditorWidget, GraphGadget, Panel, GadgetWidget
 
 class GraphEditor( EditorWidget ) :
@@ -17,7 +17,7 @@ class GraphEditor( EditorWidget ) :
 	
 		if event.state & gtk.gdk.MOD2_MASK :
 			print "MAKING NODE!"
-			self.scriptNode().addChild( Node() )
+			self.scriptNode().addChild( AddNode() )
 			return True
 	
 		return False

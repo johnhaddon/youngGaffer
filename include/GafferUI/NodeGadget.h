@@ -1,14 +1,14 @@
 #ifndef GAFFERUI_NODEGADGET_H
 #define GAFFERUI_NODEGADGET_H
 
-#include "GafferUI/Frame.h"
+#include "GafferUI/IndividualContainer.h"
 
 #include "Gaffer/ScriptNode.h"
 
 namespace GafferUI
 {
 
-class NodeGadget : public Frame
+class NodeGadget : public IndividualContainer
 {
 
 	public :
@@ -16,7 +16,7 @@ class NodeGadget : public Frame
 		NodeGadget( Gaffer::NodePtr node );
 		virtual ~NodeGadget();
 
-		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( NodeGadget, NodeGadgetTypeId, Frame );
+		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( NodeGadget, NodeGadgetTypeId, IndividualContainer );
 		
 		Gaffer::NodePtr node();
 		Gaffer::ConstNodePtr node() const;

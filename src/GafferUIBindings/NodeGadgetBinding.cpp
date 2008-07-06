@@ -12,7 +12,7 @@ using namespace GafferUI;
 
 void GafferUIBindings::bindNodeGadget()
 {
-	typedef class_<NodeGadget, NodeGadgetPtr, boost::noncopyable, bases<Frame> > NodeGadgetPyClass;
+	typedef class_<NodeGadget, NodeGadgetPtr, boost::noncopyable, bases<IndividualContainer> > NodeGadgetPyClass;
 
 	NodeGadgetPyClass( "NodeGadget", init<Gaffer::NodePtr>() )
 		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( NodeGadget )

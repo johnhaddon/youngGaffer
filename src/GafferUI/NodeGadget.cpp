@@ -1,6 +1,8 @@
 #include "GafferUI/NodeGadget.h"
 #include "GafferUI/NameGadget.h"
 #include "GafferUI/Style.h"
+#include "GafferUI/LinearContainer.h"
+#include "GafferUI/Nodule.h"
 
 #include "IECore/SimpleTypedData.h"
 
@@ -10,10 +12,39 @@ using namespace GafferUI;
 using namespace Imath;
 using namespace IECore;
 using namespace std;
+using namespace boost;
 
 NodeGadget::NodeGadget( Gaffer::NodePtr node )
-	:	Frame( new NameGadget( node ) ), m_node( node.get() )
+	:	m_node( node.get() )
 {
+	LinearContainerPtr column = new LinearContainer( "column", LinearContainer::Y, LinearContainer::Centre, 0.1f );
+	
+	LinearContainerPtr inputNoduleRow = new LinearContainer( "inputNoduleRow", LinearContainer::X, LinearContainer::Centre, 0.3f );
+	LinearContainerPtr outputNoduleRow = new LinearContainer( "outputNoduleRow", LinearContainer::X, LinearContainer::Centre, 0.3f );
+	
+	for( Gaffer::PlugIterator it=node->plugsBegin(); it!=node->plugsEnd(); it++ )
+	{
+		Gaffer::ConstPlugPtr p = static_pointer_cast<const Gaffer::Plug>( *it );
+		if( p->getName().compare( 0, 2, "__" ) )
+		{
+			/// \todo We need a totally customisable way of saying whether a plug is represented with a nodule or not
+			NodulePtr nodule = new Nodule( const_pointer_cast<Gaffer::Plug>( p ) );
+			if( p->direction()==Gaffer::Plug::In )
+			{
+				inputNoduleRow->addChild( nodule );
+			}
+			else
+			{
+				outputNoduleRow->addChild( nodule );
+			}
+		}
+	}
+	
+	column->addChild( outputNoduleRow );
+	column->addChild( new NameGadget( node ) );
+	column->addChild( inputNoduleRow );
+	
+	setChild( column );
 	
 	Gaffer::ScriptNodePtr script = node->scriptNode();
 	if( script )
@@ -58,7 +89,7 @@ void NodeGadget::doRender( IECore::RendererPtr renderer ) const
 	{
 		renderer->setAttribute( "color", new Color3fData( Color3f( 0.2 ) ) );
 	}
-	Frame::doRender( renderer );
+	IndividualContainer::doRender( renderer );
 }
 
 bool NodeGadget::buttonPressed( GadgetPtr gadget, const ButtonEvent &event )

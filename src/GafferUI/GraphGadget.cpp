@@ -1,6 +1,7 @@
 #include "GafferUI/GraphGadget.h"
 #include "GafferUI/NodeGadget.h"
 #include "GafferUI/ButtonEvent.h"
+#include "GafferUI/Nodule.h"
 
 #include "Gaffer/NumericPlug.h"
 
@@ -79,6 +80,11 @@ void GraphGadget::childRemoved( GraphComponent *parent, GraphComponent *child )
 
 bool GraphGadget::dragBegin( GadgetPtr gadget, const ButtonEvent &event )
 {
+	if( gadget->isInstanceOf( Nodule::staticTypeId() ) )
+	{
+		return false;
+	}
+	
 	V3f i;
 	if( event.line.intersect( Plane3f( V3f( 0, 0, 1 ), 0 ), i ) )
 	{
