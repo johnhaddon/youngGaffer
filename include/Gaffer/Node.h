@@ -2,6 +2,7 @@
 #define GAFFER_NODE_H
 
 #include "Gaffer/GraphComponent.h"
+#include "Gaffer/PlugIterator.h"
 
 #include "IECore/Object.h"
 
@@ -36,6 +37,13 @@ class Node : public GraphComponent
 
 		typedef boost::signal<void (PlugPtr)> UnaryPlugSignal;
 		typedef boost::signal<void (PlugPtr, PlugPtr)> BinaryPlugSignal;
+		
+		/// @name Plug iterators
+		//////////////////////////////////////////////////////////////
+		//@{
+		PlugIterator plugsBegin() const;
+		PlugIterator plugsEnd() const;
+		//@}
 		
 		/// @name Plug signals
 		/// These signals are emitted on events relating to child Plugs

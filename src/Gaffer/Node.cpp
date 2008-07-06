@@ -12,6 +12,16 @@ Node::~Node()
 {
 }
 
+PlugIterator Node::plugsBegin() const
+{
+	return PlugIterator( children().begin(), children().end() );
+}
+
+PlugIterator Node::plugsEnd() const
+{
+	return PlugIterator( children().end(), children().end() );
+}
+		
 Node::UnaryPlugSignal &Node::plugSetSignal()
 {
 	return m_plugSetSignal;
