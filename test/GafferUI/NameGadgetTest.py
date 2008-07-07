@@ -9,7 +9,7 @@ class NameGadgetTest( unittest.TestCase ) :
 	
 		n = Gaffer.Node()
 	
-		g = GafferUI.NameGadget( IECore.Font( "/usr/X11R6/lib/X11/fonts/TTF/Vera.ttf" ), n )
+		g = GafferUI.NameGadget( n )
 		
 		self.assertEqual( g.getText(), n.getName() )
 		
