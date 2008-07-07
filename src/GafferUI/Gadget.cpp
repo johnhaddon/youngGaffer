@@ -63,17 +63,17 @@ Gadget::ButtonSignal &Gadget::buttonReleaseSignal()
 	return m_buttonReleaseSignal;
 }
 
-Gadget::ButtonSignal &Gadget::dragBeginSignal()
+Gadget::DragBeginSignal &Gadget::dragBeginSignal()
 {
 	return m_dragBeginSignal;
 }
 
-Gadget::ButtonSignal &Gadget::dragUpdateSignal()
+Gadget::DragDropSignal &Gadget::dragUpdateSignal()
 {
 	return m_dragUpdateSignal;
 }
 
-Gadget::ButtonSignal &Gadget::dropSignal()
+Gadget::DragDropSignal &Gadget::dropSignal()
 {
 	return m_dropSignal;
 }

@@ -15,6 +15,7 @@
 #include "GafferUIBindings/NameGadgetBinding.h"
 #include "GafferUIBindings/LinearContainerBinding.h"
 #include "GafferUIBindings/NoduleBinding.h"
+#include "GafferUIBindings/DragDropEventBinding.h"
 
 using namespace GafferUIBindings;
 
@@ -36,4 +37,5 @@ BOOST_PYTHON_MODULE( _GafferUI )
 	bindNodeGadget();
 	bindLinearContainer();
 	bindNodule();
+	bindDragDropEvent();
 }

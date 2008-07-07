@@ -1,0 +1,11 @@
+#ifndef GAFFERUIBINDINGS_DRAGDROPEVENTBINDING_H
+#define GAFFERUIBINDINGS_DRAGDROPEVENTBINDING_H
+
+namespace GafferUIBindings
+{
+
+void bindDragDropEvent();
+
+} // namespace GafferUIBindings
+
+#endif // GAFFERUIBINDINGS_DRAGDROPEVENTBINDING_H

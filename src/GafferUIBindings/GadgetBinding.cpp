@@ -34,6 +34,8 @@ void GafferUIBindings::bindGadget()
 	SignalBinder<Gadget::RenderRequestSignal>::bind( "RenderRequestSignal" );
 	SignalBinder<Gadget::ButtonSignal>::bind( "ButtonSignal" );
 	SignalBinder<Gadget::KeySignal>::bind( "KeySignal" );
+	SignalBinder<Gadget::DragBeginSignal>::bind( "DragBeginSignal" );
+	SignalBinder<Gadget::DragDropSignal>::bind( "DragDropSignal" );
 	
 	INTRUSIVE_PTR_PATCH( Gadget, GadgetPyClass );
 	

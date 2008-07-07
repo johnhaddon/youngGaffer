@@ -26,7 +26,7 @@ class GraphGadget : public ContainerGadget
 		void childAdded( GraphComponent *parent, GraphComponent *child );
 		void childRemoved( GraphComponent *parent, GraphComponent *child );
 		
-		bool dragBegin( GadgetPtr gadget, const ButtonEvent &event );	
+		IECore::RunTimeTypedPtr dragBegin( GadgetPtr gadget, const ButtonEvent &event );	
 		bool dragUpdate( GadgetPtr gadget, const ButtonEvent &event );
 		
 	private :

@@ -1,5 +1,5 @@
 from GLWidget import GLWidget
-from _GafferUI import ButtonEvent, ModifiableEvent, ContainerGadget
+from _GafferUI import ButtonEvent, ModifiableEvent, ContainerGadget, DragDropEvent
 from OpenGL.GL import *
 import IECore
 import IECoreGL
@@ -44,6 +44,7 @@ class GadgetWidget( GLWidget ) :
 		
 		self.__lastButtonPressGadgets = None
 		self.__dragSourceGadget = None
+		self.__dragDropEvent = None
 		
 	def setGadget( self, gadget ) :
 	
@@ -149,9 +150,12 @@ class GadgetWidget( GLWidget ) :
 
 		gadgets = self.__select( event )
 		self.__lastButtonPressGadgets = False
-		if self.__dragSourceGadget :
+		if self.__dragDropEvent :
 			## \todo Send some kind of dragEnd/drop signal
+			dropEvent = self.__gtkEventToGadgetEvent( event, self.__dragDropEvent )
+			self.__dispatchEvent( gadgets, "dropSignal", self.__dragDropEvent )
 			self.__dragSourceGadget = False
+			self.__dragDropEvent = None
 			
 		return True
 
@@ -160,19 +164,24 @@ class GadgetWidget( GLWidget ) :
 		if not self.__gadget :
 			return True
 		
-		gadgetEvent = self.__gtkEventToGadgetEvent( event )
-		if gadgetEvent.modifiers & ModifiableEvent.Modifiers.Alt :
+		buttonEvent = self.__gtkEventToGadgetEvent( event, ButtonEvent() )
+		if buttonEvent.modifiers & ModifiableEvent.Modifiers.Alt :
 			return self.__cameraMotion( event );
 
 		if self.__lastButtonPressGadgets and not self.__dragSourceGadget :
 			# try to start a new drag
-			g, d = self.__dispatchEvent( self.__lastButtonPressGadgets, "dragBeginSignal", gadgetEvent )
+			dragDropEvent = self.__gtkEventToGadgetEvent( event, DragDropEvent() )
+			g, d = self.__dispatchEvent( self.__lastButtonPressGadgets, "dragBeginSignal", dragDropEvent )
 			if d :
+				dragDropEvent.data = d
 				self.__dragSourceGadget = g
+				self.__dragDropEvent = dragDropEvent
+				
 			self.__lastButtonPressGadgets = None
 		elif self.__dragSourceGadget :
 			# update an existing drag
-			self.__dragSourceGadget.dragUpdateSignal()( self.__dragSourceGadget, gadgetEvent )
+			self.__gtkEventToGadgetEvent( event, self.__dragDropEvent )
+			self.__dragSourceGadget.dragUpdateSignal()( self.__dragSourceGadget, self.__dragDropEvent )
 		
 		return True
 
@@ -220,7 +229,7 @@ class GadgetWidget( GLWidget ) :
 	def __select( self, event ) :
 	
 		if not self.__scene :
-			return None
+			return []
 		
 		drawable = self.gtkWidget().get_gl_drawable()
 		context = self.gtkWidget().get_gl_context()
@@ -330,32 +339,34 @@ class GadgetWidget( GLWidget ) :
 	# conversion of gtk events to gadget events
 	#########################################################################################################
 	
-	def __gtkEventToGadgetEvent( self, gtkEvent ) :
+	def __gtkEventToGadgetEvent( self, gtkEvent, gadgetEvent=None ) :
 	
-		if gtkEvent.type==gtk.gdk.BUTTON_PRESS :
-			event = ButtonEvent()
-		elif gtkEvent.type==gtk.gdk.BUTTON_RELEASE :
-			event = ButtonEvent()
-		elif gtkEvent.type==gtk.gdk.MOTION_NOTIFY :
-			event = ButtonEvent()
-		else :
-			raise ValueError( "Unsupported event type" )	
+		if gadgetEvent is None :
 		
-		if isinstance( event, ModifiableEvent ) :
-			event.modifiers = GadgetWidget.__gtkStateToEventModifiers( gtkEvent.state )
+			if gtkEvent.type==gtk.gdk.BUTTON_PRESS :
+				gadgetEvent = ButtonEvent()
+			elif gtkEvent.type==gtk.gdk.BUTTON_RELEASE :
+				gadgetEvent = ButtonEvent()
+			elif gtkEvent.type==gtk.gdk.MOTION_NOTIFY :
+				gadgetEvent = ButtonEvent()
+			else :
+				raise ValueError( "Unsupported event type" )
 		
-		if isinstance( event, ButtonEvent ) :
+		if isinstance( gadgetEvent, ModifiableEvent ) :
+			gadgetEvent.modifiers = GadgetWidget.__gtkStateToEventModifiers( gtkEvent.state )
+		
+		if isinstance( gadgetEvent, ButtonEvent ) :
 		
 			if hasattr( gtkEvent, "button" ) :
-				event.buttons = GadgetWidget.__gtkButtonToEventButton( gtkEvent.button )
+				gadgetEvent.buttons = GadgetWidget.__gtkButtonToEventButton( gtkEvent.button )
 			else :
-				event.buttons = GadgetWidget.__gtkStateToEventButton( gtkEvent.state )
+				gadgetEvent.buttons = GadgetWidget.__gtkStateToEventButton( gtkEvent.state )
 		
 			if hasattr( gtkEvent, "x" ) :
 			
-				event.line.p0, event.line.p1 = self.__cameraController.unproject( IECore.V2i( int(gtkEvent.x), int(gtkEvent.y) ) )
+				gadgetEvent.line.p0, gadgetEvent.line.p1 = self.__cameraController.unproject( IECore.V2i( int(gtkEvent.x), int(gtkEvent.y) ) )
 		
-		return event
+		return gadgetEvent
 		
 	@staticmethod
 	def __gtkStateToEventModifiers( gtkState ) :

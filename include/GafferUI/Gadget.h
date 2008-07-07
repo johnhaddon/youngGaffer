@@ -5,6 +5,7 @@
 #include "GafferUI/ButtonEvent.h"
 #include "GafferUI/KeyEvent.h"
 #include "GafferUI/EventSignalCombiner.h"
+#include "GafferUI/DragDropEvent.h"
 
 #include "Gaffer/GraphComponent.h"
 
@@ -89,20 +90,22 @@ class Gadget : public Gaffer::GraphComponent
 		////////////////////////////////////////////////////////////////////
 		//@{
 		/// A signal used to represent button related events.
-		typedef boost::signal<bool ( GadgetPtr, const ButtonEvent &event ), EventSignalCombiner> ButtonSignal; 
+		typedef boost::signal<bool ( GadgetPtr, const ButtonEvent &event ), EventSignalCombiner<bool> > ButtonSignal; 
 		/// The signal triggered by a button press event.
 		ButtonSignal &buttonPressSignal();
 		/// The signal triggered by a button release event.
 		ButtonSignal &buttonReleaseSignal();
 		
-		/// \todo Document me! Add specific drag/drop events too
-		ButtonSignal &dragBeginSignal();
-		ButtonSignal &dragUpdateSignal();
-		ButtonSignal &dropSignal();
+		typedef boost::signal<IECore::RunTimeTypedPtr ( GadgetPtr, const DragDropEvent &event ), EventSignalCombiner<IECore::RunTimeTypedPtr> > DragBeginSignal; 
+		typedef boost::signal<bool ( GadgetPtr, const DragDropEvent &event ), EventSignalCombiner<bool> > DragDropSignal; 
+		/// \todo Document me!
+		DragBeginSignal &dragBeginSignal();
+		DragDropSignal &dragUpdateSignal();
+		DragDropSignal &dropSignal();
 		
 		/// A signal used to represent key related events.
 		/// \todo We need some sort of focus model to say who gets the events.
-		typedef boost::signal<bool ( GadgetPtr, const KeyEvent &key ), EventSignalCombiner> KeySignal;
+		typedef boost::signal<bool ( GadgetPtr, const KeyEvent &key ), EventSignalCombiner<bool> > KeySignal;
 		/// The signal triggered by a key press event.
 		KeySignal &keyPressSignal();
 		/// The signal triggered by a key release event.
@@ -128,9 +131,9 @@ class Gadget : public Gaffer::GraphComponent
 		ButtonSignal m_buttonPressSignal;
 		ButtonSignal m_buttonReleaseSignal;
 
-		ButtonSignal m_dragBeginSignal;
-		ButtonSignal m_dragUpdateSignal;
-		ButtonSignal m_dropSignal;
+		DragBeginSignal m_dragBeginSignal;
+		DragDropSignal m_dragUpdateSignal;
+		DragDropSignal m_dropSignal;
 
 		KeySignal m_keyPressSignal;
 		KeySignal m_keyReleaseSignal;

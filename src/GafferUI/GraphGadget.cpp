@@ -78,20 +78,31 @@ void GraphGadget::childRemoved( GraphComponent *parent, GraphComponent *child )
 	
 }
 
-bool GraphGadget::dragBegin( GadgetPtr gadget, const ButtonEvent &event )
+IECore::RunTimeTypedPtr GraphGadget::dragBegin( GadgetPtr gadget, const ButtonEvent &event )
 {
 	if( gadget->isInstanceOf( Nodule::staticTypeId() ) )
 	{
-		return false;
+		// nodules can handle their own drag and drop so we don't handle the event
+		return 0;
+	}
+	
+	Gaffer::ScriptNodePtr script = runTimeCast<Gaffer::ScriptNode>( m_graphRoot );
+	if( !script )
+	{
+		script = m_graphRoot->scriptNode();
+	}
+	if( !script )
+	{
+		return 0;
 	}
 	
 	V3f i;
 	if( event.line.intersect( Plane3f( V3f( 0, 0, 1 ), 0 ), i ) )
 	{
 		m_lastDragPosition = V2f( i.x, i.y );
-		return true;
+		return script->selection();
 	}
-	return false;
+	return 0;
 }
 
 bool GraphGadget::dragUpdate( GadgetPtr gadget, const ButtonEvent &event )

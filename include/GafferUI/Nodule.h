@@ -30,6 +30,9 @@ class Nodule : public Gadget
 
 		void doRender( IECore::RendererPtr renderer ) const;
 
+		IECore::RunTimeTypedPtr dragBegin( GadgetPtr gadget, const ButtonEvent &event );	
+		bool drop( GadgetPtr gadget, const DragDropEvent &event );
+		
 	private :
 		
 		Gaffer::PlugPtr m_plug;

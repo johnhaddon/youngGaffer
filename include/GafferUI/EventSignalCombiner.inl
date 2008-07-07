@@ -4,18 +4,20 @@
 namespace GafferUI
 {
 
+template<typename T>
 template<typename InputIterator>
-EventSignalCombiner::result_type EventSignalCombiner::operator()(InputIterator first, InputIterator last) const
+typename EventSignalCombiner<T>::result_type EventSignalCombiner<T>::operator()(InputIterator first, InputIterator last) const
 {
 	while( first != last )
 	{
-		if( *first )
+		result_type r = *first;
+		if( r )
 		{
-			return true;
+			return r;
 		}
 		first++;
 	}
-	return false;
+	return 0;
 };
 
 } // namespace GafferUI
