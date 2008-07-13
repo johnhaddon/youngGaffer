@@ -1,6 +1,7 @@
 import gtk
 from IECore import curry
 from Widget import Widget
+import inspect
 
 ## \todo Decide how this interacts with the other UI components to
 # popup when wanted.
@@ -27,7 +28,12 @@ class Menu( Widget ) :
 	@staticmethod
 	def __commandWrapper( command, menuItem ) :
 	
-		command()
+		kw = {}
+		commandArgs = inspect.getargspec( command )[0]
+		if "menu" in commandArgs :
+			kw["menu"] = Widget.owner( menuItem )
+	
+		command( **kw )
 
 	@staticmethod
 	def __show( menu, definition ) :
@@ -76,17 +82,21 @@ class Menu( Widget ) :
 											
 					else :
 					
-						active = item.active
-						if callable( active ) :
-							active = active()
-							
 						menuItem = gtk.MenuItem( label = name )
-						menuItem.set_sensitive( active )
 						
 						if item.command :
 						
+							active = item.active
+							if callable( active ) :
+								active = active()
+								
 							menuItem.connect( "activate", curry( Menu.__commandWrapper, item.command ) )
-
+					
+						else :
+							active = False
+							
+						menuItem.set_sensitive( active )
+						
 				menuItem.show()
 				menu.append( menuItem )
 						
