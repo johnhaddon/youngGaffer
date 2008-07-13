@@ -67,4 +67,4 @@ button.connect( "button-press-event", popup, menu )
 
 window.show_all()
 
-gtk.main()
+GafferUI.EventLoop.start()

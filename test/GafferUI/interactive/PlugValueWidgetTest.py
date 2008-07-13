@@ -24,4 +24,4 @@ column.append( GafferUI.FileNamePlugValueWidget( node.stringPlug ) )
 window.gtkWidget().show_all()
 window.setChild( column )
 
-gtk.main()
+GafferUI.EventLoop.start()

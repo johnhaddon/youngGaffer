@@ -12,4 +12,4 @@ window.setChild( GafferUI.Panel() )
 
 window.show()
 
-gtk.main()
+GafferUI.EventLoop.start()

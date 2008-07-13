@@ -13,4 +13,4 @@ window.setChild( s )
 
 window.show()
 
-gtk.main()
+GafferUI.EventLoop.start()

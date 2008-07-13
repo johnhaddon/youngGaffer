@@ -26,4 +26,4 @@ for x in range( 0, numX ) :
 		cells.append( w )
 		
 window.show_all()
-gtk.main()
+GafferUI.EventLoop.start()

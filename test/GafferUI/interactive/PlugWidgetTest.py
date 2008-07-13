@@ -23,4 +23,4 @@ column.append( GafferUI.PlugWidget( GafferUI.FileNamePlugValueWidget( node.strin
 
 window.show()
 
-gtk.main()
+GafferUI.EventLoop.start()
