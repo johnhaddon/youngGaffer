@@ -1,16 +1,26 @@
 import IECore
 import GafferUI
+import Gaffer
 import gtk
 
 class ScriptWindow( GafferUI.Window ) :
 
+	def __menuFileNew( menu ) :
+
+		scriptWindow = menu.ancestor( GafferUI.ScriptWindow )
+		application = scriptWindow.getScript().ancestor( Gaffer.ApplicationRoot.staticTypeId() )
+		
+		newScript = Gaffer.ScriptNode( "untitled" )
+		application.scripts.addChild( newScript )
+	
 	## \todo We need a mechanism for different applications to add
 	# different custom things to this menu and without stomping over each
-	# other too
+	# other too. perhaps all the entries should be added during the config
+	# loading phase?
 	menuDefinition = IECore.MenuDefinition(
 	
 		[
-			(	"/File/New", {} 	),
+			(	"/File/New", { "command" : __menuFileNew } ),
 			(	"/File/Open...", {}	),
 			(	"/File/Open Recent", {}	),
 			(	"/File/OpenDivider", { "divider" : True }	),
@@ -59,6 +69,11 @@ class ScriptWindow( GafferUI.Window ) :
 
 		self.gtkWidget().connect( "delete-event", self.__delete )
 
+	## \todo Implement setScript()
+	def getScript( self ) :
+	
+		return self.__script
+
 	def __delete( self, widget, event ) :
 		
 		scriptParent = self.__script.parent()
@@ -72,7 +87,7 @@ class ScriptWindow( GafferUI.Window ) :
 
 	## This function provides the top level functionality for instantiating
 	# the UI. Once called, new ScriptWindows will be instantiated for each
-	# script added to the application, and the process will be terminated
+	# script added to the application, and the EventLoop will be terminated
 	# when the last script is removed.
 	@staticmethod
 	def connect( applicationRoot ) :
@@ -91,5 +106,4 @@ class ScriptWindow( GafferUI.Window ) :
 	
 		if not len( scriptContainer.children() ) :
 			
-			gtk.main_quit()
-		
+			GafferUI.EventLoop.stop()
