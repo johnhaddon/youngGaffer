@@ -34,7 +34,20 @@ class WidgetTest( unittest.TestCase ) :
 		del w
 		self.assert_( wr1() is None )
 		self.assert_( wr2() is None )
+	
+	def testAncestor( self ) :
+	
+		w = GafferUI.Window( "test" )
+		l = GafferUI.ListContainer( GafferUI.ListContainer.Orientation.Vertical )
+		p = GafferUI.Panel()
+		l.append( p )
 		
+		w.setChild( l )
+
+		self.assert_( p.ancestor( GafferUI.ListContainer ) is l )
+		self.assert_( p.ancestor( GafferUI.Window ) is w )
+		self.assert_( p.ancestor( GafferUI.Menu ) is None )
+			
 if __name__ == "__main__":
 	unittest.main()
 	
