@@ -38,8 +38,6 @@ class WindowTest( unittest.TestCase ) :
 		self.assert_( w.getChild() is t )
 		self.assert_( w.getChild().gtkWidget() is t.gtkWidget() )
 		self.assert_( t.parent() is w )
-		#w.show()
-		#gtk.main()		
 		
 		w.setChild( None )
 		self.assert_( w.getChild() is None )
