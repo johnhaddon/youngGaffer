@@ -43,5 +43,5 @@ class view( Gaffer.Application ) :
 		
 		window.show()
 		
-		gtk.main()
+		GafferUI.EventLoop.start()
 		return 0

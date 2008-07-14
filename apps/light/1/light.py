@@ -34,5 +34,6 @@ class light( Gaffer.Application ) :
 		
 		application.scripts.script1 = Gaffer.ScriptNode()
 		
-		gtk.main()
+		GafferUI.EventLoop.start()
+		
 		return 0
