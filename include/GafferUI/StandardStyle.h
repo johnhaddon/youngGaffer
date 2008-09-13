@@ -22,6 +22,7 @@ class StandardStyle : public Style
 
 		virtual void renderFrame( IECore::RendererPtr renderer, const Imath::Box2f &frame, float borderWidth ) const;
 		virtual void renderNodule( IECore::RendererPtr renderer, float radius ) const;
+		virtual void renderConnection( IECore::RendererPtr renderer, const Imath::V2f &src, const Imath::V2f &dst ) const;
 		
 };
 

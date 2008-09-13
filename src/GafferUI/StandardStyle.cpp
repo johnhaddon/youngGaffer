@@ -1,10 +1,15 @@
 #include "GafferUI/StandardStyle.h"
 
 #include "IECore/MeshPrimitive.h"
+#include "IECore/CurvesPrimitive.h"
+#include "IECore/SimpleTypedData.h"
+#include "IECore/ObjectWriter.h"
+#include "IECore/FileNameParameter.h"
 
 using namespace GafferUI;
 using namespace IECore;
 using namespace Imath;
+using namespace std;
 
 StandardStyle::StandardStyle()
 {
@@ -53,4 +58,36 @@ void StandardStyle::renderNodule( IECore::RendererPtr renderer, float radius ) c
 		quad->render( renderer );
 	
 	renderer->attributeEnd();
+}
+
+void StandardStyle::renderConnection( IECore::RendererPtr renderer, const Imath::V2f &src, const Imath::V2f &dst ) const
+{
+	static V3fVectorDataPtr p = 0;
+	static CurvesPrimitivePtr c = 0;
+	if( !c )
+	{
+		p = new V3fVectorData;
+		p->writable().resize( 4 );
+		IntVectorDataPtr v = new IntVectorData;
+		v->writable().push_back( 4 );
+		c = new CurvesPrimitive( v, CubicBasisf::bezier(), false );
+		c->variables["P"] = PrimitiveVariable( PrimitiveVariable::Vertex, p );
+		c->variables["width"] = PrimitiveVariable( PrimitiveVariable::Constant, new FloatData( 0.1 ) );
+	}
+	
+	vector<V3f> &pp = p->writable();
+	
+	float d = (src.y - dst.y) / 2.0f;
+	pp[0] = V3f( src.x, src.y, 0 );
+	pp[1] = V3f( src.x, src.y - d, 0 );
+	pp[2] = V3f( dst.x, dst.y + d, 0 );
+	pp[3] = V3f( dst.x, dst.y, 0 );
+		
+	renderer->attributeBegin();
+	
+		renderer->shader( "surface", "ui/nodule", CompoundDataMap() );
+		c->render( renderer );
+		
+	renderer->attributeEnd();
+	
 }
