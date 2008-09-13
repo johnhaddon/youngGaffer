@@ -128,11 +128,9 @@ class GadgetWidget( GLWidget ) :
 
 		gadgets = self.__select( event )
 		self.__lastButtonPressGadgets = gadgets
-		for gadget in gadgets :
-			
-			handled = gadget.buttonPressSignal()( gadgets[-1], gadgetEvent )
-			if handled :
-				return True
+		gadget, result = self.__dispatchEvent( gadgets, "buttonPressSignal", gadgetEvent )
+		if result :
+			return True
 		
 		return False
 
@@ -214,7 +212,9 @@ class GadgetWidget( GLWidget ) :
 					m = parent.childTransform( gadgets[i] )
 					m.invert( True )
 					gadgetEvent.line *= m
-					
+			
+			
+			print "SIGNAL", gadgets[i], signalName		
 			signal = getattr( gadgets[i], signalName )()
 
 			result = signal( gadgets[-1], gadgetEvent )
