@@ -3,10 +3,12 @@
 
 #include "GafferUI/IndividualContainer.h"
 
-#include "Gaffer/ScriptNode.h"
+#include "Gaffer/Set.h"
 
 namespace GafferUI
 {
+
+IE_CORE_FORWARDDECLARE( Nodule )
 
 class NodeGadget : public IndividualContainer
 {
@@ -21,6 +23,9 @@ class NodeGadget : public IndividualContainer
 		Gaffer::NodePtr node();
 		Gaffer::ConstNodePtr node() const;
 
+		NodulePtr nodule( Gaffer::ConstPlugPtr plug );
+		ConstNodulePtr nodule( Gaffer::ConstPlugPtr plug ) const;
+		
 		/// Accepts no children.
 		virtual bool acceptsChild( Gaffer::ConstGraphComponentPtr potentialChild ) const;
 
@@ -31,6 +36,9 @@ class NodeGadget : public IndividualContainer
 	private :
 		
 		Gaffer::Node *m_node;
+		
+		typedef std::map<const Gaffer::Plug *, Nodule *> NoduleMap;
+		NoduleMap m_nodules;
 		
 		bool buttonPressed( GadgetPtr gadget, const ButtonEvent &event );
 		void selectionChanged( Gaffer::NodeSetPtr selection, Gaffer::NodePtr node );

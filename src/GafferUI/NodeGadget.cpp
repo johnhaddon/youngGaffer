@@ -4,6 +4,8 @@
 #include "GafferUI/LinearContainer.h"
 #include "GafferUI/Nodule.h"
 
+#include "Gaffer/ScriptNode.h"
+
 #include "IECore/SimpleTypedData.h"
 
 #include "boost/bind.hpp"
@@ -37,6 +39,7 @@ NodeGadget::NodeGadget( Gaffer::NodePtr node )
 			{
 				outputNoduleRow->addChild( nodule );
 			}
+			m_nodules[p.get()] = nodule.get();
 		}
 	}
 	
@@ -70,6 +73,26 @@ Gaffer::ConstNodePtr NodeGadget::node() const
 	return m_node;
 }
 
+NodulePtr NodeGadget::nodule( Gaffer::ConstPlugPtr plug )
+{
+	NoduleMap::iterator it = m_nodules.find( plug.get() );
+	if( it==m_nodules.end() )
+	{
+		return 0;
+	}
+	return it->second;
+}
+
+ConstNodulePtr NodeGadget::nodule( Gaffer::ConstPlugPtr plug ) const
+{
+	NoduleMap::const_iterator it = m_nodules.find( plug.get() );
+	if( it==m_nodules.end() )
+	{
+		return 0;
+	}
+	return it->second;
+}
+		
 bool NodeGadget::acceptsChild( Gaffer::ConstGraphComponentPtr potentialChild ) const
 {
 	return children().size()==0;
