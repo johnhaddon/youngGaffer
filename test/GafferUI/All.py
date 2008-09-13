@@ -8,6 +8,7 @@ from EventSignalCombinerTest import *
 from FrameTest import *
 from NameGadgetTest import *
 from LinearContainerTest import *
+from NodeGadgetTest import *
 
 if __name__ == "__main__":
 	unittest.main()
