@@ -43,6 +43,7 @@ from GraphEditor import GraphEditor
 from ScriptWindow import ScriptWindow
 from MenuBar import MenuBar
 from EventLoop import EventLoop
+from TabbedContainer import TabbedContainer
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?
