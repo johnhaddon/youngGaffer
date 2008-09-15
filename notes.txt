@@ -4,6 +4,7 @@ ui rules
 * need to make modifier/button use consistent everywhere
 	* ALT will be used purely for camera movement and nothing else
 	* the apple/windows keys will not be used
+* there must be no gtk in the public api for the ui library
 
 undo/redo
 =========
@@ -64,11 +65,6 @@ an undoable event on release?
 		* there are plenty of nasty cases
 		* will saving node states with each rendered preview give us equivalent functionality cleanly?					
 
-ui implementation
-=================
-
-* there must be no gtk in the public api for the ui library
-
 cut + paste
 ===========
 
@@ -91,10 +87,20 @@ extended node constructors
 * take keyword arguments for setting plugs and connecting things
 	* AddNode( op1 = 10, op2 = 20 )
 * can implement **kwargs in boost python using the undocumented class_.def_raw method
+* need a way of binding node constructors for plugins without people having to use boost python?
 
 ui
 ==
 
+* Basic hierarchy :
+
+	* ScriptWindow at top level. Only one ScriptWindow per script.
+	* ScriptWindow contains one Editor
+	* CompoundEditor allows splittable/tabbable embedding of multiple Editors
+		* All must be editing the same script
+	* Can add additional floating windows at any time, but they won't have the
+	  main menu bar - only the ScriptWindow has that.
+	
 * no menu bar?
 	* waste of space
 	* context sensitive menus should do
@@ -158,6 +164,17 @@ object naming / identification
 	- use for selection, grouping, shader application etc
 	- need integers for image based selection?
 		- yes. id should be integer.
+			- really? names are much easier to understand. plus they work nicely with regular
+			  expressions.
+			  	- basically we need names for users and ids for image based selection
+					- can we just use a hash to make ids from names?
+						- there might be collisions. is the probability of this worth worrying about?
+					- can we just assign the ids in order as we render?
+						- maybe. but then they won't be consistent frame to frame.
+							- might be enough for tweaking things though.
+					- can we have a prerender process to map names to ids consistently?
+						- maybe. we'd need to run the procedurals without generating geometry
+						 and grab the names out from them.
 	- is id a "user:gaffer:id" attribute or a primvar?
 		- an attribute. then ids can easily be applied to groups and procedurals.
 		- we need Renderer::getAttr to work then.
@@ -226,6 +243,7 @@ lights + shading
 * how do we do map generation??
 * what units do we use for light intensity, diffuse reflectance etc?
 	* exposure based?
+		* nah - intensity value, but with a ui which can express it as exposure if desired
 	* physically accurate?
 	* usual nonsense?
 	* force reflectances below a sum of 1?
@@ -279,7 +297,7 @@ geometry support
 * nurbs
 	* need IECoreMaya export support
 * curves
-	* need IECore and IECoreMaya support
+	* need IECoreMaya support
 * spheres, disks etc
 	* need IECore support
 * blobbies
