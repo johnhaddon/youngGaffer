@@ -50,35 +50,27 @@ typename T::ConstPtr GraphComponent::parent() const
 template<typename T>
 typename T::Ptr GraphComponent::ancestor()
 {
-	GraphComponentPtr ancestor = m_parent;
-	while( ancestor )
-	{
-		typename T::Ptr typedAncestor = IECore::runTimeCast<T>( ancestor );
-		if( typedAncestor )
-		{
-			return typedAncestor;
-		}
-		ancestor = ancestor->m_parent;
-	}
-	return 0;
+	return boost::static_pointer_cast<T>( ancestor( T::staticTypeId() ) );
 }
 
 template<typename T>
 typename T::ConstPtr GraphComponent::ancestor() const
 {
-	GraphComponentPtr ancestor = m_parent;
-	while( ancestor )
-	{
-		typename T::Ptr typedAncestor = IECore::runTimeCast<T>( ancestor );
-		if( typedAncestor )
-		{
-			return typedAncestor;
-		}
-		ancestor = ancestor->m_parent;
-	}
-	return 0;
+	return boost::static_pointer_cast<const T>( ancestor( T::staticTypeId() ) );
 }
 
+template<typename T>
+typename T::Ptr GraphComponent::commonAncestor( ConstGraphComponentPtr other )
+{
+	return boost::static_pointer_cast<T>( commonAncestor( other, T::staticTypeId() ) );
+}
+
+template<typename T>
+typename T::ConstPtr GraphComponent::commonAncestor( ConstGraphComponentPtr other ) const
+{
+	return boost::static_pointer_cast<const T>( commonAncestor( other, T::staticTypeId() ) );
+}
+		
 } // namespace Gaffer
 
 #endif // GAFFER_GRAPHCOMPONENT_INL

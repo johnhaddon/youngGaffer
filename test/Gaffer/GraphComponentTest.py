@@ -156,7 +156,19 @@ class GraphComponentTest( unittest.TestCase ) :
 		
 		self.assert_( n.ancestor( Gaffer.ScriptNode.staticTypeId() ).isSame( s ) )
 		self.assert_( n.ancestor( Gaffer.ApplicationRoot.staticTypeId() ).isSame( a ) )
+		
+	def testCommonAncestor( self ) :
 	
+		a = Gaffer.ApplicationRoot()
+		s = Gaffer.ScriptNode()
+		a.scripts.one = s
+		
+		s.n1 = Gaffer.Node()
+		s.n2 = Gaffer.Node()
+		
+		self.assert_( s.n1.commonAncestor( s.n2, Gaffer.ScriptNode.staticTypeId() ).isSame( s ) )
+		self.assert_( s.n2.commonAncestor( s.n1, Gaffer.ScriptNode.staticTypeId() ).isSame( s ) )
+		
 if __name__ == "__main__":
 	unittest.main()
 	

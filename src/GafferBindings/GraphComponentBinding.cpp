@@ -52,19 +52,6 @@ static object setAttr( object &self, const char *n, object c )
 	return c;
 }
 
-static GraphComponentPtr ancestor( GraphComponentPtr c, IECore::TypeId type )
-{
-	while( c )
-	{
-		c = c->parent<GraphComponent>();
-		if( c->isInstanceOf( type ) )
-		{
-			return c;
-		}
-	}
-	return 0;
-}
-
 struct UnarySlotCaller
 {
 	boost::signals::detail::unusable operator()( boost::python::object slot, GraphComponentPtr g )
@@ -103,7 +90,8 @@ void GafferBindings::bindGraphComponent()
 		.def( "__setattr__", setAttr )
 		.def( "children", &children )
 		.def( "parent", (GraphComponentPtr (GraphComponent::*)())&GraphComponent::parent<GraphComponent> )
-		.def( "ancestor", &ancestor )
+		.def( "ancestor", (GraphComponentPtr (GraphComponent::*)( IECore::TypeId ))&GraphComponent::ancestor )
+		.def( "commonAncestor", (GraphComponentPtr (GraphComponent::*)( ConstGraphComponentPtr, IECore::TypeId ))&GraphComponent::commonAncestor )
 		.def( "childAddedSignal", &GraphComponent::childAddedSignal, return_internal_reference<1>() )
 		.def( "childRemovedSignal", &GraphComponent::childRemovedSignal, return_internal_reference<1>() )
 		.def( "parentChangedSignal", &GraphComponent::parentChangedSignal, return_internal_reference<1>() )

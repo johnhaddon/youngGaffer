@@ -86,6 +86,20 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		/// Returns the first ancestor of type T.
 		template<typename T>
 		typename T::ConstPtr ancestor() const;
+		/// As above, but taking a TypeId to specify type - this is mainly provided for the binding.
+		GraphComponentPtr ancestor( IECore::TypeId ancestorType );
+		ConstGraphComponentPtr ancestor( IECore::TypeId ancestorType ) const;
+		/// Returns the first ancestor of type T which
+		/// is also an ancestor of other.
+		template<typename T>
+		typename T::Ptr commonAncestor( ConstGraphComponentPtr other );
+		/// Returns the first ancestor of type T which
+		/// is also an ancestor of other.
+		template<typename T>
+		typename T::ConstPtr commonAncestor( ConstGraphComponentPtr other ) const;
+		/// As above, but taking a TypeId to specify type - this is mainly provided for the binding.
+		GraphComponentPtr commonAncestor( ConstGraphComponentPtr other, IECore::TypeId ancestorType );
+		ConstGraphComponentPtr commonAncestor( ConstGraphComponentPtr other, IECore::TypeId ancestorType ) const;
 		/// A signal emitted when a child is added to this component. Slots should
 		/// be of the form void ( parent, child ).
 		BinarySignal &childAddedSignal();

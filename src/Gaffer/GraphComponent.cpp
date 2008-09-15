@@ -4,6 +4,8 @@
 
 #include "boost/format.hpp"
 
+#include <set>
+
 using namespace Gaffer;
 using namespace IECore;
 using namespace std;
@@ -138,6 +140,59 @@ void GraphComponent::removeChild( GraphComponentPtr child )
 const GraphComponent::ChildContainer &GraphComponent::children() const
 {
 	return m_children;
+}
+
+GraphComponentPtr GraphComponent::ancestor( IECore::TypeId type )
+{
+	GraphComponent *a = m_parent;
+	while( a )
+	{
+		if( a->isInstanceOf( type ) )
+		{
+			return a;
+		}
+		a = a->m_parent;
+	}
+	return 0;
+}
+
+ConstGraphComponentPtr GraphComponent::ancestor( IECore::TypeId type ) const
+{
+	return const_cast<GraphComponent *>( this )->ancestor( type );
+}
+
+GraphComponentPtr GraphComponent::commonAncestor( ConstGraphComponentPtr other, IECore::TypeId ancestorType )
+{
+	set<GraphComponent *> candidates;
+	GraphComponent *ancestor = m_parent;
+	while( ancestor )
+	{
+		if( ancestor->isInstanceOf( ancestorType ) )
+		{
+			candidates.insert( ancestor );
+		}
+		ancestor = ancestor->m_parent;
+	}
+
+	ancestor = other->m_parent;
+	while( ancestor )
+	{
+		if( ancestor->isInstanceOf( ancestorType ) )
+		{
+			if( candidates.find( ancestor )!=candidates.end() )
+			{
+				return ancestor;
+			}
+		}
+		ancestor = ancestor->m_parent;
+	}
+	return 0;
+
+}
+
+ConstGraphComponentPtr GraphComponent::commonAncestor( ConstGraphComponentPtr other, IECore::TypeId ancestorType ) const
+{
+	return const_cast<GraphComponent *>( this )->commonAncestor( other, ancestorType );
 }
 
 GraphComponent::BinarySignal &GraphComponent::childAddedSignal()
