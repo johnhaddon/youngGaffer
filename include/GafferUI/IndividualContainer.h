@@ -21,9 +21,6 @@ class IndividualContainer : public ContainerGadget
 		/// Accepts the child only if there are currently no children.
 		virtual bool acceptsChild( Gaffer::ConstGraphComponentPtr potentialChild ) const;
 		
-		/// Returns the identity matrix - derived classes may override this if need be.
-		virtual Imath::M44f childTransform( ConstGadgetPtr child ) const;
-		
 		/// Removes the current child if there is one, and replaces it
 		/// with the specified gadget.
 		void setChild( GadgetPtr child );

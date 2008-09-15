@@ -71,13 +71,26 @@ class Gadget : public Gaffer::GraphComponent
 		void setStyle( ConstStylePtr style );
 		//@}
 
+		/// @name Transform
+		/// Every Gadget has a transform which dictates how it is positioned
+		/// relative to its parent.
+		////////////////////////////////////////////////////////////////////
+		//@{
+		const Imath::M44f &getTransform() const;
+		void setTransform( const Imath::M44f &matrix );
+		/// Returns the full transform of this Gadget relative to the
+		/// specified ancestor. If ancestor is not specified then the
+		/// transform from the root of the hierarchy is returned.
+		Imath::M44f fullTransform( ConstGadgetPtr ancestor = 0 ) const;
+		//@}
+
 		/// @name Display
 		/// \todo I guess these could be implemented as signals too if we wanted.
 		////////////////////////////////////////////////////////////////////
 		//@{
 		/// Renders the Gadget.
 		void render( IECore::RendererPtr renderer ) const;
-		/// The bounding box of the Gadget.
+		/// The bounding box of the Gadget before transformation.
 		virtual Imath::Box3f bound() const = 0;
 		typedef boost::signal<void ( GadgetPtr )> RenderRequestSignal;
 		RenderRequestSignal &renderRequestSignal();
@@ -116,8 +129,8 @@ class Gadget : public Gaffer::GraphComponent
 	
 		/// The subclass specific part of render(). This must be implemented
 		/// appropriately by all subclasses. The public render() method
-		/// sets the renderer up with the name attribute for this Gadget and
-		/// then calls doRender().
+		/// sets the renderer up with the name attribute and transform for
+		/// this Gadget and then calls doRender().
 		virtual void doRender( IECore::RendererPtr renderer ) const = 0;
 		
 	private :
@@ -125,6 +138,8 @@ class Gadget : public Gaffer::GraphComponent
 		Gadget();
 		
 		ConstStylePtr m_style;
+		
+		Imath::M44f m_transform;
 		
 		RenderRequestSignal m_renderRequestSignal;
 			

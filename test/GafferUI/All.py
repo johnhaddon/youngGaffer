@@ -9,6 +9,7 @@ from FrameTest import *
 from NameGadgetTest import *
 from LinearContainerTest import *
 from NodeGadgetTest import *
+from GadgetTest import *
 
 if __name__ == "__main__":
 	unittest.main()

@@ -1,0 +1,11 @@
+#ifndef GAFFERUIBINDINGS_CONNECTIONGADGETBINDING_H
+#define GAFFERUIBINDINGS_CONNECTIONGADGETBINDING_H
+
+namespace GafferUIBindings
+{
+
+void bindConnectionGadget();
+
+} // namespace GafferUIBindings
+
+#endif // GAFFERUIBINDINGS_CONNECTIONGADGETBINDING_H

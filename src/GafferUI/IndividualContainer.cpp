@@ -21,11 +21,6 @@ bool IndividualContainer::acceptsChild( Gaffer::ConstGraphComponentPtr potential
 	return children().size()==0;
 }
 
-Imath::M44f IndividualContainer::childTransform( ConstGadgetPtr child ) const
-{
-	return Imath::M44f();
-}
-
 void IndividualContainer::setChild( GadgetPtr child )
 {
 	GadgetPtr c = getChild<Gadget>();

@@ -15,7 +15,6 @@ void GafferUIBindings::bindContainerGadget()
 	typedef class_<ContainerGadget, ContainerGadgetPtr, boost::noncopyable, bases<Gadget> > ContainerGadgetPyClass;
 
 	ContainerGadgetPyClass( "ContainerGadget", no_init )
-		.def( "childTransform", &ContainerGadget::childTransform )
 		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( ContainerGadget )
 	;
 		

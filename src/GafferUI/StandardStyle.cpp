@@ -60,7 +60,7 @@ void StandardStyle::renderNodule( IECore::RendererPtr renderer, float radius ) c
 	renderer->attributeEnd();
 }
 
-void StandardStyle::renderConnection( IECore::RendererPtr renderer, const Imath::V2f &src, const Imath::V2f &dst ) const
+void StandardStyle::renderConnection( IECore::RendererPtr renderer, const Imath::V3f &src, const Imath::V3f &dst ) const
 {
 	static V3fVectorDataPtr p = 0;
 	static CurvesPrimitivePtr c = 0;

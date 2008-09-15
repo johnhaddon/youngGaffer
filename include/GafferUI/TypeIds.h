@@ -19,6 +19,7 @@ enum TypeId
 	StandardStyleTypeId = 410010,
 	NoduleTypeId = 410011,
 	LinearContainerTypeId = 410012,
+	ConnectionGadgetTypeId = 410013,
 };
 
 } // namespace GafferUI

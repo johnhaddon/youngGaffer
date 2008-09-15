@@ -25,7 +25,7 @@ class Style : public IECore::RunTimeTyped
 
 		virtual void renderFrame( IECore::RendererPtr renderer, const Imath::Box2f &frame, float borderWidth ) const = 0;
 		virtual void renderNodule( IECore::RendererPtr renderer, float radius ) const = 0;
-		virtual void renderConnection( IECore::RendererPtr renderer, const Imath::V2f &src, const Imath::V2f &dst ) const = 0;
+		virtual void renderConnection( IECore::RendererPtr renderer, const Imath::V3f &src, const Imath::V3f &dst ) const = 0;
 	
 		//! @name Default style
 		/// There always exists a default style which is

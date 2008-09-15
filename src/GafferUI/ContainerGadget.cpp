@@ -28,8 +28,7 @@ Imath::Box3f ContainerGadget::bound() const
 		// cast is safe because of the guarantees acceptsChild() gives us
 		ConstGadgetPtr c = boost::static_pointer_cast<const Gadget>( *it );
 		Imath::Box3f b = c->bound();
-		Imath::M44f m = childTransform( c );
-		b = Imath::transform( b, m );
+		b = Imath::transform( b, c->getTransform() );
 		result.extendBy( b );
 	}
 	return result;
@@ -41,10 +40,7 @@ void ContainerGadget::doRender( IECore::RendererPtr renderer ) const
 	{
 		// cast is safe because of the guarantees acceptsChild() gives us
 		ConstGadgetPtr c = boost::static_pointer_cast<const Gadget>( *it );
-		renderer->attributeBegin();
-			renderer->concatTransform( childTransform( c ) );
-			c->render( renderer );
-		renderer->attributeEnd();
+		c->render( renderer );
 	}
 }
 

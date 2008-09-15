@@ -3,10 +3,16 @@
 
 #include "GafferUI/ContainerGadget.h"
 
-#include "Gaffer/Node.h"
+namespace Gaffer
+{
+IE_CORE_FORWARDDECLARE( Node );
+IE_CORE_FORWARDDECLARE( Plug );
+}
 
 namespace GafferUI
 {
+
+IE_CORE_FORWARDDECLARE( NodeGadget );
 
 class GraphGadget : public ContainerGadget
 {
@@ -18,20 +24,24 @@ class GraphGadget : public ContainerGadget
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( GraphGadget, GraphGadgetTypeId, ContainerGadget );
 
-		virtual Imath::M44f childTransform( ConstGadgetPtr child ) const;
-
 	protected :
 
 		bool keyPressed( GadgetPtr gadget, const KeyEvent &event );
 		void childAdded( GraphComponent *parent, GraphComponent *child );
 		void childRemoved( GraphComponent *parent, GraphComponent *child );
+		void inputChanged( Gaffer::PlugPtr dstPlug );
 		
 		IECore::RunTimeTypedPtr dragBegin( GadgetPtr gadget, const ButtonEvent &event );	
 		bool dragUpdate( GadgetPtr gadget, const ButtonEvent &event );
 		
+		NodeGadget *nodeGadget( Gaffer::Node *node );
+		
 	private :
 	
 		Gaffer::Node *m_graphRoot;
+		
+		typedef std::map<Gaffer::Node *, NodeGadget *> NodeGadgetMap;
+		NodeGadgetMap m_nodeGadgets;
 	
 		Imath::V2f m_lastDragPosition;
 

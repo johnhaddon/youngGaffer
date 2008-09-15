@@ -2,8 +2,11 @@
 #include "GafferUI/NodeGadget.h"
 #include "GafferUI/ButtonEvent.h"
 #include "GafferUI/Nodule.h"
+#include "GafferUI/ConnectionGadget.h"
 
+#include "Gaffer/ScriptNode.h"
 #include "Gaffer/NumericPlug.h"
+#include "Gaffer/Set.h"
 
 #include "IECore/MeshPrimitive.h"
 
@@ -34,23 +37,6 @@ GraphGadget::~GraphGadget()
 {
 }
 
-Imath::M44f GraphGadget::childTransform( ConstGadgetPtr child ) const
-{
-	M44f result;
-	ConstNodeGadgetPtr nodeGadget = runTimeCast<const NodeGadget>( child );
-	if( nodeGadget )
-	{
-		result.translate(
-			V3f( 
-				nodeGadget->node()->getChild<const Gaffer::FloatPlug>( "__uiX" )->getValue(),
-				nodeGadget->node()->getChild<const Gaffer::FloatPlug>( "__uiY" )->getValue(),
-				0
-			)
-		);
-	}
-	return result;
-}
-
 bool GraphGadget::keyPressed( GadgetPtr gadget, const KeyEvent &event )
 {
 	cerr << "KEYPRESS" << endl;
@@ -60,22 +46,53 @@ bool GraphGadget::keyPressed( GadgetPtr gadget, const KeyEvent &event )
 static Imath::Rand32 r;
 void GraphGadget::childAdded( GraphComponent *parent, GraphComponent *child )
 {
+	Gaffer::Node *node = static_cast<Gaffer::Node *>( child );
+
 	/// \todo Use a V2f plug when we get one
-	Gaffer::FloatPlugPtr x = new Gaffer::FloatPlug( "__uiX" );
-	x->setValue( r.nextf( -10, 10 ) );
+	Gaffer::FloatPlugPtr xPlug = new Gaffer::FloatPlug( "__uiX" );
+	float x = r.nextf( -10, 10 );
+	xPlug->setValue( x );
 	
-	Gaffer::FloatPlugPtr y = new Gaffer::FloatPlug( "__uiY" );
-	y->setValue( r.nextf( -10, 10 ) );
+	Gaffer::FloatPlugPtr yPlug = new Gaffer::FloatPlug( "__uiY" );
+	float y = r.nextf( -10, 10 );
+	yPlug->setValue( y );
 	
-	child->addChild( x );
-	child->addChild( y );
+	node->addChild( xPlug );
+	node->addChild( yPlug );
 	
-	addChild( new NodeGadget( static_cast<Gaffer::Node *>( child ) ) );
+	node->plugInputChangedSignal().connect( boost::bind( &GraphGadget::inputChanged, this, ::_1 ) );
+	
+	NodeGadgetPtr nodeGadget = new NodeGadget( node );
+	M44f m; m.translate( V3f( x, y, 0 ) );
+	nodeGadget->setTransform( m );
+	
+	addChild( nodeGadget );
+	m_nodeGadgets[node] = nodeGadget.get();
 }
 
 void GraphGadget::childRemoved( GraphComponent *parent, GraphComponent *child )
 {
 	
+}
+
+void GraphGadget::inputChanged( Gaffer::PlugPtr dstPlug )
+{
+	Gaffer::NodePtr dstNode = dstPlug->node();
+	Gaffer::PlugPtr srcPlug = dstPlug->getInput<Gaffer::Plug>();
+	Gaffer::NodePtr srcNode = srcPlug->node();
+	
+	NodulePtr srcNodule = nodeGadget( srcNode.get() )->nodule( srcPlug );
+	NodulePtr dstNodule = nodeGadget( dstNode.get() )->nodule( dstPlug );
+	
+	if( !(srcNodule && dstNodule ) )
+	{
+		return;
+	}
+	
+	ConnectionGadgetPtr connection = new ConnectionGadget( srcNodule, dstNodule );
+	addChild( connection );
+
+	cerr << "INPUT CHANGED " << dstPlug->fullName() << endl;
 }
 
 IECore::RunTimeTypedPtr GraphGadget::dragBegin( GadgetPtr gadget, const ButtonEvent &event )
@@ -129,8 +146,11 @@ bool GraphGadget::dragUpdate( GadgetPtr gadget, const ButtonEvent &event )
 					{
 						Gaffer::FloatPlugPtr xp = node->getChild<Gaffer::FloatPlug>( "__uiX" );
 						Gaffer::FloatPlugPtr yp = node->getChild<Gaffer::FloatPlug>( "__uiY" );
-						xp->setValue( xp->getValue() + delta.x );
-						yp->setValue( yp->getValue() + delta.y );
+						V3f p( xp->getValue() + delta.x, yp->getValue() + delta.y, 0.0f );
+						xp->setValue( p.x );
+						yp->setValue( p.y );
+						M44f m; m.translate( p );
+						nodeGadget->setTransform( m );
 					}
 				}
 			}
@@ -140,4 +160,14 @@ bool GraphGadget::dragUpdate( GadgetPtr gadget, const ButtonEvent &event )
 		}
 	}
 	return false;
+}
+
+NodeGadget *GraphGadget::nodeGadget( Gaffer::Node *node )
+{
+	NodeGadgetMap::iterator it = m_nodeGadgets.find( node );
+	if( it==m_nodeGadgets.end() )
+	{
+		return 0;
+	}
+	return it->second;
 }

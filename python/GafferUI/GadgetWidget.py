@@ -209,7 +209,7 @@ class GadgetWidget( GLWidget ) :
 			if i > 0 :
 				parent = gadgets[i-1]
 				if hasattr( gadgetEvent, "line" ) and parent.isInstanceOf( ContainerGadget.staticTypeId() ) :
-					m = parent.childTransform( gadgets[i] )
+					m = gadgets[i].getTransform()
 					m.invert( True )
 					gadgetEvent.line *= m
 			

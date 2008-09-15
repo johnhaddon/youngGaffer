@@ -37,6 +37,7 @@ void LinearContainer::setOrientation( Orientation orientation )
 	{
 		m_orientation = orientation;
 		renderRequestSignal()( this );
+		m_clean = false;
 	}
 }
 
@@ -55,6 +56,7 @@ void LinearContainer::setAlignment( Alignment alignment )
 	{
 		m_alignment = alignment;
 		renderRequestSignal()( this );
+		m_clean = false;
 	}
 }
 
@@ -73,22 +75,13 @@ void LinearContainer::setSpacing( float spacing )
 	{
 		m_spacing = spacing;
 		renderRequestSignal()( this );
+		m_clean = false;
 	}
 }
 
 float LinearContainer::getSpacing() const
 {
 	return m_spacing;
-}
-
-Imath::M44f LinearContainer::childTransform( ConstGadgetPtr child ) const
-{
-	calculateOffsets();
-	OffsetMap::const_iterator it = m_offsets.find( child.get() );
-	assert( it!=m_offsets.end() );
-	M44f result;
-	result.translate( it->second );
-	return result;
 }
 		
 void LinearContainer::renderRequested( GadgetPtr gadget )
@@ -100,15 +93,19 @@ void LinearContainer::renderRequested( GadgetPtr gadget )
 	m_clean = false;
 }
 
-void LinearContainer::calculateOffsets() const
+void LinearContainer::doRender( IECore::RendererPtr renderer ) const
+{
+	calculateChildTransforms();
+	ContainerGadget::doRender( renderer );
+}
+
+void LinearContainer::calculateChildTransforms() const
 {
 	if( m_clean )
 	{
 		return;
 	}
-	
-	m_offsets.clear();
-	
+		
 	int axis = m_orientation - 1;
 	V3f size( 0 );
 	vector<Box3f> bounds;
@@ -161,9 +158,11 @@ void LinearContainer::calculateOffsets() const
 			}
 		}
 		
-		m_offsets[static_cast<const Gadget *>(it->get())] = childOffset;
+		M44f m; m.translate( childOffset );
+		static_cast<const Gadget *>(it->get())->setTransform( m );
 		
 		offset += b.size()[axis] + m_spacing;
 	}
 	
+	m_clean = true;
 }

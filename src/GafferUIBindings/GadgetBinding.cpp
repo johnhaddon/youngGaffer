@@ -2,6 +2,7 @@
 
 #include "GafferUIBindings/GadgetBinding.h"
 #include "GafferUI/Gadget.h"
+#include "GafferUI/Style.h"
 
 #include "GafferBindings/SignalBinding.h"
 
@@ -18,6 +19,12 @@ void GafferUIBindings::bindGadget()
 	typedef class_<Gadget, GadgetPtr, boost::noncopyable, bases<Gaffer::GraphComponent> > GadgetPyClass;
 
 	scope s = GadgetPyClass( "Gadget", no_init )
+		.def( "getStyle", &Gadget::getStyle )
+		.def( "setStyle", &Gadget::setStyle )
+		.def( "getTransform", &Gadget::getTransform, return_value_policy<copy_const_reference>() )
+		.def( "setTransform", &Gadget::setTransform )
+		.def( "fullTransform", (Imath::M44f (Gadget::*)())&Gadget::fullTransform )
+		.def( "fullTransform", &Gadget::fullTransform )
 		.def( "render",&Gadget::render )
 		.def( "bound", &Gadget::bound )
 		.def( "renderRequestSignal", &Gadget::renderRequestSignal, return_internal_reference<1>() )

@@ -3,8 +3,6 @@
 
 #include "IECore/SimpleTypedData.h"
 
-#include <sstream>
-
 using namespace GafferUI;
 using namespace Imath;
 using namespace std;
@@ -42,10 +40,40 @@ void Gadget::setStyle( ConstStylePtr style )
 	}
 }
 
+void Gadget::setTransform( const Imath::M44f &matrix )
+{
+	if( matrix!=m_transform )
+	{
+		m_transform = matrix;
+		renderRequestSignal()( this );
+	}	
+}
+
+const Imath::M44f &Gadget::getTransform() const
+{
+	return m_transform;
+}
+
+Imath::M44f Gadget::fullTransform( ConstGadgetPtr ancestor ) const
+{
+	M44f result;
+	const Gadget *g = this;
+	do
+	{
+		result *= g->m_transform;
+		g = g->parent<Gadget>().get();
+	} while( g && g!=ancestor );
+	
+	return result;
+}
+
 void Gadget::render( IECore::RendererPtr renderer ) const
 {
-	renderer->setAttribute( "name", new IECore::StringData( fullName() ) );
-	doRender( renderer );
+	renderer->attributeBegin();
+		renderer->concatTransform( m_transform );
+		renderer->setAttribute( "name", new IECore::StringData( fullName() ) );
+		doRender( renderer );
+	renderer->attributeEnd();
 }
 
 Gadget::RenderRequestSignal &Gadget::renderRequestSignal()

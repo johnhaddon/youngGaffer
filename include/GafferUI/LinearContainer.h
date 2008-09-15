@@ -42,9 +42,11 @@ class LinearContainer : public ContainerGadget
 		
 		void setSpacing( float spacing );
 		float getSpacing() const;
-		
-		virtual Imath::M44f childTransform( ConstGadgetPtr child ) const;
-		
+
+	protected :
+
+		virtual void doRender( IECore::RendererPtr renderer ) const;
+				
 	private :
 	
 		void renderRequested( GadgetPtr gadget );
@@ -54,9 +56,7 @@ class LinearContainer : public ContainerGadget
 		float m_spacing;
 		
 		mutable bool m_clean;
-		typedef std::map<const Gadget *, Imath::V3f> OffsetMap;
-		mutable OffsetMap m_offsets;
-		void calculateOffsets() const;
+		void calculateChildTransforms() const;
 		
 };
 

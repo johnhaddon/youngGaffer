@@ -22,14 +22,10 @@ class ContainerGadget : public Gadget
 		/// Returns the union of the transformed bounding boxes of all children.
 		virtual Imath::Box3f bound() const;
 		//@}
-
-		/// Must be implemented by derived classes to say where the child belongs within
-		/// the container.
-		virtual Imath::M44f childTransform( ConstGadgetPtr child ) const = 0;
 		
 	protected :
 	
-		/// Implemented to render each child with it's appropriate transform.
+		/// Implemented to render all the children.
 		virtual void doRender( IECore::RendererPtr renderer ) const;
 		
 	private :
