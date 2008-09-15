@@ -6,7 +6,7 @@ class GraphEditor( EditorWidget ) :
 
 	def __init__( self, scriptNode ) :
 	
-		self.__gadgetWidget = GadgetWidget( GraphGadget( scriptNode ) )
+		self.__gadgetWidget = GadgetWidget( GraphGadget( scriptNode ), GadgetWidget.CameraMode.Mode2D )
 		
 		EditorWidget.__init__( self, self.__gadgetWidget.gtkWidget(), scriptNode )
 		
