@@ -85,7 +85,11 @@ void Plug::setInput( PlugPtr input, bool emit )
 	}
 	if( emit )
 	{
-		node()->plugInputChangedSignal()( this );
+		NodePtr n = node();
+		if( n )
+		{
+			node()->plugInputChangedSignal()( this );
+		}
 	}
 }
 

@@ -26,16 +26,20 @@ bool ValuePlug::acceptsInput( ConstPlugPtr input ) const
 void ValuePlug::setInput( PlugPtr input )
 {
 	Plug::setInput( input );
-	// cast safe because acceptsInput checks type.
-	ValuePlugPtr vInput = boost::static_pointer_cast<ValuePlug>( input );
-	if( vInput->getDirty() )
+	if( input )
 	{
-		setDirty();
+		// cast safe because acceptsInput checks type.
+		ValuePlugPtr vInput = boost::static_pointer_cast<ValuePlug>( input );
+		if( vInput->getDirty() )
+		{
+			setDirty();
+		}
+		else
+		{
+			setFromInput();
+		}
 	}
-	else
-	{
-		setFromInput();
-	}
+	/// \todo What should we do with the value on disconnect?
 }
 
 void ValuePlug::setDirty()
