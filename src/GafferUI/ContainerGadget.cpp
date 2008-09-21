@@ -63,6 +63,8 @@ void ContainerGadget::childAdded( GraphComponent *us, GraphComponent *child )
 void ContainerGadget::childRemoved( GraphComponent *us, GraphComponent *child )
 {
 	static_cast<Gadget *>( child )->renderRequestSignal().disconnect( &childRenderRequest );
+	ContainerGadget *p = static_cast<ContainerGadget *>( us );
+	p->renderRequestSignal()( p );
 }
 
 void ContainerGadget::childRenderRequest( GadgetPtr child )
