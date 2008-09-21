@@ -115,6 +115,7 @@ class Gadget : public Gaffer::GraphComponent
 		DragBeginSignal &dragBeginSignal();
 		DragDropSignal &dragUpdateSignal();
 		DragDropSignal &dropSignal();
+		DragDropSignal &dragEndSignal();
 		
 		/// A signal used to represent key related events.
 		/// \todo We need some sort of focus model to say who gets the events.
@@ -148,6 +149,7 @@ class Gadget : public Gaffer::GraphComponent
 
 		DragBeginSignal m_dragBeginSignal;
 		DragDropSignal m_dragUpdateSignal;
+		DragDropSignal m_dragEndSignal;
 		DragDropSignal m_dropSignal;
 
 		KeySignal m_keyPressSignal;

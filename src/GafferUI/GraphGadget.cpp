@@ -77,8 +77,21 @@ void GraphGadget::childRemoved( GraphComponent *parent, GraphComponent *child )
 
 void GraphGadget::inputChanged( Gaffer::PlugPtr dstPlug )
 {
-	Gaffer::NodePtr dstNode = dstPlug->node();
+	ConnectionGadget *oldConnection = connectionGadget( dstPlug.get() );
+	if( oldConnection )
+	{
+		m_connectionGadgets.erase( dstPlug.get() );
+		removeChild( oldConnection );
+	}
+
 	Gaffer::PlugPtr srcPlug = dstPlug->getInput<Gaffer::Plug>();
+	if( !srcPlug )
+	{
+		// it's a disconnection, no need to make a new gadget.
+		return;
+	}
+	
+	Gaffer::NodePtr dstNode = dstPlug->node();
 	Gaffer::NodePtr srcNode = srcPlug->node();
 	
 	NodulePtr srcNodule = nodeGadget( srcNode.get() )->nodule( srcPlug );
@@ -92,6 +105,7 @@ void GraphGadget::inputChanged( Gaffer::PlugPtr dstPlug )
 	ConnectionGadgetPtr connection = new ConnectionGadget( srcNodule, dstNodule );
 	addChild( connection );
 
+	m_connectionGadgets[dstPlug.get()] = connection.get();
 	cerr << "INPUT CHANGED " << dstPlug->fullName() << endl;
 }
 
@@ -166,6 +180,16 @@ NodeGadget *GraphGadget::nodeGadget( Gaffer::Node *node )
 {
 	NodeGadgetMap::iterator it = m_nodeGadgets.find( node );
 	if( it==m_nodeGadgets.end() )
+	{
+		return 0;
+	}
+	return it->second;
+}
+
+ConnectionGadget *GraphGadget::connectionGadget( Gaffer::Plug *plug )
+{
+	ConnectionGadgetMap::iterator it = m_connectionGadgets.find( plug );
+	if( it==m_connectionGadgets.end() )
 	{
 		return 0;
 	}

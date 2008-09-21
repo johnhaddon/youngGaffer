@@ -3,6 +3,8 @@
 
 #include "GafferUI/Gadget.h"
 
+#include "Gaffer/Plug.h"
+
 namespace GafferUI
 {
 	IE_CORE_FORWARDDECLARE( Nodule )
@@ -33,15 +35,20 @@ class ConnectionGadget : public Gadget
 		
 		void doRender( IECore::RendererPtr renderer ) const;
 
-		//IECore::RunTimeTypedPtr dragBegin( GadgetPtr gadget, const ButtonEvent &event );	
-		
 	private :
+		
+		bool buttonPress( GadgetPtr gadget, const ButtonEvent &event );
+		IECore::RunTimeTypedPtr dragBegin( GadgetPtr gadget, const DragDropEvent &event );	
+		bool dragUpdate( GadgetPtr gadget, const DragDropEvent &event );
+		bool dragEnd( GadgetPtr gadget, const DragDropEvent &event );
 		
 		Imath::V3f m_srcPos;
 		Imath::V3f m_dstPos;
 		
 		NodulePtr m_srcNodule;
 		NodulePtr m_dstNodule;
+		
+		Gaffer::Plug::Direction m_dragEnd;
 		
 };
 

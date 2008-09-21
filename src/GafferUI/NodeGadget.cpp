@@ -117,6 +117,12 @@ void NodeGadget::doRender( IECore::RendererPtr renderer ) const
 
 bool NodeGadget::buttonPressed( GadgetPtr gadget, const ButtonEvent &event )
 {
+	if( gadget->isInstanceOf( Nodule::staticTypeId() ) )
+	{
+		// they can handle their own stuff.
+		return false;
+	}
+
 	if( event.buttons==ButtonEvent::Left )
 	{
 		// selection

@@ -42,8 +42,7 @@ class GadgetWidget( GLWidget ) :
 		self.setCameraMode( cameraMode )
 		self.setGadget( gadget )
 		
-		self.__lastButtonPressGadgets = None
-		self.__dragSourceGadget = None
+		self.__lastButtonPressGadget = None
 		self.__dragDropEvent = None
 		
 	def setGadget( self, gadget ) :
@@ -127,12 +126,13 @@ class GadgetWidget( GLWidget ) :
 			return self.__cameraButtonPress( event );
 
 		gadgets = self.__select( event )
-		self.__lastButtonPressGadgets = gadgets
 		gadget, result = self.__dispatchEvent( gadgets, "buttonPressSignal", gadgetEvent )
 		if result :
+			self.__lastButtonPressGadget = gadget
 			return True
-		
-		return False
+		else :
+			self.__lastButtonPressGadget = None
+			return False
 
 	def __buttonRelease( self, widget, event ) :
 	
@@ -146,13 +146,20 @@ class GadgetWidget( GLWidget ) :
 		if gadgetEvent.modifiers & ModifiableEvent.Modifiers.Alt :
 			return self.__cameraButtonRelease( event );
 
+		## \todo This needs to change. In the case of no active drag we should
+		# be sending a button release event to the last gadget to accept a press.
+		# In the case of an active drag we should send a dragRelease event to
+		# the drag gadget and a drop event to the destination.
+
 		gadgets = self.__select( event )
-		self.__lastButtonPressGadgets = False
+		self.__lastButtonPressGadget = False
 		if self.__dragDropEvent :
 			## \todo Send some kind of dragEnd/drop signal
-			dropEvent = self.__gtkEventToGadgetEvent( event, self.__dragDropEvent )
-			self.__dispatchEvent( gadgets, "dropSignal", self.__dragDropEvent )
-			self.__dragSourceGadget = False
+			self.__gtkEventToGadgetEvent( event, self.__dragDropEvent )
+			dropGadget, result = self.__dispatchEvent( gadgets, "dropSignal", self.__dragDropEvent )
+			self.__dragDropEvent.destination = dropGadget
+			self.__dragDropEvent.dropResult = result
+			self.__dispatchEvent( self.__dragDropEvent.source, "dragEndSignal", self.__dragDropEvent, dispatchToAncestors=False )
 			self.__dragDropEvent = None
 			
 		return True
@@ -166,20 +173,24 @@ class GadgetWidget( GLWidget ) :
 		if buttonEvent.modifiers & ModifiableEvent.Modifiers.Alt :
 			return self.__cameraMotion( event );
 
-		if self.__lastButtonPressGadgets and not self.__dragSourceGadget :
+		if self.__lastButtonPressGadget and not self.__dragDropEvent :
+			
 			# try to start a new drag
 			dragDropEvent = self.__gtkEventToGadgetEvent( event, DragDropEvent() )
-			g, d = self.__dispatchEvent( self.__lastButtonPressGadgets, "dragBeginSignal", dragDropEvent )
+			dragDropEvent.source = self.__lastButtonPressGadget
+			g, d = self.__dispatchEvent( self.__lastButtonPressGadget, "dragBeginSignal", dragDropEvent, dispatchToAncestors=False )
 			if d :
 				dragDropEvent.data = d
-				self.__dragSourceGadget = g
 				self.__dragDropEvent = dragDropEvent
 				
-			self.__lastButtonPressGadgets = None
-		elif self.__dragSourceGadget :
+			self.__lastButtonPressGadget = None
+			
+		elif self.__dragDropEvent :
+		
 			# update an existing drag
-			self.__gtkEventToGadgetEvent( event, self.__dragDropEvent )
-			self.__dragSourceGadget.dragUpdateSignal()( self.__dragSourceGadget, self.__dragDropEvent )
+			
+			self.__gtkEventToGadgetEvent( event, self.__dragDropEvent )			
+			self.__dispatchEvent( self.__dragDropEvent.source, "dragUpdateSignal", self.__dragDropEvent, dispatchToAncestors=False )
 		
 		return True
 
@@ -201,32 +212,80 @@ class GadgetWidget( GLWidget ) :
 			return True
 		
 		return True
+	
+	## Dispatches an event to a named signal on a Gadget, returning a tuple containing the
+	# gadget that handled the event and the return value from the handler. A list of Gadgets
+	# may be passed, in which case the event will be dispatched to them in order until it is
+	# handled by one of them. If dispatchToAncestors is True, then the event will be despatched
+	# to all the Gadgets from the root to the target Gadget, with the despatch terminating if
+	# one of these ancestors handles the signal. Returns the gadget that handled the event and
+	# the event result.
+	def __dispatchEvent( self, gadgetOrGadgets, signalName, gadgetEvent, dispatchToAncestors=True, _leafGadget=None ) :
 		
-	def __dispatchEvent( self, gadgets, signalName, gadgetEvent ) :
+		## If it's a list of Gadgets call ourselves again for each element.		
+		if isinstance( gadgetOrGadgets, list ) :
 		
-		for i in range( 0, len( gadgets ) ) :
+			for g in gadgetOrGadgets :
+			
+				handler, result = self.__dispatchEvent( g, signalName, gadgetEvent, dispatchToAncestors )
+				if result :
+					return handler, result
+					
+			return None, None
 				
-			if i > 0 :
-				parent = gadgets[i-1]
-				if hasattr( gadgetEvent, "line" ) and parent.isInstanceOf( ContainerGadget.staticTypeId() ) :
-					m = gadgets[i].getTransform()
-					m.invert( True )
-					gadgetEvent.line *= m
+		## Or if we've been asked to despatch to the ancestors of a single gadget then do that.
+		if dispatchToAncestors :
+		
+			gadget = gadgetOrGadgets
 			
-			
-			print "SIGNAL", gadgets[i], signalName		
-			signal = getattr( gadgets[i], signalName )()
+			## \todo It'd be nice to bind an ancestors() method so we get this list more easily. It might
+			# be nice to implement custom iterators on the c++ side to make it easy to traverse the graph too - can
+			# we use boost::graph stuff to help with that?
+			ancestors = []
+			a = gadget
+			while a :
+				ancestors.insert( 0, a )
+				a = a.parent()
+				
+			for a in ancestors :
+				
+				handler, result = self.__dispatchEvent( a, signalName, gadgetEvent, dispatchToAncestors=False, _leafGadget=gadget )
+				if result :
+					return handler, result
+					
+			return None, None
+		
+		## Otherwise it's just a single Gadget to despatch directly to.
+		
+		gadget = gadgetOrGadgets
+		
+		if hasattr( gadgetEvent, "line" ) :
+		
+			# Transform into Gadget space
+			untransformedLine = gadgetEvent.line
+			m = gadget.getTransform()
+			m.invert( True )
+			gadgetEvent.line *= m
+		
+		else :
+		
+			untransformedLine = None
+				
+		signal = getattr( gadget, signalName )()
+		result = signal( _leafGadget or gadget, gadgetEvent )
 
-			result = signal( gadgets[-1], gadgetEvent )
-			if result :
-				return gadgets[i], result
+		gadgetEvent.line = untransformedLine
+		
+		if result :
+		
+			return gadget, result
 				
 		return None, None
 
-	# Returns a list containing the gadget hierarchy under event.x, event.y.
-	# The top level parent is the first element in the list and the leaf gadget
-	# is the last element.
-	def __select( self, event ) :
+	## Returns a list of Gadgets under the screen x,y position specified by event.
+	# The first Gadget in the list will be the frontmost, determined either by the
+	# depth buffer if it exists or the drawing order if it doesn't.
+	def __select( self, gtkEvent ) :
 	
 		if not self.__scene :
 			return []
@@ -238,8 +297,8 @@ class GadgetWidget( GLWidget ) :
 			return []
 		
 		viewportSize = IECore.V2f( self.gtkWidget().allocation.width, self.gtkWidget().allocation.height )
-		regionCentre = IECore.V2f( event.x, event.y ) / viewportSize
-		regionSize = IECore.V2f( 10 ) / viewportSize
+		regionCentre = IECore.V2f( gtkEvent.x, gtkEvent.y ) / viewportSize
+		regionSize = IECore.V2f( 2 ) / viewportSize
 		
 		region = IECore.Box2f( regionCentre - regionSize/2, regionCentre + regionSize/2 )
 		
@@ -255,16 +314,21 @@ class GadgetWidget( GLWidget ) :
 		
 		if context.get_gl_config().has_depth_buffer() :
 			selection.sort()
-			name = selection[0].name.value()
 		else :
-			name = selection[-1].name.value()
+			selection.reverse()
+				
+		result = []
+		for s in selection :
 			
-		nameComponents = name.split( "." )
-		result = [ self.__gadget ]
-		assert( result[0].getName() == nameComponents[0] )
-		for i in range( 1, len( nameComponents ) ) :
-			result.append( result[-1].getChild( nameComponents[i] ) )
-		
+			name = s.name.value()
+			nameComponents = name.split( "." )
+			g = self.__gadget
+			assert( g.getName() == nameComponents[0] )
+			for i in range( 1, len( nameComponents ) ) :
+				g = g.getChild( nameComponents[i] )
+				
+			result.append( g )
+				
 		return result
 	
 	#########################################################################################################

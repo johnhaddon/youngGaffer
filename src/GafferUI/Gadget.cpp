@@ -105,6 +105,11 @@ Gadget::DragDropSignal &Gadget::dropSignal()
 {
 	return m_dropSignal;
 }
+
+Gadget::DragDropSignal &Gadget::dragEndSignal()
+{
+	return m_dragEndSignal;
+}
 		
 Gadget::KeySignal &Gadget::keyPressSignal()
 {

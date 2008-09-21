@@ -30,6 +30,7 @@ class Nodule : public Gadget
 
 		void doRender( IECore::RendererPtr renderer ) const;
 
+		bool buttonPress( GadgetPtr gadget, const ButtonEvent &event );
 		IECore::RunTimeTypedPtr dragBegin( GadgetPtr gadget, const ButtonEvent &event );	
 		bool drop( GadgetPtr gadget, const DragDropEvent &event );
 		

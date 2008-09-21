@@ -13,6 +13,7 @@ using namespace std;
 Nodule::Nodule( Gaffer::PlugPtr plug )
 	:	Gadget( staticTypeName() ), m_plug( plug )
 {
+	buttonPressSignal().connect( boost::bind( &Nodule::buttonPress, this, ::_1,  ::_2 ) );
 	dragBeginSignal().connect( boost::bind( &Nodule::dragBegin, this, ::_1, ::_2 ) );
 	dropSignal().connect( boost::bind( &Nodule::drop, this, ::_1, ::_2 ) );
 }
@@ -41,6 +42,12 @@ void Nodule::doRender( IECore::RendererPtr renderer ) const
 	getStyle()->renderNodule( renderer, 0.2 );
 }
 
+bool Nodule::buttonPress( GadgetPtr gadget, const ButtonEvent &event )
+{
+	// we handle the button press so we can get the dragBegin event.
+	return true;
+}
+
 IECore::RunTimeTypedPtr Nodule::dragBegin( GadgetPtr gadget, const ButtonEvent &event )
 {
 	return m_plug;
@@ -67,7 +74,9 @@ bool Nodule::drop( GadgetPtr gadget, const DragDropEvent &event )
 			}
 			input->setInput( output );
 			cerr << "CONNECTING " << output->fullName() << " TO " << input->fullName() << endl;
+			return true;
 		}
 	}
-	return true;
+	cerr << "RETURNING FALSE" << endl;
+	return false;
 }

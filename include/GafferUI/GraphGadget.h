@@ -13,6 +13,7 @@ namespace GafferUI
 {
 
 IE_CORE_FORWARDDECLARE( NodeGadget );
+IE_CORE_FORWARDDECLARE( ConnectionGadget );
 
 class GraphGadget : public ContainerGadget
 {
@@ -35,6 +36,7 @@ class GraphGadget : public ContainerGadget
 		bool dragUpdate( GadgetPtr gadget, const ButtonEvent &event );
 		
 		NodeGadget *nodeGadget( Gaffer::Node *node );
+		ConnectionGadget *connectionGadget( Gaffer::Plug *plug );
 		
 	private :
 	
@@ -43,6 +45,9 @@ class GraphGadget : public ContainerGadget
 		typedef std::map<Gaffer::Node *, NodeGadget *> NodeGadgetMap;
 		NodeGadgetMap m_nodeGadgets;
 	
+		typedef std::map<const Gaffer::Plug *, ConnectionGadget *> ConnectionGadgetMap;
+		ConnectionGadgetMap m_connectionGadgets;
+
 		Imath::V2f m_lastDragPosition;
 
 };
