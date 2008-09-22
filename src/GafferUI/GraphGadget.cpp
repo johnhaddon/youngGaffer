@@ -29,6 +29,7 @@ GraphGadget::GraphGadget( Gaffer::NodePtr graphRoot )
 	graphRoot->childRemovedSignal().connect( boost::bind( &GraphGadget::childRemoved, this, ::_1,  ::_2 ) );
 
 	keyPressSignal().connect( boost::bind( &GraphGadget::keyPressed, this, ::_1,  ::_2 ) );
+	buttonPressSignal().connect( boost::bind( &GraphGadget::buttonPress, this, ::_1,  ::_2 ) );
 	dragBeginSignal().connect( boost::bind( &GraphGadget::dragBegin, this, ::_1, ::_2 ) );
 	dragUpdateSignal().connect( boost::bind( &GraphGadget::dragUpdate, this, ::_1, ::_2 ) );
 }
@@ -106,7 +107,47 @@ void GraphGadget::inputChanged( Gaffer::PlugPtr dstPlug )
 	addChild( connection );
 
 	m_connectionGadgets[dstPlug.get()] = connection.get();
-	cerr << "INPUT CHANGED " << dstPlug->fullName() << endl;
+}
+
+bool GraphGadget::buttonPress( GadgetPtr gadget, const ButtonEvent &event )
+{
+	if( gadget->isInstanceOf( Nodule::staticTypeId() ) || gadget->isInstanceOf( ConnectionGadget::staticTypeId() ) )
+	{
+		// they can handle their own stuff.
+		return false;
+	}
+
+	if( event.buttons==ButtonEvent::Left )
+	{
+		NodeGadgetPtr nodeGadget = gadget->ancestor<NodeGadget>();
+		if( nodeGadget )
+		{
+			// selection
+			Gaffer::ScriptNodePtr scriptNode = script();
+			if( !scriptNode )
+			{
+				return false;
+			}
+			
+			Gaffer::NodePtr node = nodeGadget->node();
+			
+			bool shiftHeld = event.modifiers && ButtonEvent::Shift;
+			if( !shiftHeld )
+			{
+				scriptNode->selection()->clear();
+			}
+			if( shiftHeld && scriptNode->selection()->contains( node ) )
+			{
+				scriptNode->selection()->remove( node );
+			}
+			else
+			{
+				scriptNode->selection()->add( node );
+			}
+			return true;
+		}
+	}
+	return false;
 }
 
 IECore::RunTimeTypedPtr GraphGadget::dragBegin( GadgetPtr gadget, const ButtonEvent &event )
@@ -117,12 +158,8 @@ IECore::RunTimeTypedPtr GraphGadget::dragBegin( GadgetPtr gadget, const ButtonEv
 		return 0;
 	}
 	
-	Gaffer::ScriptNodePtr script = runTimeCast<Gaffer::ScriptNode>( m_graphRoot );
-	if( !script )
-	{
-		script = m_graphRoot->scriptNode();
-	}
-	if( !script )
+	Gaffer::ScriptNodePtr scriptNode = script();
+	if( !scriptNode )
 	{
 		return 0;
 	}
@@ -131,7 +168,7 @@ IECore::RunTimeTypedPtr GraphGadget::dragBegin( GadgetPtr gadget, const ButtonEv
 	if( event.line.intersect( Plane3f( V3f( 0, 0, 1 ), 0 ), i ) )
 	{
 		m_lastDragPosition = V2f( i.x, i.y );
-		return script->selection();
+		return scriptNode->selection();
 	}
 	return 0;
 }
@@ -174,6 +211,16 @@ bool GraphGadget::dragUpdate( GadgetPtr gadget, const ButtonEvent &event )
 		}
 	}
 	return false;
+}
+
+Gaffer::ScriptNodePtr GraphGadget::script()
+{
+	Gaffer::ScriptNodePtr script = runTimeCast<Gaffer::ScriptNode>( m_graphRoot );
+	if( !script )
+	{
+		script = m_graphRoot->scriptNode();
+	}
+	return script;
 }
 
 NodeGadget *GraphGadget::nodeGadget( Gaffer::Node *node )

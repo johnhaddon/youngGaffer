@@ -40,7 +40,6 @@ class NodeGadget : public IndividualContainer
 		typedef std::map<const Gaffer::Plug *, Nodule *> NoduleMap;
 		NoduleMap m_nodules;
 		
-		bool buttonPressed( GadgetPtr gadget, const ButtonEvent &event );
 		void selectionChanged( Gaffer::NodeSetPtr selection, Gaffer::NodePtr node );
 		
 };

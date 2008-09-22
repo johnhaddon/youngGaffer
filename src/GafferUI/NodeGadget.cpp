@@ -56,7 +56,6 @@ NodeGadget::NodeGadget( Gaffer::NodePtr node )
 		script->selection()->memberRemovedSignal().connect( boost::bind( &NodeGadget::selectionChanged, this, ::_1,  ::_2 ) );
 	}
 	
-	buttonPressSignal().connect( boost::bind( &NodeGadget::buttonPressed, this, ::_1,  ::_2 ) );
 }
 
 NodeGadget::~NodeGadget()
@@ -113,40 +112,6 @@ void NodeGadget::doRender( IECore::RendererPtr renderer ) const
 		renderer->setAttribute( "color", new Color3fData( Color3f( 0.2 ) ) );
 	}
 	IndividualContainer::doRender( renderer );
-}
-
-bool NodeGadget::buttonPressed( GadgetPtr gadget, const ButtonEvent &event )
-{
-	if( gadget->isInstanceOf( Nodule::staticTypeId() ) )
-	{
-		// they can handle their own stuff.
-		return false;
-	}
-
-	if( event.buttons==ButtonEvent::Left )
-	{
-		// selection
-		Gaffer::ScriptNodePtr script = m_node->scriptNode();
-		if( !script )
-		{
-			return false;
-		}
-		bool shiftHeld = event.modifiers && ButtonEvent::Shift;
-		if( !shiftHeld )
-		{
-			script->selection()->clear();
-		}
-		if( shiftHeld && script->selection()->contains( m_node ) )
-		{
-			script->selection()->remove( m_node );
-		}
-		else
-		{
-			script->selection()->add( m_node );
-		}
-		return true;
-	}
-	return false;
 }
 
 void NodeGadget::selectionChanged( Gaffer::NodeSetPtr selection, Gaffer::NodePtr node )

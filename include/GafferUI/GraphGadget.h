@@ -7,6 +7,7 @@ namespace Gaffer
 {
 IE_CORE_FORWARDDECLARE( Node );
 IE_CORE_FORWARDDECLARE( Plug );
+IE_CORE_FORWARDDECLARE( ScriptNode );
 }
 
 namespace GafferUI
@@ -32,6 +33,7 @@ class GraphGadget : public ContainerGadget
 		void childRemoved( GraphComponent *parent, GraphComponent *child );
 		void inputChanged( Gaffer::PlugPtr dstPlug );
 		
+		bool buttonPress( GadgetPtr gadget, const ButtonEvent &event );
 		IECore::RunTimeTypedPtr dragBegin( GadgetPtr gadget, const ButtonEvent &event );	
 		bool dragUpdate( GadgetPtr gadget, const ButtonEvent &event );
 		
@@ -39,6 +41,8 @@ class GraphGadget : public ContainerGadget
 		ConnectionGadget *connectionGadget( Gaffer::Plug *plug );
 		
 	private :
+	
+		Gaffer::ScriptNodePtr script();
 	
 		Gaffer::Node *m_graphRoot;
 		
