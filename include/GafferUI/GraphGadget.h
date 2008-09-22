@@ -34,6 +34,8 @@ class GraphGadget : public ContainerGadget
 		void inputChanged( Gaffer::PlugPtr dstPlug );
 		
 		bool buttonPress( GadgetPtr gadget, const ButtonEvent &event );
+		bool buttonRelease( GadgetPtr gadget, const ButtonEvent &event );
+		
 		IECore::RunTimeTypedPtr dragBegin( GadgetPtr gadget, const ButtonEvent &event );	
 		bool dragUpdate( GadgetPtr gadget, const ButtonEvent &event );
 		

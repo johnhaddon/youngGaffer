@@ -9,6 +9,13 @@ import gtk
 # hosting a Gadget within a Widget based interface.
 # Widgets are UI elements implemented using GTK, whereas
 # Gadgets are implemented on top of the Cortex infrastructure.
+## \todo It feels like this could be split into two classes - one that just
+# takes gtk events and turns them into GafferUI events, and one that takes
+# those events and forwards them to the Gadgets appropriately, maintaining
+# current drag state etc. The latter class could then be used if implementing
+# other hosts.
+## \todo The camera movement should be coming from somewhere else - some kind
+# of ViewportGadget or summink?
 class GadgetWidget( GLWidget ) :
 
 	CameraMode = IECore.Enum.create( "None", "Mode2D", "Mode3D" )
@@ -146,21 +153,20 @@ class GadgetWidget( GLWidget ) :
 		if gadgetEvent.modifiers & ModifiableEvent.Modifiers.Alt :
 			return self.__cameraButtonRelease( event );
 
-		## \todo This needs to change. In the case of no active drag we should
-		# be sending a button release event to the last gadget to accept a press.
-		# In the case of an active drag we should send a dragRelease event to
-		# the drag gadget and a drop event to the destination.
-
 		gadgets = self.__select( event )
-		self.__lastButtonPressGadget = False
 		if self.__dragDropEvent :
-			## \todo Send some kind of dragEnd/drop signal
+		
 			self.__gtkEventToGadgetEvent( event, self.__dragDropEvent )
 			dropGadget, result = self.__dispatchEvent( gadgets, "dropSignal", self.__dragDropEvent )
 			self.__dragDropEvent.destination = dropGadget
 			self.__dragDropEvent.dropResult = result
 			self.__dispatchEvent( self.__dragDropEvent.source, "dragEndSignal", self.__dragDropEvent, dispatchToAncestors=False )
 			self.__dragDropEvent = None
+			
+		elif self.__lastButtonPressGadget :
+			
+			self.__dispatchEvent( self.__lastButtonPressGadget, "buttonReleaseSignal", gadgetEvent, dispatchToAncestors=False )
+			self.__lastButtonPressGadget = None
 			
 		return True
 

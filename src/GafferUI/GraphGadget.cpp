@@ -30,6 +30,7 @@ GraphGadget::GraphGadget( Gaffer::NodePtr graphRoot )
 
 	keyPressSignal().connect( boost::bind( &GraphGadget::keyPressed, this, ::_1,  ::_2 ) );
 	buttonPressSignal().connect( boost::bind( &GraphGadget::buttonPress, this, ::_1,  ::_2 ) );
+	buttonReleaseSignal().connect( boost::bind( &GraphGadget::buttonRelease, this, ::_1,  ::_2 ) );
 	dragBeginSignal().connect( boost::bind( &GraphGadget::dragBegin, this, ::_1, ::_2 ) );
 	dragUpdateSignal().connect( boost::bind( &GraphGadget::dragUpdate, this, ::_1, ::_2 ) );
 }
@@ -107,6 +108,12 @@ void GraphGadget::inputChanged( Gaffer::PlugPtr dstPlug )
 	addChild( connection );
 
 	m_connectionGadgets[dstPlug.get()] = connection.get();
+}
+
+bool GraphGadget::buttonRelease( GadgetPtr gadget, const ButtonEvent &event )
+{
+	std::cerr << "BUTTON RELEASE" << std::endl;
+	return true;
 }
 
 bool GraphGadget::buttonPress( GadgetPtr gadget, const ButtonEvent &event )
