@@ -32,9 +32,15 @@ class Nodule : public Gadget
 
 		bool buttonPress( GadgetPtr gadget, const ButtonEvent &event );
 		IECore::RunTimeTypedPtr dragBegin( GadgetPtr gadget, const ButtonEvent &event );	
+		bool dragUpdate( GadgetPtr gadget, const DragDropEvent &event );
+		bool dragEnd( GadgetPtr gadget, const DragDropEvent &event );
+
 		bool drop( GadgetPtr gadget, const DragDropEvent &event );
 		
 	private :
+
+		bool m_dragging;
+		Imath::V3f m_dragPosition;
 		
 		Gaffer::PlugPtr m_plug;
 		

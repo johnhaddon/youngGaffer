@@ -15,6 +15,9 @@ Nodule::Nodule( Gaffer::PlugPtr plug )
 {
 	buttonPressSignal().connect( boost::bind( &Nodule::buttonPress, this, ::_1,  ::_2 ) );
 	dragBeginSignal().connect( boost::bind( &Nodule::dragBegin, this, ::_1, ::_2 ) );
+	dragUpdateSignal().connect( boost::bind( &Nodule::dragUpdate, this, ::_1, ::_2 ) );
+	dragEndSignal().connect( boost::bind( &Nodule::dragEnd, this, ::_1, ::_2 ) );
+
 	dropSignal().connect( boost::bind( &Nodule::drop, this, ::_1, ::_2 ) );
 }
 
@@ -40,6 +43,15 @@ Imath::Box3f Nodule::bound() const
 void Nodule::doRender( IECore::RendererPtr renderer ) const
 {
 	getStyle()->renderNodule( renderer, 0.2 );
+	
+	if( m_dragging )
+	{
+		// technically we shouldn't be drawing outside of our bound like this.
+		// for the gl renderer it shouldn't matter. for others it might - at that
+		// point we'll have to maintain a separate gagdet parented to the graph
+		// just to draw this line. it seems like unecessary effort now though.
+		getStyle()->renderConnection( renderer, V3f( 0 ), m_dragPosition );
+	}
 }
 
 bool Nodule::buttonPress( GadgetPtr gadget, const ButtonEvent &event )
@@ -50,7 +62,24 @@ bool Nodule::buttonPress( GadgetPtr gadget, const ButtonEvent &event )
 
 IECore::RunTimeTypedPtr Nodule::dragBegin( GadgetPtr gadget, const ButtonEvent &event )
 {
+	m_dragging = true;
+	m_dragPosition = event.line.p0;
+	renderRequestSignal()( this );
 	return m_plug;
+}
+
+bool Nodule::dragUpdate( GadgetPtr gadget, const DragDropEvent &event )
+{
+	m_dragPosition = event.line.p0;
+	renderRequestSignal()( this );
+	return true;
+}
+
+bool Nodule::dragEnd( GadgetPtr gadget, const DragDropEvent &event )
+{
+	m_dragging = false;
+	renderRequestSignal()( this );
+	return true;
 }
 
 bool Nodule::drop( GadgetPtr gadget, const DragDropEvent &event )
