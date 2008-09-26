@@ -266,10 +266,10 @@ class GadgetWidget( GLWidget ) :
 		gadget = gadgetOrGadgets
 		
 		if hasattr( gadgetEvent, "line" ) :
-		
+				
 			# Transform into Gadget space
 			untransformedLine = gadgetEvent.line
-			m = gadget.getTransform()
+			m = gadget.fullTransform()
 			m.invert( True )
 			gadgetEvent.line *= m
 		
