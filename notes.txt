@@ -120,6 +120,9 @@ ui
 	* middle mouse don't do nuffink
 		* cos scroll wheels aren't very clickable
 		* maybe the scroll wheel can be used for stuff though
+		
+* drag and drop
+	* dragging anything to the script editor should put it's path name there
 
 * file path control
 	* tab completion
@@ -274,6 +277,7 @@ colorspace management
 	-	gtk representations of color
 	-	gl representations of color
 		-	imager shader? append code onto other shaders as they're compiled?
+		-	render to texture and render the texture to screen with a lookup shader?
 	-	image transforms
 	
 * implement as cube luts? then can work anywhere easily
@@ -380,6 +384,7 @@ shadow map generation
 primvars/per object shader tweaks
 expressions
 shader library
+curve editor
 
 stage three :
 
