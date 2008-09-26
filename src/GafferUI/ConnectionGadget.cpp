@@ -127,7 +127,7 @@ bool ConnectionGadget::dragUpdate( GadgetPtr gadget, const DragDropEvent &event 
 	}
 	else
 	{
-		m_dstPos = event.line.p1;
+		m_dstPos = event.line.p0;
 	}
 	renderRequestSignal()( this );
 	return 0;
