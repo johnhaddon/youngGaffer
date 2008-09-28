@@ -5,6 +5,10 @@ boostLibSuffix = "-mt-1_35"
 
 env = Environment(
 
+	GAFFER_MAJOR_VERSION = "0",
+	GAFFER_MINOR_VERSION = "1",
+	GAFFER_PATCH_VERSION = "0",
+
 	CPPPATH = [
 		"include",
 		"/opt/local/include",
@@ -33,10 +37,11 @@ env = Environment(
 		"Imath",
 		"IECore",
 	],
-
+	
 )
 
 gafferLibrary = env.SharedLibrary( "lib/Gaffer", glob.glob( "src/Gaffer/*.cpp" ) )
+env.Default( gafferLibrary )
 
 uiEnv = env.Copy()
 uiEnv.Append(
@@ -45,6 +50,7 @@ uiEnv.Append(
 
 )
 gafferUILibrary = uiEnv.SharedLibrary( "lib/GafferUI", glob.glob( "src/GafferUI/*.cpp" ) )
+uiEnv.Default( gafferUILibrary )
 
 pythonEnv = env.Copy()
 
@@ -68,12 +74,14 @@ if pythonEnv["PLATFORM"]=="darwin" :
 	pythonEnv.Append( SHLINKFLAGS = "-single_module" )
 
 gafferBindingsLibrary = pythonEnv.SharedLibrary( "lib/GafferBindings", glob.glob( "src/GafferBindings/*.cpp" ) )
+pythonEnv.Default( gafferBindingsLibrary )
 
 pythonUIEnv = pythonEnv.Copy()
 pythonUIEnv.Append(
 	LIBS = [ "GafferUI", "GafferBindings" ],
 )
 gafferUIBindingsLibrary = pythonUIEnv.SharedLibrary( "lib/GafferUIBindings", glob.glob( "src/GafferUIBindings/*.cpp" ) )
+pythonUIEnv.Default( gafferUIBindingsLibrary )
 
 pythonModuleEnv = pythonEnv.Copy()
 pythonModuleEnv.Append(
@@ -94,3 +102,13 @@ pythonUIModuleEnv.Append(
 	LIBS = [ "GafferUI", "GafferUIBindings" ],
 )
 pythonUIModuleEnv.SharedLibrary( "python/GafferUI/_GafferUI", glob.glob( "src/GafferUIModule/*.cpp" ) )
+
+
+#########################################################################################################
+# Documentation
+#########################################################################################################
+
+docEnv = env.Clone()
+docEnv["ENV"]["PATH"] = os.environ["PATH"]
+docs = docEnv.Command( "doc/html/index.html", "doc/config/Doxyfile", "sed 's/GAFFER_MAJOR_VERSION/$GAFFER_MAJOR_VERSION/g;s/GAFFER_MINOR_VERSION/$GAFFER_MINOR_VERSION/g;s/GAFFER_PATCH_VERSION/$GAFFER_PATCH_VERSION/g' doc/config/Doxyfile | doxygen -" )
+docEnv.Depends( docs, glob.glob( "include/*/*.h" ) + glob.glob( "src/*/*.cpp" ) + glob.glob( "python/*/*py" ) )
