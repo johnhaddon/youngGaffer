@@ -64,11 +64,13 @@ class Widget() :
 		
 	## Returns the top level gtk.Widget instance used to implement
 	# the GafferUI.Widget functionality.
+	# \todo "Protect" with an _
 	def gtkWidget( self ) :
 	
 		return self.__gtkWidget
 		
 	## Returns the GafferUI.Widget that owns the specified gtk.Widget
+	# \todo "Protect" with an _
 	@classmethod
 	def owner( cls, gtkWidget ) :
 	
