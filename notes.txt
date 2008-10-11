@@ -86,8 +86,11 @@ extended node constructors
 
 * take keyword arguments for setting plugs and connecting things
 	* AddNode( op1 = 10, op2 = 20 )
+* these will form the basis of file reading
 * can implement **kwargs in boost python using the undocumented class_.def_raw method
-* need a way of binding node constructors for plugins without people having to use boost python?
+	*	for each keyword, find the plug on the node, get it as a python object, and then call the python setValue/setInput
+		method passing the keyword value object as argument.
+* need a way of binding node constructors for plugins without people having to use boost python
 
 ui
 ==
