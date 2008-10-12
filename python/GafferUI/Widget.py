@@ -9,7 +9,7 @@ import gtk
 # GafferUI classes must not derive from gtk classes.
 #
 # \todo Consider how this relates to the other Widget class we'll be making for the GL editors
-class Widget() :
+class Widget( object ) :
 
 	## Derived classes must create an appropriate gtk widget to be the top
 	# level for their implementation and pass it to the Widget.__init__ method.
