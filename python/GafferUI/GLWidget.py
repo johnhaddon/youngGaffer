@@ -17,7 +17,9 @@ class GLWidget( Widget ) :
 		"Double"
 	)	
 	
-	def __init__( self, bufferOptions = () ) :
+	__glContext = None ## Context we share among all widgets
+	
+	def __init__( self, bufferOptions = set() ) :
 	
 		if self.BufferOptions.Alpha in bufferOptions :
 			displayMode = gtk.gdkgl.MODE_RGBA
@@ -31,7 +33,8 @@ class GLWidget( Widget ) :
 			displayMode |= gtk.gdkgl.MODE_DOUBLE 
 			
 		glConfig = gtk.gdkgl.Config( mode=displayMode )
-		drawingArea = gtk.gtkgl.DrawingArea( glConfig )
+		drawingArea = gtk.gtkgl.DrawingArea( glConfig, share_list=self.__glContext )
+		
 		Widget.__init__( self, drawingArea )
 				
 		drawingArea.connect( "configure_event", self.__configure )
@@ -52,7 +55,10 @@ class GLWidget( Widget ) :
 		# mean we call init() once for every widget created, but it's
 		# safe to call init() multiple times anyway.
 		IECoreGL.init( True )		
-
+		if not GLWidget.__glContext :
+			# we're the first gl widget, save the context for subsequent ones
+			GLWidget.__glContext = widget.get_gl_context()
+			
 	def __configure( self, widget, event ) :
 	
 		drawable = widget.get_gl_drawable()
