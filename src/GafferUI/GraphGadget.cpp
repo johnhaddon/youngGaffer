@@ -126,7 +126,11 @@ bool GraphGadget::buttonPress( GadgetPtr gadget, const ButtonEvent &event )
 
 	if( event.buttons==ButtonEvent::Left )
 	{
-		NodeGadgetPtr nodeGadget = gadget->ancestor<NodeGadget>();
+		NodeGadgetPtr nodeGadget = runTimeCast<NodeGadget>( gadget );
+		if( !nodeGadget )
+		{
+			nodeGadget = gadget->ancestor<NodeGadget>();
+		}
 		if( nodeGadget )
 		{
 			// selection
