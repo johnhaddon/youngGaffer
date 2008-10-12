@@ -85,13 +85,16 @@ class Gadget : public Gaffer::GraphComponent
 		//@}
 
 		/// @name Display
-		/// \todo I guess these could be implemented as signals too if we wanted.
 		////////////////////////////////////////////////////////////////////
 		//@{
 		/// Renders the Gadget.
 		void render( IECore::RendererPtr renderer ) const;
 		/// The bounding box of the Gadget before transformation.
 		virtual Imath::Box3f bound() const = 0;
+		/// The bounding box transformed by the result of getTransform().
+		Imath::Box3f transformedBound() const;
+		/// The bounding box transformed by the result of fullTransform( ancestor ).
+		Imath::Box3f transformedBound( ConstGadgetPtr ancestor ) const;
 		typedef boost::signal<void ( GadgetPtr )> RenderRequestSignal;
 		RenderRequestSignal &renderRequestSignal();
 		//@}

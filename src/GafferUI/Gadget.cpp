@@ -3,6 +3,8 @@
 
 #include "IECore/SimpleTypedData.h"
 
+#include "OpenEXR/ImathBoxAlgo.h"
+
 using namespace GafferUI;
 using namespace Imath;
 using namespace std;
@@ -74,6 +76,18 @@ void Gadget::render( IECore::RendererPtr renderer ) const
 		renderer->setAttribute( "name", new IECore::StringData( fullName() ) );
 		doRender( renderer );
 	renderer->attributeEnd();
+}
+
+Imath::Box3f Gadget::transformedBound() const
+{
+	Box3f b = bound();
+	return transform( b, getTransform() );
+}
+
+Imath::Box3f Gadget::transformedBound( ConstGadgetPtr ancestor ) const
+{
+	Box3f b = bound();
+	return transform( b, fullTransform( ancestor ) );
 }
 
 Gadget::RenderRequestSignal &Gadget::renderRequestSignal()
