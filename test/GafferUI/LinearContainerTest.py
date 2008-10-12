@@ -57,18 +57,18 @@ class LinearContainerTest( unittest.TestCase ) :
 		
 		c.c1 = twoByFour
 		self.assertEqual( c.bound(), IECore.Box3f( IECore.V3f( -1, -2, 0 ), IECore.V3f( 1, 2, 0 ) ) )
-		self.assertEqual( c.childTransform( twoByFour ), IECore.M44f.createTranslated( IECore.V3f( 0 ) ) )
+		self.assertEqual( twoByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( 0 ) ) )
 		
 		c.c2 = fourByFour
 		self.assertEqual( c.bound(), IECore.Box3f( IECore.V3f( -3, -2, 0 ), IECore.V3f( 3, 2, 0 ) ) )
-		self.assertEqual( c.childTransform( twoByFour ), IECore.M44f.createTranslated( IECore.V3f( -2, 0, 0 ) ) )
-		self.assertEqual( c.childTransform( fourByFour ), IECore.M44f.createTranslated( IECore.V3f( 1, 0, 0 ) ) )
+		self.assertEqual( twoByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( -2, 0, 0 ) ) )
+		self.assertEqual( fourByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( 1, 0, 0 ) ) )
 		
 		c.c3 = fourByTwo
 		self.assertEqual( c.bound(), IECore.Box3f( IECore.V3f( -5, -2, 0 ), IECore.V3f( 5, 2, 0 ) ) )
-		self.assertEqual( c.childTransform( twoByFour ), IECore.M44f.createTranslated( IECore.V3f( -4, 0, 0 ) ) )
-		self.assertEqual( c.childTransform( fourByFour ), IECore.M44f.createTranslated( IECore.V3f( -1, 0, 0 ) ) )
-		self.assertEqual( c.childTransform( fourByTwo ), IECore.M44f.createTranslated( IECore.V3f( 3, 0, 0 ) ) )
+		self.assertEqual( twoByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( -4, 0, 0 ) ) )
+		self.assertEqual( fourByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( -1, 0, 0 ) ) )
+		self.assertEqual( fourByTwo.getTransform(), IECore.M44f.createTranslated( IECore.V3f( 3, 0, 0 ) ) )
 		
 	def testVerticalMin( self ) :
 	
@@ -88,18 +88,18 @@ class LinearContainerTest( unittest.TestCase ) :
 		
 		c.c1 = twoByFour
 		self.assertEqual( c.bound(), IECore.Box3f( IECore.V3f( -1, -2, 0 ), IECore.V3f( 1, 2, 0 ) ) )
-		self.assertEqual( c.childTransform( twoByFour ), IECore.M44f.createTranslated( IECore.V3f( 0 ) ) )
+		self.assertEqual( twoByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( 0 ) ) )
 		
 		c.c2 = fourByFour
 		self.assertEqual( c.bound(), IECore.Box3f( IECore.V3f( -2, -4, 0 ), IECore.V3f( 2, 4, 0 ) ) )
-		self.assertEqual( c.childTransform( twoByFour ), IECore.M44f.createTranslated( IECore.V3f( -1, -2, 0 ) ) )
-		self.assertEqual( c.childTransform( fourByFour ), IECore.M44f.createTranslated( IECore.V3f( 0, 2, 0 ) ) )
+		self.assertEqual( twoByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( -1, -2, 0 ) ) )
+		self.assertEqual( fourByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( 0, 2, 0 ) ) )
 		
 		c.c3 = fourByTwo
 		self.assertEqual( c.bound(), IECore.Box3f( IECore.V3f( -2, -5, 0 ), IECore.V3f( 2, 5, 0 ) ) )
-		self.assertEqual( c.childTransform( twoByFour ), IECore.M44f.createTranslated( IECore.V3f( -1, -3, 0 ) ) )
-		self.assertEqual( c.childTransform( fourByFour ), IECore.M44f.createTranslated( IECore.V3f( 0, 1, 0 ) ) )
-		self.assertEqual( c.childTransform( fourByTwo ), IECore.M44f.createTranslated( IECore.V3f( 0, 4, 0 ) ) )
+		self.assertEqual( twoByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( -1, -3, 0 ) ) )
+		self.assertEqual( fourByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( 0, 1, 0 ) ) )
+		self.assertEqual( fourByTwo.getTransform(), IECore.M44f.createTranslated( IECore.V3f( 0, 4, 0 ) ) )
 				
 if __name__ == "__main__":
 	unittest.main()
