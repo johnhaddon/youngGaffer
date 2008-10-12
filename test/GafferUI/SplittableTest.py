@@ -5,11 +5,11 @@ import IECore
 import gtk
 import unittest
 
-class PanelTest( unittest.TestCase ) :
+class SplittableTest( unittest.TestCase ) :
 
 	def testChild( self ) :
 	
-		p = GafferUI.Panel()
+		p = GafferUI.Splittable()
 		self.assertEqual( p.getChild(), None )
 		self.assertEqual( p.isSplit(), False )
 		p.setChild( GafferUI.ScriptEditor( Gaffer.ScriptNode() ) )
@@ -39,7 +39,7 @@ class PanelTest( unittest.TestCase ) :
 
 	def testSplit( self ) :
 	
-		p = GafferUI.Panel()
+		p = GafferUI.Splittable()
 		self.assertEqual( p.isSplit(), False )
 		self.assertEqual( p.splitDirection(), p.SplitDirection.None )
 		self.assertEqual( p.getChild(), None )
@@ -54,7 +54,7 @@ class PanelTest( unittest.TestCase ) :
 		
 	def testSplitKeepingChild( self ) :
 	
-		p = GafferUI.Panel()
+		p = GafferUI.Splittable()
 		self.assertEqual( p.isSplit(), False )
 		self.assertEqual( p.splitDirection(), p.SplitDirection.None )
 		self.assertEqual( p.getChild(), None )
@@ -68,8 +68,8 @@ class PanelTest( unittest.TestCase ) :
 	
 		p.split( p.SplitDirection.Vertical, 1 )
 		self.assertEqual( p.isSplit(), True )
-		self.assert_( isinstance( p.subPanel( 0 ), GafferUI.Panel ) )
-		self.assert_( isinstance( p.subPanel( 1 ), GafferUI.Panel ) )
+		self.assert_( isinstance( p.subPanel( 0 ), GafferUI.Splittable ) )
+		self.assert_( isinstance( p.subPanel( 1 ), GafferUI.Splittable ) )
 		self.assertEqual( p.subPanel( 0 ).isSplit(), False )
 		self.assertEqual( p.subPanel( 1 ).isSplit(), False )	
 		self.assertEqual( p.subPanel( 0 ).getChild(), None )
@@ -78,8 +78,8 @@ class PanelTest( unittest.TestCase ) :
 
 	def testChildTransfer( self ) :
 	
-		p1 = GafferUI.Panel()
-		p2 = GafferUI.Panel()
+		p1 = GafferUI.Splittable()
+		p2 = GafferUI.Splittable()
 		
 		s = GafferUI.ScriptEditor( Gaffer.ScriptNode() )
 		
@@ -96,12 +96,12 @@ class PanelTest( unittest.TestCase ) :
 		
 	def testSplitAndRejoin( self ) :
 	
-		p = GafferUI.Panel()
+		p = GafferUI.Splittable()
 		self.assertEqual( p.isSplit(), False )
 		self.assertEqual( p.splitDirection(), p.SplitDirection.None )
 		self.assertEqual( p.getChild(), None )
 				
-		p.split( GafferUI.Panel.SplitDirection.Horizontal, 1 )
+		p.split( GafferUI.Splittable.SplitDirection.Horizontal, 1 )
 		self.assertEqual( p.isSplit(), True )
 		self.assertEqual( p.splitDirection(), p.SplitDirection.Horizontal )	
 		
@@ -112,7 +112,7 @@ class PanelTest( unittest.TestCase ) :
 	
 	def testSplitAndRejoinWithChild( self ) :
 	
-		p = GafferUI.Panel()
+		p = GafferUI.Splittable()
 		s = GafferUI.ScriptEditor( Gaffer.ScriptNode() )
 		p.setChild( s )
 		
@@ -127,7 +127,7 @@ class PanelTest( unittest.TestCase ) :
 	
 	def testSplitAndRejoinWithSplit( self ) :
 	
-		p = GafferUI.Panel()
+		p = GafferUI.Splittable()
 		p.split( p.SplitDirection.Vertical )
 		self.assert_( p.isSplit(), True )
 		

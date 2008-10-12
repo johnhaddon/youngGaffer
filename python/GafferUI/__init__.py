@@ -33,7 +33,7 @@ from FileNamePlugValueWidget import FileNamePlugValueWidget
 from PlugWidget import PlugWidget
 from ContainerWidget import ContainerWidget
 from Window import Window
-from Panel import Panel
+from Splittable import Splittable
 from EditorWidget import EditorWidget
 from ScriptEditor import ScriptEditor
 from ListContainer import ListContainer
@@ -44,6 +44,7 @@ from ScriptWindow import ScriptWindow
 from MenuBar import MenuBar
 from EventLoop import EventLoop
 from TabbedContainer import TabbedContainer
+from CompoundEditor import CompoundEditor
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?

@@ -21,5 +21,3 @@ class GraphEditor( EditorWidget ) :
 			return True
 	
 		return False
-
-Panel.registerContentCreator( "Graph Editor", lambda : GraphEditor( ScriptNode() ) )

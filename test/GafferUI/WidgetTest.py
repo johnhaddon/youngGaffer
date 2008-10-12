@@ -39,7 +39,7 @@ class WidgetTest( unittest.TestCase ) :
 	
 		w = GafferUI.Window( "test" )
 		l = GafferUI.ListContainer( GafferUI.ListContainer.Orientation.Vertical )
-		p = GafferUI.Panel()
+		p = GafferUI.Splittable()
 		l.append( p )
 		
 		w.setChild( l )

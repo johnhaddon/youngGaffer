@@ -56,7 +56,7 @@ class ScriptWindow( GafferUI.Window ) :
 		
 		m = GafferUI.MenuBar( self.menuDefinition )
 		
-		p = GafferUI.Panel()
+		p = GafferUI.CompoundEditor( self.__script )
 		
 		l.append( m )
 		l.append( p )

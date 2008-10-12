@@ -1,18 +1,12 @@
 import IECore
 import gtk
 
-from Menu import Menu
 from ContainerWidget import ContainerWidget
 from Widget import Widget
 
-## \todo Implement an option to float in a new window, and an option to anchor back
 ## \todo Ctrl drag moves divider and other close by dividers, or the opposite way round
 ## \todo Figure out the size allocation to work better - moving one slider doesn't move the others
-## \todo Click and drag based interactive splitting rather than menu based?
-## \todo Serialisation using __repr__ (requires serialisation of children too) Actually, move
-## the menu into an EditorPanel derived class, and enforce that only editors can go in the panels
-## for this class. Then implement serialisation.
-class Panel( ContainerWidget ) :
+class Splittable( ContainerWidget ) :
 
 	SplitDirection = IECore.Enum.create( "None", "Vertical", "Horizontal" )
 
@@ -22,7 +16,6 @@ class Panel( ContainerWidget ) :
 		
 		# an event box is always our top level gtk widget
 		self.__eventBox = self.gtkWidget()
-		self.__eventBox.connect( "button-press-event", self.__buttonPress )
 		self.__eventBox.show()
 		
 		# when we aren't split we might have a child
@@ -77,7 +70,7 @@ class Panel( ContainerWidget ) :
 
 		assert( not self.isSplit() )
 		
-		if not isinstance( direction, Panel.SplitDirection ) or not direction :
+		if not isinstance( direction, Splittable.SplitDirection ) or not direction :
 			raise TypeError( "Split direction not valid" )
 			
 		if childSubPanelIndex < 0 or childSubPanelIndex > 1 :
@@ -92,7 +85,7 @@ class Panel( ContainerWidget ) :
 		else :
 			self.__paned = gtk.VPaned()
 		
-		self.__subPanels = [ Panel(), Panel() ]
+		self.__subPanels = [ Splittable(), Splittable() ]
 		self.__paned.pack1( self.__subPanels[0].gtkWidget() )
 		self.__paned.pack2( self.__subPanels[1].gtkWidget() )
 			
@@ -121,6 +114,15 @@ class Panel( ContainerWidget ) :
 		
 		return self.__subPanels[index]
 
+	def subPanelIndex( self, panel ) :
+	
+		if self.subPanel( 0 ) is panel :
+			return 0
+		elif self.subPanel( 1 ) is panel :
+			return 1
+		else :
+			return -1
+
 	## Note that isSplit() may still be True following this call. This
 	# occurs in the case where the sub panel being kept is itself split.
 	def join( self, childToKeepPanelIndex=0 ) :
@@ -140,62 +142,3 @@ class Panel( ContainerWidget ) :
 		
 		if c :
 			self.__eventBox.add( c )
-							
-	def menuDefinition( self ) :
-	
-		## we can only really do useful things to leaf panels
-		if self.isSplit() :
-			return None
-			
-		m = IECore.MenuDefinition()
-									
-		for l, c in self.__contentCreators.items() :
-			m.append( "/" + l, { "command" : IECore.curry( self.__setChildCallback, c ) } )
-
-		m.append( "/divider", { "divider" : True } )
-
-		m.append( "remove", { "command" : self.__removeCallback } )		
-		
-		m.append( "/divider2", { "divider" : True } )
-
-		m.append( "/splitLeft", { "command" : IECore.curry( self.split, self.SplitDirection.Vertical, 1 ) } )
-		m.append( "/splitRight", { "command" : IECore.curry( self.split, self.SplitDirection.Vertical, 0 ) } )
-		m.append( "/splitBottom", { "command" : IECore.curry( self.split, self.SplitDirection.Horizontal, 0 ) } )
-		m.append( "/splitTop", { "command" : IECore.curry( self.split, self.SplitDirection.Horizontal, 1 ) } )
-
-		return m
-	
-	def __setChildCallback( self, childCreator ) :
-	
-		child = childCreator()
-		self.setChild( child )
-		
-	def __removeCallback( self ) :
-	
-		parent = self.parent()
-		if isinstance( parent, Panel ) :
-			toKeep = 1 if self is parent.subPanel( 0 ) else 0
-			parent.join( toKeep )
-		else :
-			self.setChild( None )
-	
-	def __buttonPress( self, widget, event ) :
-	
-		if event.button==3 :
-			# right click
-			m = self.menuDefinition()
-			if m :
-				m = Menu( m )
-				m.popup()
-				return True
-		
-		return False
-
-	__contentCreators = {}
-	
-	@classmethod
-	def registerContentCreator( cls, label, creator ) :
-	
-		cls.__contentCreators[label] = creator
-		
-Panel.registerContentCreator( "Empty", lambda : None )	

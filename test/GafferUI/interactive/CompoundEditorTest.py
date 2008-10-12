@@ -8,7 +8,7 @@ import gtk
 window = GafferUI.Window( "Panel test" )
 window.gtkWidget().connect( "delete_event", gtk.main_quit )
 
-window.setChild( GafferUI.Panel() )
+window.setChild( GafferUI.CompoundEditor( Gaffer.ScriptNode() ) )
 
 window.show()
 
