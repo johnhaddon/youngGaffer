@@ -50,7 +50,7 @@ void TextGadget::doRender( IECore::RendererPtr renderer ) const
 {
 	renderer->attributeBegin();
 		/// \todo Have the color and wotnot come from the style.
-		renderer->setAttribute( "color", new IECore::Color3fData( Imath::Color3f( 1, 1, 0 ) ) );
+		renderer->setAttribute( "color", new IECore::Color3fData( Imath::Color3f( 0, 0, 0 ) ) );
 		renderer->setAttribute( "gl:textPrimitive:type", new IECore::StringData( "sprite" ) );
 		renderer->text( getFont()->fileName(), m_text );
 	renderer->attributeEnd();
