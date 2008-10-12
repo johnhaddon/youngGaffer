@@ -54,7 +54,13 @@ class GLWidget( Widget ) :
 		# created, and this seems like as good a place as any. it does
 		# mean we call init() once for every widget created, but it's
 		# safe to call init() multiple times anyway.
-		IECoreGL.init( True )		
+		IECoreGL.init( True )
+		## \todo this context dies or something when a glwidget is reparented
+		# there is a suggestion as to how to fix this here :
+		#
+		# http://markmail.org/message/zkbiilfe45rpbiv2#query:gtkglext%20reparenting+page:1+mid:zkbiilfe45rpbiv2+state:results
+		#
+		# but I couldn't get it to work yet
 		if not GLWidget.__glContext :
 			# we're the first gl widget, save the context for subsequent ones
 			GLWidget.__glContext = widget.get_gl_context()
