@@ -93,6 +93,12 @@ void LinearContainer::renderRequested( GadgetPtr gadget )
 	m_clean = false;
 }
 
+Imath::Box3f LinearContainer::bound() const
+{
+	calculateChildTransforms();
+	return ContainerGadget::bound();
+}
+
 void LinearContainer::doRender( IECore::RendererPtr renderer ) const
 {
 	calculateChildTransforms();

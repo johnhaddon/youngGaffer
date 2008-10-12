@@ -43,6 +43,8 @@ class LinearContainer : public ContainerGadget
 		void setSpacing( float spacing );
 		float getSpacing() const;
 
+		virtual Imath::Box3f bound() const;
+
 	protected :
 
 		virtual void doRender( IECore::RendererPtr renderer ) const;
