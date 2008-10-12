@@ -32,6 +32,8 @@ void StandardStyle::renderFrame( IECore::RendererPtr renderer, const Imath::Box2
 	static MeshPrimitivePtr quad = MeshPrimitive::createPlane( Box2f( V2f( 0 ), V2f( 1 ) ) );
 	renderer->attributeBegin();
 	
+		renderer->setAttribute( "color", new Color3fData( backgroundColor( renderer ) ) );
+	
 		renderer->shader( "surface", "ui/frame", CompoundDataMap() );
 	
 		M44f m;
@@ -90,4 +92,22 @@ void StandardStyle::renderConnection( IECore::RendererPtr renderer, const Imath:
 		
 	renderer->attributeEnd();
 	
+}
+
+Imath::Color3f StandardStyle::backgroundColor( IECore::RendererPtr renderer ) const
+{
+	ConstDataPtr state = renderer->getAttribute( stateAttribute() );
+	if( state && state->isEqualTo( stateValueNormal() ) )
+	{
+		return Color3f( 0.4 );
+	}
+	else
+	{
+		return Color3f( 0.8 );
+	}
+}
+
+Imath::Color3f StandardStyle::foregroundColor( IECore::RendererPtr renderer ) const
+{
+	return Color3f( 0 );
 }

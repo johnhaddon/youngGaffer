@@ -9,6 +9,7 @@ namespace GafferUI
 {
 
 IE_CORE_FORWARDDECLARE( Nodule )
+IE_CORE_FORWARDDECLARE( LinearContainer )
 
 class NodeGadget : public IndividualContainer
 {
@@ -26,9 +27,8 @@ class NodeGadget : public IndividualContainer
 		NodulePtr nodule( Gaffer::ConstPlugPtr plug );
 		ConstNodulePtr nodule( Gaffer::ConstPlugPtr plug ) const;
 		
-		/// Accepts no children.
-		virtual bool acceptsChild( Gaffer::ConstGraphComponentPtr potentialChild ) const;
-
+		virtual Imath::Box3f bound() const;
+		
 	protected :
 	
 		virtual void doRender( IECore::RendererPtr renderer ) const;
@@ -39,6 +39,9 @@ class NodeGadget : public IndividualContainer
 		
 		typedef std::map<const Gaffer::Plug *, Nodule *> NoduleMap;
 		NoduleMap m_nodules;
+		
+		ConstLinearContainerPtr inputNoduleRow() const;
+		ConstLinearContainerPtr outputNoduleRow() const;
 		
 		void selectionChanged( Gaffer::NodeSetPtr selection, Gaffer::NodePtr node );
 		

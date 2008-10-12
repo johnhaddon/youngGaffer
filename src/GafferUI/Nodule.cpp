@@ -37,12 +37,12 @@ Gaffer::ConstPlugPtr Nodule::plug() const
 
 Imath::Box3f Nodule::bound() const
 {
-	return Box3f( V3f( -0.2, -0.2, 0 ), V3f( 0.2, 0.2, 0 ) );
+	return Box3f( V3f( -0.5, -0.5, 0 ), V3f( 0.5, 0.5, 0 ) );
 }
 
 void Nodule::doRender( IECore::RendererPtr renderer ) const
 {
-	getStyle()->renderNodule( renderer, 0.2 );
+	getStyle()->renderNodule( renderer, 0.5 );
 	
 	if( m_dragging )
 	{

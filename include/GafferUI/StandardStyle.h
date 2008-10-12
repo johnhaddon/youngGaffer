@@ -23,6 +23,12 @@ class StandardStyle : public Style
 		virtual void renderFrame( IECore::RendererPtr renderer, const Imath::Box2f &frame, float borderWidth ) const;
 		virtual void renderNodule( IECore::RendererPtr renderer, float radius ) const;
 		virtual void renderConnection( IECore::RendererPtr renderer, const Imath::V3f &src, const Imath::V3f &dst ) const;
+
+	private :
+	
+		/// \todo These should be hooked up to a preferences node somehow
+		Imath::Color3f backgroundColor( IECore::RendererPtr renderer ) const;
+		Imath::Color3f foregroundColor( IECore::RendererPtr renderer ) const;
 		
 };
 

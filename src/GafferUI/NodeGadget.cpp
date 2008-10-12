@@ -16,13 +16,16 @@ using namespace IECore;
 using namespace std;
 using namespace boost;
 
+static const float g_borderWidth = 0.25;
+static const float g_minWidth = 10;
+
 NodeGadget::NodeGadget( Gaffer::NodePtr node )
 	:	m_node( node.get() )
 {
-	LinearContainerPtr column = new LinearContainer( "column", LinearContainer::Y, LinearContainer::Centre, 0.1f );
+	LinearContainerPtr column = new LinearContainer( "column", LinearContainer::Y, LinearContainer::Centre, 0.5f );
 	
-	LinearContainerPtr inputNoduleRow = new LinearContainer( "inputNoduleRow", LinearContainer::X, LinearContainer::Centre, 0.3f );
-	LinearContainerPtr outputNoduleRow = new LinearContainer( "outputNoduleRow", LinearContainer::X, LinearContainer::Centre, 0.3f );
+	LinearContainerPtr inputNoduleRow = new LinearContainer( "inputNoduleRow", LinearContainer::X, LinearContainer::Centre, 2.0f );
+	LinearContainerPtr outputNoduleRow = new LinearContainer( "outputNoduleRow", LinearContainer::X, LinearContainer::Centre, 2.0f );
 	
 	for( Gaffer::PlugIterator it=node->plugsBegin(); it!=node->plugsEnd(); it++ )
 	{
@@ -91,27 +94,45 @@ ConstNodulePtr NodeGadget::nodule( Gaffer::ConstPlugPtr plug ) const
 	}
 	return it->second;
 }
-		
-bool NodeGadget::acceptsChild( Gaffer::ConstGraphComponentPtr potentialChild ) const
+
+Imath::Box3f NodeGadget::bound() const
 {
-	return children().size()==0;
+	Box3f b = IndividualContainer::bound();
+	float width = std::max( b.size().x + 2 * g_borderWidth, g_minWidth );
+	float c = b.center().x;
+	b.min.x = c - width / 2.0f;
+	b.max.x = c + width / 2.0f;
+	return b;
 }
 
 void NodeGadget::doRender( IECore::RendererPtr renderer ) const
 {
-	/// \todo Sort this mess out - where is the push/pop of attributes for a start?
-	Gaffer::ScriptNodePtr script = m_node->scriptNode();
-	if( script && script->selection()->contains( m_node ) )
-	{
-		/// \todo The Style should be doing this or the frame should have a colour member
-		/// that can be set (and which falls through to style?)
-		renderer->setAttribute( "color", new Color3fData( Color3f( 1 ) ) );
-	}
-	else
-	{
-		renderer->setAttribute( "color", new Color3fData( Color3f( 0.2 ) ) );
-	}
-	IndividualContainer::doRender( renderer );
+	
+	renderer->attributeBegin();
+	
+		Gaffer::ScriptNodePtr script = m_node->scriptNode();
+		if( script && script->selection()->contains( m_node ) )
+		{
+			renderer->setAttribute( Style::stateAttribute(), Style::stateValueSelected() );
+		}
+		else
+		{
+			renderer->setAttribute( Style::stateAttribute(), Style::stateValueNormal() );		
+		}
+		
+		Box3f b = bound();
+		Box3f inputRowBound = inputNoduleRow()->transformedBound( this );
+		Box3f outputRowBound = outputNoduleRow()->transformedBound( this );
+		
+		float frameTop = inputRowBound.center().y;
+		float frameBottom = outputRowBound.center().y;
+		
+		getStyle()->renderFrame( renderer, Box2f( V2f( b.min.x + g_borderWidth, frameBottom + g_borderWidth ), V2f( b.max.x - g_borderWidth, frameTop - g_borderWidth ) ), g_borderWidth );
+		
+		IndividualContainer::doRender( renderer );
+
+	renderer->attributeEnd();
+
 }
 
 void NodeGadget::selectionChanged( Gaffer::NodeSetPtr selection, Gaffer::NodePtr node )
@@ -120,4 +141,14 @@ void NodeGadget::selectionChanged( Gaffer::NodeSetPtr selection, Gaffer::NodePtr
 	{
 		renderRequestSignal()( this );
 	}
+}
+
+ConstLinearContainerPtr NodeGadget::inputNoduleRow() const
+{
+	return getChild<Gadget>()->getChild<LinearContainer>( "inputNoduleRow" );
+}
+
+ConstLinearContainerPtr NodeGadget::outputNoduleRow() const
+{
+	return getChild<Gadget>()->getChild<LinearContainer>( "outputNoduleRow" );
 }
