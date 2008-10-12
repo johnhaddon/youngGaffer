@@ -17,22 +17,14 @@ GraphComponent::GraphComponent( const std::string &name )
 
 GraphComponent::~GraphComponent()
 {
-	// we're dying because our reference count is 0.
-	// but the removeChild calls will make a smart pointer
-	// from this, to pass to the childRemoved() signal.
-	// when that smart pointer goes out of scope, it'll try
-	// to kill us again, which is bad. so we add a reference here
-	// to prevent the second death. the alternative would be
-	// to prevent the emission of the childRemoved signal during
-	// death - that might turn out to be a better option.
-	/// \todo this needs serious thought. as smart pointers are passed
-	/// to the signals, they might reasonably expect to be allowed
-	/// to hold onto the object, which doesn't make any sense.
-	addRef();
-	while( m_children.begin()!=m_children.end() )
+	// notify all the children that the parent is gone.
+	// we don't call removeChild to achieve this, as that would also emit
+	// childRemoved signals for this object, which is undesirable as it's dying.
+	for( ChildContainer::iterator it=m_children.begin(); it!=m_children.end(); it++ )
 	{
-		removeChild( *(m_children.begin()) );
-	}
+		(*it)->m_parent = 0;
+		(*it)->parentChangedSignal()( (*it).get() );
+	}	
 }
 
 const std::string &GraphComponent::setName( const std::string &name )
