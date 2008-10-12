@@ -23,14 +23,14 @@ class ListContainer( ContainerWidget ) :
 	
 		return self.__orientation
 		
-	def append( self, child ) :
+	def append( self, child, expand=False ) :
 	
 		oldParent = child.parent()
 		if oldParent :
 			oldParent.removeChild( child )
 	
 		self.__widgets.append( child )
-		self.gtkWidget().pack_start( child.gtkWidget(), False )	
+		self.gtkWidget().pack_start( child.gtkWidget(), expand )	
 	
 	def remove( self, child ) :
 	

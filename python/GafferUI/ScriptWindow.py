@@ -59,7 +59,7 @@ class ScriptWindow( GafferUI.Window ) :
 		p = GafferUI.CompoundEditor( self.__script )
 		
 		l.append( m )
-		l.append( p )
+		l.append( p, expand=True )
 		
 		self.setChild( l )
 		
