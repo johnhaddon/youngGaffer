@@ -141,20 +141,25 @@ bool GraphGadget::buttonPress( GadgetPtr gadget, const ButtonEvent &event )
 			}
 			
 			Gaffer::NodePtr node = nodeGadget->node();
-			
 			bool shiftHeld = event.modifiers && ButtonEvent::Shift;
-			if( !shiftHeld )
+			bool nodeSelected = scriptNode->selection()->contains( node );
+
+			if( nodeSelected )
 			{
-				scriptNode->selection()->clear();
-			}
-			if( shiftHeld && scriptNode->selection()->contains( node ) )
-			{
-				scriptNode->selection()->remove( node );
+				if( shiftHeld )
+				{
+					scriptNode->selection()->remove( node );
+				}
 			}
 			else
 			{
-				scriptNode->selection()->add( node );
+				if( !shiftHeld )
+				{
+					scriptNode->selection()->clear();
+				}
+				scriptNode->selection()->add( node );			
 			}
+
 			return true;
 		}
 	}
