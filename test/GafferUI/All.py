@@ -11,6 +11,7 @@ from LinearContainerTest import *
 from NodeGadgetTest import *
 from GadgetTest import *
 from TabbedContainerTest import *
+from GraphEditorTest import *
 
 if __name__ == "__main__":
 	unittest.main()
