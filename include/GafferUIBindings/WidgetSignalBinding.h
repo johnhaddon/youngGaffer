@@ -1,0 +1,11 @@
+#ifndef GAFFERUIBINDINGS_WIDGETSIGNALBINDING_H
+#define GAFFERUIBINDINGS_WIDGETSIGNALBINDING_H
+
+namespace GafferUIBindings
+{
+
+void bindWidgetSignal();
+
+} // namespace GafferUIBindings
+
+#endif // GAFFERUIBINDINGS_WIDGETSIGNALBINDING_H
