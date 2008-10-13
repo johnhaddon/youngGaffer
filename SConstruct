@@ -95,13 +95,15 @@ pythonModuleEnv.Append(
 pythonModuleEnv["SHLIBPREFIX"] = ""
 pythonModuleEnv["SHLIBSUFFIX"] = ".so"
 
-pythonModuleEnv.SharedLibrary( "python/Gaffer/_Gaffer", glob.glob( "src/GafferModule/*.cpp" ) )
+gafferModule = pythonModuleEnv.SharedLibrary( "python/Gaffer/_Gaffer", glob.glob( "src/GafferModule/*.cpp" ) )
+pythonModuleEnv.Default( gafferModule )
 
 pythonUIModuleEnv = pythonModuleEnv.Copy()
 pythonUIModuleEnv.Append(
 	LIBS = [ "GafferUI", "GafferUIBindings" ],
 )
-pythonUIModuleEnv.SharedLibrary( "python/GafferUI/_GafferUI", glob.glob( "src/GafferUIModule/*.cpp" ) )
+gafferUIModule = pythonUIModuleEnv.SharedLibrary( "python/GafferUI/_GafferUI", glob.glob( "src/GafferUIModule/*.cpp" ) )
+pythonUIModuleEnv.Default( gafferUIModule )
 
 
 #########################################################################################################
