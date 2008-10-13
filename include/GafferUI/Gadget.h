@@ -95,7 +95,7 @@ class Gadget : public Gaffer::GraphComponent
 		Imath::Box3f transformedBound() const;
 		/// The bounding box transformed by the result of fullTransform( ancestor ).
 		Imath::Box3f transformedBound( ConstGadgetPtr ancestor ) const;
-		typedef boost::signal<void ( GadgetPtr )> RenderRequestSignal;
+		typedef boost::signal<void ( Gadget * )> RenderRequestSignal;
 		RenderRequestSignal &renderRequestSignal();
 		//@}
 		

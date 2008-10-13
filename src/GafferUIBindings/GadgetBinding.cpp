@@ -14,6 +14,15 @@ using namespace GafferUIBindings;
 using namespace GafferBindings;
 using namespace GafferUI;
 
+struct RenderRequestSlotCaller
+{
+	boost::signals::detail::unusable operator()( boost::python::object slot, GadgetPtr g )
+	{
+		slot( g );
+		return boost::signals::detail::unusable();
+	}
+};
+
 void GafferUIBindings::bindGadget()
 {
 	typedef class_<Gadget, GadgetPtr, boost::noncopyable, bases<Gaffer::GraphComponent> > GadgetPyClass;
@@ -41,7 +50,7 @@ void GafferUIBindings::bindGadget()
 		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( Gadget )
 	;
 	
-	SignalBinder<Gadget::RenderRequestSignal>::bind( "RenderRequestSignal" );
+	SignalBinder<Gadget::RenderRequestSignal, DefaultSignalCaller<Gadget::RenderRequestSignal>, RenderRequestSlotCaller>::bind( "RenderRequestSignal" );	
 	SignalBinder<Gadget::ButtonSignal>::bind( "ButtonSignal" );
 	SignalBinder<Gadget::KeySignal>::bind( "KeySignal" );
 	SignalBinder<Gadget::DragBeginSignal>::bind( "DragBeginSignal" );

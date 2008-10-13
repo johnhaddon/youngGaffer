@@ -48,16 +48,7 @@ void ContainerGadget::childAdded( GraphComponent *us, GraphComponent *child )
 {
 	static_cast<Gadget *>( child )->renderRequestSignal().connect( &childRenderRequest );
 	ContainerGadget *p = static_cast<ContainerGadget *>( us );
-	if( !p->renderRequestSignal().empty() )
-	{
-		// we only call if slots are attached - otherwise we can make this call during construction
-		// if derived classes add children. what would then happen is we'd make a smart pointer to
-		// p (this) during the signal call, and then the refcount would drop to zero after the call,
-		// and we'd destruct before we even constructed - with very bad results.
-		// the alternative to this is that we don't pass a smart pointer in the signal - this might
-		// turn out to be a better option in the long run.
-		p->renderRequestSignal()( p );
-	}
+	p->renderRequestSignal()( p );
 }
 
 void ContainerGadget::childRemoved( GraphComponent *us, GraphComponent *child )
@@ -71,5 +62,5 @@ void ContainerGadget::childRenderRequest( GadgetPtr child )
 {
 	ContainerGadgetPtr p = child->parent<ContainerGadget>();
 	assert( p );
-	p->renderRequestSignal()( p );
+	p->renderRequestSignal()( p.get() );
 }
