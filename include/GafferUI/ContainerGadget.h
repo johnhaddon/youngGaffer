@@ -30,9 +30,9 @@ class ContainerGadget : public Gadget
 		
 	private :
 	
-		static void childAdded( GraphComponent *us, GraphComponent *child );
-		static void childRemoved( GraphComponent *us, GraphComponent *child );
-		static void childRenderRequest( GadgetPtr child );
+		void childAdded( GraphComponent *parent, GraphComponent *child );
+		void childRemoved( GraphComponent *parent, GraphComponent *child );
+		void childRenderRequest( Gadget *child );
 		
 };
 

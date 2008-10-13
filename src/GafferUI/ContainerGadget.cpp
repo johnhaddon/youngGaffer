@@ -2,13 +2,16 @@
 
 #include "OpenEXR/ImathBoxAlgo.h"
 
+#include "boost/bind.hpp"
+#include "boost/bind/placeholders.hpp"
+
 using namespace GafferUI;
 
 ContainerGadget::ContainerGadget( const std::string &name )
 	:	Gadget( name )
 {
-	childAddedSignal().connect( &childAdded );
-	childRemovedSignal().connect( &childRemoved );
+	childAddedSignal().connect( boost::bind( &ContainerGadget::childAdded, this, ::_1, ::_2 ) );
+	childRemovedSignal().connect( boost::bind( &ContainerGadget::childRemoved, this, ::_1, ::_2 )  );
 }
 
 ContainerGadget::~ContainerGadget()
@@ -44,23 +47,21 @@ void ContainerGadget::doRender( IECore::RendererPtr renderer ) const
 	}
 }
 
-void ContainerGadget::childAdded( GraphComponent *us, GraphComponent *child )
+void ContainerGadget::childAdded( GraphComponent *parent, GraphComponent *child )
 {
-	static_cast<Gadget *>( child )->renderRequestSignal().connect( &childRenderRequest );
-	ContainerGadget *p = static_cast<ContainerGadget *>( us );
-	p->renderRequestSignal()( p );
+	assert( parent==this );
+	static_cast<Gadget *>( child )->renderRequestSignal().connect( boost::bind( &ContainerGadget::childRenderRequest, this, ::_1 ) );
+	renderRequestSignal()( this );
 }
 
-void ContainerGadget::childRemoved( GraphComponent *us, GraphComponent *child )
+void ContainerGadget::childRemoved( GraphComponent *parent, GraphComponent *child )
 {
-	static_cast<Gadget *>( child )->renderRequestSignal().disconnect( &childRenderRequest );
-	ContainerGadget *p = static_cast<ContainerGadget *>( us );
-	p->renderRequestSignal()( p );
+	assert( parent==this );
+	static_cast<Gadget *>( child )->renderRequestSignal().disconnect( &ContainerGadget::childRenderRequest );
+	renderRequestSignal()( this );
 }
 
-void ContainerGadget::childRenderRequest( GadgetPtr child )
+void ContainerGadget::childRenderRequest( Gadget *child )
 {
-	ContainerGadgetPtr p = child->parent<ContainerGadget>();
-	assert( p );
-	p->renderRequestSignal()( p.get() );
+	renderRequestSignal()( this );
 }
