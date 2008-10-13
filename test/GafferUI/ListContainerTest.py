@@ -92,6 +92,35 @@ class ListContainerTest( unittest.TestCase ) :
 		self.assertEqual( len( c1 ), 0 )
 		self.assertEqual( len( c2 ), 1 )
 		
+	def testSliceDel( self ) :
+	
+		c = GafferUI.ListContainer( GafferUI.ListContainer.Orientation.Vertical )
+		
+		ca = TestWidget( "a" )
+		cb = TestWidget( "b" )
+		cc = TestWidget( "c" )
+		self.assert_( ca.parent() is None )
+		self.assert_( cb.parent() is None )
+		self.assert_( cc.parent() is None )
+		
+		c.append( ca )
+		self.assert_( ca.parent() is c )
+	
+		c.append( cb )
+		self.assert_( cb.parent() is c )
+	
+		c.append( cc )
+		self.assert_( cc.parent() is c )
+		
+		self.assertEqual( len( c ), 3 )
+
+		del c[0:2]
+		self.assertEqual( len( c ), 1 )
+		self.assert_( ca.parent() is None )
+		self.assert_( cb.parent() is None )
+		self.assert_( cc.parent() is c )
+		
+		
 if __name__ == "__main__":
 	unittest.main()
 	

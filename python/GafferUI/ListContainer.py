@@ -4,7 +4,7 @@ import gtk
 
 ## The ListContainer holds a series of Widgets either in a column or a row.
 # It attempts to provide a list like interface for manipulation of the widgets.
-# \todo Support more list-like operations including slicing and insertion. Implement clearing as del c[:].
+# \todo Support more list-like operations including slicing and insertion.
 class ListContainer( ContainerWidget ) :
 
 	Orientation = Enum.create( "Vertical", "Horizontal" )
@@ -42,7 +42,16 @@ class ListContainer( ContainerWidget ) :
 		
 	def __delitem__( self, index ) :
 	
-		self.removeChild( self.__widgets[index] )
+		if isinstance( index, slice ) :
+			indices = range( *(index.indices( len( self ) )) )
+			toRemove = []
+			for i in indices :
+				toRemove.append( self[i] )
+			for c in toRemove :
+				self.gtkWidget().remove( c.gtkWidget() )
+			del self.__widgets[index]
+		else :
+			self.removeChild( self.__widgets[index] )
 
 	def __len__( self ) :
 	
