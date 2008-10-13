@@ -3,6 +3,7 @@
 
 #include "Gaffer/GraphComponent.h"
 #include "Gaffer/PlugIterator.h"
+#include "Gaffer/FilteredChildIterator.h"
 
 #include "IECore/Object.h"
 
@@ -89,6 +90,8 @@ class Node : public GraphComponent
 		UnaryPlugSignal m_plugInputChangedSignal;
 		
 };
+
+typedef FilteredChildIterator<Node> ChildNodeIterator;
 
 } // namespace Gaffer
 

@@ -12,6 +12,9 @@ namespace Gaffer
 
 IE_CORE_FORWARDDECLARE( GraphComponent )
 
+template<typename T>
+class FilteredChildIterator;
+
 class GraphComponent : public IECore::RunTimeTyped, public boost::signals::trackable
 {
 
@@ -74,6 +77,14 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		/// Read only access to the internal container of children. This
 		/// is useful for iteration over children.
 		const ChildContainer &children() const;
+		/// Returns an iterator to the start of a sequence of all children
+		/// of type T.
+		template<typename T>
+		FilteredChildIterator<T> childrenBegin() const;
+		/// Returns an iterator to the end of a sequence of all children
+		/// of type T.
+		template<typename T>
+		FilteredChildIterator<T> childrenEnd() const;
 		/// Returns the parent for this component, performing a runTimeCast to T.
 		template<typename T>
 		typename T::Ptr parent();
