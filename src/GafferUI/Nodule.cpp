@@ -102,10 +102,8 @@ bool Nodule::drop( GadgetPtr gadget, const DragDropEvent &event )
 				output = m_plug;
 			}
 			input->setInput( output );
-			cerr << "CONNECTING " << output->fullName() << " TO " << input->fullName() << endl;
 			return true;
 		}
 	}
-	cerr << "RETURNING FALSE" << endl;
 	return false;
 }
