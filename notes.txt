@@ -1,3 +1,11 @@
+smart pointers
+==============
+
+* it's beginning to appear that smart pointers aren't great for use as parameters or return values in methods. the problems occur when those methods
+get called during construction of an object - if a smart pointer to the constructee gets made during construction then the constructee is deleted
+before it even finishes construction. this has been the cause of several bugs already, and they're not that easy to track down. we should consider
+using raw pointers in far more places.
+
 ui rules
 ========
 
