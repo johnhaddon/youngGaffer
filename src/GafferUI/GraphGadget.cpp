@@ -24,7 +24,6 @@ using namespace std;
 GraphGadget::GraphGadget( Gaffer::NodePtr graphRoot )
 	:	m_graphRoot( graphRoot.get() )
 {
-	
 	graphRoot->childAddedSignal().connect( boost::bind( &GraphGadget::childAdded, this, ::_1,  ::_2 ) );
 	graphRoot->childRemovedSignal().connect( boost::bind( &GraphGadget::childRemoved, this, ::_1,  ::_2 ) );
 
@@ -33,6 +32,20 @@ GraphGadget::GraphGadget( Gaffer::NodePtr graphRoot )
 	buttonReleaseSignal().connect( boost::bind( &GraphGadget::buttonRelease, this, ::_1,  ::_2 ) );
 	dragBeginSignal().connect( boost::bind( &GraphGadget::dragBegin, this, ::_1, ::_2 ) );
 	dragUpdateSignal().connect( boost::bind( &GraphGadget::dragUpdate, this, ::_1, ::_2 ) );
+	
+	// make gadgets for each node
+	for( Gaffer::ChildNodeIterator cIt = graphRoot->childrenBegin<Gaffer::Node>(); cIt!=cIt.end(); cIt++ )
+	{
+		addNodeGadget( (*cIt).get() );
+	}
+	// and then make gadgets for each connection
+	for( Gaffer::ChildNodeIterator cIt = graphRoot->childrenBegin<Gaffer::Node>(); cIt!=cIt.end(); cIt++ )
+	{
+		for( Gaffer::InputPlugIterator pIt( (*cIt)->children().begin(), (*cIt)->children().end() ); pIt!=pIt.end(); pIt++ )
+		{
+			addConnectionGadget( pIt->get() );
+		}
+	}
 }
 
 GraphGadget::~GraphGadget()
@@ -45,31 +58,13 @@ bool GraphGadget::keyPressed( GadgetPtr gadget, const KeyEvent &event )
 	return false;
 }
 
-static Imath::Rand32 r;
 void GraphGadget::childAdded( GraphComponent *parent, GraphComponent *child )
 {
-	Gaffer::Node *node = static_cast<Gaffer::Node *>( child );
-
-	/// \todo Use a V2f plug when we get one
-	Gaffer::FloatPlugPtr xPlug = new Gaffer::FloatPlug( "__uiX" );
-	float x = r.nextf( -10, 10 );
-	xPlug->setValue( x );
-	
-	Gaffer::FloatPlugPtr yPlug = new Gaffer::FloatPlug( "__uiY" );
-	float y = r.nextf( -10, 10 );
-	yPlug->setValue( y );
-	
-	node->addChild( xPlug );
-	node->addChild( yPlug );
-	
-	node->plugInputChangedSignal().connect( boost::bind( &GraphGadget::inputChanged, this, ::_1 ) );
-	
-	NodeGadgetPtr nodeGadget = new NodeGadget( node );
-	M44f m; m.translate( V3f( x, y, 0 ) );
-	nodeGadget->setTransform( m );
-	
-	addChild( nodeGadget );
-	m_nodeGadgets[node] = nodeGadget.get();
+	Gaffer::Node *node = IECore::runTimeCast<Gaffer::Node>( child );
+	if( node )
+	{
+		addNodeGadget( node );
+	}
 }
 
 void GraphGadget::childRemoved( GraphComponent *parent, GraphComponent *child )
@@ -93,26 +88,25 @@ void GraphGadget::inputChanged( Gaffer::PlugPtr dstPlug )
 		return;
 	}
 	
-	Gaffer::NodePtr dstNode = dstPlug->node();
-	Gaffer::NodePtr srcNode = srcPlug->node();
-	
-	NodulePtr srcNodule = nodeGadget( srcNode.get() )->nodule( srcPlug );
-	NodulePtr dstNodule = nodeGadget( dstNode.get() )->nodule( dstPlug );
-	
-	if( !(srcNodule && dstNodule ) )
-	{
-		return;
-	}
-	
-	ConnectionGadgetPtr connection = new ConnectionGadget( srcNodule, dstNodule );
-	addChild( connection );
+	addConnectionGadget( dstPlug.get() );
+}
 
-	m_connectionGadgets[dstPlug.get()] = connection.get();
+void GraphGadget::plugSet( Gaffer::PlugPtr plug )
+{
+	const std::string &name = plug->getName();
+	if( name=="__uiX" || name=="__uiY" )
+	{
+		Gaffer::NodePtr node = plug->node();
+		NodeGadget *ng = nodeGadget( node.get() );
+		if( ng )
+		{
+			updateNodeGadgetTransform( ng );
+		}
+	}
 }
 
 bool GraphGadget::buttonRelease( GadgetPtr gadget, const ButtonEvent &event )
 {
-	std::cerr << "BUTTON RELEASE" << std::endl;
 	return true;
 }
 
@@ -213,15 +207,11 @@ bool GraphGadget::dragUpdate( GadgetPtr gadget, const ButtonEvent &event )
 					{
 						Gaffer::FloatPlugPtr xp = node->getChild<Gaffer::FloatPlug>( "__uiX" );
 						Gaffer::FloatPlugPtr yp = node->getChild<Gaffer::FloatPlug>( "__uiY" );
-						V3f p( xp->getValue() + delta.x, yp->getValue() + delta.y, 0.0f );
-						xp->setValue( p.x );
-						yp->setValue( p.y );
-						M44f m; m.translate( p );
-						nodeGadget->setTransform( m );
+						xp->setValue( xp->getValue() + delta.x );
+						yp->setValue( yp->getValue() + delta.y );
 					}
 				}
 			}
-			renderRequestSignal()( this ); /// \todo This should be coming from a plug changed callback on __uiX for all children
 			m_lastDragPosition = pos;
 			return true;
 		}
@@ -239,6 +229,43 @@ Gaffer::ScriptNodePtr GraphGadget::script()
 	return script;
 }
 
+void GraphGadget::addNodeGadget( Gaffer::Node *node )
+{
+	node->plugInputChangedSignal().connect( boost::bind( &GraphGadget::inputChanged, this, ::_1 ) );
+	node->plugSetSignal().connect( boost::bind( &GraphGadget::plugSet, this, ::_1 ) );
+	
+	NodeGadgetPtr nodeGadget = new NodeGadget( node );
+	
+	addChild( nodeGadget );
+	m_nodeGadgets[node] = nodeGadget.get();
+	
+	// place it if it's not placed already.
+	/// \todo we need to do this intelligently rather than randomly!!
+	/// this probably means knowing what part of the graph is being viewed at the time. i think we
+	/// can do this by having the panning and zooming handled by a parent ViewportGadget rather than
+	/// letting the GadgetWidget do it. or do we need to query mouse position??
+	
+	/// \todo Use a V2f plug when we get one
+	static Imath::Rand32 r;
+	Gaffer::FloatPlugPtr xPlug = node->getChild<Gaffer::FloatPlug>( "__uiX" );
+	if( !xPlug )
+	{
+		xPlug = new Gaffer::FloatPlug( "__uiX" );
+		xPlug->setValue( r.nextf( -10, 10 ) );
+		node->addChild( xPlug );
+	}
+	
+	Gaffer::FloatPlugPtr yPlug = node->getChild<Gaffer::FloatPlug>( "__uiY" );
+	if( !yPlug )
+	{	
+		Gaffer::FloatPlugPtr yPlug = new Gaffer::FloatPlug( "__uiY" );
+		yPlug->setValue( r.nextf( -10, 10 ) );
+		node->addChild( yPlug );
+	}
+	
+	updateNodeGadgetTransform( nodeGadget.get() );
+}
+
 NodeGadget *GraphGadget::nodeGadget( Gaffer::Node *node )
 {
 	NodeGadgetMap::iterator it = m_nodeGadgets.find( node );
@@ -247,6 +274,52 @@ NodeGadget *GraphGadget::nodeGadget( Gaffer::Node *node )
 		return 0;
 	}
 	return it->second;
+}
+
+void GraphGadget::updateNodeGadgetTransform( NodeGadget *nodeGadget )
+{
+	Gaffer::NodePtr node = nodeGadget->node();
+	V3f t( 0 );
+
+	Gaffer::FloatPlugPtr x = node->getChild<Gaffer::FloatPlug>( "__uiX" );
+	if( x )
+	{
+		t[0] = x->getValue();
+	}
+
+	Gaffer::FloatPlugPtr y = node->getChild<Gaffer::FloatPlug>( "__uiY" );
+	if( y )
+	{
+		t[1] = y->getValue();
+	}
+
+	M44f m; m.translate( t );
+	nodeGadget->setTransform( m );
+}
+
+void GraphGadget::addConnectionGadget( Gaffer::Plug *dstPlug )
+{
+	Gaffer::NodePtr dstNode = dstPlug->node();
+	Gaffer::PlugPtr srcPlug = dstPlug->getInput<Gaffer::Plug>();
+	if( !srcPlug )
+	{
+		return;
+	}
+	
+	Gaffer::NodePtr srcNode = srcPlug->node();
+	
+	NodulePtr srcNodule = nodeGadget( srcNode.get() )->nodule( srcPlug );
+	NodulePtr dstNodule = nodeGadget( dstNode.get() )->nodule( dstPlug );
+	
+	if( !(srcNodule && dstNodule ) )
+	{
+		return;
+	}
+		
+	ConnectionGadgetPtr connection = new ConnectionGadget( srcNodule, dstNodule );
+	addChild( connection );
+
+	m_connectionGadgets[dstPlug] = connection.get();
 }
 
 ConnectionGadget *GraphGadget::connectionGadget( Gaffer::Plug *plug )

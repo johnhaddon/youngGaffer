@@ -91,7 +91,7 @@ class Node : public GraphComponent
 		
 };
 
-typedef FilteredChildIterator<Node> ChildNodeIterator;
+typedef FilteredChildIterator<TypePredicate<Node> > ChildNodeIterator;
 
 } // namespace Gaffer
 

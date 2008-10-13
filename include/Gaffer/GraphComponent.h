@@ -13,6 +13,9 @@ namespace Gaffer
 IE_CORE_FORWARDDECLARE( GraphComponent )
 
 template<typename T>
+class TypePredicate;
+
+template<typename Predicate>
 class FilteredChildIterator;
 
 class GraphComponent : public IECore::RunTimeTyped, public boost::signals::trackable
@@ -80,17 +83,17 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		/// Returns an iterator to the start of a sequence of all children
 		/// of type T.
 		template<typename T>
-		FilteredChildIterator<T> childrenBegin() const;
+		FilteredChildIterator<TypePredicate<T> > childrenBegin() const;
 		/// Returns an iterator to the end of a sequence of all children
 		/// of type T.
 		template<typename T>
-		FilteredChildIterator<T> childrenEnd() const;
+		FilteredChildIterator<TypePredicate<T> > childrenEnd() const;
 		/// Returns the parent for this component, performing a runTimeCast to T.
 		template<typename T>
-		typename T::Ptr parent();
+		T *parent();
 		/// Returns the parent for this component, performing a runTimeCast to T.
 		template<typename T>
-		typename T::ConstPtr parent() const;
+		const T *parent() const;
 		/// Returns the first ancestor of type T.
 		template<typename T>
 		typename T::Ptr ancestor();

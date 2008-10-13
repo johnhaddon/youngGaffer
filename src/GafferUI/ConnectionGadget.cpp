@@ -55,7 +55,7 @@ void ConnectionGadget::setDstPos( const Imath::V3f &p )
 
 void ConnectionGadget::setPositionsFromNodules()
 {
-	ConstGadgetPtr p = parent<Gadget>();
+	const Gadget *p = parent<Gadget>();
 	if( m_srcNodule && m_dragEnd!=Gaffer::Plug::Out )
 	{
 		M44f m = m_srcNodule->fullTransform( p );

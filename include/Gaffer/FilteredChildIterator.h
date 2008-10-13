@@ -14,21 +14,25 @@ namespace Gaffer
 template<typename T>
 struct TypePredicate
 {
+	typedef T ChildType;
+
 	bool operator()( IECore::RunTimeTypedPtr x )
 	{
 		return IECore::runTimeCast<T>( x );
 	}
 };
 
-template<typename T>
-class FilteredChildIterator : public boost::filter_iterator<TypePredicate<T>, GraphComponent::ChildIterator>
+template<typename Predicate>
+class FilteredChildIterator : public boost::filter_iterator<Predicate, GraphComponent::ChildIterator>
 {
 	
 	public :
 	
-		typedef boost::filter_iterator<TypePredicate<T>, GraphComponent::ChildIterator> BaseIterator;
+		typedef typename Predicate::ChildType ChildType;
+		typedef boost::filter_iterator<Predicate, GraphComponent::ChildIterator> BaseIterator;
 		
-		typedef boost::intrusive_ptr<T> reference;
+		typedef const boost::intrusive_ptr<ChildType> &reference;
+		typedef const boost::intrusive_ptr<ChildType> *pointer;
 		
 		FilteredChildIterator()
 			:	BaseIterator()
@@ -52,8 +56,14 @@ class FilteredChildIterator : public boost::filter_iterator<TypePredicate<T>, Gr
 		
 		reference operator*() const
 		{
-			// static cast is safe as predicate has checked type
-			return boost::static_pointer_cast<T>( BaseIterator::operator*() );
+			// cast should be safe as predicate has checked type, and the layout of
+			// a GraphComponentPtr and any other intrusive pointer should be the same.
+			return reinterpret_cast<reference>( BaseIterator::operator*() );
+		}
+
+		pointer operator->() const
+		{
+			return reinterpret_cast<pointer>( BaseIterator::operator->() );
 		}
 		
     	FilteredChildIterator &operator++()

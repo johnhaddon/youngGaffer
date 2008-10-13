@@ -63,7 +63,7 @@ Imath::M44f Gadget::fullTransform( ConstGadgetPtr ancestor ) const
 	do
 	{
 		result *= g->m_transform;
-		g = g->parent<Gadget>().get();
+		g = g->parent<Gadget>();
 	} while( g && g!=ancestor );
 	
 	return result;

@@ -29,7 +29,7 @@ NodeGadget::NodeGadget( Gaffer::NodePtr node )
 	
 	for( Gaffer::PlugIterator it=node->plugsBegin(); it!=node->plugsEnd(); it++ )
 	{
-		Gaffer::ConstPlugPtr p = static_pointer_cast<const Gaffer::Plug>( *it );
+		Gaffer::ConstPlugPtr p = *it;
 		if( p->getName().compare( 0, 2, "__" ) )
 		{
 			/// \todo We need a totally customisable way of saying whether a plug is represented with a nodule or not

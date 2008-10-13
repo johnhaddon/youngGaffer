@@ -28,10 +28,12 @@ class GraphGadget : public ContainerGadget
 
 	protected :
 
-		bool keyPressed( GadgetPtr gadget, const KeyEvent &event );
 		void childAdded( GraphComponent *parent, GraphComponent *child );
 		void childRemoved( GraphComponent *parent, GraphComponent *child );
 		void inputChanged( Gaffer::PlugPtr dstPlug );
+		void plugSet( Gaffer::PlugPtr plug );
+	
+		bool keyPressed( GadgetPtr gadget, const KeyEvent &event );
 		
 		bool buttonPress( GadgetPtr gadget, const ButtonEvent &event );
 		bool buttonRelease( GadgetPtr gadget, const ButtonEvent &event );
@@ -39,8 +41,12 @@ class GraphGadget : public ContainerGadget
 		IECore::RunTimeTypedPtr dragBegin( GadgetPtr gadget, const ButtonEvent &event );	
 		bool dragUpdate( GadgetPtr gadget, const ButtonEvent &event );
 		
+		void addNodeGadget( Gaffer::Node *node );
 		NodeGadget *nodeGadget( Gaffer::Node *node );
-		ConnectionGadget *connectionGadget( Gaffer::Plug *plug );
+		void updateNodeGadgetTransform( NodeGadget *nodeGadget );
+		
+		void addConnectionGadget( Gaffer::Plug *dstPlug );
+		ConnectionGadget *connectionGadget( Gaffer::Plug *dstPlug );
 		
 	private :
 	
@@ -55,6 +61,7 @@ class GraphGadget : public ContainerGadget
 		ConnectionGadgetMap m_connectionGadgets;
 
 		Imath::V2f m_lastDragPosition;
+		
 
 };
 
