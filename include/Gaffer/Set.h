@@ -40,7 +40,7 @@ class Set : public IECore::RunTimeTyped
 		/// Adds a member to the set. Returns true if the member
 		/// was not already present, and false otherwise.
 		bool add( typename T::Ptr member );
-		/// Removes a member from the set. Returns true is the member
+		/// Removes a member from the set. Returns true if the member
 		/// is removed and false if it wasn't there in the first place.
 		bool remove( typename T::Ptr member );
 		/// Removes all members from the set.
