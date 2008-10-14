@@ -1,6 +1,6 @@
 import gtk
 from Gaffer import ScriptNode, AddNode
-from GafferUI import EditorWidget, GraphGadget, Panel, GadgetWidget
+from GafferUI import EditorWidget, GraphGadget, GadgetWidget
 
 class GraphEditor( EditorWidget ) :
 
@@ -21,3 +21,5 @@ class GraphEditor( EditorWidget ) :
 			return True
 	
 		return False
+
+EditorWidget.registerType( "GraphEditor", GraphEditor )

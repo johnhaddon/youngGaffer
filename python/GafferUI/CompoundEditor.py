@@ -29,9 +29,8 @@ class CompoundEditor( GafferUI.EditorWidget ) :
 			
 			m = IECore.MenuDefinition()
 			
-			for c in GafferUI.EditorWidget.__subclasses__() :
-				if not c is CompoundEditor :
-					m.append( "/" + c.__name__, { "command" : IECore.curry( self.__addChildCallback, splittable, c ) } )
+			for c in GafferUI.EditorWidget.types() :
+				m.append( "/" + c, { "command" : IECore.curry( self.__addChildCallback, splittable, c ) } )
 
 			m.append( "/divider", { "divider" : True } )
 
@@ -63,7 +62,7 @@ class CompoundEditor( GafferUI.EditorWidget ) :
 		
 		return False
 
-	def __addChildCallback( self, splittable, cls ) :
+	def __addChildCallback( self, splittable, name ) :
 	
 		assert( not splittable.isSplit() )
 	
@@ -72,9 +71,9 @@ class CompoundEditor( GafferUI.EditorWidget ) :
 			tabbedContainer = GafferUI.TabbedContainer()
 			splittable.setChild( tabbedContainer )
 		
-		newEditor = cls( self.scriptNode() )
+		newEditor = GafferUI.EditorWidget.create( name, self.scriptNode() )
 		tabbedContainer.append( newEditor )
-		tabbedContainer.setLabel( newEditor, cls.__name__ )
+		tabbedContainer.setLabel( newEditor, name )
 		
 	def __splitCallback( self, splittable, direction, subPanelIndex ) :
 	
