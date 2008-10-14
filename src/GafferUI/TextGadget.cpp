@@ -36,7 +36,7 @@ void TextGadget::setText( const std::string &text )
 	if( text!=m_text )
 	{
 		m_text = text;
-		renderRequestSignal();
+		renderRequestSignal()( this );
 	}
 }
 
