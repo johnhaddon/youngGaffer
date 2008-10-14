@@ -45,6 +45,10 @@ from MenuBar import MenuBar
 from EventLoop import EventLoop
 from TabbedContainer import TabbedContainer
 from CompoundEditor import CompoundEditor
+from TextWidget import TextWidget
+from NameWidget import NameWidget
+from NodeSetEditor import NodeSetEditor
+from NodeEditor import NodeEditor
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?
