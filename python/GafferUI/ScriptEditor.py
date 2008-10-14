@@ -5,7 +5,6 @@ from Menu import Menu
 from Widget import Widget
 from EditorWidget import EditorWidget
 
-## \todo This needs to derive off something which provides the editing context and wotnot
 ## \todo Output redirection of both python stderr and stdout and IECore::msg - with the option to still output to the shell as well
 ## \todo Fix the horizontal bar so it doesn't move unless asked - the subwindows should scroll instead
 ## \todo Custom right click menu with script load, save, execute file, undo, redo etc.
