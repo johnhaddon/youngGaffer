@@ -16,9 +16,7 @@ class GLWidget( Widget ) :
 		"Depth",
 		"Double"
 	)	
-	
-	__glContext = None ## Context we share among all widgets
-	
+		
 	def __init__( self, bufferOptions = set() ) :
 	
 		if self.BufferOptions.Alpha in bufferOptions :
@@ -33,7 +31,7 @@ class GLWidget( Widget ) :
 			displayMode |= gtk.gdkgl.MODE_DOUBLE 
 			
 		glConfig = gtk.gdkgl.Config( mode=displayMode )
-		drawingArea = gtk.gtkgl.DrawingArea( glConfig, share_list=self.__glContext )
+		drawingArea = gtk.gtkgl.DrawingArea( glConfig, share_list=self.__glContext() )
 		
 		Widget.__init__( self, drawingArea )
 				
@@ -55,18 +53,9 @@ class GLWidget( Widget ) :
 		# mean we call init() once for every widget created, but it's
 		# safe to call init() multiple times anyway.
 		IECoreGL.init( True )
-		## \todo this context dies or something when a glwidget is reparented
-		# there is a suggestion as to how to fix this here :
-		#
-		# http://markmail.org/message/zkbiilfe45rpbiv2#query:gtkglext%20reparenting+page:1+mid:zkbiilfe45rpbiv2+state:results
-		#
-		# but I couldn't get it to work yet
-		if not GLWidget.__glContext :
-			# we're the first gl widget, save the context for subsequent ones
-			GLWidget.__glContext = widget.get_gl_context()
-			
+		
 	def __configure( self, widget, event ) :
-	
+		
 		drawable = widget.get_gl_drawable()
 		context = widget.get_gl_context()
 		
@@ -93,4 +82,19 @@ class GLWidget( Widget ) :
 			glFlush()
 			
 		drawable.gl_end()
+	
+	__glContextObject = None # GL context we share among all widgets
+	__glContextPixmap = None # pixmap which owns the gl context and keeps it alive for us
+	@classmethod	
+	def __glContext( cls ) :
+	
+		if cls.__glContextObject :
+			return cls.__glContextObject
 		
+		config = gtk.gdkgl.Config( mode=gtk.gdkgl.MODE_RGBA | gtk.gdkgl.MODE_DEPTH | gtk.gdkgl.MODE_DOUBLE )	
+		cls.__glContextPixmap = gtk.gdk.Pixmap( None, 8, 8, config.get_depth() )
+		gtk.gdkgl.ext( cls.__glContextPixmap )
+		cls.__glContextPixmap.set_gl_capability( config )
+		cls.__glContextObject = gtk.gdkgl.Context( cls.__glContextPixmap.get_gl_drawable() )
+		
+		return cls.__glContextObject
