@@ -85,6 +85,34 @@ class SetTest( unittest.TestCase ) :
 			pass
 			
 		self.assert_( w() is None )
+	
+	def testSequencedMembers( self ) :
+	
+		s = Gaffer.NodeSet()
+		
+		l = []
+		for i in range( 0, 1000 ) :
+			n = Gaffer.Node()
+			n.setName( str( i ) )
+			l.append( n )
+			s.add( n )
+			
+		m = s.sequencedMembers()
+		self.assert_( isinstance( m, tuple ) )
+		self.assertEqual( len( m ), s.size() )
+		for i in range( 0, len( m ) ) :
+			self.assertEqual( m[i].getName(), str( i ) )
+	
+	def testLastAdded( self ) :
+	
+		s = Gaffer.NodeSet()
+		
+		for i in range( 0, 1000 ) :
+		
+			n = Gaffer.Node()
+			s.add( n )
+			
+			self.assert_( s.lastAdded().isSame( n ) )
 		
 	def testSignals( self ) :
 	

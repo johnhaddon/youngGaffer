@@ -21,13 +21,10 @@ class NodeEditor( GafferUI.NodeSetEditor ) :
 			
 		del self._column[:]
 		
-		## \todo We need the Set class to keep an ordering so we can get the last
-		# selected fellow.
-		members = list( self.getNodeSet().members() )
-		if not len( members ) :
+		node = self.getNodeSet().lastAdded()
+		if not node :
 			return
 		
-		node = members[-1]
 		self._column.append( GafferUI.NameWidget( node ) )
 
 		plugs = [ x for x in node.children() if x.isInstanceOf( Gaffer.Plug.staticTypeId() ) ]

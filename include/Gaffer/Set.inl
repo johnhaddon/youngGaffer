@@ -87,15 +87,41 @@ bool Set<T>::contains( typename T::Ptr object ) const
 }
 
 template<typename T>
-typename Set<T>::MemberContainer::size_type Set<T>::size() const
+size_t Set<T>::size() const
 {
 	return m_members.size();
 }
 
 template<typename T>
-const typename Set<T>::MemberContainer &Set<T>::members() const
+typename T::Ptr Set<T>::lastAdded()
 {
-	return m_members;
+	if( !size() )
+	{
+		return 0;
+	}
+	return *(sequencedMembers().rbegin());
+}
+
+template<typename T>
+typename T::ConstPtr Set<T>::lastAdded() const
+{
+	if( !size() )
+	{
+		return 0;
+	}
+	return *(sequencedMembers().rbegin());
+}
+
+template<typename T>
+const typename Set<T>::OrderedIndex &Set<T>::members() const
+{
+	return m_members.template get<0>();
+}
+
+template<typename T>
+const typename Set<T>::SequencedIndex &Set<T>::sequencedMembers() const
+{
+	return m_members.template get<1>();
 }
 
 template<typename T>

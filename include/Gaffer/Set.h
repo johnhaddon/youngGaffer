@@ -5,7 +5,9 @@
 
 #include "IECore/RunTimeTyped.h"
 
-#include <set>
+#include "boost/multi_index_container.hpp"
+#include "boost/multi_index/sequenced_index.hpp"
+#include "boost/multi_index/ordered_index.hpp"
 
 namespace Gaffer
 {
@@ -22,7 +24,18 @@ class Set : public IECore::RunTimeTyped
 		IE_CORE_DECLAREMEMBERPTR( Set );
 	
 		typedef T ValueType;
-		typedef std::set<typename T::Ptr> MemberContainer;
+		typedef typename T::Ptr ValuePtr;
+		
+		typedef boost::multi_index::multi_index_container<
+			ValuePtr,
+			boost::multi_index::indexed_by<
+				boost::multi_index::ordered_unique<boost::multi_index::identity<ValuePtr> >,
+				boost::multi_index::sequenced<>
+			>
+		> MemberContainer;
+		
+		typedef const typename MemberContainer::template nth_index<0>::type OrderedIndex;
+		typedef const typename MemberContainer::template nth_index<1>::type SequencedIndex;
 
 		//! @name RunTimeTyped interface
 		////////////////////////////////////////////////////////////
@@ -48,10 +61,15 @@ class Set : public IECore::RunTimeTyped
 		/// Returns true if the object is a member of the set.
 		bool contains( typename T::Ptr object ) const;
 		/// Returns the number of members of the set.
-		typename MemberContainer::size_type size() const;
+		size_t size() const;
+		/// Returns the last object added to the Set, or 0 if the set is
+		/// empty.
+		typename T::Ptr lastAdded();
+		typename T::ConstPtr lastAdded() const;
 		
-		/// Const access to the internal set to allow iteration etc.
-		const MemberContainer &members() const;
+		/// Const access to the internal container indices to allow iteration etc.
+		const OrderedIndex &members() const;
+		const SequencedIndex &sequencedMembers() const;
 
 		typedef boost::signal<void ( Ptr, typename T::Ptr )> MemberSignal;
 		

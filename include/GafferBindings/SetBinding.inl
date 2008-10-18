@@ -27,6 +27,18 @@ boost::python::object setMembers( T &s )
 	return result;
 }
 
+template<typename T>
+boost::python::object sequencedSetMembers( T &s )
+{
+	typename T::SequencedIndex &i = s.sequencedMembers();
+	boost::python::list l;
+	for( typename T::SequencedIndex::const_iterator it = i.begin(); it!=i.end(); it++ )
+	{
+		l.append( *it );
+	}
+	return boost::python::tuple( l );
+}
+
 }
 
 template <typename T>
@@ -41,9 +53,11 @@ void bindSet( const char *className )
 		.def( "clear", &T::clear )
 		.def( "contains", &T::contains )
 		.def( "size", &T::size )
+		.def( "lastAdded", (typename T::ValuePtr (T::*)())&T::lastAdded )
 		.def( "__contains__", &T::contains )
 		.def( "__len__", &T::size )
 		.def( "members", &Detail::setMembers<T> )
+		.def( "sequencedMembers", &Detail::sequencedSetMembers<T> )
 		.def( "memberAddedSignal", &T::memberAddedSignal, boost::python::return_internal_reference<1>() )
 		.def( "memberRemovedSignal", &T::memberRemovedSignal, boost::python::return_internal_reference<1>() )
 		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( T )
