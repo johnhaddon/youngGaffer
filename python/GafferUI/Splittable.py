@@ -91,10 +91,16 @@ class Splittable( ContainerWidget ) :
 			
 		if child :
 			self.__subPanels[childSubPanelIndex].setChild( child )
-							
+		
 		self.__paned.show()
 		self.__eventBox.add( self.__paned )
-	
+		
+		if direction==self.SplitDirection.Vertical :
+			self.__paned.set_position( self.__eventBox.allocation.width / 2 )					
+		else :
+			self.__paned.set_position( self.__eventBox.allocation.height / 2 )					
+		
+		
 	def splitDirection( self ) :
 	
 		if not self.isSplit() :
