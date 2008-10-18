@@ -1,6 +1,7 @@
 import gtk
 from IECore import curry
 from Widget import Widget
+import CamelCase
 import inspect
 
 ## \todo Decide how this interacts with the other UI components to
@@ -50,6 +51,7 @@ class Menu( Widget ) :
 		
 			pathComponents = path.strip( "/" ).split( "/" )
 			name = pathComponents[0]
+			label = CamelCase.toSpaced( name )
 			
 			if not name in done :
 
@@ -62,7 +64,7 @@ class Menu( Widget ) :
 					subMenuDefinition = definition.reRooted( "/" + name + "/" )
 					subMenu.connect( "show", Menu.__show, subMenuDefinition )
 
-					menuItem = gtk.MenuItem( label = name )
+					menuItem = gtk.MenuItem( label = label )
 					menuItem.set_submenu( subMenu )
 						
 				else :
@@ -77,12 +79,12 @@ class Menu( Widget ) :
 					
 						subMenu = gtk.Menu()
 						subMenu.connect( "show", Menu.__show, item.subMenu )
-						menuItem = gtk.MenuItem( label = name )
+						menuItem = gtk.MenuItem( label = label )
 						menuItem.set_submenu( subMenu )
 											
 					else :
 					
-						menuItem = gtk.MenuItem( label = name )
+						menuItem = gtk.MenuItem( label = label )
 						
 						if item.command :
 						
