@@ -20,7 +20,9 @@ IE_CORE_DECLAREPTR( ScriptContainer );
 /// nodes which are stored in a single file.
 /// \todo undo() and redo() methods somehow (i think they probably belong here?)
 /// There should be a Command() class with virtual functions to return the script to be
-/// executed on do() and undo(), and these should be held in an undo list.
+/// executed on do() and undo(), and these should be held in an undo list. If undo is
+/// to be usable from C++ only programs rather than just python, then we need to ensure
+/// that the do() and undo() methods don't use execute().
 /// \todo fileValid() plug or summink - bool which is true when the file is saved and
 /// false when it's modified in memory. this means attaching a plugchanged callback to every
 /// node.
