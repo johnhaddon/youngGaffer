@@ -8,6 +8,7 @@ import gtk
 # Escape abandons any uncommitted changes.
 #
 # \todo Right click menu for cut and paste
+# \todo Stop editing for non editable plugs.
 class StringPlugValueWidget( PlugValueWidget ) :
 
 	def __init__( self, plug ) :

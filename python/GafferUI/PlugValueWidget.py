@@ -1,3 +1,4 @@
+import Gaffer
 from Widget import Widget
 
 class PlugValueWidget( Widget ) :
@@ -12,6 +13,8 @@ class PlugValueWidget( Widget ) :
 	
 		self.__plug = plug
 		self.__plugSetConnection = plug.node().plugSetSignal().connect( self.__plugSetSlot )
+		self.__plugDirtiedConnection = plug.node().plugDirtiedSignal().connect( self.__plugDirtiedSlot )
+		self.__plugInputChangedConnection = plug.node().plugInputChangedSignal().connect( self.__plugInputChangedSlot )
 		self.updateFromPlug()
 		
 	def getPlug( self ) :
@@ -19,10 +22,22 @@ class PlugValueWidget( Widget ) :
 		return self.__plug
 	
 	## Must be implemented by subclasses so that the widget reflects the current
-	# value of the plug.	
+	# status of the plug.	
 	def updateFromPlug( self ) :
 	
 		raise NotImplementedError
+	
+	## Returns True if the plug value is editable - that is the plug
+	# is an input plug and it has no incoming connection.
+	def _editable( self ) :
+	
+		plug = self.getPlug()
+		if plug.direction()==Gaffer.Plug.Direction.Out :
+			return False
+		if plug.getInput() :
+			return False
+		
+		return True
 			
 	@classmethod
 	def create( cls, plug ) :
@@ -42,6 +57,18 @@ class PlugValueWidget( Widget ) :
 	__typesToCreators = {}	
 		
 	def __plugSetSlot( self, plug ) :
+	
+		if plug.isSame( self.__plug ) :
+		
+			self.updateFromPlug()	
+
+	def __plugDirtiedSlot( self, plug ) :
+	
+		if plug.isSame( self.__plug ) :
+		
+			self.updateFromPlug()	
+
+	def __plugInputChangedSlot( self, plug ) :
 	
 		if plug.isSame( self.__plug ) :
 		

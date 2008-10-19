@@ -16,7 +16,7 @@ import gtk
 #
 ## \todo Maths expressions to modify the existing value
 ## \todo Enter names of other plugs to create a connection
-## \todo Color change for connected plugs
+## \todo Color change for connected plugs and output plugs
 ## \todo Reject drag and drop of anything that's not a number
 class NumericPlugValueWidget( PlugValueWidget ) :
 
@@ -40,7 +40,7 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 		if not hasattr( self, "gtkEntry" ) :
 			# we're still constructing
 			return
-
+		
 		value = self.getPlug().getValue()
 		if self.__floatPlug() :
 			text = "%.4f" % value
@@ -48,52 +48,64 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 			text = "%d" % value
 
 		self.gtkEntry.set_text( text )
+		
+		self.gtkEntry.set_editable( self._editable() )
 
 	def __buttonPress( self, widget, event ) :
 	
+		editable = self.gtkEntry.get_editable()
+
 		if event.button==1 and event.state & gtk.gdk.CONTROL_MASK :
 		
 			# ctrl left click
-			
-			layout = self.gtkEntry.get_layout()
-			offset = self.gtkEntry.get_layout_offsets()
-			cursor = layout.xy_to_index(
-				int( (event.x - offset[0]) * pango.SCALE ),
-				int( (event.y - offset[1]) * pango.SCALE )
-			)
+			if editable :
 
-			step = 1
-			if event.state & gtk.gdk.SHIFT_MASK :
-				step = -1
-			
-			self.__incrementIndex( cursor[0], step )
-			
+				layout = self.gtkEntry.get_layout()
+				offset = self.gtkEntry.get_layout_offsets()
+				cursor = layout.xy_to_index(
+					int( (event.x - offset[0]) * pango.SCALE ),
+					int( (event.y - offset[1]) * pango.SCALE )
+				)
+
+				step = 1
+				if event.state & gtk.gdk.SHIFT_MASK :
+					step = -1
+
+				self.__incrementIndex( cursor[0], step )
+
 			return True
 			
 		return False
 	
 	def __keyPress( self, widget, event ) :
 	
+	
 		# process special actions
 		###########################################################
+
+		editable = self.gtkEntry.get_editable()
 	
 		# control up/down nudge values
 		if event.keyval==65362 and event.state & gtk.gdk.CONTROL_MASK :
-			self.__incrementIndex( self.gtkEntry.get_position(), 1 )
+			if editable :
+				self.__incrementIndex( self.gtkEntry.get_position(), 1 )
 			return True
 		
 		if event.keyval==65364 and event.state & gtk.gdk.CONTROL_MASK :
-			self.__incrementIndex( self.gtkEntry.get_position(), -1 )
+			if editable :
+				self.__incrementIndex( self.gtkEntry.get_position(), -1 )
 			return True
 			
 		# escape abandons everything
 		if event.keyval==65307 :
-			self.updateFromPlug()
+			if editable :
+				self.updateFromPlug()
 			return True
 			
 		# return commits any changes made
 		if event.keyval==65293 :
-			self.__setPlugValue()
+			if editable :
+				self.__setPlugValue()
 			return True
 		
 		# control normal character entry
