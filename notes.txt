@@ -98,6 +98,9 @@ extended node constructors
 * can implement **kwargs in boost python using the undocumented class_.def_raw method
 	*	for each keyword, find the plug on the node, get it as a python object, and then call the python setValue/setInput
 		method passing the keyword value object as argument.
+	* def_raw no longer exists :
+		* here's an alternative :
+			http://osdir.com/ml/python.c++/2003-01/msg00068.html
 * need a way of binding node constructors for plugins without people having to use boost python
 
 ui
