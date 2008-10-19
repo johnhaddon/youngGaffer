@@ -2,11 +2,9 @@ import Gaffer
 
 class AddNode( Gaffer.Node ) :
 		
-	def __init__( self ) :
+	def __init__( self, name="Add" ) :
 
-		Gaffer.Node.__init__( self )
-
-		self.setName( "Add" )
+		Gaffer.Node.__init__( self, name )
 
 		p1 = Gaffer.IntPlug( "op1", Gaffer.Plug.Direction.In )
 		p2 = Gaffer.IntPlug( "op2", Gaffer.Plug.Direction.In )
