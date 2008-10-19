@@ -119,7 +119,7 @@ template<class T>
 void NumericPlug<T>::setValue( T value )
 {
 	T v = Imath::clamp( value, m_minValue, m_maxValue );
-	if( v!=m_value )
+	if( v!=m_value || getDirty() )
 	{
 		m_value = v;
 		valueSet();

@@ -88,6 +88,41 @@ class NodeTest( unittest.TestCase ) :
 		sn.n1.n = n
 		
 		self.assert_( n.scriptNode().isSame( sn ) )		
+	
+	def testDirtyOfInputsWithConnections( self ) :
+	
+		n1 = Gaffer.AddNode()
+		n2 = Gaffer.AddNode()
+		
+		n2.getChild( "op1" ).setInput( n1.getChild( "sum" ) )
+		
+		n1.getChild( "op1" ).setValue( 10 )
+		
+		self.assertEqual( n1.getChild( "sum" ).getDirty(), True )
+		self.assertEqual( n2.getChild( "op1" ).getDirty(), True )
+		self.assertEqual( n2.getChild( "op2" ).getDirty(), False )
+		self.assertEqual( n2.getChild( "sum" ).getDirty(), True )
+		
+		self.assertEqual( n2.getChild( "sum" ).getValue(), 10 )
+	
+	def testDirtyPlugComputesSameValueAsBefore( self ) :
+	
+		n1 = Gaffer.AddNode( "N1" )
+		n2 = Gaffer.AddNode( "N2" )
+		
+		n2.getChild( "op1" ).setInput( n1.getChild( "sum" ) )
+		self.assertEqual( n2.getChild( "sum" ).getDirty(), False )
+				
+		n1.getChild( "op1" ).setValue( 1 )
+		self.assertEqual( n1.getChild( "sum" ).getDirty(), True )
+		self.assertEqual( n2.getChild( "op1" ).getDirty(), True )
+		self.assertEqual( n2.getChild( "sum" ).getDirty(), True )
+		n1.getChild( "op2" ).setValue( -1 )
+		self.assertEqual( n2.getChild( "op1" ).getDirty(), True )
+		self.assertEqual( n1.getChild( "sum" ).getDirty(), True )
+		self.assertEqual( n2.getChild( "sum" ).getDirty(), True )
+		
+		self.assertEqual( n2.getChild( "sum" ).getValue(), 0 )
 					
 if __name__ == "__main__":
 	unittest.main()

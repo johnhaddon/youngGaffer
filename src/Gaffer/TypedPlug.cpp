@@ -102,7 +102,7 @@ T TypedPlug<T>::defaultValue() const
 template<class T>
 void TypedPlug<T>::setValue( T value )
 {
-	if( value!=m_value )
+	if( value!=m_value || getDirty() )
 	{
 		m_value = value;
 		valueSet();

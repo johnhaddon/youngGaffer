@@ -103,11 +103,21 @@ void ValuePlug::computeIfDirty()
 {
 	if( getDirty() )
 	{
-		NodePtr n = node();
-		if( !n )
+		if( getInput<Plug>() )
 		{
-			throw IECore::Exception( boost::str( boost::format( "Unable to compute value for orphan Plug \"%s\"." ) % fullName() ) ); 
+			setFromInput();
 		}
-		n->compute( this );
+		else
+		{
+			NodePtr n = node();
+			if( !n )
+			{
+				throw IECore::Exception( boost::str( boost::format( "Unable to compute value for orphan Plug \"%s\"." ) % fullName() ) ); 
+			}
+			n->compute( this );
+		}
+		/// \todo consider a better response to failure here - perhaps call setToDefault()?
+		/// and do we need some kind of error status for plugs?
+		assert( !getDirty() );
 	}
 }

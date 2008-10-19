@@ -53,9 +53,10 @@ class ValuePlug : public Plug
 		/// and propagates the value to the Plug's outputs.
 		void valueSet();
 		/// Must be called by derived classes before accessing the value
-		/// (for instance in a getValue() method). This calls node()->compute()
-		/// if the plug is dirty, to ensure that the value is updated before
-		/// it's accessed;
+		/// (for instance in a getValue() method). If the plug is dirty this
+		/// either calls node()->compute() if there is no input connection, or
+		/// setFromInput() if there is. This ensures that the value is updated before
+		/// it's accessed.
 		void computeIfDirty();
 		
 		/// Must be implemented to set the value of this Plug from the
