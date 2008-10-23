@@ -265,6 +265,7 @@ lights + shading
 	* usual nonsense?
 	* force reflectances below a sum of 1?
 * hdri creation tools needed
+* multiple shadow regions and ease of map management very important
 
 features
 ========
