@@ -55,7 +55,7 @@ boost::python::object rawConstructor( F f )
 		
 			Detail::RawConstructorDispatcher<F>( f ),
 			boost::mpl::vector1<PyObject*>(),
-			0,
+			1,
 			(std::numeric_limits<unsigned>::max)()
 			
 		),
