@@ -1,7 +1,11 @@
 #include "boost/python.hpp"
+#include "boost/python/raw_function.hpp"
+
+#include "boost/format.hpp"
 
 #include "GafferBindings/NodeBinding.h"
 #include "GafferBindings/SignalBinding.h"
+#include "GafferBindings/RawConstructor.h"
 #include "Gaffer/ScriptNode.h"
 #include "Gaffer/Plug.h"
 
@@ -44,13 +48,77 @@ class NodeWrapper : public Node, public IECore::Wrapper<Node>
 
 IE_CORE_DECLAREPTR( NodeWrapper );
 
+void GafferBindings::setPlugs( NodePtr node, const boost::python::dict &keywords )
+{
+	list items = keywords.items();
+	long l = len( items );
+	for( long i=0; i<l; i++ )
+	{
+		std::string name = extract<std::string>( items[i][0] );
+		PlugPtr p = node->getChild<Plug>( name );
+		if( !p )
+		{
+			std::string err = boost::str( boost::format( "No plug named \"%s\"." ) % name );
+			throw std::invalid_argument( err.c_str() );
+		}
+
+		object pythonPlug( p );
+		
+		extract<PlugPtr> inputExtractor( items[i][1] );
+		if( inputExtractor.check() )
+		{
+			pythonPlug.attr( "setInput" )( object( items[i][1] ) );
+		}
+		else
+		{
+			pythonPlug.attr( "setValue" )( object( items[i][1] ) );
+		}
+	}
+}
+
+// really we want a void return type but raw_function doesn't seem to like that
+static bool setPlugsRaw( tuple t, dict d )
+{
+	if( len( t ) > 1 )
+	{
+		throw std::invalid_argument( "Expected only keyword arguments." );
+	}
+	NodePtr node = extract<NodePtr>( t[0] );
+	setPlugs( node, d );
+	return true;
+}
+
+static NodePtr constructor( tuple t, dict d )
+{
+	long l = len( t );
+	if( !l )
+	{
+		throw std::invalid_argument( "Expected self for first argument to constructor." );
+	}
+	if( l>2 )
+	{
+		throw std::invalid_argument( "Too many arguments." );
+	}
+	
+	std::string name = Node::staticTypeName();
+	if( l==2 )
+	{
+		name = extract<std::string>( t[1] )();
+	}
+		
+	NodePtr result = new NodeWrapper( ((object)t[0]).ptr(), name );
+	setPlugs( result, d );
+	return result;
+}
+
 void GafferBindings::bindNode()
 {
 	typedef class_<Node, NodeWrapperPtr, boost::noncopyable, bases<GraphComponent> > NodePyClass;
 
-	scope s = NodePyClass( "Node" )
-		.def( init<const std::string &>() )
+	scope s = NodePyClass( "Node", no_init )
+		.def( "__init__", rawConstructor( constructor ) )
 		.def( "scriptNode", (ScriptNodePtr (Node::*)())&Node::scriptNode )
+		.def( "setPlugs", raw_function( setPlugsRaw, 1 ) )
 		.def( "plugSetSignal", &Node::plugSetSignal, return_internal_reference<1>() )
 		.def( "plugDirtiedSignal", &Node::plugDirtiedSignal, return_internal_reference<1>() )
 		.def( "plugInputChangedSignal", &Node::plugInputChangedSignal, return_internal_reference<1>() )

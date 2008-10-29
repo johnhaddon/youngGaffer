@@ -43,16 +43,16 @@ class NodeTest( unittest.TestCase ) :
 		cb.append( n1.plugDirtiedSignal().connect( dirtyCallback ) )	
 		
 		n1.getChild("op1").setValue( 2 )
-		self.assertEqual( NodeTest.lastSet, "Add.op1" )
+		self.assertEqual( NodeTest.lastSet, "AddNode.op1" )
 		self.assertEqual( n1.getChild("op1").getDirty(), False )
 		self.assertEqual( n1.getChild("op2").getDirty(), False )
 		self.assertEqual( n1.getChild("sum").getDirty(), True )
-		self.assertEqual( NodeTest.lastDirtied, "Add.sum" )
+		self.assertEqual( NodeTest.lastDirtied, "AddNode.sum" )
 		
 		NodeTest.lastDirtied = ""
 		
 		n1.getChild("op2").setValue( 3 )
-		self.assertEqual( NodeTest.lastSet, "Add.op2" )
+		self.assertEqual( NodeTest.lastSet, "AddNode.op2" )
 		self.assertEqual( n1.getChild("op1").getDirty(), False )
 		self.assertEqual( n1.getChild("op2").getDirty(), False )
 		self.assertEqual( n1.getChild("sum").getDirty(), True )
@@ -61,7 +61,7 @@ class NodeTest( unittest.TestCase ) :
 		self.assertEqual( NodeTest.lastDirtied, "" )
 		
 		self.assertEqual( n1.getChild("sum").getValue(), 5 )
-		self.assertEqual( NodeTest.lastSet, "Add.sum" )
+		self.assertEqual( NodeTest.lastSet, "AddNode.sum" )
 		
 		# connect another add node onto the output of this one
 		
@@ -123,7 +123,25 @@ class NodeTest( unittest.TestCase ) :
 		self.assertEqual( n2.getChild( "sum" ).getDirty(), True )
 		
 		self.assertEqual( n2.getChild( "sum" ).getValue(), 0 )
-					
+	
+	def testExtendedConstructor( self ) :
+		
+		n = Gaffer.Node()
+		self.assertEqual( n.getName(), "Node" )
+		
+		n = Gaffer.Node( "a" )
+		self.assertEqual( n.getName(), "a" )
+				
+		self.assertRaises( Exception, Gaffer.Node, "too", "many" )
+		
+		n = Gaffer.AddNode( "hello", op1 = 1, op2 = 2 )
+		self.assertEqual( n.getName(), "hello" )
+		self.assertEqual( n.op1.getValue(), 1 )
+		self.assertEqual( n.op2.getValue(), 2 )
+		
+		n2 = Gaffer.AddNode( "goodbye", op1 = n.sum )
+		self.assert_( n2.op1.getInput().isSame( n.sum ) )
+									
 if __name__ == "__main__":
 	unittest.main()
 	

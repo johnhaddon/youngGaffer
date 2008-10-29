@@ -2,7 +2,7 @@ import Gaffer
 
 class AddNode( Gaffer.Node ) :
 		
-	def __init__( self, name="Add" ) :
+	def __init__( self, name="AddNode", **kw ) :
 
 		Gaffer.Node.__init__( self, name )
 
@@ -15,6 +15,8 @@ class AddNode( Gaffer.Node ) :
 		p3 = Gaffer.IntPlug( "sum", Gaffer.Plug.Direction.Out )
 
 		self.addChild( p3 )
+		
+		self.setPlugs( **kw )
 
 	def dirty( self, plug ) :
 
