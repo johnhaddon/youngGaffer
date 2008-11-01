@@ -56,7 +56,7 @@ class ScriptNode : public Node
 		NodeSetPtr selection();
 		ConstNodeSetPtr selection() const;
 		//@}
-		
+				
 		//! @name Script evaluation
 		/// These methods allow the execution of python scripts in the
 		/// context of the ScriptNode. The methods are only available on
@@ -82,9 +82,26 @@ class ScriptNode : public Node
 		ScriptEvaluatedSignal &scriptEvaluatedSignal();
 		//@}
 		
+	
+		//! @name Serialisation
+		/// \todo Implement me!!!
+		////////////////////////////////////////////////////////////////////
+		//@{
+		/// Returns a string which when executed would recreate all the
+		/// specified nodes. If no NodeSet is specified then the current selection
+		/// is used.
+		//std::string serialise( ConstNodeSetPtr nodes=0 );
+		/// Returns the plug which specifies the file used in all load and save
+		/// operations.
 		StringPlugPtr fileNamePlug();
 		ConstStringPlugPtr fileNamePlug() const;
-	
+		/// Loads the script specified in the filename plug.
+		//void load();
+		/// Saves the script to the file specified by the filename plug.
+		//void save();
+		//@}
+		
+
 	protected :
 	
 		virtual void dirty( ConstPlugPtr dirty ) const;
