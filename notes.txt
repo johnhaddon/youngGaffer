@@ -73,8 +73,51 @@ an undoable event on release?
 		* there are plenty of nasty cases
 		* will saving node states with each rendered preview give us equivalent functionality cleanly?					
 
-cut + paste
-===========
+serialisation
+=============
+
+* used for 
+
+	* cut + paste
+	* file save + load
+	* import script
+	* save selection
+	
+* serialisation takes a set of nodes and returns an executable string that will recreate those nodes
+in a given context
+
+	* because of the cut+paste and import methods it can't assume it has control over the context into
+	  which it is going to be unserialised. if nodes clash then the new nodes should take on different names.
+		
+		* it'd be nice to do this script["n"] = Node(), but that doesn't really work
+			* because a child called "n" may already exist
+			* plus the Node constructor takes a name anyways
+			
+		* what if any local variables which are created and are Nodes are automatically added to
+		  some parent class?
+		  
+		  	* a = Node( "n" )
+				
+			* using the "with" thing to define the parent context?
+			
+			* or is explicit parenting better anyway?
+				
+				* i think i prefer explicit parenting
+					
+					* but a special context object should make methods of the script
+					  available as globals. so we have addChild(), selection(), save(), load() etc as free functions.
+			
+* this relates very closely to how we deal with the item/attribute access for GraphComponents
+
+	* we should ditch the getattr/setattr mechanism we already have
+		* masking attributes is a bad thing, and future versions will add methods which potentially
+		  clash with children in existing scripts.
+		  
+	* we could use getitem to retrieve children - but setitem doesn't map well to addChild calls,
+	  as those calls can rename the child for uniqueness
+
+* needs to cope with multiple references to the same node
+	
 
 * serialise and read
 		
