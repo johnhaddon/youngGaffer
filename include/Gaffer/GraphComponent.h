@@ -66,6 +66,8 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		/// will first be removed from it. Note that the child may be renamed to
 		/// preserve uniqueness, and an exception is thrown if the child or
 		/// parent doesn't accept the new relationship.
+		/// \todo Add an argument which causes name clashes to be resolved by
+		/// removing the existing child, and use that from the setitem binding.
 		void addChild( GraphComponentPtr child );
 		/// Removes a child. Throws an Exception if the passed component is
 		/// not a child of this component.

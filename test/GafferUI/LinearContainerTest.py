@@ -55,16 +55,16 @@ class LinearContainerTest( unittest.TestCase ) :
 		
 		c = GafferUI.LinearContainer()
 		
-		c.c1 = twoByFour
+		c["c1"] = twoByFour
 		self.assertEqual( c.bound(), IECore.Box3f( IECore.V3f( -1, -2, 0 ), IECore.V3f( 1, 2, 0 ) ) )
 		self.assertEqual( twoByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( 0 ) ) )
 		
-		c.c2 = fourByFour
+		c["c2"] = fourByFour
 		self.assertEqual( c.bound(), IECore.Box3f( IECore.V3f( -3, -2, 0 ), IECore.V3f( 3, 2, 0 ) ) )
 		self.assertEqual( twoByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( -2, 0, 0 ) ) )
 		self.assertEqual( fourByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( 1, 0, 0 ) ) )
 		
-		c.c3 = fourByTwo
+		c["c3"] = fourByTwo
 		self.assertEqual( c.bound(), IECore.Box3f( IECore.V3f( -5, -2, 0 ), IECore.V3f( 5, 2, 0 ) ) )
 		self.assertEqual( twoByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( -4, 0, 0 ) ) )
 		self.assertEqual( fourByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( -1, 0, 0 ) ) )
@@ -86,16 +86,16 @@ class LinearContainerTest( unittest.TestCase ) :
 		
 		c = GafferUI.LinearContainer( orientation=GafferUI.LinearContainer.Orientation.Y, alignment=GafferUI.LinearContainer.Alignment.Min)
 		
-		c.c1 = twoByFour
+		c["c1"] = twoByFour
 		self.assertEqual( c.bound(), IECore.Box3f( IECore.V3f( -1, -2, 0 ), IECore.V3f( 1, 2, 0 ) ) )
 		self.assertEqual( twoByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( 0 ) ) )
 		
-		c.c2 = fourByFour
+		c["c2"] = fourByFour
 		self.assertEqual( c.bound(), IECore.Box3f( IECore.V3f( -2, -4, 0 ), IECore.V3f( 2, 4, 0 ) ) )
 		self.assertEqual( twoByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( -1, -2, 0 ) ) )
 		self.assertEqual( fourByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( 0, 2, 0 ) ) )
 		
-		c.c3 = fourByTwo
+		c["c3"] = fourByTwo
 		self.assertEqual( c.bound(), IECore.Box3f( IECore.V3f( -2, -5, 0 ), IECore.V3f( 2, 5, 0 ) ) )
 		self.assertEqual( twoByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( -1, -3, 0 ) ) )
 		self.assertEqual( fourByFour.getTransform(), IECore.M44f.createTranslated( IECore.V3f( 0, 1, 0 ) ) )

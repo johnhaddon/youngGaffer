@@ -32,7 +32,7 @@ class light( Gaffer.Application ) :
 		application = Gaffer.ApplicationRoot()
 		GafferUI.ScriptWindow.connect( application )
 		
-		application.scripts.script1 = Gaffer.ScriptNode()
+		application["scripts"]["script1"] = Gaffer.ScriptNode()
 		
 		GafferUI.EventLoop.start()
 		

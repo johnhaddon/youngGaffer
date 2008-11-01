@@ -81,13 +81,17 @@ class NodeTest( unittest.TestCase ) :
 	def testScriptNode( self ) :
 	
 		n = Gaffer.Node()
+		n2 = Gaffer.Node()
 		self.assertEqual( n.scriptNode(), None )
+		self.assertEqual( n2.scriptNode(), None )
 		
 		sn = Gaffer.ScriptNode()
-		sn.n1 = Gaffer.Node()
-		sn.n1.n = n
+		
+		sn.addChild( n )
+		n.addChild( n2 )
 		
 		self.assert_( n.scriptNode().isSame( sn ) )		
+		self.assert_( n2.scriptNode().isSame( sn ) )		
 	
 	def testDirtyOfInputsWithConnections( self ) :
 	
@@ -136,11 +140,11 @@ class NodeTest( unittest.TestCase ) :
 		
 		n = Gaffer.AddNode( "hello", op1 = 1, op2 = 2 )
 		self.assertEqual( n.getName(), "hello" )
-		self.assertEqual( n.op1.getValue(), 1 )
-		self.assertEqual( n.op2.getValue(), 2 )
+		self.assertEqual( n["op1"].getValue(), 1 )
+		self.assertEqual( n["op2"].getValue(), 2 )
 		
-		n2 = Gaffer.AddNode( "goodbye", op1 = n.sum )
-		self.assert_( n2.op1.getInput().isSame( n.sum ) )
+		n2 = Gaffer.AddNode( "goodbye", op1 = n["sum"] )
+		self.assert_( n2["op1"].getInput().isSame( n["sum"] ) )
 									
 if __name__ == "__main__":
 	unittest.main()

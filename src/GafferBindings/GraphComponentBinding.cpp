@@ -23,33 +23,18 @@ static boost::python::tuple children( GraphComponent &c )
 	return boost::python::tuple( l );
 }
 
-static object setAttr( object &self, const char *n, object c )
+/// \todo Documen the different semantics of addChild and setItem in a scripting
+/// reference somewhere.
+static void setItem( GraphComponent &g, const char *n, GraphComponentPtr c )
 {
-	GraphComponent &g = extract<GraphComponent &>( self );
-	// we won't allow any attribute assignment to mask an existing GraphComponent child
-	if( g.getChild<GraphComponent>( n ) )
+	GraphComponentPtr existingChild = g.getChild<GraphComponent>( n );
+	if( existingChild )
 	{
-		std::string error = boost::str( boost::format( "\"%s\" already has a child named \"%s\"." ) % g.getName() % n );
-		PyErr_SetString( PyExc_NameError, error.c_str() );
-		throw_error_already_set();
+		g.removeChild( existingChild );
 	}
-
-	extract<GraphComponentPtr> e( c );
-	if( e.check() )
-	{
-		// add as a GraphComponent child
-		GraphComponentPtr gc = e();
-		gc->setName( n );
-		g.addChild( gc );
-	}
-	else
-	{
-		// add as a normal attribute
-		dict d = extract<dict>( self.attr( "__dict__" ) );
-		d[n] = c;
-	}
-
-	return c;
+	
+	c->setName( n );
+	g.addChild( c );
 }
 
 static GraphComponentPtr parent( GraphComponent &g )
@@ -91,8 +76,8 @@ void GafferBindings::bindGraphComponent()
 		.def( "addChild", &GraphComponent::addChild )
 		.def( "removeChild", &GraphComponent::removeChild )
 		.def( "getChild", (GraphComponentPtr (GraphComponent::*)( const std::string & ))&GraphComponent::getChild<GraphComponent> )
-		.def( "__getattr__", (GraphComponentPtr (GraphComponent::*)( const std::string & ))&GraphComponent::getChild<GraphComponent> )
-		.def( "__setattr__", setAttr )
+		.def( "__getitem__", (GraphComponentPtr (GraphComponent::*)( const std::string & ))&GraphComponent::getChild<GraphComponent> )
+		.def( "__setitem__", setItem )
 		.def( "children", &children )
 		.def( "parent", &parent )
 		.def( "ancestor", (GraphComponentPtr (GraphComponent::*)( IECore::TypeId ))&GraphComponent::ancestor )

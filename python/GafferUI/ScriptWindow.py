@@ -10,8 +10,8 @@ class ScriptWindow( GafferUI.Window ) :
 		scriptWindow = menu.ancestor( GafferUI.ScriptWindow )
 		application = scriptWindow.getScript().ancestor( Gaffer.ApplicationRoot.staticTypeId() )
 		
-		newScript = Gaffer.ScriptNode( "untitled" )
-		application.scripts.addChild( newScript )
+		newScript = Gaffer.ScriptNode( "script" )
+		application["scripts"].addChild( newScript )
 	
 	## \todo We need a mechanism for different applications to add
 	# different custom things to this menu and without stomping over each
@@ -92,8 +92,8 @@ class ScriptWindow( GafferUI.Window ) :
 	@staticmethod
 	def connect( applicationRoot ) :
 	
-		ScriptWindow.__scriptAddedConnection = applicationRoot.scripts.childAddedSignal().connect( ScriptWindow.__scriptAdded )
-		ScriptWindow.__scriptRemovedConnection = applicationRoot.scripts.childRemovedSignal().connect( ScriptWindow.__staticScriptRemoved )
+		ScriptWindow.__scriptAddedConnection = applicationRoot["scripts"].childAddedSignal().connect( ScriptWindow.__scriptAdded )
+		ScriptWindow.__scriptRemovedConnection = applicationRoot["scripts"].childRemovedSignal().connect( ScriptWindow.__staticScriptRemoved )
 
 	__instances = []
 	@staticmethod

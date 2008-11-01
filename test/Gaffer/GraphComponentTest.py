@@ -54,7 +54,7 @@ class GraphComponentTest( unittest.TestCase ) :
 		parent1.addChild( child1 )
 		self.assert_( parent1.parent() is None )
 		self.assert_( parent1.getChild( "GraphComponent" ).isSame( child1 ) )
-		self.assert_( parent1.GraphComponent.isSame( child1 ) )
+		self.assert_( parent1["GraphComponent"].isSame( child1 ) )
 		self.assert_( child1.parent().isSame( parent1 ) )
 		
 		parent1.removeChild( child1 )
@@ -100,31 +100,23 @@ class GraphComponentTest( unittest.TestCase ) :
 		for i in range( 0, 100000 ) :
 			l.append( Gaffer.GraphComponent() )
 			
-	def testChildrenAsAttributes( self ) :
+	def testDictionarySemantics( self ) :
 	
+		# check setitem and getitem
 		p = Gaffer.GraphComponent()
 		c = Gaffer.GraphComponent()
-		cc = p.c = c
+		p["c"] = c
 		self.assert_( p.getChild( "c" ).isSame( c ) )
-		self.assert_( p.c.isSame( c ) )
-		self.assert_( cc is c )
+		self.assert_( p["c"].isSame( c ) )
 		
-		# check that we can still have normal attributes not
-		# as children
-		s = "s"
-		ss = p.s = "s"
-		self.assertEqual( p.getChild( "s" ), None )
-		self.assertEqual( p.s, "s" )
-		self.assert_( ss is s )
+		# check that setitem removes items with clashing names
+		c2 = Gaffer.GraphComponent()
+		p["c"] = c2
+		self.assert_( p.getChild( "c" ).isSame( c2 ) )
+		self.assert_( c2.parent().isSame( p ) )
+		self.assert_( c.parent() is None )
 		
-		# we don't allow the replacing of existing children
-		self.assertRaises( NameError, p.__setattr__, "c", Gaffer.GraphComponent() )
-		self.assertRaises( NameError, p.__setattr__, "c", "ss" )
-		# but we do allow the replacing of existing attributes
-		a = "a"
-		p.s = a
-		self.assert_( p.s is a )
-	
+		
 	def testUniqueNaming( self ) :
 	
 		p = Gaffer.GraphComponent()
@@ -149,10 +141,10 @@ class GraphComponentTest( unittest.TestCase ) :
 	
 		a = Gaffer.ApplicationRoot()
 		s = Gaffer.ScriptNode()
-		a.scripts.one = s
+		a["scripts"]["one"] = s
 		
 		n = Gaffer.AddNode()
-		s.node = n
+		s["node"] = n
 		
 		self.assert_( n.ancestor( Gaffer.ScriptNode.staticTypeId() ).isSame( s ) )
 		self.assert_( n.ancestor( Gaffer.ApplicationRoot.staticTypeId() ).isSame( a ) )
@@ -161,13 +153,13 @@ class GraphComponentTest( unittest.TestCase ) :
 	
 		a = Gaffer.ApplicationRoot()
 		s = Gaffer.ScriptNode()
-		a.scripts.one = s
+		a["scripts"]["one"] = s
 		
-		s.n1 = Gaffer.Node()
-		s.n2 = Gaffer.Node()
+		s["n1"] = Gaffer.Node()
+		s["n2"] = Gaffer.Node()
 		
-		self.assert_( s.n1.commonAncestor( s.n2, Gaffer.ScriptNode.staticTypeId() ).isSame( s ) )
-		self.assert_( s.n2.commonAncestor( s.n1, Gaffer.ScriptNode.staticTypeId() ).isSame( s ) )
+		self.assert_( s["n1"].commonAncestor( s["n2"], Gaffer.ScriptNode.staticTypeId() ).isSame( s ) )
+		self.assert_( s["n2"].commonAncestor( s["n1"], Gaffer.ScriptNode.staticTypeId() ).isSame( s ) )
 		
 if __name__ == "__main__":
 	unittest.main()

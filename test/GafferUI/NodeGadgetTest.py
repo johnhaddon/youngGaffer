@@ -11,9 +11,9 @@ class NodeGadgetTest( unittest.TestCase ) :
 		g = GafferUI.NodeGadget( n )
 		
 		self.assertEqual( n, g.node() )
-		self.assert_( g.nodule( n.op1 ) )
-		self.assert_( g.nodule( n.op2 ) )
-		self.assert_( g.nodule( n.sum ) )
+		self.assert_( g.nodule( n["op1"] ) )
+		self.assert_( g.nodule( n["op2"] ) )
+		self.assert_( g.nodule( n["sum"] ) )
 	
 if __name__ == "__main__":
 	unittest.main()

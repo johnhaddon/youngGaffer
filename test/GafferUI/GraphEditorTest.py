@@ -9,10 +9,10 @@ class GraphEditorTest( unittest.TestCase ) :
 	
 		s = Gaffer.ScriptNode()
 		
-		s.add1 = Gaffer.AddNode()
-		s.add2 = Gaffer.AddNode()
+		s["add1"] = Gaffer.AddNode()
+		s["add2"] = Gaffer.AddNode()
 		
-		s.add1.op1.setInput( s.add2.sum )
+		s["add1"]["op1"].setInput( s["add2"]["sum"] )
 		
 		g = GafferUI.GraphEditor( s )
 	
