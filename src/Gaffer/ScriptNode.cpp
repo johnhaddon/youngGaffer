@@ -69,3 +69,16 @@ ScriptNode::ScriptEvaluatedSignal &ScriptNode::scriptEvaluatedSignal()
 {
 	return m_scriptEvaluatedSignal;
 }
+
+std::string ScriptNode::serialise( ConstNodeSetPtr filter ) const
+{
+	throw IECore::Exception( "Cannot serialise scripts on a ScriptNode not created in Python." );
+}
+
+void ScriptNode::load()
+{
+}
+
+void ScriptNode::save() const
+{
+}

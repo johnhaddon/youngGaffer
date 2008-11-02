@@ -62,7 +62,20 @@ class ScriptNodeTest( unittest.TestCase ) :
 	def testSelection( self ) :
 	
 		s = Gaffer.ScriptNode()
-		self.assert_( isinstance( s.selection(), Gaffer.NodeSet ) )		
+		self.assert_( isinstance( s.selection(), Gaffer.NodeSet ) )
+		
+	def testSerialisation( self ) :
+	
+		s = Gaffer.ScriptNode()
+		
+		s["a1"] = Gaffer.AddNode( op1=5, op2=6 )
+		s["a2"] = Gaffer.AddNode( op1 = s["a1"]["sum"], op2 = 10 )
+		
+		s2 = Gaffer.ScriptNode()
+		se = s.serialise()
+		print se
+		s2.execute( se )
+		
 						
 if __name__ == "__main__":
 	unittest.main()

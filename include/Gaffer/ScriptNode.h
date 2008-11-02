@@ -84,21 +84,26 @@ class ScriptNode : public Node
 		
 	
 		//! @name Serialisation
-		/// \todo Implement me!!!
+		/// Scripts may be serialised into a string form, which when executed
+		/// in python will rebuild the node network.
+		/// This process is used for both the saving and loading of scripts and
+		/// for the cut and paste mechanism. As serialisation depends on
+		/// python, these methods will throw Exceptions if called on ScriptNodes
+		/// created from C++.
 		////////////////////////////////////////////////////////////////////
 		//@{
-		/// Returns a string which when executed would recreate all the
-		/// specified nodes. If no NodeSet is specified then the current selection
-		/// is used.
-		//std::string serialise( ConstNodeSetPtr nodes=0 );
+		/// Returns a string which when executed will recreate the child nodes
+		/// of this script and the connections between them. A NodeSet may be
+		/// specified to limit the serialised nodes to those contained in the set.
+		virtual std::string serialise( ConstNodeSetPtr filter=0 ) const;
 		/// Returns the plug which specifies the file used in all load and save
 		/// operations.
 		StringPlugPtr fileNamePlug();
 		ConstStringPlugPtr fileNamePlug() const;
 		/// Loads the script specified in the filename plug.
-		//void load();
+		virtual void load();
 		/// Saves the script to the file specified by the filename plug.
-		//void save();
+		virtual void save() const;
 		//@}
 		
 
