@@ -415,6 +415,10 @@ packaging
 			..
 			GafferUI
 
+* here is an interesting technique lose the annoying Gaffer._Gaffer namespace that we have
+
+	http://thread.gmane.org/gmane.comp.python.c++/12955/focus=13004
+
 basic timeline
 ==============
 
