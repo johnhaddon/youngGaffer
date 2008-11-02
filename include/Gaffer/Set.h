@@ -59,7 +59,7 @@ class Set : public IECore::RunTimeTyped
 		/// Removes all members from the set.
 		void clear();
 		/// Returns true if the object is a member of the set.
-		bool contains( typename T::Ptr object ) const;
+		bool contains( typename T::ConstPtr object ) const;
 		/// Returns the number of members of the set.
 		size_t size() const;
 		/// Returns the last object added to the Set, or 0 if the set is

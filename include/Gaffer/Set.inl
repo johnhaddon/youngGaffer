@@ -81,9 +81,12 @@ void Set<T>::clear()
 }
 
 template<typename T>
-bool Set<T>::contains( typename T::Ptr object ) const
+bool Set<T>::contains( typename T::ConstPtr object ) const
 {
-	return m_members.find( object )!=m_members.end();
+	// const cast is ugly but safe and it allows us to present the
+	// appropriate public interface (you should be able to query membership
+	// without non-const access to an object).
+	return m_members.find( const_cast<T *>( object.get() ) )!=m_members.end();
 }
 
 template<typename T>
