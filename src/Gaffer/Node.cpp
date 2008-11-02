@@ -21,6 +21,26 @@ PlugIterator Node::plugsEnd() const
 {
 	return PlugIterator( children().end(), children().end() );
 }
+
+InputPlugIterator Node::inputPlugsBegin() const
+{
+	return InputPlugIterator( children().begin(), children().end() );
+}
+
+InputPlugIterator Node::inputPlugsEnd() const
+{
+	return InputPlugIterator( children().end(), children().end() );
+}
+
+OutputPlugIterator Node::outputPlugsBegin() const
+{
+	return OutputPlugIterator( children().begin(), children().end() );
+}
+
+OutputPlugIterator Node::outputPlugsEnd() const
+{
+	return OutputPlugIterator( children().end(), children().end() );
+}
 		
 Node::UnaryPlugSignal &Node::plugSetSignal()
 {

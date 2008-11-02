@@ -44,6 +44,10 @@ class Node : public GraphComponent
 		//@{
 		PlugIterator plugsBegin() const;
 		PlugIterator plugsEnd() const;
+		InputPlugIterator inputPlugsBegin() const;
+		InputPlugIterator inputPlugsEnd() const;
+		OutputPlugIterator outputPlugsBegin() const;
+		OutputPlugIterator outputPlugsEnd() const;
 		//@}
 		
 		/// @name Plug signals
