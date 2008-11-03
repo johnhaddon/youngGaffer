@@ -69,6 +69,9 @@ class ScriptNode : public Node
 		typedef boost::signal<void ( ScriptNodePtr, const std::string )> ScriptExecutedSignal;
 		typedef boost::signal<void ( ScriptNodePtr, const std::string, PyObject * )> ScriptEvaluatedSignal;
 		/// Runs the specified python script.
+		/// \todo I think we'll need a version of this that takes a python callable.
+		/// We might expose that here or just introduce it in the binding layer for
+		/// use from the python side only.
 		virtual void execute( const std::string &pythonScript );
 		/// This signal is emitted following successful execution of a script.
 		ScriptExecutedSignal &scriptExecutedSignal();
