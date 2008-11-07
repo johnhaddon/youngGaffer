@@ -29,25 +29,46 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 		ScriptNodeWrapper( PyObject *self, const std::string &name=staticTypeName() )
 			:	ScriptNode( name ), IECore::Wrapper<ScriptNode>( self, this )
 		{
+			dict executionGlobals;
+			dict executionLocals;
+			
+			object builtIn = import( "__builtin__" );
+			
+			executionGlobals["__builtins__"] = builtIn;
+			executionGlobals["Gaffer"] = import( "Gaffer" );
+			
+			object selfO( handle<>( borrowed( self ) ) );
+			executionGlobals["addChild"] = selfO.attr( "addChild" );
+			
+			// ideally we'd just store the execution scopes as normal
+			// c++ member variables but we can't as they may hold
+			// references back to ourselves. by storing them in self.__dict__
+			// we allow them to participate in garbage collection, thus breaking
+			// the cycle and allowing the ScriptNode to die.
+			object selfDict = selfO.attr( "__dict__" );
+			selfDict["__executionGlobals"] = executionGlobals;
+			selfDict["__executionLocals"] = executionLocals;
+			
 		}
 
 		virtual ~ScriptNodeWrapper()
 		{
+			std::cerr << "SCRIPTNODE DYING!" << std::endl;
 		}
 
 		virtual void execute( const std::string &pythonScript )
 		{
-			object mainModule = import( "__main__" );
-			object mainNamespace = mainModule.attr( "__dict__" );
-			exec( pythonScript.c_str(), mainNamespace, mainNamespace );
+			//object mainModule = import( "__main__" );
+			//object mainNamespace = mainModule.attr( "__dict__" );
+			exec( pythonScript.c_str(), executionGlobals(), executionLocals() );
 			scriptExecutedSignal()( this, pythonScript );
 		}
 
 		virtual PyObject *evaluate( const std::string &pythonExpression )
 		{
-			object mainModule = import( "__main__" );
-			object mainNamespace = mainModule.attr( "__dict__" );
-			object result = eval( pythonExpression.c_str(), mainNamespace, mainNamespace );
+			//object mainModule = import( "__main__" );
+			//object mainNamespace = mainModule.attr( "__dict__" );
+			object result = eval( pythonExpression.c_str(), executionGlobals(), executionLocals() );
 						
 			scriptEvaluatedSignal()( this, pythonExpression, result.ptr() );
 			
@@ -166,6 +187,19 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 			
 			visited.insert( node );
 		}
+		
+		object executionGlobals()
+		{
+			object selfO( handle<>( borrowed( m_pyObject ) ) );
+			return selfO["__executionGlobals"];
+		}
+		
+		object executionLocals()
+		{
+			object selfO( handle<>( borrowed( m_pyObject ) ) );
+			return selfO["__executionLocals"];
+		}
+		
 };
 
 IE_CORE_DECLAREPTR( ScriptNodeWrapper )

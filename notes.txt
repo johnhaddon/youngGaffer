@@ -309,6 +309,12 @@ lights + shading
 	* force reflectances below a sum of 1?
 * hdri creation tools needed
 * multiple shadow regions and ease of map management very important
+* soft shadows important
+* layered shading and shader authoring important
+	- make a layered shading system based on coshaders
+* texture assignment and management is important
+* texture painting could be important
+* must be able to do lookdev in gaffer, otherwise how will you prepare anything for lighting?
 
 features
 ========
@@ -326,7 +332,10 @@ obvious things not to forget
 * sideways render
 * overscan render (using displaywindow/datawindow difference as an option)
 * playblasting
-
+* file management
+	- where do things go?
+	- when are shadow maps deleted?
+	
 colorspace management
 =====================
 
