@@ -33,12 +33,23 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 			dict executionLocals;
 			
 			object builtIn = import( "__builtin__" );
-			
 			executionGlobals["__builtins__"] = builtIn;
-			executionGlobals["Gaffer"] = import( "Gaffer" );
+			
+			object gafferModule = import( "Gaffer" );
+			executionGlobals["Gaffer"] = gafferModule;
+			
+			object weakMethod = gafferModule.attr( "WeakMethod" );
 			
 			object selfO( handle<>( borrowed( self ) ) );
-			executionGlobals["addChild"] = selfO.attr( "addChild" );
+			
+			executionGlobals["addChild"] = weakMethod( object( selfO.attr( "addChild" ) ) );
+			executionGlobals["getChild"] = weakMethod( object( selfO.attr( "getChild" ) ) );
+			executionGlobals["childAddedSignal"] = weakMethod( object( selfO.attr( "childAddedSignal" ) ) );
+			executionGlobals["childRemovedSignal"] = weakMethod( object( selfO.attr( "childRemovedSignal" ) ) );
+			executionGlobals["selection"] = weakMethod( object( selfO.attr( "selection" ) ) );
+			executionGlobals["serialise"] = weakMethod( object( selfO.attr( "serialise" ) ) );
+			executionGlobals["save"] = weakMethod( object( selfO.attr( "save" ) ) );
+			executionGlobals["load"] = weakMethod( object( selfO.attr( "load" ) ) );
 			
 			// ideally we'd just store the execution scopes as normal
 			// c++ member variables but we can't as they may hold
@@ -53,23 +64,17 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 
 		virtual ~ScriptNodeWrapper()
 		{
-			std::cerr << "SCRIPTNODE DYING!" << std::endl;
 		}
 
 		virtual void execute( const std::string &pythonScript )
 		{
-			//object mainModule = import( "__main__" );
-			//object mainNamespace = mainModule.attr( "__dict__" );
 			exec( pythonScript.c_str(), executionGlobals(), executionLocals() );
 			scriptExecutedSignal()( this, pythonScript );
 		}
 
 		virtual PyObject *evaluate( const std::string &pythonExpression )
 		{
-			//object mainModule = import( "__main__" );
-			//object mainNamespace = mainModule.attr( "__dict__" );
 			object result = eval( pythonExpression.c_str(), executionGlobals(), executionLocals() );
-						
 			scriptEvaluatedSignal()( this, pythonExpression, result.ptr() );
 			
 			// make a reference to keep the result alive - the caller then
@@ -78,7 +83,7 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 			return result.ptr();
 		}
 
-		std::string serialise( ConstNodeSetPtr filter=0 ) const
+		virtual std::string serialise( ConstNodeSetPtr filter=0 ) const
 		{
 			std::set<ConstNodePtr> visited;
 			std::string result;
@@ -191,13 +196,15 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 		object executionGlobals()
 		{
 			object selfO( handle<>( borrowed( m_pyObject ) ) );
-			return selfO["__executionGlobals"];
+			object selfDict = selfO.attr( "__dict__" );
+			return selfDict["__executionGlobals"];
 		}
 		
 		object executionLocals()
 		{
 			object selfO( handle<>( borrowed( m_pyObject ) ) );
-			return selfO["__executionLocals"];
+			object selfDict = selfO.attr( "__dict__" );
+			return selfDict["__executionLocals"];
 		}
 		
 };
@@ -228,6 +235,8 @@ void bindScriptNode()
 		.def( "scriptExecutedSignal", &ScriptNode::scriptExecutedSignal, return_internal_reference<1>() )
 		.def( "scriptEvaluatedSignal", &ScriptNode::scriptEvaluatedSignal, return_internal_reference<1>() )
 		.def( "serialise", &ScriptNode::serialise, serialiseOverloads() )
+		.def( "save", &ScriptNode::save )
+		.def( "load", &ScriptNode::load )
 		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( ScriptNode )
 	;
 	
