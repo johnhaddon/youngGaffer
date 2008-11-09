@@ -2,6 +2,7 @@ import IECore
 import Gaffer
 import GafferUI
 import gtk
+import os
 
 class light( Gaffer.Application ) :
 
@@ -32,7 +33,14 @@ class light( Gaffer.Application ) :
 		application = Gaffer.ApplicationRoot()
 		GafferUI.ScriptWindow.connect( application )
 		
-		application["scripts"]["script1"] = Gaffer.ScriptNode()
+		if len( args["scripts"] ) :
+			for fileName in args["scripts"] :
+				scriptNode = Gaffer.ScriptNode( os.path.splitext( os.path.basename( fileName ) )[0] )
+				scriptNode["fileName"].setValue( os.path.abspath( fileName ) )
+				scriptNode.load()
+				application["scripts"].addChild( scriptNode )
+		else :
+			application["scripts"]["script1"] = Gaffer.ScriptNode()
 		
 		GafferUI.EventLoop.start()
 		
