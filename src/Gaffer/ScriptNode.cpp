@@ -77,8 +77,10 @@ std::string ScriptNode::serialise( ConstNodeSetPtr filter ) const
 
 void ScriptNode::load()
 {
+	throw IECore::Exception( "Cannot load scripts on a ScriptNode not created in Python." );
 }
 
 void ScriptNode::save() const
 {
+	throw IECore::Exception( "Cannot save scripts on a ScriptNode not created in Python." );
 }

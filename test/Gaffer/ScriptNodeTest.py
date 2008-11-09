@@ -76,6 +76,8 @@ class ScriptNodeTest( unittest.TestCase ) :
 		s2 = Gaffer.ScriptNode()
 		se = s.serialise()
 		s2.execute( se )
+
+		self.assert_( s2["a2"]["op1"].getInput().isSame( s2["a1"]["sum"] ) )
 		
 	def testLifetime( self ) :
 	
@@ -87,7 +89,39 @@ class ScriptNodeTest( unittest.TestCase ) :
 		IECore.RefCounted.collectGarbage()
 	
 		self.assertEqual( w(), None )
+	
+	def testSaveAndLoad( self ) :
+	
+		s = Gaffer.ScriptNode()
 		
+		s["a1"] = Gaffer.AddNode( op1=5, op2=6 )
+		s["a2"] = Gaffer.AddNode( op1 = s["a1"]["sum"], op2 = 10 )
+		
+		s["fileName"].setValue( "/tmp/test.gaf" )
+		s.save()
+		
+		s2 = Gaffer.ScriptNode()
+		s2["fileName"].setValue( "/tmp/test.gaf" )
+		s2.load()
+		
+		self.assert_( s2["a2"]["op1"].getInput().isSame( s2["a1"]["sum"] ) )
+
+	def testSaveFailureHandling( self ) :
+	
+		s = Gaffer.ScriptNode()
+		s["a1"] = Gaffer.AddNode( op1=5, op2=6 )
+
+		s["fileName"].setValue( "/this/directory/doesnt/exist" )
+		self.assertRaises( Exception, s.save )
+		
+	def testLoadFailureHandling( self ) :
+	
+		s = Gaffer.ScriptNode()
+		s["a1"] = Gaffer.AddNode( op1=5, op2=6 )
+
+		s["fileName"].setValue( "/this/file/doesnt/exist" )
+		self.assertRaises( Exception, s.load )	
+			
 if __name__ == "__main__":
 	unittest.main()
 	

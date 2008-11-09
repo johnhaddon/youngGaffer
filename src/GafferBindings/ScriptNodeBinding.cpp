@@ -11,6 +11,8 @@
 
 #include "boost/tokenizer.hpp"
 
+#include <fstream>
+
 using namespace boost::python;
 using namespace Gaffer;
 
@@ -102,6 +104,52 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 			}
 			
 			return importStatements + "\n" + result;
+		}
+		
+		/// \todo Clear the script before executing!!
+		/// We need to consider implementing a delete() method first though.
+		virtual void load()
+		{
+			std::string fileName = boost::const_pointer_cast<StringPlug>( fileNamePlug() )->getValue();
+			std::ifstream f( fileName.c_str() );
+			if( !f.good() )
+			{
+				throw IECore::IOException( "Unable to open file \"" + fileName + "\"" );
+			}
+			
+			std::string s;
+			while( !f.eof() )
+			{
+				if( !f.good() )
+				{
+					throw IECore::IOException( "Failed to read from \"" + fileName + "\"" );
+				}
+
+				std::string line;
+				std::getline( f, line );
+				s += line + "\n";
+			}
+						
+			execute( s );
+		}
+		
+		virtual void save() const
+		{
+			std::string s = serialise();
+			
+			std::string fileName = boost::const_pointer_cast<StringPlug>( fileNamePlug() )->getValue();
+			std::ofstream f( fileName.c_str() );
+			if( !f.good() )
+			{
+				throw IECore::IOException( "Unable to open file \"" + fileName + "\"" );
+			}
+			
+			f << s;
+			
+			if( !f.good() )
+			{
+				throw IECore::IOException( "Failed to write to \"" + fileName + "\"" );
+			}
 		}
 		
 	private :

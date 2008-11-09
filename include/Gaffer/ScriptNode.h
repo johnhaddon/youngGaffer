@@ -26,9 +26,6 @@ IE_CORE_DECLAREPTR( ScriptContainer );
 /// \todo fileValid() plug or summink - bool which is true when the file is saved and
 /// false when it's modified in memory. this means attaching a plugchanged callback to every
 /// node.
-/// \todo Save/load (load should just be clear() followed by executeFile().
-/// But as save/load should be a repr() and parse in python they will only be available on scripts
-/// created from python.
 class ScriptNode : public Node
 {
 
@@ -93,6 +90,8 @@ class ScriptNode : public Node
 		/// for the cut and paste mechanism. As serialisation depends on
 		/// python, these methods will throw Exceptions if called on ScriptNodes
 		/// created from C++.
+		/// \todo Very much need to consider how these will work for group
+		/// nodes.
 		////////////////////////////////////////////////////////////////////
 		//@{
 		/// Returns a string which when executed will recreate the child nodes
