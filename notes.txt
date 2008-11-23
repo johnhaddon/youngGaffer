@@ -335,6 +335,7 @@ obvious things not to forget
 * file management
 	- where do things go?
 	- when are shadow maps deleted?
+* should be able to drag and drop and sample colour from anywhere
 	
 colorspace management
 =====================
