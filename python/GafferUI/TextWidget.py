@@ -1,4 +1,5 @@
 import GafferUI
+import pango
 import gtk
 
 class TextWidget( GafferUI.Widget ) :
@@ -25,6 +26,19 @@ class TextWidget( GafferUI.Widget ) :
 			self.__textChangedSignal = GafferUI.WidgetSignal()
 			
 		return self.__textChangedSignal
+
+	## Returns the character index underneath the specified
+	# gtkEvent.
+	def _eventPosition( self, gtkEvent ) :
+	
+		layout = self.gtkWidget().get_layout()
+		offset = self.gtkWidget().get_layout_offsets()
+		cursor = layout.xy_to_index(
+			int( (gtkEvent.x - offset[0]) * pango.SCALE ),
+			int( (gtkEvent.y - offset[1]) * pango.SCALE )
+		)
+
+		return cursor[0] + 1
 
 	def __textChanged( self, gtkEntry ) :
 	
