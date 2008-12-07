@@ -49,6 +49,7 @@ from TextWidget import TextWidget
 from NameWidget import NameWidget
 from NodeSetEditor import NodeSetEditor
 from NodeEditor import NodeEditor
+from PathWidget import PathWidget
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?
