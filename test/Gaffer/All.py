@@ -7,6 +7,8 @@ from NumericPlugTest import *
 from TypedPlugTest import *
 from ScriptNodeTest import *
 from SetTest import *
+from FileSystemPathTest import *
+from PathTest import *
 
 if __name__ == "__main__":
 	unittest.main()
