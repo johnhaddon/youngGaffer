@@ -4,4 +4,5 @@ from AddNode import AddNode
 from WeakMethod import WeakMethod
 from Path import Path
 from FileSystemPath import FileSystemPath
+from BlockedConnection import BlockedConnection
 
