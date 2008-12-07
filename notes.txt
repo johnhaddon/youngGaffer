@@ -306,7 +306,7 @@ lights + shading
 		* nah - intensity value, but with a ui which can express it as exposure if desired
 	* physically accurate?
 	* usual nonsense?
-	* force reflectances below a sum of 1?
+	* force reflectances below a sum of 1? nah
 * hdri creation tools needed
 * multiple shadow regions and ease of map management very important
 * soft shadows important
@@ -315,16 +315,19 @@ lights + shading
 * texture assignment and management is important
 * texture painting could be important
 * must be able to do lookdev in gaffer, otherwise how will you prepare anything for lighting?
+* should be able to get realtime shadows in gl, and drag them around interactively
 
 features
 ========
 
-save all shader parameters with each rendered image
+* save all shader parameters with each rendered image
 	
 	- revert
 	- mix back
 	
-parameter value overlays on saved images?
+* parameter value overlays on saved images?
+
+* override anything in the scene at any point in the tree
 
 obvious things not to forget
 ============================
@@ -335,6 +338,10 @@ obvious things not to forget
 * file management
 	- where do things go?
 	- when are shadow maps deleted?
+	- can we provide a list of all files referenced by a scene?
+		- this get's tricky when filenames are calculated on the fly by procedurals
+		  and shaders
+		  	- perhaps they can have a method to flag resource usage
 * should be able to drag and drop and sample colour from anywhere
 	
 colorspace management
