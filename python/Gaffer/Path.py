@@ -28,6 +28,18 @@ class Path( object ) :
 	
 		raise NotImplementedError
 	
+	## Returns the parent of this path, or None if the path
+	# has no parent (is the root).
+	def parent( self ) :
+	
+		if not self.__items :
+			return None
+			
+		parent = self.copy()
+		del parent[-1]
+		
+		return parent
+	
 	## Returns a list of Path instances representing all
 	# the children of this path. Note that an empty list may
 	# be returned even if isLeaf() is False.
@@ -106,6 +118,20 @@ class Path( object ) :
 	
 		self.__items.__delitem__( index )
 		self.__emitChangedSignal()
+		
+	def __eq__( self, other ) :
+	
+		if not isinstance( other, Path ) :
+			return False
+			
+		return self.__items == other.__items
+		
+	def __ne__( self, other ) :
+	
+		if not isinstance( other, Path ) :
+			return True
+			
+		return self.__items != other.__items	
 			
 	def __checkElement( self, element ) :
 	
