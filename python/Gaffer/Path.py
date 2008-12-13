@@ -23,6 +23,20 @@ class Path( object ) :
 	
 		raise NotImplementedError
 	
+	## If the path is valid, returns a dictionary of information about what
+	# the path points to. If the path is not valid, returns None. The contents
+	# of the dictionary depends on the type of Path. Subclasses should call
+	# their base class' implementation first, and then add additional information
+	# to the dictionary returned.
+	def info( self ) :
+	
+		if not self.isValid() :
+			return None
+			
+		result = {}
+		
+		return result
+	
 	## Returns true if this path can never have child Paths.
 	def isLeaf( self ) :
 	

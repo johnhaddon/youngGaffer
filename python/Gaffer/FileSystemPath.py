@@ -1,5 +1,8 @@
+import os
+import pwd
+import grp
+
 import Gaffer
-import os.path
 
 class FileSystemPath( Gaffer.Path ) :
 
@@ -21,6 +24,23 @@ class FileSystemPath( Gaffer.Path ) :
 	def isLeaf( self ) :
 	
 		return not os.path.isdir( str( self ) )
+	
+	def info( self ) :
+	
+		result = Gaffer.Path.info( self )
+		if result is None :
+			return None
+			
+		s = os.stat( str( self ) )
+		p = pwd.getpwuid( s.st_uid )
+		g = grp.getgrgid( s.st_gid )
+				
+		result["fileSystem:owner"] = p.pw_name
+		result["fileSystem:group"] = g.gr_name
+		result["fileSystem:modificationTime"] = s.st_mtime
+		result["fileSystem:accessTime"] = s.st_atime
+		
+		return result
 	
 	## Returns a list of Path instances representing all
 	# this children of this path. Note that an empty list may
