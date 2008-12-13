@@ -4,17 +4,19 @@ import gtk
 
 ## The ListContainer holds a series of Widgets either in a column or a row.
 # It attempts to provide a list like interface for manipulation of the widgets.
-# \todo Support more list-like operations including slicing and insertion.
+# \todo Support more list-like operations including slicing.
 class ListContainer( ContainerWidget ) :
 
 	Orientation = Enum.create( "Vertical", "Horizontal" )
 
-	def __init__( self, orientation ) :
+	def __init__( self, orientation, homogeneous=False ) :
 	
 		if orientation==self.Orientation.Vertical :
 			ContainerWidget.__init__( self, gtk.VBox() )
 		else :
 			ContainerWidget.__init__( self, gtk.HBox() )
+	
+		self.gtkWidget().set_homogeneous( homogeneous )
 	
 		self.__orientation = orientation
 		self.__widgets = []
@@ -35,6 +37,27 @@ class ListContainer( ContainerWidget ) :
 	def remove( self, child ) :
 	
 		self.removeChild( child )
+	
+	def insert( self, child, index, expand=False ) :
+	
+		l = len( self.__widgets )
+		if index > l :
+			index = l
+	
+		oldParent = child.parent()
+		if oldParent :
+			oldParent.removeChild( child )
+			
+		self.__widgets.insert( index, child )
+		self.gtkWidget().pack_start( child.gtkWidget(), expand )
+		self.gtkWidget().reorder_child( child.gtkWidget(), index )
+	
+	def __setitem__( self, index, child ) :
+	
+		packing = self.gtkWidget().query_child_packing( self.__widgets[index].gtkWidget() )
+		del self[index]
+		self.insert( child, index )
+		self.gtkWidget().set_child_packing( child.gtkWidget(), *packing )
 	
 	def __getitem__( self, index ) :
 	
