@@ -1,4 +1,5 @@
 import Gaffer
+import copy
 
 class Path( object ) :
 
@@ -16,6 +17,8 @@ class Path( object ) :
 					
 				self.__checkElement( p )		
 				self.__items.append( p )
+				
+		self.__filters = set()
 									
 	## Returns true if this path is valid - ie references something
 	# which actually exists.
@@ -59,7 +62,29 @@ class Path( object ) :
 	# be returned even if isLeaf() is False.
 	def children( self ) :
 	
+		c = self._children()
+			
+		for f in self.__filters :
+			c = f.filter( c )
+			
+		return c	
+	
+	## The subclass specific part of children(). This must be implemented
+	# by subclasses to return a list of children - filtering will be applied
+	# in the children() method so can be ignored by the derived classes.	
+	def _children( self ) :
+	
 		raise NotImplementedError
+		
+	def addFilter( self, pathFilter ) :
+	
+		self.__filters.add( pathFilter )
+		self.__emitChangedSignal()
+		
+	def removeFilter( self, pathFilter ) :
+	
+		self.__filters.remove( pathFilter )
+		self.__emitChangedSignal()
 
 	def pathChangedSignal( self ) :
 	
@@ -83,8 +108,11 @@ class Path( object ) :
 	
 	def copy( self ) :
 	
-		return self.__class__( self.__items )
-	
+		c = self.__class__( self.__items )
+		c.__filters = set( self.__filters )
+		
+		return c
+		
 	def append( self, element ) :
 	
 		self.__checkElement( element )

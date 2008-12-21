@@ -14,13 +14,10 @@ class FileSystemPath( Gaffer.Path ) :
 	
 		Gaffer.Path.__init__( self, path )
 									
-	## Returns true if this path is valid - ie references something
-	# which actually exists.
 	def isValid( self ) :
 	
 		return os.path.exists( str( self ) )
 	
-	## Returns true if this path can never have child Paths.
 	def isLeaf( self ) :
 	
 		return not os.path.isdir( str( self ) )
@@ -42,10 +39,7 @@ class FileSystemPath( Gaffer.Path ) :
 		
 		return result
 	
-	## Returns a list of Path instances representing all
-	# this children of this path. Note that an empty list may
-	# be returned even if isLeaf() is False.
-	def children( self ) :
+	def _children( self ) :
 	
 		try :
 			c = os.listdir( str( self ) )

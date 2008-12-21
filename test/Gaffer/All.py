@@ -9,6 +9,7 @@ from ScriptNodeTest import *
 from SetTest import *
 from FileSystemPathTest import *
 from PathTest import *
+from PathFilterTest import *
 
 if __name__ == "__main__":
 	unittest.main()
