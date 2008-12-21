@@ -4,7 +4,7 @@ import gtk
 class EventLoop() :
 
 	## Starts the event loop, passing control to the UI code. This will return when
-	# EventLoop.stop() is called.
+	# EventLoop.stop() is called. This may be called recursively.
 	@staticmethod
 	def start() :
 	
