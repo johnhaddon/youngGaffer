@@ -35,8 +35,46 @@ class ScriptWindow( GafferUI.Window ) :
 		newScript["fileName"].setValue( str( path ) )
 		newScript.load()
 
-		## Add it only if loading succeeded.
 		application["scripts"].addChild( newScript )
+	
+	def __menuFileSave( menu ) :
+	
+		scriptWindow = menu.ancestor( GafferUI.ScriptWindow )
+		script = scriptWindow.getScript()
+		if script["fileName"].getValue() :
+			script.save()
+		else :
+			ScriptWindow.__menuFileSaveAs( menu )
+	
+	def __menuFileSaveAs( menu ) :
+	
+		scriptWindow = menu.ancestor( GafferUI.ScriptWindow )
+		script = scriptWindow.getScript()
+		
+		path = Gaffer.FileSystemPath( script["fileName"].getValue() )
+		path.addFilter( Gaffer.FileNamePathFilter( [ "*.gfr" ] ) )
+		path.addFilter( Gaffer.FileNamePathFilter( [ re.compile( "^[^.].*" ) ], leafOnly=False ) )
+		
+		dialogue = GafferUI.PathChooserDialogue( path, title="Save script", confirmLabel="Save" )
+		path = dialogue.waitForPath()
+		dialogue.close()		
+		
+		if not path :
+			return
+			
+		script["fileName"].setValue( str( path ) )
+		script.save()
+	
+	def __menuFileRevertToSaved( menu ) :
+	
+		scriptWindow = menu.ancestor( GafferUI.ScriptWindow )
+		script = scriptWindow.getScript()
+		
+		if script["fileName"].getValue() :
+			script.load()
+		else :
+			## \todo Warn
+			pass
 		
 	## \todo We need a mechanism for different applications to add
 	# different custom things to this menu and without stomping over each
@@ -49,9 +87,9 @@ class ScriptWindow( GafferUI.Window ) :
 			(	"/File/Open...", { "command" : __menuFileOpen }	),
 			(	"/File/Open Recent", {}	),
 			(	"/File/OpenDivider", { "divider" : True }	),
-			(	"/File/Save", {}	),
-			(	"/File/Save As...", {}	),
-			(	"/File/Revert To Saved", {}	),
+			(	"/File/Save", { "command" : __menuFileSave }	),
+			(	"/File/Save As...", { "command" : __menuFileSaveAs }	),
+			(	"/File/Revert To Saved", { "command" : __menuFileRevertToSaved }	),
 			(	"/File/SaveDivider", { "divider" : True }	),
 			(	"/File/Exit", {}	),
 			
