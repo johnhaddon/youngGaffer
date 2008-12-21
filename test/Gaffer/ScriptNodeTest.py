@@ -97,11 +97,11 @@ class ScriptNodeTest( unittest.TestCase ) :
 		s["a1"] = Gaffer.AddNode( op1=5, op2=6 )
 		s["a2"] = Gaffer.AddNode( op1 = s["a1"]["sum"], op2 = 10 )
 		
-		s["fileName"].setValue( "/tmp/test.gaf" )
+		s["fileName"].setValue( "/tmp/test.gfr" )
 		s.save()
 		
 		s2 = Gaffer.ScriptNode()
-		s2["fileName"].setValue( "/tmp/test.gaf" )
+		s2["fileName"].setValue( "/tmp/test.gfr" )
 		s2.load()
 		
 		self.assert_( s2["a2"]["op1"].getInput().isSame( s2["a1"]["sum"] ) )
