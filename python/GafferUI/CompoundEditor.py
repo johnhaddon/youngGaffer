@@ -30,7 +30,7 @@ class CompoundEditor( GafferUI.EditorWidget ) :
 			m = IECore.MenuDefinition()
 			
 			for c in GafferUI.EditorWidget.types() :
-				m.append( "/" + c, { "command" : IECore.curry( self.__addChildCallback, splittable, c ) } )
+				m.append( "/" + GafferUI.CamelCase.toSpaced( c ), { "command" : IECore.curry( self.__addChildCallback, splittable, c ) } )
 
 			m.append( "/divider", { "divider" : True } )
 
@@ -38,23 +38,23 @@ class CompoundEditor( GafferUI.EditorWidget ) :
 			
 			splittableParent = splittable.parent()
 			if isinstance( splittableParent, GafferUI.Splittable ) :
-				m.append( "removePanel", { "command" : IECore.curry( splittableParent.join, 1 - splittableParent.subPanelIndex( splittable ) ) } )
+				m.append( "Remove Panel", { "command" : IECore.curry( splittableParent.join, 1 - splittableParent.subPanelIndex( splittable ) ) } )
 				removeItemsAdded += 1
 				
 			tabbedContainer = splittable.getChild()
 			if tabbedContainer :
 				currentTab = tabbedContainer.getCurrent()
 				if currentTab :
-					m.append( "/remove " + tabbedContainer.getLabel( currentTab ), { "command" : IECore.curry( tabbedContainer.removeChild, currentTab ) } )
+					m.append( "/Remove " + tabbedContainer.getLabel( currentTab ), { "command" : IECore.curry( tabbedContainer.removeChild, currentTab ) } )
 					removeItemsAdded += 1
 			
 			if removeItemsAdded :		
 				m.append( "/divider2", { "divider" : True } )
 
-			m.append( "/splitLeft", { "command" : IECore.curry( self.__splitCallback, splittable, GafferUI.Splittable.SplitDirection.Vertical, 1 ) } )
-			m.append( "/splitRight", { "command" : IECore.curry( self.__splitCallback, splittable, GafferUI.Splittable.SplitDirection.Vertical, 0 ) } )
-			m.append( "/splitBottom", { "command" : IECore.curry( self.__splitCallback, splittable, GafferUI.Splittable.SplitDirection.Horizontal, 0 ) } )
-			m.append( "/splitTop", { "command" : IECore.curry( self.__splitCallback, splittable, GafferUI.Splittable.SplitDirection.Horizontal, 1 ) } )
+			m.append( "/Split Left", { "command" : IECore.curry( self.__splitCallback, splittable, GafferUI.Splittable.SplitDirection.Vertical, 1 ) } )
+			m.append( "/Split Right", { "command" : IECore.curry( self.__splitCallback, splittable, GafferUI.Splittable.SplitDirection.Vertical, 0 ) } )
+			m.append( "/Split Bottom", { "command" : IECore.curry( self.__splitCallback, splittable, GafferUI.Splittable.SplitDirection.Horizontal, 0 ) } )
+			m.append( "/Split Top", { "command" : IECore.curry( self.__splitCallback, splittable, GafferUI.Splittable.SplitDirection.Horizontal, 1 ) } )
 
 			m = GafferUI.Menu( m )
 			m.popup()
@@ -73,7 +73,7 @@ class CompoundEditor( GafferUI.EditorWidget ) :
 		
 		newEditor = GafferUI.EditorWidget.create( name, self.scriptNode() )
 		tabbedContainer.append( newEditor )
-		tabbedContainer.setLabel( newEditor, name )
+		tabbedContainer.setLabel( newEditor, GafferUI.CamelCase.toSpaced( name ) )
 		
 	def __splitCallback( self, splittable, direction, subPanelIndex ) :
 	
