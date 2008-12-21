@@ -1,7 +1,10 @@
+import re
+
+import gtk
 import IECore
+
 import GafferUI
 import Gaffer
-import gtk
 
 class ScriptWindow( GafferUI.Window ) :
 
@@ -12,7 +15,29 @@ class ScriptWindow( GafferUI.Window ) :
 		
 		newScript = Gaffer.ScriptNode( "script" )
 		application["scripts"].addChild( newScript )
+		
+	def __menuFileOpen( menu ) :
 	
+		path = Gaffer.FileSystemPath( "/" )
+		path.addFilter( Gaffer.FileNamePathFilter( [ "*.gfr" ] ) )
+		path.addFilter( Gaffer.FileNamePathFilter( [ re.compile( "^[^.].*" ) ], leafOnly=False ) )
+		dialogue = GafferUI.PathChooserDialogue( path, title="Open script", confirmLabel="Open" )
+		path = dialogue.waitForPath()
+		dialogue.close()		
+		
+		if not path :
+			return
+		
+		newScript = Gaffer.ScriptNode()
+		scriptWindow = menu.ancestor( GafferUI.ScriptWindow )
+		application = scriptWindow.getScript().ancestor( Gaffer.ApplicationRoot.staticTypeId() )
+
+		newScript["fileName"].setValue( str( path ) )
+		newScript.load()
+
+		## Add it only if loading succeeded.
+		application["scripts"].addChild( newScript )
+		
 	## \todo We need a mechanism for different applications to add
 	# different custom things to this menu and without stomping over each
 	# other too. perhaps all the entries should be added during the config
@@ -21,7 +46,7 @@ class ScriptWindow( GafferUI.Window ) :
 	
 		[
 			(	"/File/New", { "command" : __menuFileNew } ),
-			(	"/File/Open...", {}	),
+			(	"/File/Open...", { "command" : __menuFileOpen }	),
 			(	"/File/Open Recent", {}	),
 			(	"/File/OpenDivider", { "divider" : True }	),
 			(	"/File/Save", {}	),
