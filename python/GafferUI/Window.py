@@ -1,5 +1,7 @@
-from ContainerWidget import ContainerWidget
 import gtk
+
+import GafferUI
+from ContainerWidget import ContainerWidget
 
 class Window( ContainerWidget ) :
 
@@ -11,6 +13,9 @@ class Window( ContainerWidget ) :
 		self.__child = None
 		
 		self.setTitle( title )
+
+		self.__closedSignal = GafferUI.WidgetSignal()
+		self.gtkWidget().connect( "delete-event", self.__deleted )
 		
 	def setTitle( self, title ) :
 	
@@ -44,3 +49,15 @@ class Window( ContainerWidget ) :
 	def getChild( self ) :
 	
 		return self.__child	
+
+	def close( self ) :
+	
+		self.gtkWidget().destroy()
+
+	def closedSignal( self ) :
+	
+		return self.__closedSignal
+	
+	def __deleted( self, gtkWidget, gtkEvent ) :
+	
+		return self.closedSignal()( self )		
