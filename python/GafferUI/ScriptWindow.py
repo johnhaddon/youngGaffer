@@ -108,9 +108,9 @@ class ScriptWindow( GafferUI.Window ) :
 		
 	)
 
-	def __init__( self, script, title="GafferUI.Application" ) :
+	def __init__( self, script ) :
 	
-		GafferUI.Window.__init__( self, title )
+		GafferUI.Window.__init__( self )
 
 		self.__script = script
 		
@@ -132,6 +132,11 @@ class ScriptWindow( GafferUI.Window ) :
 
 		self.gtkWidget().connect( "delete-event", self.__delete )
 
+		self.__scriptPlugSetConnection = script.plugSetSignal().connect( self.__scriptPlugChanged )
+		self.__scriptPlugDirtiedConnection = script.plugDirtiedSignal().connect( self.__scriptPlugChanged )
+	
+		self.__updateTitle()
+
 	## \todo Implement setScript()
 	def getScript( self ) :
 	
@@ -147,6 +152,23 @@ class ScriptWindow( GafferUI.Window ) :
 	
 		if script.isSame( self.__script ) :
 			ScriptWindow.__instances.remove( self )
+
+	def __scriptPlugChanged( self, plug ) :
+	
+		if plug.isSame( self.__script["fileName"] ) :
+			self.__updateTitle()
+	
+	def __updateTitle( self ) :
+	
+		f = self.__script["fileName"].getValue()
+		if not f :
+			f = "untitled"
+			d = ""
+		else :
+			d, n, f = f.rpartition( "/" )
+			d = " - " + d
+			
+		self.setTitle( "Gaffer : %s %s" % ( f, d ) )
 
 	## This function provides the top level functionality for instantiating
 	# the UI. Once called, new ScriptWindows will be instantiated for each
