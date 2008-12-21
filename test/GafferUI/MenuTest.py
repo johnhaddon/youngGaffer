@@ -1,8 +1,9 @@
+import unittest
+
 import IECore
+
 import Gaffer
 import GafferUI
-import IECore
-import unittest
 
 class MenuTest( unittest.TestCase ) :
 

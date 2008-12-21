@@ -1,7 +1,9 @@
+import unittest
+
 import IECore
+
 import Gaffer
 import GafferUI
-import unittest
 
 class GadgetTest( unittest.TestCase ) :
 

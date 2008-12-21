@@ -1,7 +1,9 @@
 import unittest
-import IECore
-import Gaffer
 import gc
+
+import IECore
+
+import Gaffer
 
 class SignalsTest( unittest.TestCase ) :
 

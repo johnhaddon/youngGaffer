@@ -1,6 +1,8 @@
-import IECore
-import Gaffer
 import unittest
+
+import IECore
+
+import Gaffer
 from GafferUI.CamelCase import *
 
 class CamelCaseTest( unittest.TestCase ) :

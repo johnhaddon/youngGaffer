@@ -1,8 +1,10 @@
+import inspect
+
 import gtk
 from IECore import curry
+
 from Widget import Widget
 import CamelCase
-import inspect
 
 ## \todo Decide how this interacts with the other UI components to
 # popup when wanted.

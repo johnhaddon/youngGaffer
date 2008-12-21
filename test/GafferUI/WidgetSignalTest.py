@@ -1,9 +1,11 @@
 import unittest
-import IECore
-import Gaffer
-import GafferUI
 import weakref
 import gc
+
+import IECore
+
+import Gaffer
+import GafferUI
 
 class WidgetSignalTest( unittest.TestCase ) :
 

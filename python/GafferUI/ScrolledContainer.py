@@ -1,5 +1,6 @@
-import GafferUI
 import gtk
+
+import GafferUI
 
 class ScrolledContainer( GafferUI.ContainerWidget ) :
 

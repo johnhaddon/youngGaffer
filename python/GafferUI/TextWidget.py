@@ -1,6 +1,7 @@
-import GafferUI
 import pango
 import gtk
+
+import GafferUI
 
 class TextWidget( GafferUI.Widget ) :
 

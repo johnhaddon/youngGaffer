@@ -1,4 +1,5 @@
 import gtk
+
 from Gaffer import ScriptNode, AddNode
 from GafferUI import EditorWidget, GraphGadget, GadgetWidget
 

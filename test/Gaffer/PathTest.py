@@ -1,5 +1,7 @@
 import unittest
+
 import IECore
+
 import Gaffer
 
 class PathTest( unittest.TestCase ) :

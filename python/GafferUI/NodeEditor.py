@@ -1,6 +1,7 @@
+import gtk
+
 import Gaffer
 import GafferUI
-import gtk
 
 class NodeEditor( GafferUI.NodeSetEditor ) :
 

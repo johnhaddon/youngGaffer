@@ -1,7 +1,7 @@
-import GafferUI
-
 import IECore
 import gtk
+
+import GafferUI
 
 ## \todo Implement an option to float in a new window, and an option to anchor back
 ## \todo Serialisation using __repr__ (requires serialisation of children too) so we can restore layouts from preferences.

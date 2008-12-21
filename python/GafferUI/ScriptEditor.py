@@ -1,5 +1,6 @@
 import gtk
 import IECore
+
 from Gaffer import ScriptNode
 from Menu import Menu
 from Widget import Widget

@@ -1,9 +1,10 @@
-import IECore
-import Gaffer
-import GafferUI
+import unittest
+
 import IECore
 import gtk
-import unittest
+
+import Gaffer
+import GafferUI
 
 class SplittableTest( unittest.TestCase ) :
 

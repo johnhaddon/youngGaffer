@@ -1,9 +1,11 @@
 import unittest
-import IECore
-import Gaffer
-import weakref
 import sys
+import weakref
 import gc
+
+import IECore
+
+import Gaffer
 
 class ScriptNodeTest( unittest.TestCase ) :
 

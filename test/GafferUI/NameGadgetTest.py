@@ -1,6 +1,8 @@
-import IECore
-import Gaffer
 import unittest
+
+import IECore
+
+import Gaffer
 import GafferUI
 
 class NameGadgetTest( unittest.TestCase ) :

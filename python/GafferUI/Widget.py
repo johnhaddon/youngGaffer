@@ -1,4 +1,5 @@
 import weakref
+
 import gtk
 
 ## The Widget class provides a base class for all widgets in GafferUI.

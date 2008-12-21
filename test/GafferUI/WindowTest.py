@@ -1,8 +1,10 @@
+import unittest
+
+import gtk
 import IECore
+
 import Gaffer
 import GafferUI
-import unittest
-import gtk
 
 class TestWidget( GafferUI.Widget ) :
 

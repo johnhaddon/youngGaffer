@@ -1,11 +1,12 @@
 from __future__ import with_statement
-
-import IECore
-import Gaffer
-import GafferUI
-import gtk
 import os
 import glob
+
+import IECore
+import gtk
+
+import Gaffer
+import GafferUI
 
 class PathWidget( GafferUI.TextWidget ) :
 

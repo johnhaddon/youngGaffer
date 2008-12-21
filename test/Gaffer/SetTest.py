@@ -1,8 +1,10 @@
 import unittest
-import IECore
-import Gaffer
 import weakref
 import gc
+
+import IECore
+
+import Gaffer
 
 class SetTest( unittest.TestCase ) :
 

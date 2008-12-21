@@ -1,12 +1,14 @@
-from PlugValueWidget import PlugValueWidget
-from StringPlugValueWidget import StringPlugValueWidget
-from Menu import Menu
-import gtk
 import os.path
 import os
 import glob
+
+import gtk
 import pango
 import IECore
+
+from PlugValueWidget import PlugValueWidget
+from StringPlugValueWidget import StringPlugValueWidget
+from Menu import Menu
 
 ## User docs :
 #

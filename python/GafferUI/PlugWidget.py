@@ -1,8 +1,8 @@
+import gtk
+
 from Widget import Widget
 from PlugValueWidget import PlugValueWidget
 import CamelCase
-
-import gtk
 
 ## \todo Make tooltips work
 ## \todo Useful popup menu on label - connect, disconnect, expressions etc

@@ -1,9 +1,11 @@
-import IECore
-import Gaffer
-import GafferUI
 import unittest
 import weakref
+
+import IECore
 import gtk
+
+import Gaffer
+import GafferUI
 
 class TestWidget( GafferUI.Widget ) :
 

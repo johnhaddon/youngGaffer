@@ -1,5 +1,6 @@
-from ContainerWidget import ContainerWidget
 import gtk
+
+from ContainerWidget import ContainerWidget
 
 class TabbedContainer( ContainerWidget ) :
 

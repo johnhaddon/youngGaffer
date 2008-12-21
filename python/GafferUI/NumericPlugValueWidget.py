@@ -1,7 +1,8 @@
-from PlugValueWidget import PlugValueWidget
-import Gaffer
 import pango
 import gtk
+
+import Gaffer
+from PlugValueWidget import PlugValueWidget
 
 ## User docs :
 #

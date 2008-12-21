@@ -1,9 +1,10 @@
-from Widget import Widget
 import gtk
 import gtk.gtkgl
 from OpenGL.GL import *
 import IECoreGL
 import IECore
+
+from Widget import Widget
 
 ## The GLWidget is a base class for all widgets which wish to draw using OpenGL.
 # Derived classes override the draw() method to achieve this.

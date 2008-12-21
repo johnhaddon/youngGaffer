@@ -1,8 +1,9 @@
+import unittest
+
 import IECore
+
 import Gaffer
 import GafferUI
-import unittest
-import gtk
 
 class EventSignalCombinerTest( unittest.TestCase ) :
 

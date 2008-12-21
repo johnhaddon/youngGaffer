@@ -1,5 +1,4 @@
 import Gaffer
-import copy
 
 class Path( object ) :
 

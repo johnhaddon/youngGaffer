@@ -1,9 +1,10 @@
-from GLWidget import GLWidget
-from _GafferUI import ButtonEvent, ModifiableEvent, ContainerGadget, DragDropEvent
 from OpenGL.GL import *
+import gtk
 import IECore
 import IECoreGL
-import gtk
+
+from GLWidget import GLWidget
+from _GafferUI import ButtonEvent, ModifiableEvent, ContainerGadget, DragDropEvent
 
 ## The GadgetWidget class provides a means of
 # hosting a Gadget within a Widget based interface.

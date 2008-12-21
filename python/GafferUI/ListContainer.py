@@ -1,6 +1,7 @@
-from IECore import Enum
-from ContainerWidget import ContainerWidget
 import gtk
+from IECore import Enum
+
+from ContainerWidget import ContainerWidget
 
 ## The ListContainer holds a series of Widgets either in a column or a row.
 # It attempts to provide a list like interface for manipulation of the widgets.

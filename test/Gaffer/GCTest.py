@@ -1,7 +1,8 @@
-import IECore
 import weakref
 import gc
 import unittest
+
+import IECore
 
 class GCTest( unittest.TestCase ) :
 

@@ -1,10 +1,3 @@
-import weakref
-import new
-
-import IECore
-
-from Path import Path
-
 ## PathFilters are classes which can filter the results
 # of Path.children() methods to provide a masked view of
 # filesystems. Filters are applied to a path using the Path.addFilter()
