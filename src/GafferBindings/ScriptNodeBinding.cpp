@@ -273,7 +273,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( serialiseOverloads, serialise, 0, 1 );
 
 void bindScriptNode()
 {
-	typedef class_<ScriptNode, ScriptNodeWrapperPtr, boost::noncopyable, bases<GraphComponent> > ScriptNodePyClass;
+	typedef class_<ScriptNode, ScriptNodeWrapperPtr, boost::noncopyable, bases<Node> > ScriptNodePyClass;
 
 	scope s = ScriptNodePyClass( "ScriptNode" )
 		.def( init<const std::string &>() )
