@@ -25,7 +25,7 @@ IE_CORE_DECLAREPTR( ScriptContainer );
 /// that the do() and undo() methods don't use execute().
 /// \todo fileValid() plug or summink - bool which is true when the file is saved and
 /// false when it's modified in memory. this means attaching a plugchanged callback to every
-/// node.
+/// node (or having the Node find its parent script and set the value - I think that might be better).
 class ScriptNode : public Node
 {
 
@@ -82,7 +82,6 @@ class ScriptNode : public Node
 		ScriptEvaluatedSignal &scriptEvaluatedSignal();
 		//@}
 		
-	
 		//! @name Serialisation
 		/// Scripts may be serialised into a string form, which when executed
 		/// in python will rebuild the node network.
