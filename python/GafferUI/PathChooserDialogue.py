@@ -13,6 +13,7 @@ class PathChooserDialogue( GafferUI.Dialogue ) :
 		
 		self.__pathChooserWidget = GafferUI.PathChooserWidget( path )
 		self._setWidget( self.__pathChooserWidget )
+		self.__pathChooserSelectedConnection = self.__pathChooserWidget.pathSelectedSignal().connect( self.__pathChooserSelected )
 
 		self.__cancelButton = self._addButton( cancelLabel )
 		self.__cancelButtonConnection = self.__cancelButton.clickedSignal().connect( self.__buttonClicked )
@@ -22,7 +23,7 @@ class PathChooserDialogue( GafferUI.Dialogue ) :
 		self.__pathSelectedSignal = Gaffer.ObjectSignal()
 	
 	## A signal called when a path has been selected. Slots for this signal
-	# should accept a single argument which will be a copy of the selected Path object.	
+	# should accept a single argument which will be the PathChooserDialogue instance.	
 	def pathSelectedSignal( self ) :
 	
 		return self.__pathSelectedSignal
@@ -40,7 +41,11 @@ class PathChooserDialogue( GafferUI.Dialogue ) :
 	def __buttonClicked( self, button ) :
 	
 		if button is self.__confirmButton :
-			self.pathSelectedSignal()( self.__path.copy() )
-			
+			self.pathSelectedSignal()( self )
+	
+	def __pathChooserSelected( self, pathChooser ) :
+	
+		assert( pathChooser is self.__pathChooserWidget )
+		self.__confirmButton.clickedSignal()( self.__confirmButton )	
 		
 	

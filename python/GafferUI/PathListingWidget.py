@@ -5,11 +5,7 @@ import gtk
 
 import GafferUI
 
-
-## \todo Have a set of columns displaying things like file type, size etc. Allow sorting
-# based on these.
-## \todo Implement selection messages.
-# row-activated signal should be sent when a double click occurs on a row.
+## \todo Make columns configurable.
 class PathListingWidget( GafferUI.Widget ) :
 
 	def __init__( self, path ) :
@@ -39,11 +35,20 @@ class PathListingWidget( GafferUI.Widget ) :
 		selection = self.__listView.get_selection()
 		selection.connect( "changed", self.__selectionChanged )
 		
+		self.__listView.connect( "row-activated", self.__rowActivated )
+		
 		self.__path = path
 		self.__pathChangedConnection = self.__path.pathChangedSignal().connect( self.__pathChanged )
 		
 		self.__currentDir = None
 		self.__update()
+	
+		self.__pathSelectedSignal = GafferUI.WidgetSignal()
+	
+	## This signal is emitted when the user double clicks on a leaf path.
+	def pathSelectedSignal( self ) :
+	
+		return self.__pathSelectedSignal
 			
 	def __update( self ) :
 		
@@ -100,6 +105,11 @@ class PathListingWidget( GafferUI.Widget ) :
 		self.__path[:] = newPath[:]
 		
 		print "COMPLETED SELECTION"
+		
+	def __rowActivated( self, treeView, path, column ) :
+	
+		print "ROW ACTIVATED"
+		self.pathSelectedSignal()( self )		
 					
 	def __pathChanged( self, path ) :
 		

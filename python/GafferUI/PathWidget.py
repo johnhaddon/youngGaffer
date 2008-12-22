@@ -22,11 +22,18 @@ class PathWidget( GafferUI.TextWidget ) :
 		
 		self.__textChangedConnection = self.textChangedSignal().connect( self.__textChanged )
 		
-	def __keyPress( self, widget, event ) :
+		self.__pathSelectedSignal = GafferUI.WidgetSignal()
 	
-		# do tab completion
+	def pathSelectedSignal( self ) :
+	
+		return self.__pathSelectedSignal
+		
+	def __keyPress( self, widget, event ) :
+		
 		if event.keyval==65289 :
 
+			# do tab completion
+			
 			position = self.gtkWidget().get_position()
 
 			truncatedPath = self.__path.copy()
@@ -50,8 +57,14 @@ class PathWidget( GafferUI.TextWidget ) :
 				
 				self.gtkWidget().set_position( len( self.getText() ) )
 						
-			return True	
+			return True
+			
+		elif event.keyval==65293 :
 		
+			# return hit
+			self.pathSelectedSignal()( self )
+			return True
+			
 		return False
 		
 	def __buttonPress( self, widget, event ) :
