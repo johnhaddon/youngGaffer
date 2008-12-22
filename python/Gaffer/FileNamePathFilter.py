@@ -36,7 +36,6 @@ class FileNamePathFilter( PathFilter ) :
 					result.append( p )
 				else :
 					for m in self.__matchers :
-						print p[-1]
 						if m.match( p[-1] ) :
 							result.append( p )
 							break
