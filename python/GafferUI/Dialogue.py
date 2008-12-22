@@ -16,6 +16,7 @@ class Dialogue( GafferUI.Window ) :
 		
 		self.setChild( self.__column )
 	
+	## \bug Hitting Ctrl-C during this call doesn't close the app.
 	def waitForButton( self ) :
 	
 		assert( len( self.__buttonRow ) )
