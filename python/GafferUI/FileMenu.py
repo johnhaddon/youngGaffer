@@ -28,7 +28,6 @@ def new( menu ) :
 
 ## A function suitable as the command for a File/Open menu item. It must be invoked from a menu which
 # has a ScriptWindow in its ancestry.
-## \todo If the current script is untitled then replace it rather than make a new window
 def open( menu ) :
 
 	path = Gaffer.FileSystemPath( "/" )
@@ -41,14 +40,21 @@ def open( menu ) :
 	if not path :
 		return
 
-	newScript = Gaffer.ScriptNode()
 	scriptWindow = menu.ancestor( GafferUI.ScriptWindow )
+	currentScript = scriptWindow.getScript()
 	application = scriptWindow.getScript().ancestor( Gaffer.ApplicationRoot.staticTypeId() )
+	
+	## \todo When we have a scriptChanged plug then we can use that rather than count nodes.
+	currentNodes = [ n for n in currentScript.children() if n.isInstanceOf( Gaffer.Node.staticTypeId() ) ]
+	if not currentNodes and not currentScript["fileName"].getValue() :
+		script = currentScript
+	else :	
+		script = Gaffer.ScriptNode()
 
-	newScript["fileName"].setValue( str( path ) )
-	newScript.load()
+	script["fileName"].setValue( str( path ) )
+	script.load()
 
-	application["scripts"].addChild( newScript )
+	application["scripts"].addChild( script )
 
 ## A function suitable as the command for a File/Save menu item. It must be invoked from a menu which
 # has a ScriptWindow in its ancestry.
@@ -59,7 +65,7 @@ def save( menu ) :
 	if script["fileName"].getValue() :
 		script.save()
 	else :
-		ScriptWindow.__menuFileSaveAs( menu )
+		saveAs( menu )
 
 ## A function suitable as the command for a File/Save As menu item. It must be invoked from a menu which
 # has a ScriptWindow in its ancestry.
