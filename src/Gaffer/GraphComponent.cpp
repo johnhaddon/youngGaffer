@@ -96,6 +96,10 @@ bool GraphComponent::acceptsParent( const GraphComponent *potentialParent ) cons
 
 void GraphComponent::addChild( GraphComponentPtr child )
 {
+	if( child->m_parent==this )
+	{
+		return;
+	}
 	if( !acceptsChild( child ) )
 	{
 		string what = boost::str( boost::format( "Parent \"%s\" rejects child \"%s\"." ) % m_name % child->m_name );

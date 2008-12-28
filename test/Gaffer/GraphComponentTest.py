@@ -95,6 +95,27 @@ class GraphComponentTest( unittest.TestCase ) :
 		self.assert_( GraphComponentTest.newParent is None )
 		self.assert_( GraphComponentTest.parenting[0].isSame( parent ) )
 		self.assert_( GraphComponentTest.parenting[1].isSame( child ) )
+	
+	def testReparentingDoesntSignal( self ) :
+	
+		"""Adding a child to a parent who already owns that child should do nothing."""
+		
+		parent = Gaffer.GraphComponent()
+		child = Gaffer.GraphComponent()
+		
+		parent.addChild( child )
+		self.assert_( child.parent().isSame( parent ) )
+		
+		GraphComponentTest.numSignals = 0
+		def f( a, b=None ) :
+			GraphComponentTest.numSignals += 1
+			
+		c1 = child.parentChangedSignal().connect( f )
+		c2 = parent.childAddedSignal().connect( f )
+		
+		parent.addChild( child )	
+		
+		self.assertEqual( GraphComponentTest.numSignals, 0 )
 		
 	def testMany( self ) :
 	
