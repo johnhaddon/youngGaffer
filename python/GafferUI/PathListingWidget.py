@@ -6,6 +6,7 @@ import gtk
 import GafferUI
 
 ## \todo Make columns configurable.
+## \todo Select appropriate row when path represents a file (for instance because it has been entered in the text field manually).
 class PathListingWidget( GafferUI.Widget ) :
 
 	def __init__( self, path ) :
@@ -55,13 +56,9 @@ class PathListingWidget( GafferUI.Widget ) :
 		dirPath = self.__dirPath()
 		if self.__currentDir==dirPath :
 			return
-		
-		print "UPDATE"
-				
+						
 		children = self.__dirPath().children()
-		self.__listView.get_selection().unselect_all()
 		self.__listStore.clear()
-		print "CLEARED"
 		for child in children :
 		
 			info = child.info() or {}
@@ -75,9 +72,8 @@ class PathListingWidget( GafferUI.Widget ) :
 			self.__listStore.set( it, 2, mTime )
 			self.__listStore.set( it, 3, time.ctime( mTime ) )
 		
-		print "ADDED"
 		self.__currentDir = dirPath
-		
+	
 	def __dirPath( self ) :
 	
 		dirPath = self.__path.copy()
@@ -89,30 +85,26 @@ class PathListingWidget( GafferUI.Widget ) :
 	def __selectionChanged( self, selection ) :
 	
 		assert( selection.get_tree_view() is self.__listView )
-		
-		print "SELECTION CHANGED"
-		
-		selectionIter = selection.get_selected()[1]
-		if not selectionIter :
-			return
+						
+		selectedRows = selection.get_selected_rows()[1]
+		if not selectedRows :
+			return True
+			
+		selectionIter = self.__listStore.get_iter( selectedRows[0] )
 
 		selectedName = self.__listStore.get_value( selectionIter, 0 )
-		print "SELECT", selectedName
 			
 		newPath = self.__dirPath()
 		newPath.append( selectedName )
 				
 		self.__path[:] = newPath[:]
-		
-		print "COMPLETED SELECTION"
+				
+		return True
 		
 	def __rowActivated( self, treeView, path, column ) :
 	
-		print "ROW ACTIVATED"
 		self.pathSelectedSignal()( self )		
 					
 	def __pathChanged( self, path ) :
-		
-		print "PATH", self.__path
-		
+				
 		self.__update()
