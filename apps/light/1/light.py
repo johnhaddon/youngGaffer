@@ -30,6 +30,8 @@ class light( Gaffer.Application ) :
 		
 	def doRun( self, args ) :
 	
+		self._executeStartupFiles( [ "ui" ] )
+	
 		application = Gaffer.ApplicationRoot()
 		GafferUI.ScriptWindow.connect( application )
 		

@@ -8,106 +8,6 @@ import Gaffer
 
 class ScriptWindow( GafferUI.Window ) :
 
-	def __menuFileNew( menu ) :
-
-		scriptWindow = menu.ancestor( GafferUI.ScriptWindow )
-		application = scriptWindow.getScript().ancestor( Gaffer.ApplicationRoot.staticTypeId() )
-		
-		newScript = Gaffer.ScriptNode( "script" )
-		application["scripts"].addChild( newScript )
-		
-	def __menuFileOpen( menu ) :
-	
-		path = Gaffer.FileSystemPath( "/" )
-		path.addFilter( Gaffer.FileNamePathFilter( [ "*.gfr" ] ) )
-		path.addFilter( Gaffer.FileNamePathFilter( [ re.compile( "^[^.].*" ) ], leafOnly=False ) )
-		dialogue = GafferUI.PathChooserDialogue( path, title="Open script", confirmLabel="Open" )
-		path = dialogue.waitForPath()
-		dialogue.close()		
-		
-		if not path :
-			return
-		
-		newScript = Gaffer.ScriptNode()
-		scriptWindow = menu.ancestor( GafferUI.ScriptWindow )
-		application = scriptWindow.getScript().ancestor( Gaffer.ApplicationRoot.staticTypeId() )
-
-		newScript["fileName"].setValue( str( path ) )
-		newScript.load()
-
-		application["scripts"].addChild( newScript )
-	
-	def __menuFileSave( menu ) :
-	
-		scriptWindow = menu.ancestor( GafferUI.ScriptWindow )
-		script = scriptWindow.getScript()
-		if script["fileName"].getValue() :
-			script.save()
-		else :
-			ScriptWindow.__menuFileSaveAs( menu )
-	
-	def __menuFileSaveAs( menu ) :
-	
-		scriptWindow = menu.ancestor( GafferUI.ScriptWindow )
-		script = scriptWindow.getScript()
-		
-		path = Gaffer.FileSystemPath( script["fileName"].getValue() )
-		path.addFilter( Gaffer.FileNamePathFilter( [ "*.gfr" ] ) )
-		path.addFilter( Gaffer.FileNamePathFilter( [ re.compile( "^[^.].*" ) ], leafOnly=False ) )
-		
-		dialogue = GafferUI.PathChooserDialogue( path, title="Save script", confirmLabel="Save" )
-		path = dialogue.waitForPath()
-		dialogue.close()		
-		
-		if not path :
-			return
-			
-		script["fileName"].setValue( str( path ) )
-		script.save()
-	
-	def __menuFileRevertToSaved( menu ) :
-	
-		scriptWindow = menu.ancestor( GafferUI.ScriptWindow )
-		script = scriptWindow.getScript()
-		
-		if script["fileName"].getValue() :
-			script.load()
-		else :
-			## \todo Warn
-			pass
-		
-	## \todo We need a mechanism for different applications to add
-	# different custom things to this menu and without stomping over each
-	# other too. perhaps all the entries should be added during the config
-	# loading phase?
-	menuDefinition = IECore.MenuDefinition(
-	
-		[
-			(	"/File/New", { "command" : __menuFileNew } ),
-			(	"/File/Open...", { "command" : __menuFileOpen }	),
-			(	"/File/Open Recent", {}	),
-			(	"/File/OpenDivider", { "divider" : True }	),
-			(	"/File/Save", { "command" : __menuFileSave }	),
-			(	"/File/Save As...", { "command" : __menuFileSaveAs }	),
-			(	"/File/Revert To Saved", { "command" : __menuFileRevertToSaved }	),
-			(	"/File/SaveDivider", { "divider" : True }	),
-			(	"/File/Exit", {}	),
-			
-			(	"/Edit/Undo", {} 	),
-			(	"/Edit/Redo", {} 	),
-			(	"/Edit/UndoDivider", { "divider" : True } 	),
-			(	"/Edit/Cut", {} 	),
-			(	"/Edit/Copy", {} 	),
-			(	"/Edit/Paste", {} 	),
-			(	"/Edit/Delete", {} 	),
-			(	"/Edit/Select All", {} 	),
-
-			(	"/Layout", {} 	),
-			
-		]
-		
-	)
-
 	def __init__( self, script ) :
 	
 		GafferUI.Window.__init__( self )
@@ -117,7 +17,7 @@ class ScriptWindow( GafferUI.Window ) :
 		l = GafferUI.ListContainer( GafferUI.ListContainer.Orientation.Vertical )
 		l.show()
 		
-		m = GafferUI.MenuBar( self.menuDefinition )
+		m = GafferUI.MenuBar( self.menuDefinition() )
 		
 		p = GafferUI.CompoundEditor( self.__script )
 		
@@ -169,6 +69,16 @@ class ScriptWindow( GafferUI.Window ) :
 			d = " - " + d
 			
 		self.setTitle( "Gaffer : %s %s" % ( f, d ) )
+
+	## Returns an IECore.MenuDefinition which is used to define the menu bars for all ScriptWindows.
+	# This can be edited at any time to modify subsequently created ScriptWindows - typically editing
+	# would be done as part of gaffer startup.
+	@staticmethod
+	def menuDefinition() :
+	
+		return ScriptWindow.__menuDefinition
+	
+	__menuDefinition = IECore.MenuDefinition()	
 
 	## This function provides the top level functionality for instantiating
 	# the UI. Once called, new ScriptWindows will be instantiated for each

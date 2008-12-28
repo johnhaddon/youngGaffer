@@ -56,6 +56,7 @@ from PathChooserWidget import PathChooserWidget
 from Button import Button
 from Dialogue import Dialogue
 from PathChooserDialogue import PathChooserDialogue
+import FileMenu
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?
