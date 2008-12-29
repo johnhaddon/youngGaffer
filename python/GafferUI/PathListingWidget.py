@@ -14,7 +14,7 @@ class PathListingWidget( GafferUI.Widget ) :
 	
 		GafferUI.Widget.__init__( self, gtk.EventBox() )
 		
-		self.__scroller = GafferUI.ScrolledContainer()
+		self.__scroller = GafferUI.ScrolledContainer( GafferUI.ScrolledContainer.ScrollMode.Never, GafferUI.ScrolledContainer.ScrollMode.Always )
 		self.gtkWidget().add( self.__scroller.gtkWidget() )
 		
 		self.__listStore = gtk.ListStore( gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_FLOAT, gobject.TYPE_STRING )
