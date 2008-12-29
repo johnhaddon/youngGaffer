@@ -57,9 +57,14 @@ class GadgetWidget( GLWidget ) :
 	
 		self.__gadget = gadget
 		self.__scene = None
-		self.__renderRequestConnection = gadget.renderRequestSignal().connect( self.__renderRequest )
 		
-		bound = self.__gadget.bound()
+		if self.__gadget :
+			self.__renderRequestConnection = self.__gadget.renderRequestSignal().connect( self.__renderRequest )
+			bound = self.__gadget.bound()
+		else :
+			self.__renderRequestConnection = None
+			bound = IECore.Box3f()
+			
 		if not bound.isEmpty() :
 			self.__cameraController.frame( bound )
 		
