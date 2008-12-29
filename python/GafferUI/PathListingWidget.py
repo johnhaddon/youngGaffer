@@ -3,6 +3,7 @@ import time
 import gobject
 import gtk
 
+import Gaffer
 import GafferUI
 
 ## \todo Make columns configurable.
@@ -17,6 +18,7 @@ class PathListingWidget( GafferUI.Widget ) :
 		self.gtkWidget().add( self.__scroller.gtkWidget() )
 		
 		self.__listStore = gtk.ListStore( gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_FLOAT, gobject.TYPE_STRING )
+
 		self.__listView = gtk.TreeView( self.__listStore )
 		self.__listView.get_selection().set_mode( gtk.SELECTION_SINGLE )
 		self.__scroller.setChild( GafferUI.Widget( self.__listView ) )
@@ -52,12 +54,12 @@ class PathListingWidget( GafferUI.Widget ) :
 		return self.__pathSelectedSignal
 			
 	def __update( self ) :
-		
+				
 		dirPath = self.__dirPath()
 		if self.__currentDir==dirPath :
 			return
 						
-		children = self.__dirPath().children()
+		children = dirPath.children()
 		self.__listStore.clear()
 		for child in children :
 		
@@ -73,38 +75,56 @@ class PathListingWidget( GafferUI.Widget ) :
 			self.__listStore.set( it, 3, time.ctime( mTime ) )
 		
 		self.__currentDir = dirPath
-	
+		
 	def __dirPath( self ) :
 	
-		dirPath = self.__path.copy()
-		if dirPath.isLeaf() :
-			del dirPath[-1]
-			
-		return dirPath
+		p = self.__path.copy()
+		if p.isLeaf() :
+			# if it's a leaf then take the parent
+			del p[-1]
+		else :
+			# it's not a leaf.
+			if not p.isValid() :
+				# it's not valid. if we can make it
+				# valid by trimming the last element
+				# then do that
+				pp = p.copy()
+				del pp[-1]
+				if pp.isValid() :
+					p = pp
+			else :
+				# it's valid and not a leaf, and
+				# that's what we want.
+				pass
+						
+		return p
 
 	def __selectionChanged( self, selection ) :
 	
-		assert( selection.get_tree_view() is self.__listView )
-						
 		selectedRows = selection.get_selected_rows()[1]
 		if not selectedRows :
 			return True
 			
 		selectionIter = self.__listStore.get_iter( selectedRows[0] )
-
 		selectedName = self.__listStore.get_value( selectionIter, 0 )
-			
-		newPath = self.__dirPath()
+					
+		newPath = self.__currentDir.copy()
 		newPath.append( selectedName )
-				
-		self.__path[:] = newPath[:]
-				
+		if newPath.isLeaf() :
+			self.__path[:] = newPath[:]
+		
 		return True
 		
 	def __rowActivated( self, treeView, path, column ) :
+		
+		name = self.__listStore.get_value( self.__listStore.get_iter( path ), 0 )		
+		newPath = self.__currentDir.copy()
+		newPath.append( name )
+		self.__path[:] = newPath[:]
 	
-		self.pathSelectedSignal()( self )		
-					
+		if self.__path.isLeaf() :
+			self.pathSelectedSignal()( self )		
+		
 	def __pathChanged( self, path ) :
-				
+		
 		self.__update()
