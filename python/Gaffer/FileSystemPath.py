@@ -20,7 +20,7 @@ class FileSystemPath( Gaffer.Path ) :
 	
 	def isLeaf( self ) :
 	
-		return not os.path.isdir( str( self ) )
+		return self.isValid() and not os.path.isdir( str( self ) )
 	
 	def info( self ) :
 	
