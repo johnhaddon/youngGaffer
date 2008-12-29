@@ -1,6 +1,5 @@
 import re
 
-import gtk
 import IECore
 
 import GafferUI
@@ -30,7 +29,7 @@ class ScriptWindow( GafferUI.Window ) :
 		if scriptParent :
 			self.__scriptRemovedConnection = scriptParent.childRemovedSignal().connect( self.__scriptRemoved )
 
-		self.gtkWidget().connect( "delete-event", self.__delete )
+		self.__closedConnection = self.closedSignal().connect( self.__closed )
 
 		self.__scriptPlugSetConnection = script.plugSetSignal().connect( self.__scriptPlugChanged )
 		self.__scriptPlugDirtiedConnection = script.plugDirtiedSignal().connect( self.__scriptPlugChanged )
@@ -42,7 +41,7 @@ class ScriptWindow( GafferUI.Window ) :
 	
 		return self.__script
 
-	def __delete( self, widget, event ) :
+	def __closed( self, widget ) :
 		
 		scriptParent = self.__script.parent()
 		if scriptParent :
