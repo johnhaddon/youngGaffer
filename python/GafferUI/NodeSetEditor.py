@@ -1,3 +1,4 @@
+import Gaffer
 import GafferUI
 
 class NodeSetEditor( GafferUI.EditorWidget ) :
@@ -7,7 +8,16 @@ class NodeSetEditor( GafferUI.EditorWidget ) :
 		GafferUI.EditorWidget.__init__( self, gtkWidget, scriptNode )
 		
 		self.setNodeSet( scriptNode.selection() )
+	
+	def setScriptNode( self, scriptNode ) :
+	
+		GafferUI.EditorWidget.setScriptNode( self, scriptNode )
 		
+		if scriptNode :
+			self.setNodeSet( scriptNode.selection() )
+		else :
+			self.setNodeSet( Gaffer.NodeSet() )
+			
 	def setNodeSet( self, nodeSet ) :
 	
 		self.__nodeSet = nodeSet
@@ -25,4 +35,6 @@ class NodeSetEditor( GafferUI.EditorWidget ) :
 
 	def __membersChanged( self, set, member ) :
 	
+		## \todo Check that all set members are children of the script
+		
 		self._updateFromSet()

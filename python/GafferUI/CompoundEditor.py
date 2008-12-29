@@ -15,6 +15,12 @@ class CompoundEditor( GafferUI.EditorWidget ) :
 		self.gtkWidget().add( self.__splittable.gtkWidget() )
 		self.__splittable.gtkWidget().connect( "button-press-event", self.__buttonPress )
 
+	def setScriptNode( self, scriptNode ) :
+	
+		GafferUI.EditorWidget.setScriptNode( self, scriptNode )
+		
+		## \todo Propagate set to all child editors
+
 	def __buttonPress( self, gtkWidget, event ) :
 	
 		splittable = GafferUI.Widget.owner( gtkWidget )
@@ -71,7 +77,7 @@ class CompoundEditor( GafferUI.EditorWidget ) :
 			tabbedContainer = GafferUI.TabbedContainer()
 			splittable.setChild( tabbedContainer )
 		
-		newEditor = GafferUI.EditorWidget.create( name, self.scriptNode() )
+		newEditor = GafferUI.EditorWidget.create( name, self.getScriptNode() )
 		tabbedContainer.append( newEditor )
 		tabbedContainer.setLabel( newEditor, GafferUI.CamelCase.toSpaced( name ) )
 		

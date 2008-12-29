@@ -18,9 +18,6 @@ class ScriptEditor( EditorWidget ) :
 		EditorWidget.__init__( self, gtk.VPaned(), scriptNode )
 	
 		self.__paned = self.gtkWidget()
-
-		self.__execConnection = self.scriptNode().scriptExecutedSignal().connect( self.__execSlot )
-		self.__evalConnection = self.scriptNode().scriptEvaluatedSignal().connect( self.__evalSlot )
 			
 		self.gtkOutputBuffer = gtk.TextBuffer()
 		self.gtkOutputWidget = gtk.TextView( self.gtkOutputBuffer )
@@ -39,15 +36,26 @@ class ScriptEditor( EditorWidget ) :
 		self.__paned.pack2( self.gtkInputWidget, True )
 			
 		self.__paned.show_all()
+
+	def setScriptNode( self, scriptNode ) :
 	
+		EditorWidget.setScriptNode( self, scriptNode )
+		
+		if scriptNode :
+			self.__execConnection = self.getScriptNode().scriptExecutedSignal().connect( self.__execSlot )
+			self.__evalConnection = self.getScriptNode().scriptEvaluatedSignal().connect( self.__evalSlot )
+		else :
+			self.__execConnection = None
+			self.__evalConnection = None
+			
 	def __execSlot( self, scriptNode, script ) :
 	
-		assert( scriptNode.isSame( self.scriptNode() ) )
+		assert( scriptNode.isSame( self.getScriptNode() ) )
 		self.gtkOutputBuffer.insert( self.gtkOutputBuffer.get_bounds()[1], script + "\n" )
 
 	def __evalSlot( self, scriptNode, script, result ) :
 	
-		assert( scriptNode.isSame( self.scriptNode() ) )
+		assert( scriptNode.isSame( self.getScriptNode() ) )
 		text = script + "\nResult : " + str( result ) + "\n"
 		self.gtkOutputBuffer.insert( self.gtkOutputBuffer.get_bounds()[1], text )
 		
@@ -68,7 +76,7 @@ class ScriptEditor( EditorWidget ) :
 			
 			try :
 			
-				self.scriptNode().execute( toExecute )
+				self.getScriptNode().execute( toExecute )
 				if not haveSelection :
 					bounds = self.gtkInputBuffer.get_bounds()
 					self.gtkInputBuffer.delete( bounds[0], bounds[1] )

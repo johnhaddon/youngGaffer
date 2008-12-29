@@ -7,18 +7,28 @@ class GraphEditor( EditorWidget ) :
 
 	def __init__( self, scriptNode ) :
 	
-		self.__gadgetWidget = GadgetWidget( GraphGadget( scriptNode ), GadgetWidget.CameraMode.Mode2D )
+		self.__gadgetWidget = GadgetWidget( cameraMode = GadgetWidget.CameraMode.Mode2D )
 		
 		EditorWidget.__init__( self, self.__gadgetWidget.gtkWidget(), scriptNode )
 		
 		self.__gadgetWidget.gtkWidget().connect( "button-press-event", self.makeNode )
+	
+	def setScriptNode( self, scriptNode ) :
+	
+		EditorWidget.setScriptNode( self, scriptNode )
 		
+		gadget = None
+		if scriptNode :
+			gadget = GraphGadget( scriptNode )
+			
+		self.__gadgetWidget.setGadget( gadget )
+			
 	## \todo Remove me
 	def makeNode( self, widget, event ) :
 	
-		if event.state & gtk.gdk.MOD2_MASK :
+		if self.getScriptNode() and event.state & gtk.gdk.MOD2_MASK :
 			print "MAKING NODE!"
-			self.scriptNode().addChild( AddNode() )
+			self.getScriptNode().addChild( AddNode() )
 			return True
 	
 		return False
