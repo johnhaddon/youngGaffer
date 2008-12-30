@@ -29,8 +29,13 @@ class MenuBar( Widget ) :
 				name = pathComponents[0]
 				if not name in done :
 				
+					if len( pathComponents ) > 1 :
+						subMenuDefinition = self.definition.reRooted( "/" + name )
+					else :
+						subMenuDefinition = item.subMenu or IECore.MenuDefinition()
+				
 					menuItem = gtk.MenuItem( label = name )
-					menu = Menu( self.definition.reRooted( "/" + name ) )
+					menu = Menu( subMenuDefinition )
 					menuItem.set_submenu( menu.gtkWidget() )
 					menuItem.show()
 					self.__menuBar.append( menuItem )
