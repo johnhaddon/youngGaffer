@@ -1,5 +1,3 @@
-import gtk
-
 import Gaffer
 import GafferUI
 
