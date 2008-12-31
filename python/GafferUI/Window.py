@@ -48,7 +48,15 @@ class Window( ContainerWidget ) :
 
 	def getChild( self ) :
 	
-		return self.__child	
+		return self.__child
+		
+	def setResizeable( self, resizeable ) :
+	
+		self.gtkWidget().set_property( "resizable", resizeable )
+		
+	def getResizeable( self ) :
+	
+		return self.gtkWidget().get_property( "resizable" )
 
 	def close( self ) :
 	
