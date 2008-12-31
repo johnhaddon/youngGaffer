@@ -1,3 +1,9 @@
+import os
+
+# Setting this environment variable before importing gtkgl prevents "BadColor (invalid Colormap parameter)"
+# errors occurring. I'm not sure what causes these errors or what the error really means.
+os.environ["GDK_GL_NO_STANDARD_COLORMAP"] = "1"
+
 import gtk
 import gtk.gtkgl
 from OpenGL.GL import *
@@ -88,7 +94,7 @@ class GLWidget( Widget ) :
 	__glContextPixmap = None # pixmap which owns the gl context and keeps it alive for us
 	@classmethod	
 	def __glContext( cls ) :
-	
+		
 		if cls.__glContextObject :
 			return cls.__glContextObject
 		
