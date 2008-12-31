@@ -5,11 +5,14 @@ import GafferUI
 
 class TextWidget( GafferUI.Widget ) :
 
-	def __init__( self ) :
+	def __init__( self, text="" ) :
 	
 		GafferUI.Widget.__init__( self, gtk.Entry() )
 
 		self.gtkWidget().connect( "changed", self.__textChanged )
+		self.gtkWidget().connect( "activate", self.__activate )
+
+		self.setText( text )
 
 	def setText( self, text ) :
 	
@@ -27,6 +30,16 @@ class TextWidget( GafferUI.Widget ) :
 			self.__textChangedSignal = GafferUI.WidgetSignal()
 			
 		return self.__textChangedSignal
+
+	## A signal emitted when enter is pressed.
+	def activatedSignal( self ) :
+	
+		try :
+			return self.__activatedSignal
+		except :
+			self.__activatedSignal = GafferUI.WidgetSignal()
+			
+		return self.__activatedSignal
 
 	## Returns the character index underneath the specified
 	# gtkEvent.
@@ -50,3 +63,12 @@ class TextWidget( GafferUI.Widget ) :
 			
 		signal( self )		
 		
+	def __activate( self, gtkEntry ) :
+	
+		try :
+			signal = self.__activatedSignal
+		except :
+			return
+			
+		signal( self )		
+	
