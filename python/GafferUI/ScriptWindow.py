@@ -2,8 +2,8 @@ import re
 
 import IECore
 
-import GafferUI
 import Gaffer
+import GafferUI
 
 class ScriptWindow( GafferUI.Window ) :
 
@@ -13,17 +13,16 @@ class ScriptWindow( GafferUI.Window ) :
 
 		self.__script = script
 		
-		l = GafferUI.ListContainer( GafferUI.ListContainer.Orientation.Vertical )
-		l.show()
+		self.__listContainer = GafferUI.ListContainer( GafferUI.ListContainer.Orientation.Vertical )
+		self.__listContainer.show()
 		
 		m = GafferUI.MenuBar( self.menuDefinition() )
 		
-		p = GafferUI.CompoundEditor( self.__script )
+		self.__listContainer.append( m )
 		
-		l.append( m )
-		l.append( p, expand=True )
-		
-		self.setChild( l )
+		self.setLayout( GafferUI.CompoundEditor() )
+				
+		self.setChild( self.__listContainer )
 		
 		scriptParent = script.parent()
 		if scriptParent :
@@ -36,10 +35,22 @@ class ScriptWindow( GafferUI.Window ) :
 	
 		self.__updateTitle()
 
-	## \todo Implement setScript()
+	## \todo Implement setScript() - and decide on naming so it matches the Editor method (getScriptNode)
 	def getScript( self ) :
 	
 		return self.__script
+
+	def setLayout( self, compoundEditor ) :
+	
+		if len( self.__listContainer ) > 1 :
+			del self.__listContainer[1]
+	
+		compoundEditor.setScriptNode( self.__script )
+		self.__listContainer.append( compoundEditor, expand=True )
+		
+	def getLayout( self ) :
+	
+		return self.__listContainer[1] 
 
 	def __closed( self, widget ) :
 		

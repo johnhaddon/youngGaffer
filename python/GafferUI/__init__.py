@@ -57,6 +57,9 @@ from Button import Button
 from Dialogue import Dialogue
 from PathChooserDialogue import PathChooserDialogue
 import FileMenu
+import Layouts
+import LayoutMenu
+from TextInputDialogue import TextInputDialogue
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?

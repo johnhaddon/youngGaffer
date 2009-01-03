@@ -4,6 +4,7 @@ import GafferUI
 scriptWindowMenu = GafferUI.ScriptWindow.menuDefinition()
 
 GafferUI.FileMenu.appendDefinitions( scriptWindowMenu, prefix="/File" )
+GafferUI.LayoutMenu.appendDefinitions( scriptWindowMenu, name="/Layout" )
 
 ## \todo Make the following menu items in an EditMenu file and append them here
 #			
@@ -15,5 +16,3 @@ GafferUI.FileMenu.appendDefinitions( scriptWindowMenu, prefix="/File" )
 #			(	"/Edit/Paste", {} 	),
 #			(	"/Edit/Delete", {} 	),
 #			(	"/Edit/Select All", {} 	),
-#
-#			(	"/Layout", {} 	),
