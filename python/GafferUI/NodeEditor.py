@@ -5,7 +5,7 @@ import GafferUI
 
 class NodeEditor( GafferUI.NodeSetEditor ) :
 
-	def __init__( self, scriptNode ) :
+	def __init__( self, scriptNode=None ) :
 	
 		GafferUI.NodeSetEditor.__init__( self, gtk.EventBox(), scriptNode )
 		
@@ -14,6 +14,10 @@ class NodeEditor( GafferUI.NodeSetEditor ) :
 		
 		self._updateFromSet()
 		
+	def __repr__( self ) :
+
+		return "GafferUI.NodeEditor()"
+
 	def _updateFromSet( self ) :
 	
 		if not hasattr( self, "_column" ) :

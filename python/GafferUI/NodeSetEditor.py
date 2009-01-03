@@ -6,9 +6,7 @@ class NodeSetEditor( GafferUI.EditorWidget ) :
 	def __init__( self, gtkWidget, scriptNode ) :
 	
 		GafferUI.EditorWidget.__init__( self, gtkWidget, scriptNode )
-		
-		self.setNodeSet( scriptNode.selection() )
-	
+			
 	def setScriptNode( self, scriptNode ) :
 	
 		GafferUI.EditorWidget.setScriptNode( self, scriptNode )

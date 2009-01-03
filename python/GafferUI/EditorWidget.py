@@ -20,6 +20,13 @@ class EditorWidget( Widget ) :
 	
 		return self.__scriptNode
 	
+	## This must be implemented by all derived classes as it used for serialisation of layouts.
+	# It is not expected that the script being edited is also serialised as part of this operation - 
+	# the intention is to create a copy of the layout with no script set yet.
+	def __repr__( self ) :
+	
+		raise NotImplementedError
+	
 	@classmethod
 	def types( cls ) :
 	

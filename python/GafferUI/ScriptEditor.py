@@ -13,7 +13,7 @@ from EditorWidget import EditorWidget
 ## \todo Tab completion and popup help. rlcompleter module should be useful for tab completion.
 class ScriptEditor( EditorWidget ) :
 
-	def __init__( self, scriptNode ) :
+	def __init__( self, scriptNode=None ) :
 	
 		EditorWidget.__init__( self, gtk.VPaned(), scriptNode )
 	
@@ -47,6 +47,10 @@ class ScriptEditor( EditorWidget ) :
 		else :
 			self.__execConnection = None
 			self.__evalConnection = None
+
+	def __repr__( self ) :
+
+		return "GafferUI.ScriptEditor()"
 			
 	def __execSlot( self, scriptNode, script ) :
 	

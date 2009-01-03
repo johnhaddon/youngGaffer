@@ -5,7 +5,7 @@ from GafferUI import EditorWidget, GraphGadget, GadgetWidget
 
 class GraphEditor( EditorWidget ) :
 
-	def __init__( self, scriptNode ) :
+	def __init__( self, scriptNode=None ) :
 	
 		self.__gadgetWidget = GadgetWidget( cameraMode = GadgetWidget.CameraMode.Mode2D )
 		
@@ -23,6 +23,10 @@ class GraphEditor( EditorWidget ) :
 			
 		self.__gadgetWidget.setGadget( gadget )
 			
+	def __repr__( self ) :
+
+		return "GafferUI.GraphEditor()"	
+
 	## \todo Remove me
 	def makeNode( self, widget, event ) :
 	
