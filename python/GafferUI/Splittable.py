@@ -86,8 +86,8 @@ class Splittable( ContainerWidget ) :
 			self.__paned = gtk.VPaned()
 		
 		self.__subPanels = [ Splittable(), Splittable() ]
-		self.__paned.pack1( self.__subPanels[0].gtkWidget() )
-		self.__paned.pack2( self.__subPanels[1].gtkWidget() )
+		self.__paned.pack1( self.__subPanels[0].gtkWidget(), True, True )
+		self.__paned.pack2( self.__subPanels[1].gtkWidget(), True, True )
 			
 		if child :
 			self.__subPanels[childSubPanelIndex].setChild( child )
