@@ -17,6 +17,7 @@ class Splittable( ContainerWidget ) :
 		# an event box is always our top level gtk widget
 		self.__eventBox = self.gtkWidget()
 		self.__eventBox.show()
+		self.__eventBox.connect( "size-allocate", self.__allocate )
 		
 		# when we aren't split we might have a child
 		self.__child = None
@@ -24,6 +25,7 @@ class Splittable( ContainerWidget ) :
 		# when we are split we have a pane and two Panels
 		self.__paned = None
 		self.__subPanels = None
+		self.__positionToSetOnAllocate = None
 		
 	def setChild( self, child ) :
 		
@@ -66,7 +68,7 @@ class Splittable( ContainerWidget ) :
 	
 		return not self.__paned is None
 		
-	def split( self, direction, childSubPanelIndex=0 ) :
+	def split( self, direction, childSubPanelIndex=0, position=0.5 ) :
 
 		assert( not self.isSplit() )
 		
@@ -94,12 +96,43 @@ class Splittable( ContainerWidget ) :
 		
 		self.__paned.show()
 		self.__eventBox.add( self.__paned )
+				
+		self.setSplitPosition( position )
 		
-		if direction==self.SplitDirection.Vertical :
-			self.__paned.set_position( self.__eventBox.allocation.width / 2 )					
+	## Position runs from 0-1, left to right and bottom to top.
+	def setSplitPosition( self, position ) :
+	
+		assert( self.isSplit() )
+		
+		if self.splitDirection()==self.SplitDirection.Vertical :
+			size = self.__eventBox.allocation.width
 		else :
-			self.__paned.set_position( self.__eventBox.allocation.height / 2 )					
+			size = self.__eventBox.allocation.height
+			position = 1 - position
 		
+		if size	> 1 :
+			self.__paned.set_position( int( size * position ) )
+		else :
+			# trying to set the position when we have no allocation
+			# is a bad idea. we always end up with a split line stuck
+			# at the edge. so we store the position and set it later
+			# in __allocate when we have sufficient size. 
+			self.__positionToSetOnAllocate = position
+	
+	def getSplitPosition( self ) :
+	
+		if self.__positionToSetOnAllocate is not None :
+			return self.__positionToSetOnAllocate
+		
+		position = self.__paned.get_position()
+			
+		if self.splitDirection()==self.SplitDirection.Vertical :
+			size = self.__eventBox.allocation.width
+		else :
+			size = self.__eventBox.allocation.height
+			position = size - position
+		
+		return float( position ) / float( size )
 		
 	def splitDirection( self ) :
 	
@@ -148,3 +181,15 @@ class Splittable( ContainerWidget ) :
 		
 		if c :
 			self.__eventBox.add( c )
+
+	def __allocate( self, gtkWidget, allocation ) :
+			
+		if self.__positionToSetOnAllocate is not None :
+					
+			if self.splitDirection()==self.SplitDirection.Vertical :
+				size = allocation.width
+			else :
+				size = allocation.height
+		
+			self.__paned.set_position( int( size * self.__positionToSetOnAllocate ) )
+			self.__positionToSetOnAllocate = None
