@@ -141,6 +141,7 @@ class CompoundEditor( GafferUI.EditorWidget ) :
 			
 		tabbedContainer.append( editor )
 		tabbedContainer.setLabel( editor, GafferUI.CamelCase.toSpaced( editor.__class__.__name__ ) )
+		tabbedContainer.setCurrent( editor )
 		
 	def __split( self, splittable, direction, subPanelIndex ) :
 	
