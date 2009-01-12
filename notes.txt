@@ -22,7 +22,7 @@ undo/redo
 
 	- how/where do we implement this?
 		- what needs to be undoable
-			- create/delete of nodes
+			- create/delete of nodes ??
 			- parent/unparent of nodes
 			- add/remove of dynamic plugs
 			- set/connect of plugs
@@ -213,6 +213,8 @@ plugs/parameters
 		- connectionValid() method
 		
 	- wrap parameters in a ParameterPlug?
+		- no 
+			- a ParameterisedHolder does a mapping like in IECoreMaya
 
 nodes
 
@@ -304,6 +306,7 @@ lights + shading
 	* gobos
 	* specular reflection card for spotlight
 * reflection cards
+* gummi light
 * a light component may be connected to any number of lights
 * how do we do map generation??
 * what units do we use for light intensity, diffuse reflectance etc?
