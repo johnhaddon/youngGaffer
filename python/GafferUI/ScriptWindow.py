@@ -20,7 +20,10 @@ class ScriptWindow( GafferUI.Window ) :
 		
 		self.__listContainer.append( m )
 		
-		self.setLayout( GafferUI.CompoundEditor() )
+		if "Default" in GafferUI.Layouts.names() :
+			self.setLayout( GafferUI.Layouts.create( "Default" ) )
+		else :
+			self.setLayout( GafferUI.CompoundEditor() )
 				
 		self.setChild( self.__listContainer )
 		
