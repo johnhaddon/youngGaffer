@@ -24,8 +24,6 @@ class ScriptEditor( EditorWidget ) :
 		self.gtkOutputWidget.set_editable( False )
 		self.gtkOutputWidget.set_cursor_visible( False )
 		self.gtkOutputWidget.connect( "button-press-event", self.__buttonPress )
-		## \todo set the colors appropriately
-		#self.gtkOutputWidget.modify_base( gtk.STATE_NORMAL, gtk.gdk.Color() )
 		self.__paned.pack1( self.gtkOutputWidget, True )
 		
 		self.gtkInputBuffer = gtk.TextBuffer()
@@ -36,6 +34,9 @@ class ScriptEditor( EditorWidget ) :
 		self.__paned.pack2( self.gtkInputWidget, True )
 			
 		self.__paned.show_all()
+		
+		self._setDefaultColors( self.gtkWidget(), True )
+		self._setColors( self.gtkInputWidget, self.State.Normal, self._textEntryFGColor, self._textEntryBGColor )
 
 	def setScriptNode( self, scriptNode ) :
 	

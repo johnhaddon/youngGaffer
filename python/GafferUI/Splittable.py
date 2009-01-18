@@ -26,7 +26,7 @@ class Splittable( ContainerWidget ) :
 		self.__paned = None
 		self.__subPanels = None
 		self.__positionToSetOnAllocate = None
-		
+				
 	def setChild( self, child ) :
 		
 		assert( not self.isSplit() )
@@ -94,6 +94,8 @@ class Splittable( ContainerWidget ) :
 		if child :
 			self.__subPanels[childSubPanelIndex].setChild( child )
 		
+		Widget._setDefaultColors( self.__paned )
+
 		self.__paned.show()
 		self.__eventBox.add( self.__paned )
 				

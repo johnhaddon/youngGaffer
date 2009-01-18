@@ -99,8 +99,10 @@ class Menu( Widget ) :
 							active = False
 							
 						menuItem.set_sensitive( active )
-						
+				
 				menuItem.show()
 				menu.append( menuItem )
 						
 				done.add( name )
+		
+		Widget._setDefaultColors( menu, True )

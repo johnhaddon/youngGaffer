@@ -25,12 +25,13 @@ class PlugWidget( Widget ) :
 
 		labelEventBox = gtk.EventBox()
 		labelEventBox.add( label )
+		self._setDefaultColors( labelEventBox, True )
 		
 		self.__gtkHBox.pack_start( labelEventBox, False )			
 		self.__gtkHBox.pack_start( self.__valueWidget.gtkWidget() )
 
 		if description :
 			self.__tooltips = gtk.Tooltips()
-			self.__tooltips.set_tip( labelEventBox, "hi there" )
-
+			self.__tooltips.set_tip( labelEventBox, "hi there" )		
+		
 		self.__gtkHBox.show_all()

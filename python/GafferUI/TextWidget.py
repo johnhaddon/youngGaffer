@@ -1,5 +1,6 @@
 import pango
 import gtk
+import IECore
 
 import GafferUI
 
@@ -13,6 +14,8 @@ class TextWidget( GafferUI.Widget ) :
 		self.gtkWidget().connect( "activate", self.__activate )
 
 		self.setText( text )
+
+		self._setColors( self.gtkWidget(), self.State.Normal, self._textEntryFGColor, self._textEntryBGColor )
 
 	def setText( self, text ) :
 	

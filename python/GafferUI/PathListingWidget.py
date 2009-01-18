@@ -34,6 +34,8 @@ class PathListingWidget( GafferUI.Widget ) :
 		userColumn = gtk.TreeViewColumn( "Modification Date", gtk.CellRendererText(), text=3 )
 		userColumn.set_sort_column_id( 2 )
 		self.__listView.append_column( userColumn )
+
+		self._setDefaultColors( self.__listView, True )
 		
 		selection = self.__listView.get_selection()
 		selection.connect( "changed", self.__selectionChanged )

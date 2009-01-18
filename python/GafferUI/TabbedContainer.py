@@ -1,5 +1,7 @@
 import gtk
+import IECore
 
+from Widget import Widget
 from ContainerWidget import ContainerWidget
 
 class TabbedContainer( ContainerWidget ) :
@@ -9,6 +11,11 @@ class TabbedContainer( ContainerWidget ) :
 		ContainerWidget.__init__( self, gtk.Notebook() )
 		
 		self.__widgets = []
+		
+		self._setDefaultColors( self.gtkWidget() )
+		# the backgrounds of tabs which aren't currently being viewed are draw with the selected state for some reason.
+		# we want them to be dark so we set the selected state to a dark colour here.
+		self._setColors( self.gtkWidget(), self.State.Selected, IECore.Color3f( 0 ), IECore.Color3f( 0.04 ), True )
 				
 	def append( self, child ) :
 	
@@ -18,7 +25,7 @@ class TabbedContainer( ContainerWidget ) :
 		
 		self.__widgets.append( child )
 		self.gtkWidget().append_page( child.gtkWidget() )
-		
+				
 	def remove( self,  child ) :
 	
 		self.removeChild( child )
@@ -28,6 +35,9 @@ class TabbedContainer( ContainerWidget ) :
 		assert child in self.__widgets
 	
 		self.gtkWidget().set_tab_label_text( child.gtkWidget(), labelText )
+		
+		labelWidget = self.gtkWidget().get_tab_label( child.gtkWidget() )
+		self._setDefaultColors( labelWidget, True )
 	
 	def getLabel( self, child ) :
 	

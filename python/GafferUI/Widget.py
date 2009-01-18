@@ -1,6 +1,7 @@
 import weakref
 
 import gtk
+import IECore
 
 ## The Widget class provides a base class for all widgets in GafferUI.
 # GafferUI.Widget subclasses are implemented using gtk widgets, but the public API
@@ -20,8 +21,10 @@ class Widget( object ) :
 	
 		self.__gtkWidget = gtkWidget
 		Widget.__gtkWidgetOwners[gtkWidget] = weakref.ref( self )
+		
+		self._setDefaultColors( self.__gtkWidget, False )
 		self.show()
-
+		
 	## \todo Should be setVisible() and getVisible() for consistency
 	# \todo Define whether a widget is shown or not by default and make sure
 	# they all behave that way - right now i'm preferring shown by default.
@@ -83,5 +86,60 @@ class Widget( object ) :
 			gtkWidget = gtkWidget.get_parent()
 			
 		return None
-		
+	
 	__gtkWidgetOwners = weakref.WeakKeyDictionary()
+	
+	State = IECore.Enum.create( "Normal", "Inactive", "Selected" )		
+		
+	@staticmethod
+	def _gtkColor( coreColor ) :
+	
+		c = coreColor.linearToSRGB()
+		return gtk.gdk.Color( int( c[0] * 65535 ), int( c[1] * 65535 ), int( c[2] * 65535 ) )	
+	
+	@staticmethod
+	def _setColors( gtkWidget, state, fg, bg, recurse=False ) :
+	
+		gtkFG = Widget._gtkColor( fg )
+		gtkBG = Widget._gtkColor( bg )
+		
+		if state==Widget.State.Normal :
+			gtkStates = ( gtk.STATE_NORMAL, )
+		elif state==Widget.State.Inactive :
+			gtkStates = ( gtk.STATE_INSENSITIVE, )
+		else :
+			gtkStates = ( gtk.STATE_ACTIVE, gtk.STATE_PRELIGHT, gtk.STATE_SELECTED )
+	
+		for s in gtkStates :
+				
+			gtkWidget.modify_bg( s, gtkBG )
+			gtkWidget.modify_base( s, gtkBG )
+
+			gtkWidget.modify_fg( s, gtkFG )
+			gtkWidget.modify_text( s, gtkFG )
+
+		if recurse and isinstance( gtkWidget, gtk.Container ) :
+			for c in gtkWidget.get_children() :				
+				Widget._setColors( c, state, fg, bg, recurse )
+		
+	_defaultFGColors = [
+		IECore.Color3f( 0.8 ),
+		IECore.Color3f( 0.7 ),
+		IECore.Color3f( 0.9 ),
+	]
+	
+	_defaultBGColors = [
+		IECore.Color3f( 0.07 ),
+		IECore.Color3f( 0.05 ),
+		IECore.Color3f( 0, 0.03, 0.2 ),
+	]
+	
+	_textEntryBGColor = IECore.Color3f( 0.1 )
+	_textEntryFGColor = IECore.Color3f( 1 )
+
+	@staticmethod
+	def _setDefaultColors( gtkWidget, recurse=False ) :
+	
+		Widget._setColors( gtkWidget, Widget.State.Normal, Widget._defaultFGColors[0], Widget._defaultBGColors[0], recurse )
+		Widget._setColors( gtkWidget, Widget.State.Inactive, Widget._defaultFGColors[1], Widget._defaultBGColors[1], recurse )
+		Widget._setColors( gtkWidget, Widget.State.Selected, Widget._defaultFGColors[2], Widget._defaultBGColors[2], recurse )
