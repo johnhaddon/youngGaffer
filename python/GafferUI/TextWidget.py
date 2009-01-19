@@ -15,7 +15,7 @@ class TextWidget( GafferUI.Widget ) :
 
 		self.setText( text )
 
-		self._setColors( self.gtkWidget(), self.State.Normal, self._textEntryFGColor, self._textEntryBGColor )
+		self._setColors( self.gtkWidget(), gtk.STATE_NORMAL, self._textEntryFGColor, self._textEntryBGColor )
 
 	def setText( self, text ) :
 	

@@ -13,10 +13,10 @@ class TabbedContainer( ContainerWidget ) :
 		self.__widgets = []
 		
 		self._setDefaultColors( self.gtkWidget() )
-		# the backgrounds of tabs which aren't currently being viewed are draw with the selected state for some reason.
-		# we want them to be dark so we set the selected state to a dark colour here.
-		self._setColors( self.gtkWidget(), self.State.Selected, IECore.Color3f( 0 ), IECore.Color3f( 0.04 ), True )
-				
+		# the backgrounds of tabs which aren't currently being viewed are drawn with the active state for some reason.
+		# we want them to be dark so we set the active state to a dark colour here.
+		self._setColors( self.gtkWidget(), gtk.STATE_ACTIVE, IECore.Color3f( 0 ), IECore.Color3f( 0.04 ), True )
+						
 	def append( self, child ) :
 	
 		oldParent = child.parent()

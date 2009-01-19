@@ -36,7 +36,7 @@ class ScriptEditor( EditorWidget ) :
 		self.__paned.show_all()
 		
 		self._setDefaultColors( self.gtkWidget(), True )
-		self._setColors( self.gtkInputWidget, self.State.Normal, self._textEntryFGColor, self._textEntryBGColor )
+		self._setColors( self.gtkInputWidget, gtk.STATE_NORMAL, self._textEntryFGColor, self._textEntryBGColor )
 
 	def setScriptNode( self, scriptNode ) :
 	

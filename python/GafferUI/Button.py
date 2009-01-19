@@ -10,6 +10,8 @@ class Button( GafferUI.Widget ) :
 		self.gtkWidget().connect( "clicked", self.__clicked )
 		
 		self.__clickedSignal = GafferUI.WidgetSignal()
+		
+		self._setDefaultColors( self.gtkWidget().get_child() )
 				
 	def clickedSignal( self ) :
 	

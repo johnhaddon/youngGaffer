@@ -30,7 +30,7 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 		self.gtkEntry.connect( "button-press-event", self.__buttonPress )
 		self.gtkEntry.connect( "focus-out-event", self.__focusOut )
 		
-		self._setColors( self.gtkEntry, self.State.Normal, self._textEntryFGColor, self._textEntryBGColor )
+		self._setColors( self.gtkEntry, gtk.STATE_NORMAL, self._textEntryFGColor, self._textEntryBGColor )
 		
 		self.gtkEntry.show()
 		

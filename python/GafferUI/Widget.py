@@ -88,9 +88,7 @@ class Widget( object ) :
 		return None
 	
 	__gtkWidgetOwners = weakref.WeakKeyDictionary()
-	
-	State = IECore.Enum.create( "Normal", "Inactive", "Selected" )		
-		
+			
 	@staticmethod
 	def _gtkColor( coreColor ) :
 	
@@ -98,40 +96,35 @@ class Widget( object ) :
 		return gtk.gdk.Color( int( c[0] * 65535 ), int( c[1] * 65535 ), int( c[2] * 65535 ) )	
 	
 	@staticmethod
-	def _setColors( gtkWidget, state, fg, bg, recurse=False ) :
-	
+	def _setColors( gtkWidget, gtkWidgetState, fg, bg, recurse=False ) :
+		
 		gtkFG = Widget._gtkColor( fg )
 		gtkBG = Widget._gtkColor( bg )
 		
-		if state==Widget.State.Normal :
-			gtkStates = ( gtk.STATE_NORMAL, )
-		elif state==Widget.State.Inactive :
-			gtkStates = ( gtk.STATE_INSENSITIVE, )
-		else :
-			gtkStates = ( gtk.STATE_ACTIVE, gtk.STATE_PRELIGHT, gtk.STATE_SELECTED )
-	
-		for s in gtkStates :
-				
-			gtkWidget.modify_bg( s, gtkBG )
-			gtkWidget.modify_base( s, gtkBG )
+		gtkWidget.modify_bg( gtkWidgetState, gtkBG )
+		gtkWidget.modify_base( gtkWidgetState, gtkBG )
 
-			gtkWidget.modify_fg( s, gtkFG )
-			gtkWidget.modify_text( s, gtkFG )
+		gtkWidget.modify_fg( gtkWidgetState, gtkFG )
+		gtkWidget.modify_text( gtkWidgetState, gtkFG )
 
 		if recurse and isinstance( gtkWidget, gtk.Container ) :
 			for c in gtkWidget.get_children() :				
-				Widget._setColors( c, state, fg, bg, recurse )
+				Widget._setColors( c, gtkWidgetState, fg, bg, recurse )
 		
 	_defaultFGColors = [
 		IECore.Color3f( 0.8 ),
-		IECore.Color3f( 0.7 ),
 		IECore.Color3f( 0.9 ),
+		IECore.Color3f( 0.9 ),
+		IECore.Color3f( 0.9 ),
+		IECore.Color3f( 0.7 ),
 	]
 	
 	_defaultBGColors = [
 		IECore.Color3f( 0.07 ),
-		IECore.Color3f( 0.05 ),
 		IECore.Color3f( 0, 0.03, 0.2 ),
+		IECore.Color3f( 0, 0.03, 0.2 ),
+		IECore.Color3f( 0, 0.03, 0.2 ),
+		IECore.Color3f( 0.05 ),
 	]
 	
 	_textEntryBGColor = IECore.Color3f( 0.1 )
@@ -140,6 +133,5 @@ class Widget( object ) :
 	@staticmethod
 	def _setDefaultColors( gtkWidget, recurse=False ) :
 	
-		Widget._setColors( gtkWidget, Widget.State.Normal, Widget._defaultFGColors[0], Widget._defaultBGColors[0], recurse )
-		Widget._setColors( gtkWidget, Widget.State.Inactive, Widget._defaultFGColors[1], Widget._defaultBGColors[1], recurse )
-		Widget._setColors( gtkWidget, Widget.State.Selected, Widget._defaultFGColors[2], Widget._defaultBGColors[2], recurse )
+		for s in ( gtk.STATE_NORMAL, gtk.STATE_ACTIVE, gtk.STATE_PRELIGHT, gtk.STATE_SELECTED, gtk.STATE_INSENSITIVE ) :
+			Widget._setColors( gtkWidget, s, Widget._defaultFGColors[s], Widget._defaultBGColors[int(s)], recurse )
