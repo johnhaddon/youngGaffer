@@ -41,6 +41,7 @@ class PathListingWidget( GafferUI.Widget ) :
 		selection.connect( "changed", self.__selectionChanged )
 		
 		self.__listView.connect( "row-activated", self.__rowActivated )
+		self.__listView.connect( "realize", self.__listViewRealized )
 		
 		self.__path = path
 		self.__pathChangedConnection = self.__path.pathChangedSignal().connect( self.__pathChanged )
@@ -130,3 +131,17 @@ class PathListingWidget( GafferUI.Widget ) :
 	def __pathChanged( self, path ) :
 		
 		self.__update()
+
+	def __listViewRealized( self, listView ) :
+	
+		# this piece of filth is necessary to set the colors of the headings
+		columns = listView.get_columns()
+		for column in columns :
+		
+			w = gtk.Label( column.get_title() )
+			w.show()
+			column.set_widget( w )
+			while not isinstance( w, gtk.Button ) :
+				w = w.get_parent()
+			
+			self._setDefaultColors( w, True )
