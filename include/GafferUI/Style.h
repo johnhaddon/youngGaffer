@@ -26,7 +26,7 @@ class Style : public IECore::RunTimeTyped
 		/// \todo Not just renderLabel?
 		virtual IECore::FontPtr labelFont() const = 0;
 
-		/// \todo Should all these be taking 3d arguments?
+		/// \todo Should all these be taking 3d arguments - no but 3d counterparts might be good.
 		virtual void renderFrame( IECore::RendererPtr renderer, const Imath::Box2f &frame, float borderWidth ) const = 0;
 		virtual void renderNodule( IECore::RendererPtr renderer, float radius ) const = 0;
 		virtual void renderConnection( IECore::RendererPtr renderer, const Imath::V3f &src, const Imath::V3f &dst ) const = 0;
