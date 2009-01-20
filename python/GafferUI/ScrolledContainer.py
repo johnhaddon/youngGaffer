@@ -4,6 +4,7 @@ import IECore
 
 import GafferUI
 
+## \todo Get the colours of the scrollbars set right.
 class ScrolledContainer( GafferUI.ContainerWidget ) :
 
 	ScrollMode = IECore.Enum.create( "Never", "Always", "Automatic" )
