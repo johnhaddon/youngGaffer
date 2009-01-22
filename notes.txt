@@ -325,6 +325,7 @@ lights + shading
 * must be able to do lookdev in gaffer, otherwise how will you prepare anything for lighting?
 * should be able to get realtime shadows in gl, and drag them around interactively
 * need nice area shadow implementation using depth maps
+* need to be able to constrain lights to things
 
 features
 ========
