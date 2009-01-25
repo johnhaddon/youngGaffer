@@ -10,6 +10,7 @@ from SetTest import *
 from FileSystemPathTest import *
 from PathTest import *
 from PathFilterTest import *
+from UndoTest import *
 
 if __name__ == "__main__":
 	unittest.main()
