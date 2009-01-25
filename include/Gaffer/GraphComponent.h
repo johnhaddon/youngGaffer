@@ -41,6 +41,7 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		/// may have a numeric suffix appended to keep the name unique within
 		/// parent(), and illegal characters may be replaced - for this reason
 		/// the new name is returned.
+		/// \undoable
 		const std::string &setName( const std::string &name );
 		/// Returns the name for this component.
 		const std::string &getName() const;
@@ -51,6 +52,11 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		//@}
 		
 		/// @name Parent-child relationships
+		/// GraphComponents are structured through parent-child
+		/// relationships. A GraphComponent may have many children but may
+		/// have only one parent. Methods are provided whereby children can be added and
+		/// removed from a GraphComponent, and GraphComponents can specify
+		/// which children and/or parents they are willing to accept.
 		////////////////////////////////////////////////////////////////////
 		//@{
 		/// The datatype used internally to store children.
@@ -128,6 +134,9 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		
 	private :
 
+		class SetNameAction;
+		friend class SetNameAction;
+		
 		/// \todo The memory overhead of all these signals may become too great.
 		/// At this point we need to reimplement the signal returning functions to
 		/// create the signals on the fly (and possibly to delete signals when they have

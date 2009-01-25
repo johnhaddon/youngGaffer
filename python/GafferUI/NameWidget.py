@@ -1,3 +1,6 @@
+from __future__ import with_statement
+
+import Gaffer
 import GafferUI
 
 class NameWidget( GafferUI.TextWidget ) :
@@ -42,7 +45,8 @@ class NameWidget( GafferUI.TextWidget ) :
 	
 	def __setName( self ) :
 	
-		self.setText( self.__graphComponent.setName( self.getText() ) )
+		with Gaffer.UndoContext( self.__graphComponent.scriptNode() ) :
+			self.setText( self.__graphComponent.setName( self.getText() ) )
 
 	def __setText( self ) :
 	

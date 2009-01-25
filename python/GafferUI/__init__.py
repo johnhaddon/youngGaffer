@@ -59,6 +59,7 @@ from PathChooserDialogue import PathChooserDialogue
 import FileMenu
 import Layouts
 import LayoutMenu
+import EditMenu
 from TextInputDialogue import TextInputDialogue
 
 ## \todo Move the settings munging somewhere else

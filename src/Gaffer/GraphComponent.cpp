@@ -1,4 +1,5 @@
 #include "Gaffer/GraphComponent.h"
+#include "Gaffer/Action.h"
 
 #include "IECore/Exception.h"
 
@@ -26,6 +27,36 @@ GraphComponent::~GraphComponent()
 		(*it)->parentChangedSignal()( (*it).get() );
 	}	
 }
+
+class GraphComponent::SetNameAction : public Action
+{
+	public :
+		SetNameAction( GraphComponentPtr g, const std::string &name )
+			:	m_g( g ), m_newName( name ), m_oldName( g->getName() )
+		{
+			addToScript( g );
+		}
+		virtual ~SetNameAction()
+		{
+		}
+	protected :
+		virtual void doAction()
+		{
+			Action::doAction();
+			m_g->m_name = m_newName;
+			m_g->nameChangedSignal()( m_g.get() );
+		}
+		virtual void undoAction()
+		{
+			Action::undoAction();
+			m_g->m_name = m_oldName;
+			m_g->nameChangedSignal()( m_g.get() );		
+		}
+	private :
+		GraphComponentPtr m_g;
+		std::string m_newName;
+		std::string m_oldName;
+};
 
 const std::string &GraphComponent::setName( const std::string &name )
 {
@@ -57,8 +88,8 @@ const std::string &GraphComponent::setName( const std::string &name )
 	{
 		return m_name;
 	}
-	m_name = newName;
-	nameChangedSignal()( this );
+	
+	ActionPtr a = new SetNameAction( this, newName );
 	return m_name;
 }
 

@@ -7,3 +7,5 @@ from FileSystemPath import FileSystemPath
 from PathFilter import PathFilter
 from BlockedConnection import BlockedConnection
 from FileNamePathFilter import FileNamePathFilter
+from UndoContext import UndoContext
+

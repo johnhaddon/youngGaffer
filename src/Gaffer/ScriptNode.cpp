@@ -1,12 +1,15 @@
+#include "IECore/Exception.h"
+
 #include "Gaffer/ScriptNode.h"
 #include "Gaffer/TypedPlug.h"
+#include "Gaffer/Action.h"
 
 using namespace Gaffer;
 
 GAFFER_DECLARECONTAINERSPECIALISATIONS( ScriptContainer, ScriptContainerTypeId )
 
 ScriptNode::ScriptNode( const std::string &name )
-	:	Node( name ), m_selection( new NodeSet )
+	:	Node( name ), m_selection( new NodeSet ), m_undoIterator( m_undoList.end() )
 {
 	m_fileNamePlug = new StringPlug( "fileName", Plug::In, "" );
 	addChild( m_fileNamePlug );
@@ -29,6 +32,32 @@ NodeSetPtr ScriptNode::selection()
 ConstNodeSetPtr ScriptNode::selection() const
 {
 	return m_selection;
+}
+
+void ScriptNode::undo()
+{
+	if( m_undoIterator==m_undoList.begin() )
+	{
+		throw IECore::Exception( "Nothing to undo" );
+	}
+	m_undoIterator--;
+	for( ActionVector::reverse_iterator it=(*m_undoIterator)->rbegin(); it!=(*m_undoIterator)->rend(); it++ )
+	{
+		(*it)->undoAction();
+	}
+}
+
+void ScriptNode::redo()
+{
+	if( m_undoIterator==m_undoList.end() )
+	{
+		throw IECore::Exception( "Nothing to redo" );
+	}
+	for( ActionVector::iterator it=(*m_undoIterator)->begin(); it!=(*m_undoIterator)->end(); it++ )
+	{
+		(*it)->doAction();
+	}
+	m_undoIterator++;
 }
 
 StringPlugPtr ScriptNode::fileNamePlug()

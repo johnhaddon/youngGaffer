@@ -10,6 +10,7 @@
 #include "GafferBindings/ApplicationRootBinding.h"
 #include "GafferBindings/SetBinding.h"
 #include "GafferBindings/ObjectSignalBinding.h"
+#include "GafferBindings/UndoContextBinding.h"
 
 using namespace GafferBindings;
 
@@ -27,6 +28,7 @@ BOOST_PYTHON_MODULE( _Gaffer )
 	bindApplicationRoot();
 	bindSet();
 	bindObjectSignal();
+	bindUndoContext();
 	
 	typedef boost::signal<int ( float )> TestSignal;
 	SignalBinder<TestSignal>::bind( "TestSignal" );
