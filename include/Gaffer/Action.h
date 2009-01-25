@@ -1,6 +1,8 @@
 #ifndef GAFFER_ACTION_H
 #define GAFFER_ACTION_H
 
+#include "boost/function.hpp"
+
 #include "IECore/RefCounted.h"
 
 namespace Gaffer
@@ -13,32 +15,26 @@ IE_CORE_FORWARDDECLARE( ScriptNode );
 class Action : public IECore::RefCounted
 {
 
+	public :
+	
+		typedef boost::function<void ()> Function;
+
+		static void enact( GraphComponentPtr subject, const Function &doFn, const Function &undoFn );
+
 	protected :
 
-		Action();
+		Action( const Function &doFn, const Function &undoFn );
 		virtual ~Action();
 		
-		/// Performs the action. Derived classes must
-		/// first call the base class implementation.
-		/// Throws an IECore::Exception if the action has
-		/// already been performed.
-		virtual void doAction() = 0;
-		/// Undoes the action. Derived classes must first
-		/// call the base class implementation. Throws an
-		/// IECore::Exception if the action has not been
-		/// performed yet.	
-		virtual void undoAction() = 0;
+		void doAction();
+		void undoAction();
 
-		/// Should be called at the end of the most
-		/// derived class' constructor. This will call
-		/// doAction() and if necessary add the Action
-		/// to the undo list of the ScriptNode relevant
-		/// to the subject of the action.
-		void addToScript( GraphComponentPtr subject );
-	
 	private :
 
 		friend class ScriptNode;
+
+		Function m_doFn;
+		Function m_undoFn;
 	
 		bool m_done;
 

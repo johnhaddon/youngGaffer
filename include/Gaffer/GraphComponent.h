@@ -74,6 +74,8 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		/// parent doesn't accept the new relationship.
 		/// \todo Add an argument which causes name clashes to be resolved by
 		/// removing the existing child, and use that from the setitem binding.
+		/// \todo Prevent reparenting from changing the ScriptNode ancestor of the child -
+		/// this would seriously mess up the undo system.
 		void addChild( GraphComponentPtr child );
 		/// Removes a child. Throws an Exception if the passed component is
 		/// not a child of this component.
@@ -134,9 +136,8 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		
 	private :
 
-		class SetNameAction;
-		friend class SetNameAction;
-		
+		void setNameInternal( const std::string &name );
+
 		/// \todo The memory overhead of all these signals may become too great.
 		/// At this point we need to reimplement the signal returning functions to
 		/// create the signals on the fly (and possibly to delete signals when they have

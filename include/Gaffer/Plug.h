@@ -94,7 +94,7 @@ class Plug : public GraphComponent
 					
 	private :
 
-		void setInput( PlugPtr input, bool emit );
+		void setInputInternal( PlugPtr input, bool emit );
 
 		Direction m_direction;
 		Plug *m_input;

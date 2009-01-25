@@ -1,9 +1,11 @@
 #include "Gaffer/Plug.h"
 #include "Gaffer/Node.h"
+#include "Gaffer/Action.h"
 
 #include "IECore/Exception.h"
 
 #include "boost/format.hpp"
+#include "boost/bind.hpp"
 
 using namespace Gaffer;
 
@@ -14,10 +16,10 @@ Plug::Plug( const std::string &name, Direction direction )
 
 Plug::~Plug()
 {
-	setInput( 0, false );
+	setInputInternal( 0, false );
 	for( OutputContainer::iterator it=m_outputs.begin(); it!=m_outputs.end(); it++ )
 	{
-		(*it)->setInput( 0 );
+		(*it)->setInputInternal( 0, true );
 	}
 }
 
@@ -60,11 +62,6 @@ bool Plug::acceptsInput( ConstPlugPtr input ) const
 
 void Plug::setInput( PlugPtr input )
 {
-	setInput( input, true );
-}
-
-void Plug::setInput( PlugPtr input, bool emit )
-{
 	if( input.get()==m_input )
 	{
 		return;
@@ -74,6 +71,15 @@ void Plug::setInput( PlugPtr input, bool emit )
 		std::string what = boost::str( boost::format( "Plug \"%s\" rejects input \"%s\"." ) % fullName() % input->fullName() );
 		throw IECore::Exception( what );
 	}
+	Action::enact(
+		this,
+		boost::bind( &Plug::setInputInternal, PlugPtr( this ), input, true ),
+		boost::bind( &Plug::setInputInternal, PlugPtr( this ), PlugPtr( m_input ), true )		
+	);
+}
+
+void Plug::setInputInternal( PlugPtr input, bool emit )
+{
 	if( m_input )
 	{
 		m_input->m_outputs.remove( this );
