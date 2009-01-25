@@ -84,6 +84,7 @@ class Plug : public GraphComponent
 		/// Accepts any input, provided that direction()==In.
 		virtual bool acceptsInput( ConstPlugPtr input ) const;
 		/// Pass input as 0 to remove any existing inputs.
+		/// \undoable
 		virtual void setInput( PlugPtr input );
 		template<typename T>
 		typename T::Ptr getInput();
