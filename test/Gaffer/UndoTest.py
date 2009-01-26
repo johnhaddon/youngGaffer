@@ -51,7 +51,23 @@ class UndoTest( unittest.TestCase ) :
 		
 		s.redo()
 		self.assert_( n1["op1"].getInput().isSame( n2["sum"] ) )
-
+		
+	def testChildren( self ) :
+	
+		s = Gaffer.ScriptNode()
+		n = Gaffer.Node()
+		
+		self.assertEqual( n.parent(), None )
+		
+		with Gaffer.UndoContext( s ) :
+			s["n"] = n
+		self.assert_( n.parent().isSame( s ) )
+		s.undo()
+		self.assertEqual( n.parent(), None )
+		s.redo()
+		self.assert_( n.parent().isSame( s ) )
+		
+		
 if __name__ == "__main__":
 	unittest.main()
 	

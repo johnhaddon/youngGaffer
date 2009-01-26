@@ -48,6 +48,7 @@ class NumericPlug : public ValuePlug
 		T maxValue() const;
 
 		/// Clamps the value between min and max.
+		/// \undoable
 		void setValue( T value );
 		/// Returns the value. This isn't const as it may require a compute
 		/// and therefore a setValue().
@@ -58,6 +59,8 @@ class NumericPlug : public ValuePlug
 		virtual void setFromInput();
 
 	private :
+	
+		void setValueInternal( T value );
 	
 		T m_value;
 		T m_defaultValue;

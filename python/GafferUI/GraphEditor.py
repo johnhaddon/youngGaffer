@@ -1,6 +1,7 @@
+from __future__ import with_statement
 import gtk
 
-from Gaffer import ScriptNode, AddNode
+import Gaffer
 from GafferUI import EditorWidget, GraphGadget, GadgetWidget
 
 class GraphEditor( EditorWidget ) :
@@ -31,8 +32,8 @@ class GraphEditor( EditorWidget ) :
 	def makeNode( self, widget, event ) :
 	
 		if self.getScriptNode() and event.state & gtk.gdk.MOD2_MASK :
-			print "MAKING NODE!"
-			self.getScriptNode().addChild( AddNode() )
+			with Gaffer.UndoContext( self.getScriptNode() ) :
+				self.getScriptNode().addChild( Gaffer.AddNode() )
 			return True
 	
 		return False

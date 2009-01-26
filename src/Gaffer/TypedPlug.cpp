@@ -1,6 +1,9 @@
 #include "Gaffer/TypedPlug.h"
+#include "Gaffer/Action.h"
 
 #include "OpenEXR/ImathFun.h"
+
+#include "boost/bind.hpp"
 
 using namespace Gaffer;
 
@@ -104,9 +107,19 @@ void TypedPlug<T>::setValue( T value )
 {
 	if( value!=m_value || getDirty() )
 	{
-		m_value = value;
-		valueSet();
+		Action::enact(
+			this,
+			boost::bind( &TypedPlug<T>::setValueInternal, Ptr( this ), value ),
+			boost::bind( &TypedPlug<T>::setValueInternal, Ptr( this ), m_value )		
+		);
 	}
+}
+
+template<class T>
+void TypedPlug<T>::setValueInternal( T value )
+{
+	m_value = value;
+	valueSet();
 }
 
 template<class T>

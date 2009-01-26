@@ -123,9 +123,42 @@ void GraphComponent::addChild( GraphComponentPtr child )
 		string what = boost::str( boost::format( "Child \"%s\" rejects parent \"%s\"." ) % child->m_name % m_name );
 		throw Exception( what );
 	}
+
+	if( refCounter() )
+	{
+		// someone is pointing to us, so we may have a ScriptNode ancestor and we should do things
+		// in an undoable way.
+		if( child->m_parent )
+		{
+			Action::enact(
+				this,
+				boost::bind( &GraphComponent::addChildInternal, GraphComponentPtr( this ), child ),
+				boost::bind( &GraphComponent::addChildInternal, GraphComponentPtr( child->m_parent ), child )		
+			);
+		}
+		else
+		{
+			Action::enact(
+				this,
+				boost::bind( &GraphComponent::addChildInternal, GraphComponentPtr( this ), child ),
+				boost::bind( &GraphComponent::removeChildInternal, GraphComponentPtr( this ), child )		
+			);
+		}
+	}
+	else
+	{
+		// we have no references to us - chances are we're in construction still. adding ourselves to an
+		// undo queue is impossible, and creating temporary smart pointers to ourselves (as above) will
+		// cause our destruction before construction completes. just do the work directly.
+		addChildInternal( child );
+	}
+}
+
+void GraphComponent::addChildInternal( GraphComponentPtr child )
+{
 	if( child->m_parent )
 	{
-		child->m_parent->removeChild( child );
+		child->m_parent->removeChildInternal( child );
 	}
 	m_children.push_back( child );
 	child->m_parent = this;
@@ -140,6 +173,15 @@ void GraphComponent::removeChild( GraphComponentPtr child )
 	{
 		throw Exception( "Object is not a child." );
 	}
+	Action::enact(
+		this,
+		boost::bind( &GraphComponent::removeChildInternal, GraphComponentPtr( this ), child ),
+		boost::bind( &GraphComponent::addChildInternal, GraphComponentPtr( this ), child )		
+	);
+}
+
+void GraphComponent::removeChildInternal( GraphComponentPtr child )
+{
 	m_children.remove( child );
 	child->m_parent = 0;
 	childRemovedSignal()( this, child.get() );

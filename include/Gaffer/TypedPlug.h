@@ -41,6 +41,7 @@ class TypedPlug : public ValuePlug
 
 		T defaultValue() const;
 
+		/// \undoable
 		void setValue( T value );
 		/// Returns the value. This isn't const as it may require a compute
 		/// and therefore a setValue().
@@ -51,6 +52,8 @@ class TypedPlug : public ValuePlug
 		virtual void setFromInput();
 
 	private :
+
+		void setValueInternal( T value );
 	
 		T m_value;
 		T m_defaultValue;

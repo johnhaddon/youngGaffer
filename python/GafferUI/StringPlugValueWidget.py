@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 import gtk
 
 import Gaffer
@@ -53,6 +55,7 @@ class StringPlugValueWidget( PlugValueWidget ) :
 	def __setPlugValue( self ) :
 	
 		text = self.gtkEntry.get_text()
-		self.getPlug().setValue( text )
+		with Gaffer.UndoContext( self.getPlug().ancestor( Gaffer.ScriptNode.staticTypeId() ) ) :
+			self.getPlug().setValue( text )
 
 PlugValueWidget.registerType( Gaffer.StringPlug.staticTypeId(), StringPlugValueWidget )

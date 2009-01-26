@@ -1,3 +1,4 @@
+from __future__ import with_statement
 import pango
 import gtk
 
@@ -182,15 +183,17 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 	
 	def __setPlugValue( self ) :
 	
-		text = self.gtkEntry.get_text()
-		if text=="" :
-			# revert to default
-			self.getPlug().setValue( self.getPlug().defaultValue() )
-		
-		try :	
-			self.getPlug().setValue( self.__numericType()( text ) )
-		except :
-			self.updateFromPlug()	
+		with Gaffer.UndoContext( self.getPlug().ancestor( Gaffer.ScriptNode.staticTypeId() ) ) :
+						
+			text = self.gtkEntry.get_text()
+			if text=="" :
+				# revert to default
+				self.getPlug().setValue( self.getPlug().defaultValue() )
+
+			try :	
+				self.getPlug().setValue( self.__numericType()( text ) )
+			except :
+				self.updateFromPlug()	
 	
 	def __decimalPointIndex( self, s ) :
 	
@@ -216,7 +219,8 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 		value += increment * self.__numericType()( pow( 10, powIndex ) )
 			
 		# this triggers a callback and changes the entry text
-		self.getPlug().setValue( value )
+		with Gaffer.UndoContext( self.getPlug().ancestor( Gaffer.ScriptNode.staticTypeId() ) ) :
+			self.getPlug().setValue( value )
 			
 		# adjust the cursor position to be in the same column as before
 		newText = self.gtkEntry.get_text()

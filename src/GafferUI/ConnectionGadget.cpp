@@ -1,3 +1,6 @@
+#include "Gaffer/UndoContext.h"
+#include "Gaffer/ScriptNode.h"
+
 #include "GafferUI/ConnectionGadget.h"
 #include "GafferUI/GraphGadget.h"
 #include "GafferUI/Style.h"
@@ -153,6 +156,7 @@ bool ConnectionGadget::dragEnd( GadgetPtr gadget, const DragDropEvent &event )
 	}
 	if( shouldDisconnect )
 	{
+		Gaffer::UndoContext undoEnabler( m_dstNodule->plug()->ancestor<Gaffer::ScriptNode>() );
 		m_dstNodule->plug()->setInput( 0 );
 	}
 	m_dragEnd = Gaffer::Plug::Invalid;

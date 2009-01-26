@@ -1,6 +1,9 @@
 #include "Gaffer/NumericPlug.h"
+#include "Gaffer/Action.h"
 
 #include "OpenEXR/ImathFun.h"
+
+#include "boost/bind.hpp"
 
 using namespace Gaffer;
 
@@ -121,9 +124,19 @@ void NumericPlug<T>::setValue( T value )
 	T v = Imath::clamp( value, m_minValue, m_maxValue );
 	if( v!=m_value || getDirty() )
 	{
-		m_value = v;
-		valueSet();
+		Action::enact(
+			this,
+			boost::bind( &NumericPlug<T>::setValueInternal, Ptr( this ), value ),
+			boost::bind( &NumericPlug<T>::setValueInternal, Ptr( this ), m_value )		
+		);
 	}
+}
+
+template<class T>
+void NumericPlug<T>::setValueInternal( T value )
+{
+	m_value = value;
+	valueSet();	
 }
 
 template<class T>

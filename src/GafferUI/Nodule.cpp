@@ -2,6 +2,8 @@
 #include "GafferUI/Style.h"
 
 #include "Gaffer/Plug.h"
+#include "Gaffer/UndoContext.h"
+#include "Gaffer/ScriptNode.h"
 
 #include "boost/bind.hpp"
 #include "boost/bind/placeholders.hpp"
@@ -11,7 +13,7 @@ using namespace Imath;
 using namespace std;
 
 Nodule::Nodule( Gaffer::PlugPtr plug )
-	:	Gadget( staticTypeName() ), m_plug( plug )
+	:	Gadget( staticTypeName() ), m_dragging( false ), m_plug( plug )
 {
 	buttonPressSignal().connect( boost::bind( &Nodule::buttonPress, this, ::_1,  ::_2 ) );
 	dragBeginSignal().connect( boost::bind( &Nodule::dragBegin, this, ::_1, ::_2 ) );
@@ -101,7 +103,10 @@ bool Nodule::drop( GadgetPtr gadget, const DragDropEvent &event )
 				input = plug;
 				output = m_plug;
 			}
-			input->setInput( output );
+			{
+				Gaffer::UndoContext undoEnabler( input->ancestor<Gaffer::ScriptNode>() );
+				input->setInput( output );
+			}
 			return true;
 		}
 	}

@@ -76,10 +76,12 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		/// removing the existing child, and use that from the setitem binding.
 		/// \todo Prevent reparenting from changing the ScriptNode ancestor of the child -
 		/// this would seriously mess up the undo system.
+		/// \undoable
 		void addChild( GraphComponentPtr child );
 		/// Removes a child. Throws an Exception if the passed component is
 		/// not a child of this component.
 		/// \todo Do we need acceptsRemoval()?
+		/// \undoable
 		void removeChild( GraphComponentPtr child );
 		/// Get a child by name, performing a runTimeCast to T.
 		template<typename T>
@@ -137,6 +139,8 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 	private :
 
 		void setNameInternal( const std::string &name );
+		void addChildInternal( GraphComponentPtr child );
+		void removeChildInternal( GraphComponentPtr child );
 
 		/// \todo The memory overhead of all these signals may become too great.
 		/// At this point we need to reimplement the signal returning functions to
