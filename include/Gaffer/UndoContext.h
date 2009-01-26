@@ -20,6 +20,8 @@ class UndoContext
 			Disabled
 		};
 
+		/// Script can be 0, in which case the subsequent actions
+		/// will not be undoable.
 		UndoContext( ScriptNodePtr script, State state=Enabled );
 		~UndoContext();
 
