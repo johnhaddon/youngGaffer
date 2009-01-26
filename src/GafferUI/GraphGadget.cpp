@@ -69,7 +69,15 @@ void GraphGadget::childAdded( GraphComponent *parent, GraphComponent *child )
 
 void GraphGadget::childRemoved( GraphComponent *parent, GraphComponent *child )
 {
-	
+	Gaffer::Node *node = IECore::runTimeCast<Gaffer::Node>( child );
+	if( node )
+	{
+		NodeGadget *g = nodeGadget( node );
+		if( g )
+		{
+			removeChild( g );
+		}
+	}
 }
 
 void GraphGadget::inputChanged( Gaffer::PlugPtr dstPlug )
