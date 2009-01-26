@@ -31,7 +31,7 @@ IE_CORE_FORWARDDECLARE( Node )
 ///		- is this a problem?
 ///
 /// let's not have DoublePlug or DoubleVectorPlug
-///		- keep all real types as float
+///		- keep all real types as float ?? really?? why not use double if we use only one type?
 ///		- and all integers as int? - except for maybe UIntVectorData?
 ///
 /// CompoundPlug with dynamic addition/removal of plugs? that would be useful for lots of stuff?
