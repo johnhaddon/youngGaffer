@@ -11,25 +11,6 @@ namespace Gaffer
 IE_CORE_FORWARDDECLARE( Plug )
 IE_CORE_FORWARDDECLARE( Node )
 
-/// CompoundPlug mapping onto CompoundParameter? or just ui groupings independent of plugs?
-/// ParameterPlug<ParameterType> subclasses.
-///
-///		- but - if we want connections into the components of vector and color plugs then
-///				we'll have to not wrap V3fParameter but instead use a Compound of FloatPlugs
-///					-it'd be nice to have getValue() for a V3fPlug return V3fData and not CompoundData though.
-///						-what to do?
-///		- so - shall we abandon Parameters?
-///			 - or have a mapping layer so we can have OpHolderNode?
-///			 - or use them where appropriate?
-///				- they do implement a lot of useful validation logic already
-///
-///		- either way we should complete the Plug interface before worrying
-///
-/// memory usage
-///
-///		- IntPlug storing IntData rather than int has some overhead.
-///		- is this a problem?
-///
 /// let's not have DoublePlug or DoubleVectorPlug
 ///		- keep all real types as float ?? really?? why not use double if we use only one type?
 ///		- and all integers as int? - except for maybe UIntVectorData?
