@@ -294,6 +294,8 @@ final render layer
 
 norman lighting layer?
 
+funky indirect framebuffer?
+
 lights + shading
 ================
 
