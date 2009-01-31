@@ -202,7 +202,7 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 			
 			/// \todo We'll have a problem when we add CompoundPlugs, as we can't pass something.something
 			/// names as keyword arguments to the constructors. perhaps we'll have to pass a dictionary mapping
-			/// from plug names to plug values instead.
+			/// from plug names to plug values instead. or pass a tuple of values - one per child?
 			for( InputPlugIterator pIt=node->inputPlugsBegin(); pIt!=pIt.end(); pIt++ )
 			{
 				PlugPtr plug = *pIt;
