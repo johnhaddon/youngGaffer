@@ -23,7 +23,12 @@ class Menu( Widget ) :
 		# time the menu is shown
 		self.hide()
 		
-	def popup( self ) :
+	## Displays the menu at the current pointer position, and attached to
+	# an optional parent.
+	def popup( self, parent=None ) :
+	
+		if parent :
+			self.__menu.attach_to_widget( parent.gtkWidget(), None )
 	
 		event = gtk.get_current_event()
 		self.__menu.popup( None, None, None, event.button, event.time )
