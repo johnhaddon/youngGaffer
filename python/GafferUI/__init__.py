@@ -60,6 +60,7 @@ import FileMenu
 import Layouts
 import LayoutMenu
 import EditMenu
+import NodeMenu
 from TextInputDialogue import TextInputDialogue
 
 ## \todo Move the settings munging somewhere else

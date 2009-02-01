@@ -2,6 +2,7 @@ from __future__ import with_statement
 import gtk
 
 import Gaffer
+import GafferUI
 from GafferUI import EditorWidget, GraphGadget, GadgetWidget
 
 class GraphEditor( EditorWidget ) :
@@ -12,7 +13,7 @@ class GraphEditor( EditorWidget ) :
 		
 		EditorWidget.__init__( self, self.__gadgetWidget.gtkWidget(), scriptNode )
 		
-		self.__gadgetWidget.gtkWidget().connect( "button-press-event", self.makeNode )
+		self.__gadgetWidget.gtkWidget().connect( "button-press-event", self.__buttonPress )
 	
 	def setScriptNode( self, scriptNode ) :
 	
@@ -28,12 +29,15 @@ class GraphEditor( EditorWidget ) :
 
 		return "GafferUI.GraphEditor()"	
 
-	## \todo Remove me
-	def makeNode( self, widget, event ) :
-	
-		if self.getScriptNode() and event.state & gtk.gdk.MOD2_MASK :
-			with Gaffer.UndoContext( self.getScriptNode() ) :
-				self.getScriptNode().addChild( Gaffer.AddNode() )
+	def __buttonPress( self, widget, event ) :
+		
+		if event.button==3 :
+			
+			# right click
+			
+			self.__m = GafferUI.Menu( GafferUI.NodeMenu.definition() )
+			self.__m.popup( self )
+						
 			return True
 	
 		return False
