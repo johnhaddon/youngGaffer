@@ -5,9 +5,10 @@
 
 using namespace Gaffer;
 
-ValuePlug::ValuePlug( const std::string &name, Direction direction )
-	:	Plug( name, direction ), m_dirty( false )
+ValuePlug::ValuePlug( const std::string &name, Direction direction, unsigned flags, PlugPtr input )
+	:	Plug( name, direction, flags, 0 ), m_dirty( false )
 {
+	setInput( input );
 }
 
 ValuePlug::~ValuePlug()

@@ -216,20 +216,28 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 					}
 				}
 				
-				if( connect )
+				if( !plug->getFlags( Plug::Dynamic ) )
 				{
-					serialiseNode( result, srcPlug->node(), filter, visited, moduleDependencies );
-					s += "\t" + plug->getName() + " = " + srcPlug->node()->getName() + "[\"" + srcPlug->getName() + "\"],\n";
+					// we can just serialise the connection/value				
+					if( connect )
+					{
+						serialiseNode( result, srcPlug->node(), filter, visited, moduleDependencies );
+						s += "\t" + plug->getName() + " = " + srcPlug->node()->getName() + "[\"" + srcPlug->getName() + "\"],\n";
+					}
+					else
+					{
+						if( plug->isInstanceOf( ValuePlug::staticTypeId() ) )
+						{
+							object pythonPlug( plug );
+							object pythonValue = pythonPlug.attr( "getValue" )();
+							std::string value = extract<std::string>( pythonValue.attr( "__repr__" )() );
+					 		s += "\t" + plug->getName() + " = " + value + ",\n";
+						}
+					}
 				}
 				else
 				{
-					if( plug->isInstanceOf( ValuePlug::staticTypeId() ) )
-					{
-						object pythonPlug( plug );
-						object pythonValue = pythonPlug.attr( "getValue" )();
-						std::string value = extract<std::string>( pythonValue.attr( "__repr__" )() );
-					 	s += "\t" + plug->getName() + " = " + value + ",\n";
-					}
+					// we need to serialise the whole plug
 				}
 			}
 			

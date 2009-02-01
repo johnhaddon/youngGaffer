@@ -75,14 +75,17 @@ NumericPlug<T>::NumericPlug(
 	Direction direction,
 	T defaultValue,
 	T minValue,
-	T maxValue
+	T maxValue,
+	unsigned flags,
+	PlugPtr input
 )
-	:	ValuePlug( name, direction ),
+	:	ValuePlug( name, direction, flags, 0 ),
 		m_value( defaultValue ),
 		m_defaultValue( defaultValue ),
 		m_minValue( minValue ),
 		m_maxValue( maxValue )
 {
+	setInput( input );
 }
 
 template<class T>

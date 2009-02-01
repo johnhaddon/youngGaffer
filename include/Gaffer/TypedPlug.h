@@ -19,7 +19,9 @@ class TypedPlug : public ValuePlug
 		TypedPlug(
 			const std::string &name = staticTypeName(),
 			Direction direction=In,
-			T defaultValue = T()
+			T defaultValue = T(),
+			unsigned flags = None,
+			PlugPtr input = 0
 		);
 		virtual ~TypedPlug();
 

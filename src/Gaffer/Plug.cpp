@@ -9,9 +9,10 @@
 
 using namespace Gaffer;
 
-Plug::Plug( const std::string &name, Direction direction )
-	:	GraphComponent( name ), m_direction( direction ), m_input( 0 )
+Plug::Plug( const std::string &name, Direction direction, unsigned flags, PlugPtr input )
+	:	GraphComponent( name ), m_direction( direction ), m_input( 0 ), m_flags( flags )
 {
+	setInput( input );
 }
 
 Plug::~Plug()
@@ -52,7 +53,27 @@ Plug::Direction Plug::direction() const
 {
 	return m_direction;
 }
-		
+
+unsigned Plug::getFlags() const
+{
+	return m_flags;
+}
+
+bool Plug::getFlags( unsigned flags ) const
+{
+	return (m_flags & flags) == flags;
+}
+
+void Plug::setFlags( unsigned flags )
+{
+	m_flags = flags;
+}
+
+void Plug::setFlags( unsigned flags, bool enable )
+{
+	m_flags = (m_flags & ~flags) | ( enable ? flags : 0 );
+}
+
 bool Plug::acceptsInput( ConstPlugPtr input ) const
 {
 	/// \todo Possibly allow in->out connections as long
@@ -71,11 +92,23 @@ void Plug::setInput( PlugPtr input )
 		std::string what = boost::str( boost::format( "Plug \"%s\" rejects input \"%s\"." ) % fullName() % input->fullName() );
 		throw IECore::Exception( what );
 	}
-	Action::enact(
-		this,
-		boost::bind( &Plug::setInputInternal, PlugPtr( this ), input, true ),
-		boost::bind( &Plug::setInputInternal, PlugPtr( this ), PlugPtr( m_input ), true )		
-	);
+	if( refCounter() )
+	{
+		// someone is referring to us, so we're definitely fully constructed and we may have a ScriptNode
+		// above us, so we should do things in a way compatible with the undo system.	
+		Action::enact(
+			this,
+			boost::bind( &Plug::setInputInternal, PlugPtr( this ), input, true ),
+			boost::bind( &Plug::setInputInternal, PlugPtr( this ), PlugPtr( m_input ), true )		
+		);
+	}
+	else
+	{
+		// noone is referring to us. we're probably still constructing, and undo is impossible anyway (we
+		// have no ScriptNode ancestor), so we can't make a smart pointer
+		// to ourselves (it will result in double destruction). so we just set the input directly.
+		setInputInternal( input, false );
+	}
 }
 
 void Plug::setInputInternal( PlugPtr input, bool emit )

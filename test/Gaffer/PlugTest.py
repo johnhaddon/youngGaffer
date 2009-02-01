@@ -80,6 +80,27 @@ class PlugTest( unittest.TestCase ) :
 		p = Gaffer.Plug( direction=Gaffer.Plug.Direction.Out )
 		self.assertEqual( p.direction(), Gaffer.Plug.Direction.Out )
 		
+	def testFlags( self ) :
+	
+		p = Gaffer.Plug()
+		self.assertEqual( p.getFlags(), Gaffer.Plug.Flags.None )
+		
+		p = Gaffer.Plug( flags=Gaffer.Plug.Flags.Dynamic )
+		self.assertEqual( p.getFlags(), Gaffer.Plug.Flags.Dynamic )
+		self.assertEqual( p.getFlags( Gaffer.Plug.Flags.Dynamic ), True )
+		
+		p.setFlags( Gaffer.Plug.Flags.Dynamic, False )
+		self.assertEqual( p.getFlags( Gaffer.Plug.Flags.Dynamic ), False )
+		
+			
+	def testConstructWithInput( self ) :
+	
+		p = Gaffer.Plug()
+		self.assertEqual( p.getInput(), None )
+		
+		p2 = Gaffer.Plug( input=p )
+		self.assert_( p2.getInput().isSame( p ) )
+		
 if __name__ == "__main__":
 	unittest.main()
 	

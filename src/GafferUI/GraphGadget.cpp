@@ -258,7 +258,8 @@ void GraphGadget::addNodeGadget( Gaffer::Node *node )
 	Gaffer::FloatPlugPtr xPlug = node->getChild<Gaffer::FloatPlug>( "__uiX" );
 	if( !xPlug )
 	{
-		xPlug = new Gaffer::FloatPlug( "__uiX" );
+		xPlug = new Gaffer::FloatPlug( "__uiX", Gaffer::Plug::In );
+		xPlug->setFlags( Gaffer::Plug::Dynamic, true );
 		xPlug->setValue( r.nextf( -10, 10 ) );
 		node->addChild( xPlug );
 	}
@@ -266,7 +267,8 @@ void GraphGadget::addNodeGadget( Gaffer::Node *node )
 	Gaffer::FloatPlugPtr yPlug = node->getChild<Gaffer::FloatPlug>( "__uiY" );
 	if( !yPlug )
 	{	
-		Gaffer::FloatPlugPtr yPlug = new Gaffer::FloatPlug( "__uiY" );
+		Gaffer::FloatPlugPtr yPlug = new Gaffer::FloatPlug( "__uiY", Gaffer::Plug::In );
+		yPlug->setFlags( Gaffer::Plug::Dynamic, true );
 		yPlug->setValue( r.nextf( -10, 10 ) );
 		node->addChild( yPlug );
 	}

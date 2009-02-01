@@ -38,7 +38,21 @@ class Plug : public GraphComponent
 			Out = 2
 		};
 	
-		Plug( const std::string &name=staticTypeName(), Direction direction=In );
+		enum Flags
+		{
+			/// Dynamic plugs are those which are created outside of the constructor
+			/// for a Node. This means that their value alone is not enough when serialising
+			/// a script - instead the full Plug definition is serialised so it can
+			/// be recreated fully upon loading.
+			None = 0x00000000,
+			Dynamic = 0x00000001,
+			All = Dynamic
+		};
+	
+		/// When implementing derived classes, they should call the base class constructor with input==0 at all times,
+		/// and then if necessary call setInput() at the end of their constructor - otherwise the acceptsInput method
+		/// will not be evaluated in the derived class and unwanted connections could result.
+		Plug( const std::string &name=staticTypeName(), Direction direction=In, unsigned flags=None, PlugPtr input=0 );
 		virtual ~Plug();
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( Plug, PlugTypeId, GraphComponent );
@@ -57,7 +71,17 @@ class Plug : public GraphComponent
 		//@}
 
 		Direction direction() const;
-
+		
+		/// Returns the current state of the flags.
+		unsigned getFlags() const;
+		/// Returns true if all the flags passed are currently set.
+		bool getFlags( unsigned flags ) const;
+		/// Sets the current state of the flags.
+		void setFlags( unsigned flags );
+		/// Sets or unsets the specified flags depending on the enable
+		/// parameter. All other flags remain at their current values.
+		void setFlags( unsigned flags, bool enable );
+		
 		/// @name Connections
 		///////////////////////////////////////////////////////////////////////
 		//@{
@@ -81,6 +105,7 @@ class Plug : public GraphComponent
 		Direction m_direction;
 		Plug *m_input;
 		OutputContainer m_outputs;
+		unsigned m_flags;
 				
 };
 

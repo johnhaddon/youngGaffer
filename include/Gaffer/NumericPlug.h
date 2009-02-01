@@ -23,7 +23,9 @@ class NumericPlug : public ValuePlug
 			Direction direction=In,
 			T defaultValue = T(),
 			T minValue = Imath::limits<T>::min(),
-			T maxValue = Imath::limits<T>::max()
+			T maxValue = Imath::limits<T>::max(),
+			unsigned flags = None,
+			PlugPtr input = 0
 		);
 		virtual ~NumericPlug();
 
