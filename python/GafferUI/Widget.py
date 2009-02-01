@@ -77,13 +77,16 @@ class Widget( object ) :
 	# \todo "Protect" with an _
 	@classmethod
 	def owner( cls, gtkWidget ) :
-	
+		
 		while gtkWidget :
 	
 			if gtkWidget in cls.__gtkWidgetOwners :
 				return cls.__gtkWidgetOwners[gtkWidget]()
 		
-			gtkWidget = gtkWidget.get_parent()
+			if isinstance( gtkWidget, gtk.Menu ) :
+				gtkWidget = gtkWidget.get_attach_widget()
+			else :
+				gtkWidget = gtkWidget.get_parent()
 			
 		return None
 	
