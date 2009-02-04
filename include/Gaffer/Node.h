@@ -86,6 +86,8 @@ class Node : public GraphComponent
 		
 	private :
 	
+		void parentChanged( GraphComponent *self );
+	
 		friend class Plug;
 		friend class ValuePlug;
 	

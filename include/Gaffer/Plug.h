@@ -95,6 +95,7 @@ class Plug : public GraphComponent
 		typename T::Ptr getInput();
 		template<typename T>
 		typename T::ConstPtr getInput() const;
+		void removeOutputs();
 		const OutputContainer &outputs() const;
 		//@}
 					

@@ -69,6 +69,7 @@ void GafferBindings::bindPlug()
 		.def( "acceptsInput", &Plug::acceptsInput )
 		.def( "setInput", (void (Plug::*)(PlugPtr))&Plug::setInput )
 		.def( "getInput", (PlugPtr (Plug::*)())&Plug::getInput<Plug> )
+		.def( "removeOutputs", &Plug::removeOutputs )
 		.def( "outputs", &outputs )
 		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( Plug )
 	;
