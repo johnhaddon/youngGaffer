@@ -67,7 +67,41 @@ class UndoTest( unittest.TestCase ) :
 		s.redo()
 		self.assert_( n.parent().isSame( s ) )
 		
+	def testRemoveNode( self ) :	
 		
+		s = Gaffer.ScriptNode()
+		n1 = Gaffer.AddNode()
+		n2 = Gaffer.AddNode()
+		n3 = Gaffer.AddNode()
+		
+		s.addChild( n1 )
+		s.addChild( n2 )
+		s.addChild( n3 )
+		
+		n2["op1"].setInput( n1["sum"] )
+		n2["op2"].setInput( n1["sum"] )
+		n3["op1"].setInput( n2["sum"] )
+		n3["op2"].setInput( n2["sum"] )
+		self.assert_( n2["op1"].getInput().isSame( n1["sum"] ) )
+		self.assert_( n2["op2"].getInput().isSame( n1["sum"] ) )
+		self.assert_( n3["op1"].getInput().isSame( n2["sum"] ) )
+		self.assert_( n3["op2"].getInput().isSame( n2["sum"] ) )
+		
+		with Gaffer.UndoContext( s ) :
+			s.removeChild( n2 )
+			
+		self.assertEqual( n2["op1"].getInput(), None )
+		self.assertEqual( n2["op2"].getInput(), None )
+		self.assertEqual( n3["op1"].getInput(), None )
+		self.assertEqual( n3["op2"].getInput(), None )
+			
+		s.undo()
+		
+		self.assert_( n2["op1"].getInput().isSame( n1["sum"] ) )
+		self.assert_( n2["op2"].getInput().isSame( n1["sum"] ) )
+		self.assert_( n3["op1"].getInput().isSame( n2["sum"] ) )
+		self.assert_( n3["op2"].getInput().isSame( n2["sum"] ) )
+			
 if __name__ == "__main__":
 	unittest.main()
 	
