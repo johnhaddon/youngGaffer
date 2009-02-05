@@ -18,7 +18,8 @@ env = Environment(
 	
 	CXXFLAGS = [
 		"-Wall",
-		"-Werror"
+		"-Werror",
+		"-O2",
 	],
 	
 	LIBPATH = [
