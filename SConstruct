@@ -19,7 +19,8 @@ env = Environment(
 	CXXFLAGS = [
 		"-Wall",
 		"-Werror",
-		"-O2",
+## \todo Find out why optimisation crashes the ui, fix it and enable O2 again.
+#		"-O2",
 	],
 	
 	LIBPATH = [
