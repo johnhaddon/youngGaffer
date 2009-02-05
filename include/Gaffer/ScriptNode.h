@@ -65,6 +65,18 @@ class ScriptNode : public Node
 		void undo();
 		void redo();
 		//@}
+		
+		//! @name Editing
+		/// These methods provide higher level editing functions for the
+		/// script.
+		////////////////////////////////////////////////////////////////////
+		/// Removes the specified Node from the script, making sure it is
+		/// disconnected from the remaining Nodes and removed from the current
+		/// selection.
+		/// Throws an Exception if the node is not a child of this script.
+		/// \undoable
+		void deleteNode( NodePtr child );
+		//@}
 			
 		//! @name Script evaluation
 		/// These methods allow the execution of python scripts in the

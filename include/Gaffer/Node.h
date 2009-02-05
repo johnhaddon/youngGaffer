@@ -85,9 +85,7 @@ class Node : public GraphComponent
 		virtual void compute( PlugPtr output ) const = 0;
 		
 	private :
-	
-		void parentChanged( GraphComponent *self );
-	
+		
 		friend class Plug;
 		friend class ValuePlug;
 	

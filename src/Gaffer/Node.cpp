@@ -1,15 +1,11 @@
 #include "Gaffer/Node.h"
 #include "Gaffer/ScriptNode.h"
 
-#include "boost/bind.hpp"
-#include "boost/bind/placeholders.hpp"
-
 using namespace Gaffer;
 
 Node::Node( const std::string &name )
 	:	GraphComponent( name )
 {
-	parentChangedSignal().connect( boost::bind( &Node::parentChanged, this, ::_1 ) );
 }
 
 Node::~Node()
@@ -87,19 +83,4 @@ bool Node::acceptsParent( const GraphComponent *potentialParent ) const
 		return false;
 	}
 	return potentialParent->isInstanceOf( (IECore::TypeId)NodeTypeId );
-}
-
-void Node::parentChanged( GraphComponent *self )
-{
-	assert( self==this );
-	
-	for( InputPlugIterator it=inputPlugsBegin(); it!=inputPlugsEnd(); it++ )
-	{
-		(*it)->setInput( 0 );
-	}
-	
-	for( OutputPlugIterator it=outputPlugsBegin(); it!=outputPlugsEnd(); it++ )
-	{
-		(*it)->removeOutputs();
-	}
 }

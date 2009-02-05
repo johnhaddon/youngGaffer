@@ -67,7 +67,7 @@ class UndoTest( unittest.TestCase ) :
 		s.redo()
 		self.assert_( n.parent().isSame( s ) )
 		
-	def testRemoveNode( self ) :	
+	def testDelete( self ) :	
 		
 		s = Gaffer.ScriptNode()
 		n1 = Gaffer.AddNode()
@@ -88,7 +88,7 @@ class UndoTest( unittest.TestCase ) :
 		self.assert_( n3["op2"].getInput().isSame( n2["sum"] ) )
 		
 		with Gaffer.UndoContext( s ) :
-			s.removeChild( n2 )
+			s.deleteNode( n2 )
 			
 		self.assertEqual( n2["op1"].getInput(), None )
 		self.assertEqual( n2["op2"].getInput(), None )

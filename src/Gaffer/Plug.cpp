@@ -96,30 +96,9 @@ void Plug::setInput( PlugPtr input )
 	if( refCounter() )
 	{
 		// someone is referring to us, so we're definitely fully constructed and we may have a ScriptNode
-		// above us, so we should do things in a way compatible with the undo system.	
-		
-		PlugPtr subject( this );
-		if( input==0 && m_input && !ancestor<ScriptNode>() )
-		{
-			// this is necessary to allow undo to work correctly when a Node
-			// is disconnecting its Plugs as a result of being unparented from
-			// a script. as the node has no parent, it doesn't make a suitable subject for undo
-			// so we switch the subject to be the existing input which we presume still
-			// is parented to the script.
-			// i'm not particularly happy with this. alternatives might be to have the
-			// UndoContext class store a static reference to the script for which undo
-			// recording is taking place so we don't need to pass a subject to Action::enact
-			// - but that's not thread safe and it makes it possible for the library client to
-			// put undo actions in the wrong script. or we could abandon
-			// the idea that removing a node from the script is sufficient for deletion,
-			// and have a specific delete command that does the connection removal too.
-			// the latter might be the best plan, particularly given that we might want to
-			// do pass connections through when deleting a node.
-			subject = m_input;
-		}
-		
+		// above us, so we should do things in a way compatible with the undo system.			
 		Action::enact(
-			subject,
+			this,
 			boost::bind( &Plug::setInputInternal, PlugPtr( this ), input, true ),
 			boost::bind( &Plug::setInputInternal, PlugPtr( this ), PlugPtr( m_input ), true )		
 		);

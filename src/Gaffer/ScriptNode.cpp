@@ -60,6 +60,27 @@ void ScriptNode::redo()
 	m_undoIterator++;
 }
 
+void ScriptNode::deleteNode( NodePtr child )
+{
+	if( child->ancestor<ScriptNode>() != this )
+	{
+		throw IECore::Exception( "Node is not a child of script." );
+	}
+
+	for( InputPlugIterator it=child->inputPlugsBegin(); it!=child->inputPlugsEnd(); it++ )
+	{
+		(*it)->setInput( 0 );
+	}
+	
+	for( OutputPlugIterator it=child->outputPlugsBegin(); it!=child->outputPlugsEnd(); it++ )
+	{
+		(*it)->removeOutputs();
+	}
+	
+	selection()->remove( child );
+	child->parent<GraphComponent>()->removeChild( child );
+}
+
 StringPlugPtr ScriptNode::fileNamePlug()
 {
 	return m_fileNamePlug;

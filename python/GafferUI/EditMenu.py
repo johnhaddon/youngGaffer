@@ -16,7 +16,6 @@ def appendDefinitions( menuDefinition, prefix="" ) :
 	#			(	"/Edit/Cut", {} 	),
 	#			(	"/Edit/Copy", {} 	),
 	#			(	"/Edit/Paste", {} 	),
-	#			(	"/Edit/Delete", {} 	),
 	#			(	"/Edit/Select All", {} 	),
 
 ## A function suitable as the command for an Edit/Undo menu item. It must
@@ -46,5 +45,5 @@ def delete( menu ) :
 		
 		for node in script.selection().members() :
 		
-			script.removeChild( node )
+			script.deleteNode( node )
 	
