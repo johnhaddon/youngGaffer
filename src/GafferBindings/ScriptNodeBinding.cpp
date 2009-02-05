@@ -49,6 +49,9 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 			executionGlobals["childAddedSignal"] = weakMethod( object( selfO.attr( "childAddedSignal" ) ) );
 			executionGlobals["childRemovedSignal"] = weakMethod( object( selfO.attr( "childRemovedSignal" ) ) );
 			executionGlobals["selection"] = weakMethod( object( selfO.attr( "selection" ) ) );
+			executionGlobals["undo"] = weakMethod( object( selfO.attr( "undo" ) ) );
+			executionGlobals["redo"] = weakMethod( object( selfO.attr( "redo" ) ) );
+			executionGlobals["deleteNode"] = weakMethod( object( selfO.attr( "deleteNode" ) ) );
 			executionGlobals["serialise"] = weakMethod( object( selfO.attr( "serialise" ) ) );
 			executionGlobals["save"] = weakMethod( object( selfO.attr( "save" ) ) );
 			executionGlobals["load"] = weakMethod( object( selfO.attr( "load" ) ) );
