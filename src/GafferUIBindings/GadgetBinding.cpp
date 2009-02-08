@@ -23,6 +23,8 @@ struct RenderRequestSlotCaller
 	}
 };
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( fullTransformOverloads, fullTransform, 0, 1 );
+
 void GafferUIBindings::bindGadget()
 {
 	typedef class_<Gadget, GadgetPtr, boost::noncopyable, bases<Gaffer::GraphComponent> > GadgetPyClass;
@@ -32,8 +34,7 @@ void GafferUIBindings::bindGadget()
 		.def( "setStyle", &Gadget::setStyle )
 		.def( "getTransform", &Gadget::getTransform, return_value_policy<copy_const_reference>() )
 		.def( "setTransform", &Gadget::setTransform )
-		.def( "fullTransform", (Imath::M44f (Gadget::*)())&Gadget::fullTransform )
-		.def( "fullTransform", &Gadget::fullTransform )
+		.def( "fullTransform", &Gadget::fullTransform, fullTransformOverloads() )
 		.def( "render",&Gadget::render )
 		.def( "bound", &Gadget::bound )
 		.def( "transformedBound", (Imath::Box3f (Gadget::*)() const)&Gadget::transformedBound )
