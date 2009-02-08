@@ -69,6 +69,7 @@ class ScriptNode : public Node
 		//! @name Editing
 		/// These methods provide higher level editing functions for the
 		/// script.
+		/// \todo Cut, copy, paste
 		////////////////////////////////////////////////////////////////////
 		/// Removes the specified Node from the script, making sure it is
 		/// disconnected from the remaining Nodes and removed from the current
