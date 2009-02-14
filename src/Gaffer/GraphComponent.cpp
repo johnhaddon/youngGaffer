@@ -32,7 +32,7 @@ GraphComponent::~GraphComponent()
 const std::string &GraphComponent::setName( const std::string &name )
 {
 	int suffix = 0;
-	string newName = name;
+	IECore::InternedString newName = name;
 	if( m_parent )
 	{
 		bool unique = true;
@@ -42,10 +42,11 @@ const std::string &GraphComponent::setName( const std::string &name )
 			{
 				newName = boost::str( boost::format( "%s%d" ) % name % suffix );
 			}
+
 			unique = true;
 			for( ChildContainer::const_iterator it=m_parent->m_children.begin(); it!=m_parent->m_children.end(); it++ )
 			{
-				if( (*it)!=this && (*it)->m_name==newName )
+				if( (*it)!=this && (*it)->m_name==newName)
 				{
 					unique = false;
 					break;
@@ -55,9 +56,9 @@ const std::string &GraphComponent::setName( const std::string &name )
 		} while( !unique );
 	}
 
-	if( newName==m_name )
+	if( newName==m_name.value() )
 	{
-		return m_name;
+		return m_name.value();
 	}
 	
 	Action::enact(
@@ -66,10 +67,10 @@ const std::string &GraphComponent::setName( const std::string &name )
 		boost::bind( &GraphComponent::setNameInternal, GraphComponentPtr( this ), m_name )		
 	);
 	
-	return m_name;
+	return m_name.value();
 }
 
-void GraphComponent::setNameInternal( const std::string &name )
+void GraphComponent::setNameInternal( const IECore::InternedString &name )
 {
 	m_name = name;
 	nameChangedSignal()( this );
@@ -77,7 +78,7 @@ void GraphComponent::setNameInternal( const std::string &name )
 
 const std::string &GraphComponent::getName() const
 {
-	return m_name;
+	return m_name.value();
 }
 
 std::string GraphComponent::fullName() const
@@ -86,7 +87,7 @@ std::string GraphComponent::fullName() const
 	GraphComponent *c = m_parent;
 	while( c )
 	{
-		fullName = c->m_name + "." + fullName;
+		fullName = c->m_name.value() + "." + fullName;
 		c = c->m_parent;
 	}
 	return fullName;
@@ -115,12 +116,12 @@ void GraphComponent::addChild( GraphComponentPtr child )
 	}
 	if( !acceptsChild( child ) )
 	{
-		string what = boost::str( boost::format( "Parent \"%s\" rejects child \"%s\"." ) % m_name % child->m_name );
+		string what = boost::str( boost::format( "Parent \"%s\" rejects child \"%s\"." ) % m_name.value() % child->m_name.value() );
 		throw Exception( what );
 	}
 	if( !child->acceptsParent( this ) )
 	{
-		string what = boost::str( boost::format( "Child \"%s\" rejects parent \"%s\"." ) % child->m_name % m_name );
+		string what = boost::str( boost::format( "Child \"%s\" rejects parent \"%s\"." ) % child->m_name.value() % m_name.value() );
 		throw Exception( what );
 	}
 
@@ -162,7 +163,7 @@ void GraphComponent::addChildInternal( GraphComponentPtr child )
 	}
 	m_children.push_back( child );
 	child->m_parent = this;
-	child->setName( child->m_name ); // to force uniqueness
+	child->setName( child->m_name.value() ); // to force uniqueness
 	childAddedSignal()( this, child.get() );
 	child->parentChangedSignal()( child.get() );
 }

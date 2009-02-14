@@ -11,6 +11,7 @@ from FileSystemPathTest import *
 from PathTest import *
 from PathFilterTest import *
 from UndoTest import *
+from SpeedTest import *
 
 if __name__ == "__main__":
 	unittest.main()

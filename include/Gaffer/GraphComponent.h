@@ -4,6 +4,7 @@
 #include "Gaffer/TypeIds.h"
 
 #include "IECore/RunTimeTyped.h"
+#include "IECore/Interned.h"
 
 #include "boost/signals.hpp"
 
@@ -138,7 +139,7 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		
 	private :
 
-		void setNameInternal( const std::string &name );
+		void setNameInternal( const IECore::InternedString &name );
 		void addChildInternal( GraphComponentPtr child );
 		void removeChildInternal( GraphComponentPtr child );
 
@@ -153,7 +154,7 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		BinarySignal m_childRemovedSignal;
 		UnarySignal m_parentChangedSignal;
 		
-		std::string m_name;
+		IECore::InternedString m_name;
 		GraphComponent *m_parent;
 		ChildContainer m_children;
 
