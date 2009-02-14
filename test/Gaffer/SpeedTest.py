@@ -4,7 +4,7 @@ import IECore
 
 import Gaffer
 
-# original (r330):
+# original (r335):
 #
 #	15.110s
 #	15.088s
@@ -28,7 +28,7 @@ import Gaffer
 #	0.098s
 #	0.098s
 #
-# replace string comparisons with InternedString comparisons (r331):
+# replace string comparisons with InternedString comparisons (r336):
 #
 #	5.161s
 #	5.140s
