@@ -1,6 +1,8 @@
 import os
 import glob
 
+CacheDir( "/Users/john/buildCache" )
+
 boostLibSuffix = "-mt-1_35"
 
 env = Environment(
