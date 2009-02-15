@@ -19,17 +19,31 @@ RenderableGadget::~RenderableGadget()
 
 Imath::Box3f RenderableGadget::bound() const
 {
-	return m_renderable->bound();
+	if( m_renderable )
+	{
+		return m_renderable->bound();
+	}
+	else
+	{
+		return Imath::Box3f();
+	}
 }
 
 void RenderableGadget::doRender( IECore::RendererPtr renderer ) const
 {
-	m_renderable->render( renderer );
+	if( m_renderable )
+	{
+		m_renderable->render( renderer );
+	}
 }
 
 void RenderableGadget::setRenderable( IECore::VisibleRenderablePtr renderable )
 {
-	m_renderable = renderable;
+	if( renderable!=m_renderable )
+	{
+		m_renderable = renderable;
+		renderRequestSignal()( this );
+	}
 }
 
 IECore::VisibleRenderablePtr RenderableGadget::getRenderable()
