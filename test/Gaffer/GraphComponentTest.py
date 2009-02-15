@@ -183,7 +183,15 @@ class GraphComponentTest( unittest.TestCase ) :
 		
 		self.assert_( s["n1"].commonAncestor( s["n2"], Gaffer.ScriptNode.staticTypeId() ).isSame( s ) )
 		self.assert_( s["n2"].commonAncestor( s["n1"], Gaffer.ScriptNode.staticTypeId() ).isSame( s ) )
+	
+	def testRenameThenRemove( self ) :
+	
+		p = Gaffer.GraphComponent()
+		c = Gaffer.GraphComponent()
 		
+		p.addChild( c )
+		c.setName( "c" )
+		p.removeChild( c )	
 if __name__ == "__main__":
 	unittest.main()
 	
