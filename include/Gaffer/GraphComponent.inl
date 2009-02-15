@@ -7,11 +7,12 @@ namespace Gaffer
 template<typename T>
 typename T::Ptr GraphComponent::getChild( const std::string &name )
 {
+	IECore::InternedString internedName( name );
 	/// \todo is a linear search going to cut it for many children? perhaps we should map
 	/// name->child when there are large numbers of children?
 	for( ChildContainer::const_iterator it=m_children.begin(); it!=m_children.end(); it++ )
 	{
-		if( (*it)->getName()==name )
+		if( (*it)->m_name==internedName )
 		{
 			return IECore::runTimeCast<T>( *it );
 		}
@@ -22,9 +23,10 @@ typename T::Ptr GraphComponent::getChild( const std::string &name )
 template<typename T>
 typename T::ConstPtr GraphComponent::getChild( const std::string &name ) const
 {
+	IECore::InternedString internedName( name );
 	for( ChildContainer::const_iterator it=m_children.begin(); it!=m_children.end(); it++ )
 	{
-		if( (*it)->getName()==name )
+		if( (*it)->m_name==internedName )
 		{
 			if( (*it)->isInstanceOf( T::staticTypeId() ) )
 			{
