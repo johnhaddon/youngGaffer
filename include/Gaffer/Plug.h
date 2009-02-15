@@ -40,11 +40,11 @@ class Plug : public GraphComponent
 	
 		enum Flags
 		{
+			None = 0x00000000,
 			/// Dynamic plugs are those which are created outside of the constructor
 			/// for a Node. This means that their value alone is not enough when serialising
 			/// a script - instead the full Plug definition is serialised so it can
 			/// be recreated fully upon loading.
-			None = 0x00000000,
 			Dynamic = 0x00000001,
 			All = Dynamic
 		};
