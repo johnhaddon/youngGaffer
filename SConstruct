@@ -1,7 +1,7 @@
 import os
 import glob
 
-CacheDir( "/Users/john/buildCache" )
+CacheDir( "/Users/john/dev/sconsBuildCache" )
 
 boostLibSuffix = "-mt-1_35"
 
