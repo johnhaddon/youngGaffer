@@ -5,6 +5,7 @@
 #include "GafferUI/Style.h"
 
 #include "GafferBindings/SignalBinding.h"
+#include "GafferBindings/CatchingSlotCaller.h"
 
 #include "IECore/bindings/IntrusivePtrPatch.h"
 #include "IECore/bindings/RunTimeTypedBinding.h"
@@ -52,10 +53,10 @@ void GafferUIBindings::bindGadget()
 	;
 	
 	SignalBinder<Gadget::RenderRequestSignal, DefaultSignalCaller<Gadget::RenderRequestSignal>, RenderRequestSlotCaller>::bind( "RenderRequestSignal" );	
-	SignalBinder<Gadget::ButtonSignal>::bind( "ButtonSignal" );
-	SignalBinder<Gadget::KeySignal>::bind( "KeySignal" );
-	SignalBinder<Gadget::DragBeginSignal>::bind( "DragBeginSignal" );
-	SignalBinder<Gadget::DragDropSignal>::bind( "DragDropSignal" );
+	SignalBinder<Gadget::ButtonSignal, DefaultSignalCaller<Gadget::ButtonSignal>, CatchingSlotCaller<Gadget::ButtonSignal> >::bind( "ButtonSignal" );
+	SignalBinder<Gadget::KeySignal, DefaultSignalCaller<Gadget::KeySignal>, CatchingSlotCaller<Gadget::KeySignal> >::bind( "KeySignal" );
+	SignalBinder<Gadget::DragBeginSignal, DefaultSignalCaller<Gadget::DragBeginSignal>, CatchingSlotCaller<Gadget::DragBeginSignal> >::bind( "DragBeginSignal" );
+	SignalBinder<Gadget::DragDropSignal, DefaultSignalCaller<Gadget::DragDropSignal>, CatchingSlotCaller<Gadget::DragDropSignal> >::bind( "DragDropSignal" );
 	
 	INTRUSIVE_PTR_PATCH( Gadget, GadgetPyClass );
 	

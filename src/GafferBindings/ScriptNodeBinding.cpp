@@ -274,8 +274,15 @@ struct ScriptEvaluatedSlotCaller
 {
 	boost::signals::detail::unusable operator()( boost::python::object slot, ScriptNodePtr node, const std::string script, PyObject *result )
 	{
-		boost::python::object o( handle<>( borrowed( result ) ) );
-		slot( node, script, o );
+		try
+		{
+			boost::python::object o( handle<>( borrowed( result ) ) );
+			slot( node, script, o );
+		}
+		catch( const error_already_set &e )
+		{
+			PyErr_Print(); // clears error status
+		}
 		return boost::signals::detail::unusable();
 	}
 };

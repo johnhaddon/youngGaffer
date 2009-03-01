@@ -4,6 +4,7 @@
 #include "boost/python.hpp"
 
 #include "GafferBindings/SignalBinding.h"
+#include "GafferBindings/CatchingSlotCaller.h"
 
 #include "Gaffer/Set.h"
 
@@ -63,7 +64,7 @@ void bindSet( const char *className )
 		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( T )
 	;	
 
-	SignalBinder<typename T::MemberSignal>::bind( "MemberSignal" );
+	SignalBinder<typename T::MemberSignal, DefaultSignalCaller<typename T::MemberSignal>, CatchingSlotCaller<typename T::MemberSignal> >::bind( "MemberSignal" );
 
 	INTRUSIVE_PTR_PATCH( T, typename PyClass );
 	

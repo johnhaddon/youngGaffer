@@ -6,6 +6,7 @@
 #include "GafferBindings/NodeBinding.h"
 #include "GafferBindings/SignalBinding.h"
 #include "GafferBindings/RawConstructor.h"
+#include "GafferBindings/CatchingSlotCaller.h"
 #include "Gaffer/ScriptNode.h"
 #include "Gaffer/Plug.h"
 
@@ -125,8 +126,8 @@ void GafferBindings::bindNode()
 		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( Node )
 	;
 	
-	SignalBinder<Node::UnaryPlugSignal>::bind( "UnaryPlugSignal" );
-	SignalBinder<Node::BinaryPlugSignal>::bind( "BinaryPlugSignal" );
+	SignalBinder<Node::UnaryPlugSignal, DefaultSignalCaller<Node::UnaryPlugSignal>, CatchingSlotCaller<Node::UnaryPlugSignal> >::bind( "UnaryPlugSignal" );
+	SignalBinder<Node::BinaryPlugSignal, DefaultSignalCaller<Node::BinaryPlugSignal>, CatchingSlotCaller<Node::BinaryPlugSignal> >::bind( "BinaryPlugSignal" );
 	
 	IECore::WrapperToPython<NodePtr>();
 	INTRUSIVE_PTR_PATCH( Node, NodePyClass );

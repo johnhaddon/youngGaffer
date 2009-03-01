@@ -46,7 +46,14 @@ struct UnarySlotCaller
 {
 	boost::signals::detail::unusable operator()( boost::python::object slot, GraphComponentPtr g )
 	{
-		slot( g );
+		try
+		{
+			slot( g );
+		}
+		catch( const error_already_set &e )
+		{
+			PyErr_Print(); // clears the error status
+		}
 		return boost::signals::detail::unusable();
 	}
 };
@@ -56,7 +63,14 @@ struct BinarySlotCaller
 
 	boost::signals::detail::unusable operator()( boost::python::object slot, GraphComponentPtr g, GraphComponentPtr gg )
 	{
-		slot( g, gg );
+		try
+		{
+			slot( g, gg );
+		}
+		catch( const error_already_set &e )
+		{
+			PyErr_Print(); // clears the error status
+		}
 		return boost::signals::detail::unusable();
 	}
 };
