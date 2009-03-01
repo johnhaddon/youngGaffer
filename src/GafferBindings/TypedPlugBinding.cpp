@@ -30,9 +30,9 @@ static void bind( const char *name )
 				)
 			)
 		)
-		.def( "defaultValue", &T::defaultValue )
+		.def( "defaultValue", &T::defaultValue, return_value_policy<copy_const_reference>() )
 		.def( "setValue", &T::setValue )
-		.def( "getValue", &T::getValue )
+		.def( "getValue", &T::getValue, return_value_policy<copy_const_reference>() )
 		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( T )
 	;
 

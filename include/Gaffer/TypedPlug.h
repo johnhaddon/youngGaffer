@@ -19,7 +19,7 @@ class TypedPlug : public ValuePlug
 		TypedPlug(
 			const std::string &name = staticTypeName(),
 			Direction direction=In,
-			T defaultValue = T(),
+			const T &defaultValue = T(),
 			unsigned flags = None,
 			PlugPtr input = 0
 		);
@@ -41,13 +41,13 @@ class TypedPlug : public ValuePlug
 		/// Accepts only instances of TypedPlug<T> or derived classes.
 		virtual bool acceptsInput( ConstPlugPtr input ) const;
 
-		T defaultValue() const;
+		const T &defaultValue() const;
 
 		/// \undoable
-		void setValue( T value );
+		void setValue( const T &value );
 		/// Returns the value. This isn't const as it may require a compute
 		/// and therefore a setValue().
-		T getValue();
+		const T &getValue();
 
 	protected :
 

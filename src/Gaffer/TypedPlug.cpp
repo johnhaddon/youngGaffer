@@ -73,7 +73,7 @@ template<class T>
 TypedPlug<T>::TypedPlug(
 	const std::string &name,
 	Direction direction,
-	T defaultValue,
+	const T &defaultValue,
 	unsigned flags,
 	PlugPtr input
 )
@@ -100,13 +100,13 @@ bool TypedPlug<T>::acceptsInput( ConstPlugPtr input ) const
 }
 
 template<class T>
-T TypedPlug<T>::defaultValue() const
+const T &TypedPlug<T>::defaultValue() const
 {
 	return m_defaultValue;
 }
 		
 template<class T>
-void TypedPlug<T>::setValue( T value )
+void TypedPlug<T>::setValue( const T &value )
 {
 	if( value!=m_value || getDirty() )
 	{
@@ -126,7 +126,7 @@ void TypedPlug<T>::setValueInternal( T value )
 }
 
 template<class T>
-T TypedPlug<T>::getValue()
+const T &TypedPlug<T>::getValue()
 {
 	computeIfDirty();
 	return m_value;
