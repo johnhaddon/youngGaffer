@@ -16,7 +16,8 @@ enum TypeId
 	ScriptNodeTypeId = 400007,
 	ApplicationRootTypeId = 400008,
 	ScriptContainerTypeId = 400009,
-	NodeSetTypeId = 400010
+	NodeSetTypeId = 400010,
+	ObjectPlugTypeId = 400011,
 };
 
 } // namespace Gaffer
