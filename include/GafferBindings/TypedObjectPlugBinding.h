@@ -1,0 +1,11 @@
+#ifndef GAFFERBINDINGS_TYPEDOBJECTPLUGBINDING_H
+#define GAFFERBINDINGS_TYPEDOBJECTPLUGBINDING_H
+
+namespace GafferBindings
+{
+
+void bindTypedObjectPlug();
+
+} // namespace GafferBindings
+
+#endif // GAFFERBINDINGS_TYPEDOBJECTPLUGBINDING_H
