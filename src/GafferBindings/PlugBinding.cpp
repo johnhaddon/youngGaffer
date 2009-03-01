@@ -1,7 +1,6 @@
 #include "boost/python.hpp"
 
 #include "GafferBindings/PlugBinding.h"
-#include "GafferBindings/SignalBinding.h"
 #include "Gaffer/Plug.h"
 #include "Gaffer/Node.h"
 
