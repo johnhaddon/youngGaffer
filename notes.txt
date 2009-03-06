@@ -277,6 +277,7 @@ referencing
 	- should be implemented as a ScriptNode embedded within the script - so ScriptNodes can 
 	  have at least one input and output plug...they'll be like groups but they'll save/load
 	  to a separate file...
+
 	
 viewer
 ======
@@ -395,6 +396,13 @@ geometry support
 	* need IECore support
 * hierarchical subdees
 	* hold off for the moment
+
+pointclouds, shadowmaps etc
+===========================
+
+* vv important!
+* if every scene has a hash then we can automatically recompute these guys when needed
+* nodes which render these guys should output filenames which feed into the next node in line
 
 64 bit
 ======
