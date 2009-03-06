@@ -8,6 +8,7 @@ GafferUI.EditMenu.appendDefinitions( scriptWindowMenu, prefix="/Edit" )
 GafferUI.LayoutMenu.appendDefinitions( scriptWindowMenu, name="/Layout" )
 
 GafferUI.NodeMenu.append( "/File/Read", Gaffer.ReadNode )
+GafferUI.NodeMenu.append( "/File/Write", Gaffer.WriteNode )
 GafferUI.NodeMenu.append( "/Utility/Node", Gaffer.Node )
 GafferUI.NodeMenu.append( "/Maths/Add", Gaffer.AddNode )
  
