@@ -103,11 +103,12 @@ bool Nodule::drop( GadgetPtr gadget, const DragDropEvent &event )
 				input = plug;
 				output = m_plug;
 			}
+			if( input->acceptsInput( output ) )
 			{
 				Gaffer::UndoContext undoEnabler( input->ancestor<Gaffer::ScriptNode>() );
 				input->setInput( output );
+				return true;
 			}
-			return true;
 		}
 	}
 	return false;
