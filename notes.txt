@@ -403,6 +403,8 @@ pointclouds, shadowmaps etc
 * vv important!
 * if every scene has a hash then we can automatically recompute these guys when needed
 * nodes which render these guys should output filenames which feed into the next node in line
+* how to communicate the outputs of a render? perhaps a load of user options in the
+Scene? and shaders etc add user options when they add themselves?
 
 64 bit
 ======
