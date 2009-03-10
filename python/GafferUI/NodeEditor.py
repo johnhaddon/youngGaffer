@@ -36,7 +36,12 @@ class NodeEditor( GafferUI.NodeSetEditor ) :
 		self._column.append( frame, expand=True )
 		uiBuilder = self.__uiBuilders.get( node.__class__, self.__defaultNodeUI )
 		uiBuilder( frame, node )
-		
+	
+	## \todo Some sort of NodeUI class to simplify the building process? This should
+	# provide a simple mechanism for adjusting already existing uis in simple ways - for
+	# instance to override the filename parts of nodes to provide fancy asset management.
+	# It could also provide a simple means of having different bits of the ui disabled based
+	# on callbacks from specific plugs.
 	__uiBuilders = {}
 	@classmethod
 	def registerNodeUI( cls, nodeType, uiBuilder ) :
