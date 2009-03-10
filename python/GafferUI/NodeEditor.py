@@ -32,10 +32,27 @@ class NodeEditor( GafferUI.NodeSetEditor ) :
 		
 		self._column.append( GafferUI.NameWidget( node ) )
 
+		frame = GafferUI.Frame()
+		self._column.append( frame, expand=True )
+		uiBuilder = self.__uiBuilders.get( node.__class__, self.__defaultNodeUI )
+		uiBuilder( frame, node )
+		
+	__uiBuilders = {}
+	@classmethod
+	def registerNodeUI( cls, nodeType, uiBuilder ) :
+	
+		__uiBuilders[nodeType] = uiBuilder
+		
+	@staticmethod
+	def __defaultNodeUI( frame, node ) :
+		
+		column = GafferUI.ListContainer( GafferUI.ListContainer.Orientation.Vertical )
+		frame.setChild( column )
+		
 		plugs = [ x for x in node.children() if x.isInstanceOf( Gaffer.Plug.staticTypeId() ) ]
 		for plug in plugs :
 		
 			plugWidget = GafferUI.PlugWidget( plug )
-			self._column.append( plugWidget )
-			
+			column.append( plugWidget )
+		
 GafferUI.EditorWidget.registerType( "NodeEditor", NodeEditor )
