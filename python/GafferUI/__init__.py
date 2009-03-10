@@ -63,6 +63,7 @@ import EditMenu
 import NodeMenu
 from TextInputDialogue import TextInputDialogue
 from Viewer import Viewer
+from Frame import Frame
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?
