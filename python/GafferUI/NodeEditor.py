@@ -55,6 +55,7 @@ class NodeEditor( GafferUI.NodeSetEditor ) :
 		frame.setChild( column )
 		
 		plugs = [ x for x in node.children() if x.isInstanceOf( Gaffer.Plug.staticTypeId() ) ]
+		plugs = [ x for x in plugs if x.direction()==Gaffer.Plug.Direction.In and not x.getName().startswith( "__" ) ]
 		for plug in plugs :
 		
 			plugWidget = GafferUI.PlugWidget( plug )
