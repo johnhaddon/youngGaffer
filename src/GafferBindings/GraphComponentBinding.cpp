@@ -37,6 +37,19 @@ static void setItem( GraphComponent &g, const char *n, GraphComponentPtr c )
 	g.addChild( c );
 }
 
+static GraphComponentPtr getItem( GraphComponent &g, const char *n )
+{
+	GraphComponentPtr c = g.getChild<GraphComponent>( n );
+	if( c )
+	{
+		return c;
+	}
+	
+	PyErr_SetString( PyExc_KeyError, n );
+	throw_error_already_set();
+	return 0; // shouldn't get here
+}
+
 static GraphComponentPtr parent( GraphComponent &g )
 {
 	return g.parent<GraphComponent>();
@@ -90,7 +103,7 @@ void GafferBindings::bindGraphComponent()
 		.def( "addChild", &GraphComponent::addChild )
 		.def( "removeChild", &GraphComponent::removeChild )
 		.def( "getChild", (GraphComponentPtr (GraphComponent::*)( const std::string & ))&GraphComponent::getChild<GraphComponent> )
-		.def( "__getitem__", (GraphComponentPtr (GraphComponent::*)( const std::string & ))&GraphComponent::getChild<GraphComponent> )
+		.def( "__getitem__", getItem )
 		.def( "__setitem__", setItem )
 		.def( "children", &children )
 		.def( "parent", &parent )

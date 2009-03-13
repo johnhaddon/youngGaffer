@@ -131,6 +131,7 @@ class GraphComponentTest( unittest.TestCase ) :
 		p["c"] = c
 		self.assert_( p.getChild( "c" ).isSame( c ) )
 		self.assert_( p["c"].isSame( c ) )
+		self.assertRaises( KeyError, p.__getitem__, "notAChild" )
 		
 		# check that setitem removes items with clashing names
 		c2 = Gaffer.GraphComponent()
