@@ -281,7 +281,7 @@ struct ScriptEvaluatedSlotCaller
 		}
 		catch( const error_already_set &e )
 		{
-			PyErr_Print(); // clears error status
+			PyErr_PrintEx( 0 ); // clears error status
 		}
 		return boost::signals::detail::unusable();
 	}

@@ -18,7 +18,7 @@ struct CatchingSlotCallerBase<1, Signal>
 		}
 		catch( const boost::python::error_already_set &e )
 		{
-			PyErr_Print(); // also clears the python error status
+			PyErr_PrintEx( 0 ); // also clears the python error status
 			return typename Signal::slot_result_type();
 		}
 	}
@@ -35,7 +35,7 @@ struct CatchingSlotCallerBase<2, Signal>
 		}
 		catch( const boost::python::error_already_set &e )
 		{
-			PyErr_Print(); // also clears the python error status
+			PyErr_PrintEx( 0 ); // also clears the python error status
 			return typename Signal::slot_result_type();
 		}
 	}
@@ -52,7 +52,7 @@ struct CatchingSlotCallerBase<3, Signal>
 		}
 		catch( const boost::python::error_already_set &e )
 		{
-			PyErr_Print(); // also clears the python error status
+			PyErr_PrintEx( 0 ); // also clears the python error status
 			return typename Signal::slot_result_type();
 		}
 	}

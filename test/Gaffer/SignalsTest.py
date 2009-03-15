@@ -1,4 +1,7 @@
+import StringIO
 import unittest
+import weakref
+import sys
 import gc
 
 import IECore
@@ -160,7 +163,42 @@ class SignalsTest( unittest.TestCase ) :
 		build( s )
 		
 		s.signal( 1 )	
+	
+	## Check that Exceptions being thrown in callbacks don't cause additional references
+	# to be created which would stop or delay collection. This tests a bug whereby the use
+	# of PyErr_Print caused tracebacks to be stored in sys.last_traceback, which meant that
+	# references to the T instance below were kept until another exception was thrown.
+	def testExceptionRefCounting( self ) :
 			
+		class T :
+		
+			def __init__( self, s ) :
+			
+				self.connection = s.memberAddedSignal().connect( self.callback )
+				
+			def callback( self, s, n ) :
+			
+				raise Exception
+	
+		s = Gaffer.NodeSet()
+		t = T( s )
+		w = weakref.ref( t )
+		
+		realStdErr = sys.stderr
+		sio = StringIO.StringIO()
+		try :
+			sys.stderr = sio
+			s.add( Gaffer.Node() )
+		finally :
+			sys.stderr = realStdErr
+			
+		del t
+		while gc.collect() :
+			pass
+			
+		self.assert_( w() is None )
+		self.assert_( "Exception" in sio.getvalue() )
+		
 if __name__ == "__main__":
 	unittest.main()
 	

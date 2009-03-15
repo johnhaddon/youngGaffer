@@ -65,7 +65,7 @@ struct UnarySlotCaller
 		}
 		catch( const error_already_set &e )
 		{
-			PyErr_Print(); // clears the error status
+			PyErr_PrintEx( 0 ); // clears the error status
 		}
 		return boost::signals::detail::unusable();
 	}
@@ -82,7 +82,7 @@ struct BinarySlotCaller
 		}
 		catch( const error_already_set &e )
 		{
-			PyErr_Print(); // clears the error status
+			PyErr_PrintEx( 0 ); // clears the error status
 		}
 		return boost::signals::detail::unusable();
 	}
