@@ -18,7 +18,7 @@ def names() :
 
 	return __namedLayouts.keys()
 
-## Recreates a previously stored layout, returning it in the form of a CompoundEditor.d
+## Recreates a previously stored layout, returning it in the form of a CompoundEditor.
 def create( name ) :
 
 	r = __namedLayouts[name]
