@@ -1,4 +1,5 @@
 import gtk
+import IECore
 
 from Widget import Widget
 from Menu import Menu
