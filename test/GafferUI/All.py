@@ -13,6 +13,7 @@ from GadgetTest import *
 from TabbedContainerTest import *
 from GraphEditorTest import *
 from WidgetSignalTest import *
+from EventLoopTest import *
 
 if __name__ == "__main__":
 	unittest.main()
