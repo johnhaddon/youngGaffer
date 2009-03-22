@@ -1,3 +1,5 @@
+import gc
+
 import IECore
 import gtk
 
@@ -86,14 +88,14 @@ class CompoundEditor( GafferUI.EditorWidget ) :
 			
 			splittableParent = splittable.parent()
 			if isinstance( splittableParent, GafferUI.Splittable ) :
-				m.append( "Remove Panel", { "command" : IECore.curry( splittableParent.join, 1 - splittableParent.subPanelIndex( splittable ) ) } )
+				m.append( "Remove Panel", { "command" : IECore.curry( self.__join, splittableParent, 1 - splittableParent.subPanelIndex( splittable ) ) } )
 				removeItemsAdded += 1
 				
 			tabbedContainer = splittable.getChild()
 			if tabbedContainer :
 				currentTab = tabbedContainer.getCurrent()
 				if currentTab :
-					m.append( "/Remove " + tabbedContainer.getLabel( currentTab ), { "command" : IECore.curry( tabbedContainer.removeChild, currentTab ) } )
+					m.append( "/Remove " + tabbedContainer.getLabel( currentTab ), { "command" : IECore.curry( self.__removeCurrentTab, tabbedContainer ) } )
 					removeItemsAdded += 1
 			
 			if removeItemsAdded :		
@@ -150,3 +152,33 @@ class CompoundEditor( GafferUI.EditorWidget ) :
 		splittable.split( direction, subPanelIndex )
 		splittable.subPanel( 0 ).gtkWidget().connect( "button-press-event", self.__buttonPress )
 		splittable.subPanel( 1 ).gtkWidget().connect( "button-press-event", self.__buttonPress )
+
+	def __join( self, splittable, subPanelIndex ) :
+	
+		splittable.join( subPanelIndex )
+
+		# schedule some garbage collection to hoover up the remains. we do this in a delayed
+		# way in case the menu we're called from is holding on to references to the ui elements
+		# which are going to die.
+		GafferUI.EventLoop.addIdleCallback( self.__collect )
+
+	def __removeCurrentTab( self, tabbedContainer ) :
+	
+		currentTab = tabbedContainer.getCurrent()
+		tabbedContainer.remove( currentTab )
+
+		# schedule some garbage collection to hoover up the remains. we do this in a delayed
+		# way in case the menu we're called from is holding on to references to the ui elements
+		# which are going to die.
+		GafferUI.EventLoop.addIdleCallback( self.__collect )
+
+	@staticmethod
+	def __collect() :
+		
+		try :
+			while gc.collect() :
+				pass
+		except :
+			pass
+					
+		return False
