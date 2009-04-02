@@ -125,6 +125,14 @@ in a given context
 
 * need to consider how to deal with missing node types, modules etc when reloading scripts
 	* it would be ideal if we could somehow skip any errors but i don't know how doable that is
+		- could deal with this by reading a node's worth of script at a time and executing it
+			- and continuing execution on failure
+			- but somehow replacing the nodes with placeholders when they fail?
+			- this has another benefit - we may eventually have to read the scripts a chunk at a time
+			  anyway, to get around speed issues with the python parser.
+		- or could we use some special import mechanism for modules which replaces them with magic
+		  stubs when they fail to load?
+		  
 		
 script node
 ===========
@@ -341,6 +349,24 @@ features
 * parameter value overlays on saved images?
 
 * override anything in the scene at any point in the tree
+
+	- this is essential but needs a lot of thought
+	
+		- we need overrides that operate like troy and dt9
+			- 	override parameters of a single procedural but
+				for a particular object being emitted
+			-	they should be addable at any point in the tree
+		- we also need shader overrides per object (primvars)
+		- we also need to override procedural parameters further
+		  down the tree (not per object)
+		  
+		- is there a common mechanism for all that?
+		
+		- i think this may imply a separation between nodes and
+		  procedurals. nodes use plugs (non-overrideable) as their
+		  value source and put procedurals in the scene. procedurals
+		  use something else (parameters? member data? LayeredDictionaries?)
+		  as their parameter source and these things are overrideable.
 
 obvious things not to forget
 ============================
