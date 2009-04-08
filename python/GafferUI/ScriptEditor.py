@@ -7,10 +7,12 @@ from Widget import Widget
 from EditorWidget import EditorWidget
 
 ## \todo Output redirection of both python stderr and stdout and IECore::msg - with the option to still output to the shell as well
+#		- but how do we know which script editor to output to? eh?
 ## \todo Fix the horizontal bar so it doesn't move unless asked - the subwindows should scroll instead
 ## \todo Custom right click menu with script load, save, execute file, undo, redo etc.
 ## \todo Standard way for users to customise all menus
-## \todo Tab completion and popup help. rlcompleter module should be useful for tab completion.
+## \todo Tab completion and popup help. rlcompleter module should be useful for tab completion. Completer( dict ) constructs a completer
+# that works in a specific namespace.
 class ScriptEditor( EditorWidget ) :
 
 	def __init__( self, scriptNode=None ) :
