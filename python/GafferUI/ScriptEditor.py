@@ -8,6 +8,8 @@ from EditorWidget import EditorWidget
 
 ## \todo Output redirection of both python stderr and stdout and IECore::msg - with the option to still output to the shell as well
 #		- but how do we know which script editor to output to? eh?
+#			- perhaps we should only output things that this editor does and ignore all other actions?
+#			- then where do messages go? a special console ui?
 ## \todo Fix the horizontal bar so it doesn't move unless asked - the subwindows should scroll instead
 ## \todo Custom right click menu with script load, save, execute file, undo, redo etc.
 ## \todo Standard way for users to customise all menus
