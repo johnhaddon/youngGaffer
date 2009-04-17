@@ -1,0 +1,35 @@
+#! /bin/sh
+
+# Wrapper script for gaffer. This ensures that relevant environment
+# variables are set appropriately and then runs gaffer.py in the 
+# correct python interpreter.
+
+# Set GAFFER_ROOT based on where this script is located.
+
+scriptDir=`dirname $0`
+pushd $scriptDir &> /dev/null
+binDir=`pwd`
+export GAFFER_ROOT=`dirname $binDir`
+popd &> /dev/null
+
+# Make sure resource paths are set appropriately
+
+export IECOREGL_SHADER_PATHS=$GAFFER_ROOT/shaders${IECOREGL_SHADER_PATHS:+:}${IECOREGL_SHADER_PATHS:-}
+export IECORE_FONT_PATHS=${IECORE_FONT_PATHS:-}{$IECORE_FONT_PATHS:+:}/usr/X11R6/lib/X11/fonts/TTF/
+
+export GAFFER_APP_PATHS=$GAFFER_ROOT/apps${GAFFER_APP_PATHS:+:}${GAFFER_APP_PATHS:-}
+export GAFFER_STARTUP_PATHS=~/gaffer/startup:$GAFFER_ROOT/startup${GAFFER_STARTUP_PATHS:+:}${GAFFER_STARTUP_PATHS:-}
+
+# Make sure we're running the right version of python
+
+export PYTHONHOME=$GAFFER_ROOT/frameworks/Python.framework/Versions/Current
+export PYTHONPATH=$GAFFER_ROOT/lib/python2.6/site-packages${PYTHONPATH:+:}${PYTHONPATH:-}
+
+# Get library paths set up
+
+export DYLD_LIBRARY_PATH=$GAFFER_ROOT/lib/${DYLD_LIBRARY_PATH:+:}${DYLD_LIBRARY_PATH:-}
+export DYLD_LIBRARY_PATH=/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ImageIO.framework/Resources/:$DYLD_LIBRARY_PATH
+
+# Run gaffer itself
+
+exec $GAFFER_ROOT/bin/python $GAFFER_ROOT/bin/gaffer.py $@
