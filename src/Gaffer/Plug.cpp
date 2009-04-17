@@ -93,7 +93,7 @@ void Plug::setInput( PlugPtr input )
 		std::string what = boost::str( boost::format( "Plug \"%s\" rejects input \"%s\"." ) % fullName() % input->fullName() );
 		throw IECore::Exception( what );
 	}
-	if( refCounter() )
+	if( refCount() )
 	{
 		// someone is referring to us, so we're definitely fully constructed and we may have a ScriptNode
 		// above us, so we should do things in a way compatible with the undo system.			

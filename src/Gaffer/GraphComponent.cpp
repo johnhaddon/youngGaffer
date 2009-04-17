@@ -125,7 +125,7 @@ void GraphComponent::addChild( GraphComponentPtr child )
 		throw Exception( what );
 	}
 
-	if( refCounter() )
+	if( refCount() )
 	{
 		// someone is pointing to us, so we may have a ScriptNode ancestor and we should do things
 		// in an undoable way.
