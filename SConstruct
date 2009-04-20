@@ -424,6 +424,11 @@ gafferUIModuleInstall = env.Install( "$INSTALL_DIR/lib/python2.6/site-packages/G
 gafferUIModuleInstall += env.Install( "$INSTALL_DIR/lib/python2.6/site-packages/GafferUI", glob.glob( "python/GafferUI/*.py" ) )
 env.Alias( "install", gafferUIModuleInstall )
 
+for module in ( "GafferTest", "GafferUITest" ) :
+
+	moduleInstall = env.Install( "$INSTALL_DIR/lib/python2.6/site-packages/" + module, glob.glob( "python/%s/*.py" % module ) )
+	env.Alias( "install", moduleInstall ) 
+
 ###############################################################################################
 # Scripts and apps and stuff
 ###############################################################################################
@@ -431,7 +436,7 @@ env.Alias( "install", gafferUIModuleInstall )
 scriptsInstall = env.Install( "$INSTALL_DIR/bin", [ "bin/gaffer", "bin/gaffer.py" ] )
 env.Alias( "install", scriptsInstall )
 
-for app in ( "light", "view" ) :
+for app in ( "light", "view", "test" ) :
 	appInstall = env.Install( "$INSTALL_DIR/apps/%s/1" % app, "apps/%s/1/%s.py" % ( app, app ) )
 	env.Alias( "install", appInstall )
 
