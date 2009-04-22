@@ -6,6 +6,18 @@ class test( Gaffer.Application ) :
 	def __init__( self ) :
 	
 		Gaffer.Application.__init__( self )
+		
+		self.parameters().addParameters(
+		
+			[
+				IECore.StringParameter(
+					name = "testCase",
+					description = "The name of a specific test case to run. If unspecified then all test cases are run.",
+					defaultValue = "",
+				)
+			]
+		
+		)
 				
 	def doRun( self, args ) :
 	
@@ -15,10 +27,17 @@ class test( Gaffer.Application ) :
 		import GafferUITest
 		
 		testSuite = unittest.TestSuite()
-		for module in ( GafferTest, GafferUITest ) :
+		if args["testCase"].value :
 		
-			moduleTestSuite = unittest.defaultTestLoader.loadTestsFromModule( module )
-			testSuite.addTest( moduleTestSuite )
+			testCase = unittest.defaultTestLoader.loadTestsFromName( args["testCase"].value )
+			testSuite.addTest( testCase )
+			
+		else :
+		
+			for module in ( GafferTest, GafferUITest ) :
+		
+				moduleTestSuite = unittest.defaultTestLoader.loadTestsFromModule( module )
+				testSuite.addTest( moduleTestSuite )
 			
 
 		testRunner = unittest.TextTestRunner( verbosity=2 )
