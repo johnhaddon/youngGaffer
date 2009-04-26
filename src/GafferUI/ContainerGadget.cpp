@@ -7,6 +7,8 @@
 
 using namespace GafferUI;
 
+IE_CORE_DEFINERUNTIMETYPED( ContainerGadget );
+
 ContainerGadget::ContainerGadget( const std::string &name )
 	:	Gadget( name )
 {

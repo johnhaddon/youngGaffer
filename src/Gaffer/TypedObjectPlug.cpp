@@ -16,11 +16,13 @@ using namespace Gaffer;
 	}																				\
 																					\
 	template<>																		\
-	std::string TNAME::staticTypeName()												\
+	const char *TNAME::staticTypeName()												\
 	{																				\
 		return # TNAME;																\
 	}																				\
 																					\
+	template<> 																		\
+	const IECore::RunTimeTyped::TypeDescription<TNAME>  TNAME::g_typeDescription;	\
 
 template<class T>
 IECore::TypeId TypedObjectPlug<T>::typeId() const
@@ -29,7 +31,7 @@ IECore::TypeId TypedObjectPlug<T>::typeId() const
 }
 
 template<class T>
-std::string TypedObjectPlug<T>::typeName() const
+const char *TypedObjectPlug<T>::typeName() const
 {
 	return staticTypeName();
 }
@@ -46,9 +48,9 @@ bool TypedObjectPlug<T>::isInstanceOf( IECore::TypeId typeId ) const
 
 
 template<class T>
-bool TypedObjectPlug<T>::isInstanceOf( const std::string &typeName ) const
+bool TypedObjectPlug<T>::isInstanceOf( const char *typeName ) const
 {
-	if( typeName==staticTypeName() )
+	if( 0==strcmp( typeName, staticTypeName() ) )
 	{
 		return true;
 	}
@@ -64,9 +66,9 @@ bool TypedObjectPlug<T>::inheritsFrom( IECore::TypeId typeId )
 
 
 template<class T>
-bool TypedObjectPlug<T>::inheritsFrom( const std::string &typeName )
+bool TypedObjectPlug<T>::inheritsFrom( const char *typeName )
 {
-	return ValuePlug::staticTypeName()==typeName ? true : ValuePlug::inheritsFrom( typeName );
+	return 0==strcmp( ValuePlug::staticTypeName(), typeName ) ? true : ValuePlug::inheritsFrom( typeName );
 }
 
 template<class T>

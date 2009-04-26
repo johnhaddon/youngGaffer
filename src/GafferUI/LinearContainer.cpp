@@ -8,6 +8,8 @@ using namespace GafferUI;
 using namespace Imath;
 using namespace std;
 
+IE_CORE_DEFINERUNTIMETYPED( LinearContainer );
+
 LinearContainer::LinearContainer( const std::string &name, Orientation orientation,
 	Alignment alignment, float spacing )
 	:	ContainerGadget( name ), m_orientation( orientation ), m_alignment( alignment ), m_spacing( spacing ), m_clean( true )

@@ -5,7 +5,6 @@
 
 #include "Gaffer/Node.h"
 
-#include "IECore/bindings/IntrusivePtrPatch.h"
 #include "IECore/bindings/RunTimeTypedBinding.h"
 
 using namespace boost::python;
@@ -14,12 +13,9 @@ using namespace GafferUI;
 
 void GafferUIBindings::bindLinearContainer()
 {
-	typedef class_<LinearContainer, LinearContainerPtr, boost::noncopyable, bases<ContainerGadget> > LinearContainerPyClass;
-
 	/// \todo It would be nice if we could make this behave a lot like the ListContainer
-	LinearContainerPyClass c = LinearContainerPyClass( "LinearContainer", no_init )
-		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( LinearContainer )
-		.def( "setOrientation", &LinearContainer::setOrientation )
+	IECore::RunTimeTypedClass<LinearContainer> c;
+		c.def( "setOrientation", &LinearContainer::setOrientation )
 		.def( "getOrientation", &LinearContainer::getOrientation )
 		.def( "setAlignment", &LinearContainer::setAlignment )
 		.def( "getAlignment", &LinearContainer::getAlignment )
@@ -49,10 +45,5 @@ void GafferUIBindings::bindLinearContainer()
 			( arg_( "name" )=LinearContainer::staticTypeName(), arg_( "orientation" )=LinearContainer::X, arg_( "alignment" )=LinearContainer::Centre, arg_( "spacing" )=0.0f )
 		)
 	);
-
-	INTRUSIVE_PTR_PATCH( LinearContainer, LinearContainerPyClass );
-	
-	implicitly_convertible<LinearContainerPtr, ContainerGadgetPtr>();
-	implicitly_convertible<LinearContainerPtr, ConstLinearContainerPtr>();
 
 }

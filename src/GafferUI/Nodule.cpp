@@ -12,6 +12,8 @@ using namespace GafferUI;
 using namespace Imath;
 using namespace std;
 
+IE_CORE_DEFINERUNTIMETYPED( Nodule );
+
 Nodule::Nodule( Gaffer::PlugPtr plug )
 	:	Gadget( staticTypeName() ), m_dragging( false ), m_plug( plug )
 {

@@ -9,7 +9,7 @@ void bindSet();
 
 /// Can be used to bind custom set types.
 template <typename T>
-void bindSet( const char *className );
+void bindSet();
 
 } // namespace GafferBindings
 

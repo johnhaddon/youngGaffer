@@ -4,9 +4,6 @@
 #include "Gaffer/Plug.h"
 #include "Gaffer/Node.h"
 
-#include "IECore/bindings/Wrapper.h"
-#include "IECore/bindings/WrapperToPython.h"
-#include "IECore/bindings/IntrusivePtrPatch.h"
 #include "IECore/bindings/RunTimeTypedBinding.h"
 
 using namespace boost::python;
@@ -31,9 +28,8 @@ static PlugPtr constructor( const std::string &name, Plug::Direction direction, 
 
 void GafferBindings::bindPlug()
 {
-	typedef class_<Plug, PlugPtr, boost::noncopyable, bases<GraphComponent> > PlugPyClass;
 
-	PlugPyClass c( "Plug" );
+	IECore::RunTimeTypedClass<Plug> c;
 	{
 		scope s( c );
 		enum_<Plug::Direction>( "Direction" )
@@ -70,12 +66,6 @@ void GafferBindings::bindPlug()
 		.def( "getInput", (PlugPtr (Plug::*)())&Plug::getInput<Plug> )
 		.def( "removeOutputs", &Plug::removeOutputs )
 		.def( "outputs", &outputs )
-		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( Plug )
 	;
-
-	INTRUSIVE_PTR_PATCH( Plug, PlugPyClass );
-	
-	implicitly_convertible<PlugPtr, GraphComponentPtr>();
-	implicitly_convertible<PlugPtr, ConstPlugPtr>();
 	
 }

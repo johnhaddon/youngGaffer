@@ -16,6 +16,8 @@ using namespace IECore;
 using namespace std;
 using namespace boost;
 
+IE_CORE_DEFINERUNTIMETYPED( NodeGadget );
+
 static const float g_borderWidth = 0.25;
 static const float g_minWidth = 10;
 

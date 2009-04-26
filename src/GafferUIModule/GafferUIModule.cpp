@@ -42,4 +42,5 @@ BOOST_PYTHON_MODULE( _GafferUI )
 	bindDragDropEvent();
 	bindConnectionGadget();
 	bindWidgetSignal();
+	
 }

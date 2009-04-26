@@ -5,6 +5,8 @@
 
 using namespace GafferUI;
 
+IE_CORE_DEFINERUNTIMETYPED( NameGadget );
+
 NameGadget::NameGadget( Gaffer::GraphComponentPtr object )
 	:	TextGadget( object->getName() )
 {

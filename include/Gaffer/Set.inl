@@ -21,7 +21,7 @@ IECore::TypeId Set<T>::typeId() const
 }
 
 template<typename T>
-std::string Set<T>::typeName() const
+const char *Set<T>::typeName() const
 {
 	return staticTypeName();
 }
@@ -37,9 +37,9 @@ bool Set<T>::isInstanceOf( IECore::TypeId typeId ) const
 }
 
 template<typename T>
-bool Set<T>::isInstanceOf( const std::string &typeName ) const
+bool Set<T>::isInstanceOf( const char *typeName ) const
 {
-	if( typeName==staticTypeName() )
+	if( strcmp( typeName, staticTypeName() )==0 )
 	{
 		return true;
 	}
@@ -53,9 +53,9 @@ bool Set<T>::inheritsFrom( IECore::TypeId typeId )
 }
 
 template<typename T>
-bool Set<T>::inheritsFrom( const std::string &typeName )
+bool Set<T>::inheritsFrom( const char *typeName )
 {
-	return IECore::RunTimeTyped::staticTypeName()==typeName ? true : IECore::RunTimeTyped::inheritsFrom( typeName );
+	return strcmp( IECore::RunTimeTyped::staticTypeName(), typeName ) == 0 ? true : IECore::RunTimeTyped::inheritsFrom( typeName );
 }
 
 template<typename T>

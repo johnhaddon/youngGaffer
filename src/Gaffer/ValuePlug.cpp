@@ -5,6 +5,8 @@
 
 using namespace Gaffer;
 
+IE_CORE_DEFINERUNTIMETYPED( ValuePlug );
+
 ValuePlug::ValuePlug( const std::string &name, Direction direction, unsigned flags, PlugPtr input )
 	:	Plug( name, direction, flags, 0 ), m_dirty( false )
 {

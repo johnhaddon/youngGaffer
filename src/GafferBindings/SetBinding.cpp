@@ -5,7 +5,7 @@ namespace GafferBindings
 
 void bindSet()
 {
-	bindSet<Gaffer::NodeSet>( "NodeSet" );
+	bindSet<Gaffer::NodeSet>();
 }
 
 }

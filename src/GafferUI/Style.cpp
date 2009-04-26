@@ -6,6 +6,8 @@
 
 using namespace GafferUI;
 
+IE_CORE_DEFINERUNTIMETYPED( Style );
+
 StylePtr Style::g_defaultStyle = new StandardStyle;
 
 Style::Style()

@@ -9,6 +9,8 @@ using namespace GafferUI;
 using namespace Imath;
 using namespace std;
 
+IE_CORE_DEFINERUNTIMETYPED( Gadget );
+
 Gadget::Gadget( const std::string &name )
 	:	GraphComponent( name ), m_style( Style::getDefaultStyle() )
 {

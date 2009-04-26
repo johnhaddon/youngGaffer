@@ -7,7 +7,6 @@
 #include "GafferBindings/SignalBinding.h"
 #include "GafferBindings/CatchingSlotCaller.h"
 
-#include "IECore/bindings/IntrusivePtrPatch.h"
 #include "IECore/bindings/RunTimeTypedBinding.h"
 
 using namespace boost::python;
@@ -28,9 +27,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( fullTransformOverloads, fullTransform, 0
 
 void GafferUIBindings::bindGadget()
 {
-	typedef class_<Gadget, GadgetPtr, boost::noncopyable, bases<Gaffer::GraphComponent> > GadgetPyClass;
-
-	scope s = GadgetPyClass( "Gadget", no_init )
+	scope s = IECore::RunTimeTypedClass<Gadget>()
 		.def( "getStyle", &Gadget::getStyle )
 		.def( "setStyle", &Gadget::setStyle )
 		.def( "getTransform", &Gadget::getTransform, return_value_policy<copy_const_reference>() )
@@ -49,7 +46,6 @@ void GafferUIBindings::bindGadget()
 		.def( "dragEndSignal", &Gadget::dragEndSignal, return_internal_reference<1>() )
 		.def( "keyPressSignal", &Gadget::keyPressSignal, return_internal_reference<1>() )
 		.def( "keyReleaseSignal", &Gadget::keyReleaseSignal, return_internal_reference<1>() )
-		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( Gadget )
 	;
 	
 	SignalBinder<Gadget::RenderRequestSignal, DefaultSignalCaller<Gadget::RenderRequestSignal>, RenderRequestSlotCaller>::bind( "RenderRequestSignal" );	
@@ -57,10 +53,5 @@ void GafferUIBindings::bindGadget()
 	SignalBinder<Gadget::KeySignal, DefaultSignalCaller<Gadget::KeySignal>, CatchingSlotCaller<Gadget::KeySignal> >::bind( "KeySignal" );
 	SignalBinder<Gadget::DragBeginSignal, DefaultSignalCaller<Gadget::DragBeginSignal>, CatchingSlotCaller<Gadget::DragBeginSignal> >::bind( "DragBeginSignal" );
 	SignalBinder<Gadget::DragDropSignal, DefaultSignalCaller<Gadget::DragDropSignal>, CatchingSlotCaller<Gadget::DragDropSignal> >::bind( "DragDropSignal" );
-	
-	INTRUSIVE_PTR_PATCH( Gadget, GadgetPyClass );
-	
-	implicitly_convertible<GadgetPtr, Gaffer::GraphComponentPtr>();
-	implicitly_convertible<GadgetPtr, ConstGadgetPtr>();
 
 }

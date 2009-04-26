@@ -10,6 +10,8 @@
 
 using namespace Gaffer;
 
+IE_CORE_DEFINERUNTIMETYPED( Plug );
+
 Plug::Plug( const std::string &name, Direction direction, unsigned flags, PlugPtr input )
 	:	GraphComponent( name ), m_direction( direction ), m_input( 0 ), m_flags( flags )
 {

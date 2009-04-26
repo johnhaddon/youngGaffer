@@ -3,6 +3,8 @@
 
 using namespace Gaffer;
 
+IE_CORE_DEFINERUNTIMETYPED( Node );
+
 Node::Node( const std::string &name )
 	:	GraphComponent( name )
 {

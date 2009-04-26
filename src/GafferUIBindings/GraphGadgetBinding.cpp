@@ -5,7 +5,6 @@
 
 #include "Gaffer/Node.h"
 
-#include "IECore/bindings/IntrusivePtrPatch.h"
 #include "IECore/bindings/RunTimeTypedBinding.h"
 
 using namespace boost::python;
@@ -14,15 +13,7 @@ using namespace GafferUI;
 
 void GafferUIBindings::bindGraphGadget()
 {
-	typedef class_<GraphGadget, GraphGadgetPtr, boost::noncopyable, bases<ContainerGadget> > GraphGadgetPyClass;
-
-	GraphGadgetPyClass( "GraphGadget", init<Gaffer::NodePtr>() )
-		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( GraphGadget )
+	IECore::RunTimeTypedClass<GraphGadget>()
+		.def( init<Gaffer::NodePtr>() )
 	;
-		
-	INTRUSIVE_PTR_PATCH( GraphGadget, GraphGadgetPyClass );
-	
-	implicitly_convertible<GraphGadgetPtr, ContainerGadgetPtr>();
-	implicitly_convertible<GraphGadgetPtr, ConstGraphGadgetPtr>();
-
 }

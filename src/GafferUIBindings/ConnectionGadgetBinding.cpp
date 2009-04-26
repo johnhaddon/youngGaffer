@@ -6,7 +6,6 @@
 
 #include "Gaffer/Node.h"
 
-#include "IECore/bindings/IntrusivePtrPatch.h"
 #include "IECore/bindings/RunTimeTypedBinding.h"
 
 using namespace boost::python;
@@ -15,15 +14,7 @@ using namespace GafferUI;
 
 void GafferUIBindings::bindConnectionGadget()
 {
-	typedef class_<ConnectionGadget, ConnectionGadgetPtr, boost::noncopyable, bases<Gadget> > ConnectionGadgetPyClass;
-
-	ConnectionGadgetPyClass( "ConnectionGadget", init<GafferUI::NodulePtr, GafferUI::NodulePtr>() )
-		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( ConnectionGadget )
+	IECore::RunTimeTypedClass<ConnectionGadget>()
+		.def( init<GafferUI::NodulePtr, GafferUI::NodulePtr>() )
 	;
-		
-	INTRUSIVE_PTR_PATCH( ConnectionGadget, ConnectionGadgetPyClass );
-	
-	implicitly_convertible<ConnectionGadgetPtr, GadgetPtr>();
-	implicitly_convertible<ConnectionGadgetPtr, ConstConnectionGadgetPtr>();
-
 }

@@ -5,8 +5,6 @@
 #include "Gaffer/ScriptNode.h"
 
 #include "IECore/bindings/Wrapper.h"
-#include "IECore/bindings/WrapperToPython.h"
-#include "IECore/bindings/IntrusivePtrPatch.h"
 #include "IECore/bindings/RunTimeTypedBinding.h"
 
 #include "boost/tokenizer.hpp"
@@ -291,9 +289,8 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( serialiseOverloads, serialise, 0, 1 );
 
 void bindScriptNode()
 {
-	typedef class_<ScriptNode, ScriptNodeWrapperPtr, boost::noncopyable, bases<Node> > ScriptNodePyClass;
-
-	scope s = ScriptNodePyClass( "ScriptNode" )
+	scope s = IECore::RunTimeTypedClass<ScriptNode, ScriptNodeWrapperPtr>()
+		.def( init<>() )
 		.def( init<const std::string &>() )
 		.def( "selection", (NodeSetPtr (ScriptNode::*)())&ScriptNode::selection )
 		.def( "undo", &ScriptNode::undo )
@@ -306,17 +303,10 @@ void bindScriptNode()
 		.def( "serialise", &ScriptNode::serialise, serialiseOverloads() )
 		.def( "save", &ScriptNode::save )
 		.def( "load", &ScriptNode::load )
-		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( ScriptNode )
 	;
 	
 	SignalBinder<ScriptNode::ScriptExecutedSignal>::bind( "ScriptExecutedSignal" );
-	SignalBinder<ScriptNode::ScriptEvaluatedSignal, DefaultSignalCaller<ScriptNode::ScriptEvaluatedSignal>, ScriptEvaluatedSlotCaller>::bind( "ScriptEvaluatedSignal" );
-	
-	IECore::WrapperToPython<ScriptNodePtr>();
-	INTRUSIVE_PTR_PATCH( ScriptNode, ScriptNodePyClass );
-	implicitly_convertible<ScriptNodePtr, NodePtr>();
-	implicitly_convertible<ScriptNodePtr, ConstScriptNodePtr>();
-	
+	SignalBinder<ScriptNode::ScriptEvaluatedSignal, DefaultSignalCaller<ScriptNode::ScriptEvaluatedSignal>, ScriptEvaluatedSlotCaller>::bind( "ScriptEvaluatedSignal" );	
 }
 
 } // namespace GafferBindings

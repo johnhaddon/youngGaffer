@@ -7,6 +7,8 @@ using namespace GafferUI;
 using namespace IECore;
 using namespace boost;
 
+IE_CORE_DEFINERUNTIMETYPED( TextGadget );
+
 TextGadget::TextGadget( const std::string &text )
 	:	Gadget( staticTypeName() ), m_font( 0 ), m_text( text )
 {

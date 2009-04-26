@@ -16,7 +16,7 @@ using namespace Gaffer;
 	}																				\
 																					\
 	template<>																		\
-	std::string TNAME::staticTypeName()												\
+	const char *TNAME::staticTypeName()												\
 	{																				\
 		return # TNAME;																\
 	}																				\
@@ -29,7 +29,7 @@ IECore::TypeId NumericPlug<T>::typeId() const
 }
 
 template<class T>
-std::string NumericPlug<T>::typeName() const
+const char *NumericPlug<T>::typeName() const
 {
 	return staticTypeName();
 }
@@ -46,9 +46,9 @@ bool NumericPlug<T>::isInstanceOf( IECore::TypeId typeId ) const
 
 
 template<class T>
-bool NumericPlug<T>::isInstanceOf( const std::string &typeName ) const
+bool NumericPlug<T>::isInstanceOf( const char *typeName ) const
 {
-	if( typeName==staticTypeName() )
+	if( 0==strcmp( typeName, staticTypeName() ) )
 	{
 		return true;
 	}
@@ -64,9 +64,9 @@ bool NumericPlug<T>::inheritsFrom( IECore::TypeId typeId )
 
 
 template<class T>
-bool NumericPlug<T>::inheritsFrom( const std::string &typeName )
+bool NumericPlug<T>::inheritsFrom( const char *typeName )
 {
-	return ValuePlug::staticTypeName()==typeName ? true : ValuePlug::inheritsFrom( typeName );
+	return 0==strcmp( ValuePlug::staticTypeName(), typeName ) ? true : ValuePlug::inheritsFrom( typeName );
 }
 
 template<class T>

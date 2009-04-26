@@ -2,6 +2,8 @@
 
 using namespace Gaffer;
 
+IE_CORE_DEFINERUNTIMETYPED( ApplicationRoot );
+
 ApplicationRoot::ApplicationRoot()
 {
 	ScriptContainerPtr s = new ScriptContainer;

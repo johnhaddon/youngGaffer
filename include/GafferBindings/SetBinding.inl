@@ -9,7 +9,6 @@
 #include "Gaffer/Set.h"
 
 #include "IECore/bindings/RunTimeTypedBinding.h"
-#include "IECore/bindings/IntrusivePtrPatch.h"
 
 namespace GafferBindings
 {
@@ -43,12 +42,11 @@ boost::python::object sequencedSetMembers( T &s )
 }
 
 template <typename T>
-void bindSet( const char *className )
+void bindSet()
 {
-
-	typedef boost::python::class_<T, typename T::Ptr, boost::noncopyable, boost::python::bases<IECore::RunTimeTyped> > PyClass;
 	
-	boost::python::scope s = PyClass( className )
+	boost::python::scope s = IECore::RunTimeTypedClass<T>()
+		.def( boost::python::init<>() )
 		.def( "add", &T::add )
 		.def( "remove", &T::remove )
 		.def( "clear", &T::clear )
@@ -61,15 +59,9 @@ void bindSet( const char *className )
 		.def( "sequencedMembers", &Detail::sequencedSetMembers<T> )
 		.def( "memberAddedSignal", &T::memberAddedSignal, boost::python::return_internal_reference<1>() )
 		.def( "memberRemovedSignal", &T::memberRemovedSignal, boost::python::return_internal_reference<1>() )
-		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( T )
 	;	
 
 	SignalBinder<typename T::MemberSignal, DefaultSignalCaller<typename T::MemberSignal>, CatchingSlotCaller<typename T::MemberSignal> >::bind( "MemberSignal" );
-
-	INTRUSIVE_PTR_PATCH( T, typename PyClass );
-	
-	boost::python::implicitly_convertible<typename T::Ptr, IECore::RunTimeTypedPtr>();
-	boost::python::implicitly_convertible<typename T::Ptr, typename T::ConstPtr>();
 	
 }
 

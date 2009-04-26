@@ -19,18 +19,22 @@ class Container : public Base
 		////////////////////////////////////////////////////////////
 		//@{
 		virtual IECore::TypeId typeId() const;
-		virtual std::string typeName() const;
+		virtual const char *typeName() const;
 		virtual bool isInstanceOf( IECore::TypeId typeId ) const;
-		virtual bool isInstanceOf( const std::string &typeName ) const;
+		virtual bool isInstanceOf( const char *typeName ) const;
 		static IECore::TypeId staticTypeId();
-		static std::string staticTypeName();
+		static const char *staticTypeName();
 		static bool inheritsFrom( IECore::TypeId typeId );
-		static bool inheritsFrom( const std::string &typeName );
+		static bool inheritsFrom( const char *typeName );
+		typedef Base BaseClass;
 		//@}
 				
 		/// Accepts only type T.				
 		virtual bool acceptsChild( ConstGraphComponentPtr potentialChild ) const;
 	
+	private :
+	
+		static const IECore::RunTimeTyped::TypeDescription< Container<Base, T> > g_typeDescription;
 };
 
 #define GAFFER_DECLARECONTAINERSPECIALISATIONS( TYPENAME, TYPEID  )			\
@@ -41,10 +45,12 @@ class Container : public Base
 		return (IECore::TypeId)TYPEID;										\
 	}																		\
 	template<>																\
-	std::string TYPENAME::staticTypeName()									\
+	const char *TYPENAME::staticTypeName()									\
 	{																		\
 		return #TYPENAME;													\
 	}																		\
+	template<> 																\
+	const IECore::RunTimeTyped::TypeDescription<TYPENAME>  TYPENAME::g_typeDescription; \
 
 
 } // namespace Gaffer

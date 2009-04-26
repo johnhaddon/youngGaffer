@@ -21,7 +21,7 @@ IECore::TypeId Container<Base, T>::typeId() const
 }
 
 template<typename Base, typename T>
-std::string Container<Base, T>::typeName() const
+const char *Container<Base, T>::typeName() const
 {
 	return staticTypeName();
 }
@@ -37,9 +37,9 @@ bool Container<Base, T>::isInstanceOf( IECore::TypeId typeId ) const
 }
 
 template<typename Base, typename T>
-bool Container<Base, T>::isInstanceOf( const std::string &typeName ) const
+bool Container<Base, T>::isInstanceOf( const char *typeName ) const
 {
-	if( typeName==staticTypeName() )
+	if( 0==strcmp( typeName, staticTypeName() ) )
 	{
 		return true;
 	}
@@ -53,9 +53,9 @@ bool Container<Base, T>::inheritsFrom( IECore::TypeId typeId )
 }
 
 template<typename Base, typename T>
-bool Container<Base, T>::inheritsFrom( const std::string &typeName )
+bool Container<Base, T>::inheritsFrom( const char *typeName )
 {
-	return Base::staticTypeName()==typeName ? true : Base::inheritsFrom( typeName );
+	return 0==strcmp( Base::staticTypeName(), typeName ) ? true : Base::inheritsFrom( typeName );
 }
 
 template<typename Base, typename T>

@@ -11,8 +11,6 @@
 #include "Gaffer/Plug.h"
 
 #include "IECore/bindings/Wrapper.h"
-#include "IECore/bindings/WrapperToPython.h"
-#include "IECore/bindings/IntrusivePtrPatch.h"
 #include "IECore/bindings/RunTimeTypedBinding.h"
 
 using namespace boost::python;
@@ -114,24 +112,17 @@ static NodePtr constructor( tuple t, dict d )
 
 void GafferBindings::bindNode()
 {
-	typedef class_<Node, NodeWrapperPtr, boost::noncopyable, bases<GraphComponent> > NodePyClass;
-
-	scope s = NodePyClass( "Node", no_init )
+	
+	scope s = IECore::RunTimeTypedClass<Node>()
 		.def( "__init__", rawConstructor( constructor ) )
 		.def( "scriptNode", (ScriptNodePtr (Node::*)())&Node::scriptNode )
 		.def( "setPlugs", raw_function( setPlugsRaw, 1 ) )
 		.def( "plugSetSignal", &Node::plugSetSignal, return_internal_reference<1>() )
 		.def( "plugDirtiedSignal", &Node::plugDirtiedSignal, return_internal_reference<1>() )
 		.def( "plugInputChangedSignal", &Node::plugInputChangedSignal, return_internal_reference<1>() )
-		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( Node )
 	;
 	
 	SignalBinder<Node::UnaryPlugSignal, DefaultSignalCaller<Node::UnaryPlugSignal>, CatchingSlotCaller<Node::UnaryPlugSignal> >::bind( "UnaryPlugSignal" );
 	SignalBinder<Node::BinaryPlugSignal, DefaultSignalCaller<Node::BinaryPlugSignal>, CatchingSlotCaller<Node::BinaryPlugSignal> >::bind( "BinaryPlugSignal" );
-	
-	IECore::WrapperToPython<NodePtr>();
-	INTRUSIVE_PTR_PATCH( Node, NodePyClass );
-	implicitly_convertible<NodePtr, GraphComponentPtr>();
-	implicitly_convertible<NodePtr, ConstNodePtr>();
-	
+		
 }

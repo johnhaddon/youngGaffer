@@ -12,6 +12,8 @@ using namespace Gaffer;
 using namespace IECore;
 using namespace std;
 
+IE_CORE_DEFINERUNTIMETYPED( GraphComponent );
+
 GraphComponent::GraphComponent( const std::string &name )
 	: m_name( name ), m_parent( 0 )
 {

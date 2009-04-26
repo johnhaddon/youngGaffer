@@ -8,6 +8,8 @@ using namespace GafferUI;
 using namespace Imath;
 using namespace std;
 
+IE_CORE_DEFINERUNTIMETYPED( RenderableGadget );
+
 RenderableGadget::RenderableGadget( IECore::VisibleRenderablePtr renderable )
 	:	Gadget( staticTypeName() ), m_renderable( renderable )
 {

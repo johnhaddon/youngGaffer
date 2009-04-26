@@ -13,6 +13,8 @@ using namespace GafferUI;
 using namespace Imath;
 using namespace std;
 
+IE_CORE_DEFINERUNTIMETYPED( ConnectionGadget );
+
 ConnectionGadget::ConnectionGadget( GafferUI::NodulePtr srcNodule, GafferUI::NodulePtr dstNodule )
 	:	Gadget( staticTypeName() ), m_srcNodule( srcNodule ), m_dstNodule( dstNodule ),
 		m_dragEnd( Gaffer::Plug::Invalid )

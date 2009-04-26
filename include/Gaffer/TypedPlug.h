@@ -29,13 +29,14 @@ class TypedPlug : public ValuePlug
 		////////////////////////////////////
 		//@{
 		virtual IECore::TypeId typeId() const;
-		virtual std::string typeName() const;
+		virtual const char *typeName() const;
 		virtual bool isInstanceOf( IECore::TypeId typeId ) const;
-		virtual bool isInstanceOf( const std::string &typeName ) const;
+		virtual bool isInstanceOf( const char *typeName ) const;
 		static IECore::TypeId staticTypeId();
-		static std::string staticTypeName();
+		static const char *staticTypeName();
 		static bool inheritsFrom( IECore::TypeId typeId );
-		static bool inheritsFrom( const std::string &typeName );
+		static bool inheritsFrom( const char *typeName );
+		typedef ValuePlug BaseClass;
 		//@}
 
 		/// Accepts only instances of TypedPlug<T> or derived classes.
@@ -54,6 +55,8 @@ class TypedPlug : public ValuePlug
 		virtual void setFromInput();
 
 	private :
+
+		IE_CORE_DECLARERUNTIMETYPEDDESCRIPTION( TypedPlug<T> );		
 
 		void setValueInternal( T value );
 	

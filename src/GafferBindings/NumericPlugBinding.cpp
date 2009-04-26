@@ -5,8 +5,6 @@
 #include "Gaffer/Node.h"
 
 #include "IECore/bindings/Wrapper.h"
-#include "IECore/bindings/WrapperToPython.h"
-#include "IECore/bindings/IntrusivePtrPatch.h"
 #include "IECore/bindings/RunTimeTypedBinding.h"
 
 using namespace boost::python;
@@ -16,10 +14,9 @@ using namespace Gaffer;
 template<typename T>
 static void bind( const char *name )
 {
-	typedef class_<T, typename T::Ptr, boost::noncopyable, bases<ValuePlug> > NumericPlugPyClass;
 	typedef typename T::ValueType V;
 	
-	NumericPlugPyClass( name, no_init )
+	IECore::RunTimeTypedClass<T>()
 		.def( init<const std::string &, Plug::Direction, V, V, V, unsigned, PlugPtr>(
 				(
 					boost::python::arg_( "name" )=T::staticTypeName(),
@@ -37,13 +34,7 @@ static void bind( const char *name )
 		.def( "maxValue", &T::maxValue )
 		.def( "setValue", &T::setValue )
 		.def( "getValue", &T::getValue )
-		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( T )
 	;
-
-	INTRUSIVE_PTR_PATCH( T, typename NumericPlugPyClass );
-	
-	implicitly_convertible<typename T::Ptr, ValuePlugPtr>();
-	implicitly_convertible<typename T::Ptr, typename T::ConstPtr>();
 
 }
 

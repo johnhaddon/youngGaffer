@@ -8,6 +8,8 @@ using namespace Gaffer;
 
 GAFFER_DECLARECONTAINERSPECIALISATIONS( ScriptContainer, ScriptContainerTypeId )
 
+IE_CORE_DEFINERUNTIMETYPED( ScriptNode );
+
 ScriptNode::ScriptNode( const std::string &name )
 	:	Node( name ), m_selection( new NodeSet ), m_undoIterator( m_undoList.end() )
 {

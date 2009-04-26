@@ -12,6 +12,8 @@ using namespace IECore;
 using namespace Imath;
 using namespace boost;
 
+IE_CORE_DEFINERUNTIMETYPED( Frame );
+
 static const int cornerSegments = 10;
 
 /// \todo I suspect there should be a central resource class providing these shapes to all

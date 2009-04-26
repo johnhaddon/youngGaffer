@@ -5,8 +5,6 @@
 #include "Gaffer/Node.h"
 
 #include "IECore/bindings/Wrapper.h"
-#include "IECore/bindings/WrapperToPython.h"
-#include "IECore/bindings/IntrusivePtrPatch.h"
 #include "IECore/bindings/RunTimeTypedBinding.h"
 
 using namespace boost::python;
@@ -25,12 +23,11 @@ static typename T::ValuePtr getValue( typename T::Ptr p )
 }
 
 template<typename T>
-static void bind( const char *name )
+static void bind()
 {
-	typedef class_<T, typename T::Ptr, boost::noncopyable, bases<ValuePlug> > TypedObjectPlugPyClass;
 	typedef typename T::ValuePtr V;
 	
-	TypedObjectPlugPyClass( name, no_init )
+	IECore::RunTimeTypedClass<T>()
 		.def( init<const std::string &, Plug::Direction, V, unsigned, PlugPtr>(
 				(
 					boost::python::arg_( "name" )=T::staticTypeName(),
@@ -44,17 +41,11 @@ static void bind( const char *name )
 		.def( "defaultValue", &T::defaultValue )
 		.def( "setValue", &T::setValue )
 		.def( "getValue", getValue<T>, "Returns a copy of the value." )
-		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( T )
 	;
-
-	INTRUSIVE_PTR_PATCH( T, typename TypedObjectPlugPyClass );
-	
-	implicitly_convertible<typename T::Ptr, ValuePlugPtr>();
-	implicitly_convertible<typename T::Ptr, typename T::ConstPtr>();
 
 }
 
 void GafferBindings::bindTypedObjectPlug()
 {
-	bind<ObjectPlug>( "ObjectPlug" );
+	bind<ObjectPlug>();
 }

@@ -5,7 +5,6 @@
 #include "GafferBindings/SignalBinding.h"
 #include "Gaffer/GraphComponent.h"
 
-#include "IECore/bindings/IntrusivePtrPatch.h"
 #include "IECore/bindings/RunTimeTypedBinding.h"
 
 using namespace boost::python;
@@ -90,9 +89,9 @@ struct BinarySlotCaller
 
 void GafferBindings::bindGraphComponent()
 {
-	typedef class_<GraphComponent, GraphComponentPtr, boost::noncopyable, bases<IECore::RunTimeTyped> > GraphComponentPyClass;
 
-	scope s = GraphComponentPyClass( "GraphComponent" )
+	scope s = IECore::RunTimeTypedClass<GraphComponent>()
+		.def( init<>() )
 		.def( init<const std::string &>() )
 		.def( "setName", &GraphComponent::setName, return_value_policy<copy_const_reference>() )
 		.def( "getName", &GraphComponent::getName, return_value_policy<copy_const_reference>() )
@@ -112,15 +111,9 @@ void GafferBindings::bindGraphComponent()
 		.def( "childAddedSignal", &GraphComponent::childAddedSignal, return_internal_reference<1>() )
 		.def( "childRemovedSignal", &GraphComponent::childRemovedSignal, return_internal_reference<1>() )
 		.def( "parentChangedSignal", &GraphComponent::parentChangedSignal, return_internal_reference<1>() )
-		.IE_COREPYTHON_DEFRUNTIMETYPEDSTATICMETHODS( GraphComponent )
 	;
 	
 	SignalBinder<GraphComponent::UnarySignal, DefaultSignalCaller<GraphComponent::UnarySignal>, UnarySlotCaller>::bind( "UnarySignal" );
 	SignalBinder<GraphComponent::BinarySignal, DefaultSignalCaller<GraphComponent::BinarySignal>, BinarySlotCaller>::bind( "BinarySignal" );
 		
-	INTRUSIVE_PTR_PATCH( GraphComponent, GraphComponentPyClass );
-	
-	implicitly_convertible<GraphComponentPtr, IECore::RunTimeTypedPtr>();
-	implicitly_convertible<GraphComponentPtr, ConstGraphComponentPtr>();
-
 }

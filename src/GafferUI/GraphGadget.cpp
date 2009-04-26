@@ -21,6 +21,8 @@ using namespace Imath;
 using namespace IECore;
 using namespace std;
 
+IE_CORE_DEFINERUNTIMETYPED( GraphGadget );
+
 GraphGadget::GraphGadget( Gaffer::NodePtr graphRoot )
 	:	m_graphRoot( graphRoot.get() )
 {
