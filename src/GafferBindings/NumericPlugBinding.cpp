@@ -45,16 +45,19 @@ static std::string serialise( Serialiser &s, ConstGraphComponentPtr g )
 		result += "flags = " + serialisePlugFlags( plug->getFlags() ) + ", ";
 	}
 	
+	bool connected = false;
 	ConstPlugPtr srcPlug = plug->template getInput<Plug>();
 	if( srcPlug )
 	{
 		std::string srcNodeName = s.add( srcPlug->node() );
 		if( srcNodeName!="" )
 		{
+			connected = true;
 			result += "input = " + srcNodeName + "[\"" + srcPlug->getName() + "\"]";
 		}
 	}
-	else if( plug->direction()==Plug::In )
+	
+	if( !connected && plug->direction()==Plug::In )
 	{
 		typename T::Ptr p = boost::const_pointer_cast<T>( plug );
 		typename T::ValueType value = p->getValue();
@@ -96,7 +99,7 @@ static typename T::Ptr construct(
 		result->setValue( v );
 	}
 	return result;
-}	
+}
 
 template<typename T>
 static void bind( const char *name )
