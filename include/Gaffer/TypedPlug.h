@@ -14,14 +14,13 @@ class TypedPlug : public ValuePlug
 
 		typedef T ValueType;
 		typedef boost::intrusive_ptr<TypedPlug> Ptr;
-		typedef boost::intrusive_ptr<TypedPlug> ConstPtr;
+		typedef boost::intrusive_ptr<const TypedPlug> ConstPtr;
 
 		TypedPlug(
 			const std::string &name = staticTypeName(),
 			Direction direction=In,
 			const T &defaultValue = T(),
-			unsigned flags = None,
-			PlugPtr input = 0
+			unsigned flags = None
 		);
 		virtual ~TypedPlug();
 

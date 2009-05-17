@@ -76,14 +76,12 @@ TypedPlug<T>::TypedPlug(
 	const std::string &name,
 	Direction direction,
 	const T &defaultValue,
-	unsigned flags,
-	PlugPtr input
+	unsigned flags
 )
 	:	ValuePlug( name, direction, flags, 0 ),
 		m_value( defaultValue ),
 		m_defaultValue( defaultValue )
 {
-	setInput( input );
 }
 
 template<class T>
