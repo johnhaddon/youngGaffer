@@ -77,6 +77,7 @@ class ScriptNodeTest( unittest.TestCase ) :
 		
 		s2 = Gaffer.ScriptNode()
 		se = s.serialise()
+				
 		s2.execute( se )
 
 		self.assert_( s2["a2"]["op1"].getInput().isSame( s2["a1"]["sum"] ) )
@@ -87,13 +88,16 @@ class ScriptNodeTest( unittest.TestCase ) :
 		
 		s1["n1"] = Gaffer.AddNode()
 		s1["n2"] = Gaffer.AddNode()
-		s1["n1"]["dynamicPlug"] = Gaffer.IntPlug()
+		s1["n1"]["dynamicPlug"] = Gaffer.IntPlug( flags=Gaffer.Plug.Flags.Dynamic )
 		s1["n1"]["dynamicPlug"].setInput( s1["n2"]["sum"] )
-		
+		s1["n1"]["dynamicPlug2"] = Gaffer.IntPlug( flags=Gaffer.Plug.Flags.Dynamic )
+		s1["n1"]["dynamicPlug2"].setValue( 100 )
+				
 		s2 = Gaffer.ScriptNode()
 		s2.execute( s1.serialise() )
 		
 		self.assert_( s2["n1"]["dynamicPlug"].getInput().isSame( s2["n2"]["sum"] ) )
+		self.assertEqual( s2["n1"]["dynamicPlug2"].getValue(), 100 )
 		
 	def testLifetime( self ) :
 	

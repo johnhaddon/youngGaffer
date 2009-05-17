@@ -7,6 +7,7 @@
 #include "GafferBindings/SignalBinding.h"
 #include "GafferBindings/RawConstructor.h"
 #include "GafferBindings/CatchingSlotCaller.h"
+#include "GafferBindings/Serialiser.h"
 #include "Gaffer/ScriptNode.h"
 #include "Gaffer/Plug.h"
 
@@ -16,6 +17,60 @@
 using namespace boost::python;
 using namespace GafferBindings;
 using namespace Gaffer;
+
+std::string serialiseNode( Serialiser &s, ConstGraphComponentPtr g )
+{
+	ConstNodePtr node = boost::static_pointer_cast<const Node>( g );
+	
+	std::string result = boost::str( boost::format( "%s.%s( \"%s\", " )
+		% s.modulePath( g )
+		% node->typeName()
+		% node->getName()
+	);
+
+	for( InputPlugIterator pIt=node->inputPlugsBegin(); pIt!=pIt.end(); pIt++ )
+	{
+		PlugPtr plug = *pIt;
+		std::string connectTo = "";
+		PlugPtr srcPlug = plug->getInput<Plug>();
+		if( srcPlug && srcPlug->node() )
+		{
+			std::string srcNodeName = s.add( srcPlug->node() );
+			if( srcNodeName!="" )
+			{
+				connectTo = srcNodeName + "[\"" + srcPlug->getName() + "\"]";
+			}
+		}
+
+		if( !plug->getFlags( Plug::Dynamic ) )
+		{
+			// we can just serialise the connection/value				
+			if( connectTo!="" )
+			{
+				result += plug->getName() + " = " + connectTo + ", ";
+			}
+			else
+			{
+				if( plug->isInstanceOf( ValuePlug::staticTypeId() ) )
+				{
+					object pythonPlug( plug );
+					object pythonValue = pythonPlug.attr( "getValue" )();
+					std::string value = extract<std::string>( pythonValue.attr( "__repr__" )() );
+					result += plug->getName() + " = " + value + ", ";
+				}
+			}
+		}
+		else
+		{
+			// we need to serialise the whole plug
+			std::string plugSerialisation = s.serialiseC( plug );
+			result += plug->getName() + " = " + plugSerialisation + ", ";
+		}
+	}
+
+	result += ")";
+	return result;
+}
 
 class NodeWrapper : public Node, public IECore::Wrapper<Node>
 {
@@ -42,6 +97,8 @@ class NodeWrapper : public Node, public IECore::Wrapper<Node>
 				f( boost::const_pointer_cast<Plug>( output ) );
 			}
 		}
+		
+		IE_COREPYTHON_RUNTIMETYPEDWRAPPERFNS( Node );
 
 };
 
@@ -54,23 +111,38 @@ void GafferBindings::setPlugs( NodePtr node, const boost::python::dict &keywords
 	for( long i=0; i<l; i++ )
 	{
 		std::string name = extract<std::string>( items[i][0] );
-		PlugPtr p = node->getChild<Plug>( name );
-		if( !p )
-		{
-			std::string err = boost::str( boost::format( "No plug named \"%s\"." ) % name );
-			throw std::invalid_argument( err.c_str() );
-		}
 
-		object pythonPlug( p );
-		
-		extract<PlugPtr> inputExtractor( items[i][1] );
-		if( inputExtractor.check() )
+		PlugPtr plug = node->getChild<Plug>( name );
+		if( !plug )
 		{
-			pythonPlug.attr( "setInput" )( object( items[i][1] ) );
+			// plug doesn't exist yet, hopefully a dynamic plug is being added
+			extract<PlugPtr> plugExtractor( items[i][1] );
+			if( plugExtractor.check() )
+			{
+				// add dynamic plug
+				PlugPtr p = plugExtractor();
+				node->addChild( p );
+			}
+			else
+			{
+				std::string err = boost::str( boost::format( "No plug named \"%s\"." ) % name );
+				throw std::invalid_argument( err.c_str() );	
+			}
 		}
 		else
 		{
-			pythonPlug.attr( "setValue" )( object( items[i][1] ) );
+			// plug already exists, connect it or set its value
+			object pythonPlug( plug );
+
+			extract<PlugPtr> inputExtractor( items[i][1] );
+			if( inputExtractor.check() )
+			{
+				pythonPlug.attr( "setInput" )( object( items[i][1] ) );
+			}
+			else
+			{
+				pythonPlug.attr( "setValue" )( object( items[i][1] ) );
+			}			
 		}
 	}
 }
@@ -124,5 +196,7 @@ void GafferBindings::bindNode()
 	
 	SignalBinder<Node::UnaryPlugSignal, DefaultSignalCaller<Node::UnaryPlugSignal>, CatchingSlotCaller<Node::UnaryPlugSignal> >::bind( "UnaryPlugSignal" );
 	SignalBinder<Node::BinaryPlugSignal, DefaultSignalCaller<Node::BinaryPlugSignal>, CatchingSlotCaller<Node::BinaryPlugSignal> >::bind( "BinaryPlugSignal" );
+	
+	Serialiser::registerSerialiser( Node::staticTypeId(), serialiseNode );
 		
 }

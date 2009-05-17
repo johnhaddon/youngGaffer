@@ -25,6 +25,32 @@ class NumericPlugTest( unittest.TestCase ) :
 		self.assertEqual( f.getName(), "a" )
 		self.assertEqual( f.typeName(), "FloatPlug" )
 	
+	def testHaveMinMaxValues( self ) :
+	
+		f = Gaffer.FloatPlug()
+		self.assertEqual( f.hasMinValue(), False )
+		self.assertEqual( f.hasMaxValue(), False )
+		
+		f = Gaffer.FloatPlug( minValue=1 )
+		self.assertEqual( f.hasMinValue(), True )
+		self.assertEqual( f.hasMaxValue(), False )
+		
+		f = Gaffer.FloatPlug( maxValue=1 )
+		self.assertEqual( f.hasMinValue(), False )
+		self.assertEqual( f.hasMaxValue(), True )
+	
+	def testConstructWithInputOrValue( self ) :
+	
+		f1 = Gaffer.FloatPlug()
+		
+		f2 = Gaffer.FloatPlug( input=f1 )
+		self.assert_( f2.getInput().isSame( f1 ) )
+		
+		f1 = Gaffer.FloatPlug( value=10 )
+		self.assertEqual( f1.getValue(), 10 )
+		
+		self.assertRaises( ValueError, Gaffer.FloatPlug, input=f1, value=10 )
+		
 	def testRunTimeTyping( self ) :
 	
 		f = Gaffer.FloatPlug()

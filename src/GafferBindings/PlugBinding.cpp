@@ -10,6 +10,28 @@ using namespace boost::python;
 using namespace GafferBindings;
 using namespace Gaffer;
 
+std::string GafferBindings::serialisePlugDirection( Plug::Direction direction )
+{
+	switch( direction )
+	{
+		case Plug::In :
+			return "Gaffer.Plug.Direction.In";
+		case Plug::Out :
+			return "Gaffer.Plug.Direction.Out";
+		default :
+			return "Gaffer.Plug.Direction.Invalid";
+	}
+}
+
+std::string GafferBindings::serialisePlugFlags( unsigned flags )
+{
+	if( flags )
+	{
+		return "Gaffer.Plug.Flags.Dynamic";
+	}
+	return "Gaffer.Plug.Flags.None";
+}
+
 static boost::python::tuple outputs( Plug &p )
 {
 	const Plug::OutputContainer &o = p.outputs();

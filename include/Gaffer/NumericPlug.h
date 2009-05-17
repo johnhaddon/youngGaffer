@@ -24,8 +24,7 @@ class NumericPlug : public ValuePlug
 			T defaultValue = T(),
 			T minValue = Imath::limits<T>::min(),
 			T maxValue = Imath::limits<T>::max(),
-			unsigned flags = None,
-			PlugPtr input = 0
+			unsigned flags = None
 		);
 		virtual ~NumericPlug();
 
@@ -47,9 +46,13 @@ class NumericPlug : public ValuePlug
 		virtual bool acceptsInput( ConstPlugPtr input ) const;
 
 		T defaultValue() const;
+		
+		bool hasMinValue() const;
+		bool hasMaxValue() const;
+
 		T minValue() const;
 		T maxValue() const;
-
+		
 		/// Clamps the value between min and max.
 		/// \undoable
 		void setValue( T value );

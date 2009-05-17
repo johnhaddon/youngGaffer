@@ -76,8 +76,7 @@ NumericPlug<T>::NumericPlug(
 	T defaultValue,
 	T minValue,
 	T maxValue,
-	unsigned flags,
-	PlugPtr input
+	unsigned flags
 )
 	:	ValuePlug( name, direction, flags, 0 ),
 		m_value( defaultValue ),
@@ -85,7 +84,6 @@ NumericPlug<T>::NumericPlug(
 		m_minValue( minValue ),
 		m_maxValue( maxValue )
 {
-	setInput( input );
 }
 
 template<class T>
@@ -107,6 +105,18 @@ template<class T>
 T NumericPlug<T>::defaultValue() const
 {
 	return m_defaultValue;
+}
+
+template<class T>
+bool NumericPlug<T>::hasMinValue() const
+{
+	return m_minValue!=Imath::limits<T>::min();
+}
+
+template<class T>
+bool NumericPlug<T>::hasMaxValue() const
+{
+	return m_maxValue!=Imath::limits<T>::max();
 }
 
 template<class T>

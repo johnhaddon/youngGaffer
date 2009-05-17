@@ -2,6 +2,7 @@
 
 #include "GafferBindings/ScriptNodeBinding.h"
 #include "GafferBindings/SignalBinding.h"
+#include "GafferBindings/Serialiser.h"
 #include "Gaffer/ScriptNode.h"
 
 #include "IECore/bindings/Wrapper.h"
@@ -88,7 +89,9 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 
 		virtual std::string serialise( ConstNodeSetPtr filter=0 ) const
 		{
-			std::set<ConstNodePtr> visited;
+			return Serialiser::serialise( this, filter );
+		
+			/*std::set<ConstNodePtr> visited;
 			std::string result;
 			std::set<std::string> moduleDependencies;
 			
@@ -104,7 +107,7 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 				importStatements += "import " + *it + "\n";
 			}
 			
-			return importStatements + "\n" + result;
+			return importStatements + "\n" + result;*/
 		}
 		
 		/// \todo Clear the script before executing!!
