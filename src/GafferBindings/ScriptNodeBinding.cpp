@@ -90,24 +90,6 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 		virtual std::string serialise( ConstNodeSetPtr filter=0 ) const
 		{
 			return Serialiser::serialise( this, filter );
-		
-			/*std::set<ConstNodePtr> visited;
-			std::string result;
-			std::set<std::string> moduleDependencies;
-			
-			ChildNodeIterator nIt;
-			for( nIt=childrenBegin<Node>(); nIt!=childrenEnd<Node>(); nIt++ )
-			{
-				serialiseNode( result, *nIt, filter, visited, moduleDependencies );
-			}
-			
-			std::string importStatements;
-			for( std::set<std::string>::const_iterator it=moduleDependencies.begin(); it!=moduleDependencies.end(); it++ )
-			{
-				importStatements += "import " + *it + "\n";
-			}
-			
-			return importStatements + "\n" + result;*/
 		}
 		
 		/// \todo Clear the script before executing!!
@@ -158,101 +140,6 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 		
 	private :
 	
-		void serialiseNode( std::string &result, ConstNodePtr node, ConstNodeSetPtr filter, std::set<ConstNodePtr> &visited, std::set<std::string> &moduleDependencies ) const
-		{
-			// early out if the node isn't wanted or we've done it already
-			if( filter && !filter->contains( node ) )
-			{
-				return;
-			}
-			if( visited.find( node )!=visited.end() )
-			{
-				return;
-			}
-			
-			// figure out the node type name and module path.
-			object pythonNode( boost::const_pointer_cast<Node>( node ) ); // we can only push non-const objects to python so we need the cast
-			std::string className = extract<std::string>( pythonNode.attr( "__class__" ).attr( "__name__" ) );
-			std::string modulePath = extract<std::string>( pythonNode.attr( "__module__" ) );
-			
-			typedef boost::tokenizer<boost::char_separator<char> > Tokenizer;
-			std::string sanitisedModulePath;
-			Tokenizer tokens( modulePath, boost::char_separator<char>( "." ) );
-			for( Tokenizer::iterator tIt=tokens.begin(); tIt!=tokens.end(); tIt++ )
-			{
-				if( tIt->compare( 0, 1, "_" )==0 )
-				{
-					// assume that module path components starting with _ are bogus, and are used only to bring
-					// binary components into a namespace.
-					continue;
-				}
-				Tokenizer::iterator next = tIt; next++;
-				if( next==tokens.end() && *tIt == className )
-				{
-					// if the last module name is the same as the class name then assume this is just the file the
-					// class has been implemented in.
-					continue;
-				}
-				if( sanitisedModulePath.size() )
-				{
-					sanitisedModulePath += ".";
-				}
-				sanitisedModulePath += *tIt;
-			}
-			
-			moduleDependencies.insert( sanitisedModulePath );
-			
-			std::string s = node->getName() + " = " + sanitisedModulePath + "." + className + "( \"" + node->getName() + "\",\n";
-			
-			/// \todo We'll have a problem when we add CompoundPlugs, as we can't pass something.something
-			/// names as keyword arguments to the constructors. perhaps we'll have to pass a dictionary mapping
-			/// from plug names to plug values instead. or pass a tuple of values - one per child?
-			for( InputPlugIterator pIt=node->inputPlugsBegin(); pIt!=pIt.end(); pIt++ )
-			{
-				PlugPtr plug = *pIt;
-				bool connect = false;
-				PlugPtr srcPlug = plug->getInput<Plug>();
-				if( srcPlug && srcPlug->node() && srcPlug->node()->scriptNode()==this )
-				{
-					if( !filter || filter->contains( srcPlug->node() ) )
-					{
-						connect = true;
-					}
-				}
-				
-				if( !plug->getFlags( Plug::Dynamic ) )
-				{
-					// we can just serialise the connection/value				
-					if( connect )
-					{
-						serialiseNode( result, srcPlug->node(), filter, visited, moduleDependencies );
-						s += "\t" + plug->getName() + " = " + srcPlug->node()->getName() + "[\"" + srcPlug->getName() + "\"],\n";
-					}
-					else
-					{
-						if( plug->isInstanceOf( ValuePlug::staticTypeId() ) )
-						{
-							object pythonPlug( plug );
-							object pythonValue = pythonPlug.attr( "getValue" )();
-							std::string value = extract<std::string>( pythonValue.attr( "__repr__" )() );
-					 		s += "\t" + plug->getName() + " = " + value + ",\n";
-						}
-					}
-				}
-				else
-				{
-					// we need to serialise the whole plug
-				}
-			}
-			
-			s += ")\n";
-			s += "addChild( " + node->getName() + " )\n\n";
-			
-			result += s;
-			
-			visited.insert( node );
-		}
-		
 		object executionGlobals()
 		{
 			object selfO( handle<>( borrowed( m_pyObject ) ) );
