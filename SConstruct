@@ -436,7 +436,7 @@ for module in ( "GafferTest", "GafferUITest" ) :
 scriptsInstall = env.Install( "$INSTALL_DIR/bin", [ "bin/gaffer", "bin/gaffer.py" ] )
 env.Alias( "install", scriptsInstall )
 
-for app in ( "light", "view", "test" ) :
+for app in ( "light", "view", "test", "cli" ) :
 	appInstall = env.Install( "$INSTALL_DIR/apps/%s/1" % app, "apps/%s/1/%s.py" % ( app, app ) )
 	env.Alias( "install", appInstall )
 
