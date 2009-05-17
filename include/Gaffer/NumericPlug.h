@@ -16,7 +16,7 @@ class NumericPlug : public ValuePlug
 
 		typedef T ValueType;
 		typedef boost::intrusive_ptr<NumericPlug> Ptr;
-		typedef boost::intrusive_ptr<NumericPlug> ConstPtr;
+		typedef boost::intrusive_ptr<const NumericPlug> ConstPtr;
 
 		NumericPlug(
 			const std::string &name = staticTypeName(),
