@@ -6,6 +6,7 @@ namespace Gaffer
 
 enum TypeId
 {
+
 	GraphComponentTypeId = 400000,
 	NodeTypeId = 400001,
 	PlugTypeId = 400002,
@@ -18,6 +19,11 @@ enum TypeId
 	ScriptContainerTypeId = 400009,
 	NodeSetTypeId = 400010,
 	ObjectPlugTypeId = 400011,
+
+	FirstPythonTypeId = 405000,
+	
+	LastTypeId = 409999
+	
 };
 
 } // namespace Gaffer

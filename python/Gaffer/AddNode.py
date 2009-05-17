@@ -1,3 +1,4 @@
+import IECore
 import Gaffer
 
 class AddNode( Gaffer.Node ) :
@@ -29,3 +30,5 @@ class AddNode( Gaffer.Node ) :
 		assert( plug.isSame( self.getChild( "sum" ) ) )
 
 		plug.setValue( self.getChild("op1").getValue() + self.getChild("op2").getValue() )
+
+IECore.registerRunTimeTyped( AddNode, 405000, Gaffer.Node )
