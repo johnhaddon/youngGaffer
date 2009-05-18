@@ -34,6 +34,10 @@ class TextWidget( GafferUI.Widget ) :
 			
 		return self.__textChangedSignal
 
+	def grabFocus( self ) :
+	
+		self.gtkWidget().grab_focus()
+
 	## A signal emitted when enter is pressed.
 	def activatedSignal( self ) :
 	

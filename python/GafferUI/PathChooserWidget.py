@@ -24,6 +24,11 @@ class PathChooserWidget( GafferUI.Widget ) :
 		self.__listingSelectedConnection = self.__directoryListing.pathSelectedSignal().connect( self.__pathSelected )
 		self.__pathWidgetSelectedConnection = self.__pathWidget.pathSelectedSignal().connect( self.__pathSelected )
 
+	## Returns the PathWidget used for text-based path entry.
+	def pathWidget( self ) :
+	
+		return self.__pathWidget
+
 	## This signal is emitted when the user has selected a path.
 	def pathSelectedSignal( self ) :
 	

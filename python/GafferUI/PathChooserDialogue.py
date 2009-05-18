@@ -30,6 +30,8 @@ class PathChooserDialogue( GafferUI.Dialogue ) :
 	# selected by the user. Returns None if the dialogue is cancelled.
 	def waitForPath( self ) :
 	
+		self.__pathChooserWidget.pathWidget().grabFocus()
+	
 		button = self.waitForButton()
 		if button is self.__confirmButton :
 			return self.__path.copy()
