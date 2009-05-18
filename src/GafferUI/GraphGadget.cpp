@@ -66,6 +66,12 @@ void GraphGadget::childAdded( GraphComponent *parent, GraphComponent *child )
 	if( node )
 	{
 		addNodeGadget( node );
+
+		// make gadgets for each connection
+		for( Gaffer::InputPlugIterator pIt( node->children().begin(), node->children().end() ); pIt!=pIt.end(); pIt++ )
+		{
+			addConnectionGadget( pIt->get() );
+		}
 	}
 }
 
