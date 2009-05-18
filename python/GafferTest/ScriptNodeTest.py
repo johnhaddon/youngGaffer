@@ -142,7 +142,27 @@ class ScriptNodeTest( unittest.TestCase ) :
 		s["a1"] = Gaffer.AddNode( op1=5, op2=6 )
 
 		s["fileName"].setValue( "/this/file/doesnt/exist" )
-		self.assertRaises( Exception, s.load )	
+		self.assertRaises( Exception, s.load )
+		
+	def testCopyPaste( self ) :
+	
+		app = Gaffer.ApplicationRoot()
+		
+		s1 = Gaffer.ScriptNode()
+		s2 = Gaffer.ScriptNode()
+		
+		app["scripts"]["s1"] = s1
+		app["scripts"]["s2"] = s2		
+		
+		n1 = Gaffer.AddNode()
+		s1["n1"] = n1
+		
+		s1.copy()
+		
+		s2.paste()
+		
+		self.assert_( s1["n1"].isInstanceOf( Gaffer.AddNode.staticTypeId() ) )
+		self.assert_( s2["n1"].isInstanceOf( Gaffer.AddNode.staticTypeId() ) )
 			
 if __name__ == "__main__":
 	unittest.main()

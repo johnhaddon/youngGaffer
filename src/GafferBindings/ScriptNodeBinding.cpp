@@ -50,7 +50,7 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 			executionGlobals["selection"] = weakMethod( object( selfO.attr( "selection" ) ) );
 			executionGlobals["undo"] = weakMethod( object( selfO.attr( "undo" ) ) );
 			executionGlobals["redo"] = weakMethod( object( selfO.attr( "redo" ) ) );
-			executionGlobals["deleteNode"] = weakMethod( object( selfO.attr( "deleteNode" ) ) );
+			executionGlobals["deleteNodes"] = weakMethod( object( selfO.attr( "deleteNodes" ) ) );
 			executionGlobals["serialise"] = weakMethod( object( selfO.attr( "serialise" ) ) );
 			executionGlobals["save"] = weakMethod( object( selfO.attr( "save" ) ) );
 			executionGlobals["load"] = weakMethod( object( selfO.attr( "load" ) ) );
@@ -176,6 +176,9 @@ struct ScriptEvaluatedSlotCaller
 };
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( serialiseOverloads, serialise, 0, 1 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( copyOverloads, copy, 0, 1 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( cutOverloads, cut, 0, 1 );
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( deleteNodesOverloads, deleteNodes, 0, 1 );
 
 void bindScriptNode()
 {
@@ -185,7 +188,10 @@ void bindScriptNode()
 		.def( "selection", (NodeSetPtr (ScriptNode::*)())&ScriptNode::selection )
 		.def( "undo", &ScriptNode::undo )
 		.def( "redo", &ScriptNode::redo )
-		.def( "deleteNode", &ScriptNode::deleteNode )
+		.def( "copy", &ScriptNode::copy, copyOverloads() )
+		.def( "cut", &ScriptNode::cut, cutOverloads() )
+		.def( "paste", &ScriptNode::paste )
+		.def( "deleteNodes", &ScriptNode::deleteNodes, deleteNodesOverloads() )
 		.def( "execute", &ScriptNode::execute )
 		.def( "evaluate", &ScriptNode::evaluate )
 		.def( "scriptExecutedSignal", &ScriptNode::scriptExecutedSignal, return_internal_reference<1>() )

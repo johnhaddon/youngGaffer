@@ -16,6 +16,7 @@ namespace Gaffer
 
 IE_CORE_FORWARDDECLARE( Action );
 IE_CORE_FORWARDDECLARE( ScriptNode );
+IE_CORE_FORWARDDECLARE( ApplicationRoot );
 
 typedef Container<GraphComponent, ScriptNode> ScriptContainer;
 IE_CORE_DECLAREPTR( ScriptContainer );
@@ -37,6 +38,10 @@ class ScriptNode : public Node
 				
 		/// Accepts parenting only to a ScriptContainer.
 		virtual bool acceptsParent( const GraphComponent *potentialParent ) const;
+		
+		/// Convenience function which simply returns ancestor<ApplicationRoot>().
+		ApplicationRootPtr application();
+		ConstApplicationRootPtr application() const;
 		
 		//! @name Selection
 		/// The ScriptNode maintains a list of child Nodes which are considered
@@ -69,14 +74,21 @@ class ScriptNode : public Node
 		//! @name Editing
 		/// These methods provide higher level editing functions for the
 		/// script.
-		/// \todo Cut, copy, paste
 		////////////////////////////////////////////////////////////////////
-		/// Removes the specified Node from the script, making sure it is
-		/// disconnected from the remaining Nodes and removed from the current
-		/// selection.
-		/// Throws an Exception if the node is not a child of this script.
+		/// Copies the contents of this script to the clipboard in the
+		/// application(). If specified then filter limits what is copied.
+		void copy( ConstNodeSetPtr filter=0 );
+		/// Performs a copy() and then deletes the copied nodes.
 		/// \undoable
-		void deleteNode( NodePtr child );
+		void cut( ConstNodeSetPtr filter=0 );
+		/// Pastes the contents of the global clipboard into the script.
+		/// \undoable
+		void paste();
+		/// Removes Nodes from the script, making sure they are
+		/// disconnected from the remaining Nodes and removed from the current
+		/// selection. If specified then filter limits what is deleted.
+		/// \undoable
+		void deleteNodes( ConstNodeSetPtr filter=0 );
 		//@}
 			
 		//! @name Script evaluation

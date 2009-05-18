@@ -1,8 +1,10 @@
 #include "IECore/Exception.h"
+#include "IECore/SimpleTypedData.h"
 
 #include "Gaffer/ScriptNode.h"
 #include "Gaffer/TypedPlug.h"
 #include "Gaffer/Action.h"
+#include "Gaffer/ApplicationRoot.h"
 
 using namespace Gaffer;
 
@@ -24,6 +26,16 @@ ScriptNode::~ScriptNode()
 bool ScriptNode::acceptsParent( const GraphComponent *potentialParent ) const
 {
 	return potentialParent->isInstanceOf( ScriptContainer::staticTypeId() );
+}
+
+ApplicationRootPtr ScriptNode::application()
+{
+	return ancestor<ApplicationRoot>();
+}
+
+ConstApplicationRootPtr ScriptNode::application() const
+{
+	return ancestor<ApplicationRoot>();
 }
 
 NodeSetPtr ScriptNode::selection()
@@ -62,25 +74,69 @@ void ScriptNode::redo()
 	m_undoIterator++;
 }
 
-void ScriptNode::deleteNode( NodePtr child )
+void ScriptNode::copy( ConstNodeSetPtr filter )
 {
-	if( child->ancestor<ScriptNode>() != this )
+	ApplicationRootPtr app = application();
+	if( !app )
 	{
-		throw IECore::Exception( "Node is not a child of script." );
+		throw( "ScriptNode has no ApplicationRoot" );
+	}
+	
+	std::string s = serialise( filter );
+	app->setClipboardContents( new IECore::StringData( s ) );
+}
+
+void ScriptNode::cut( ConstNodeSetPtr filter )
+{
+	copy( filter );
+	deleteNodes( filter );
+}
+
+void ScriptNode::paste()
+{
+	ApplicationRootPtr app = application();
+	if( !app )
+	{
+		throw( "ScriptNode has no ApplicationRoot" );
+	}
+	
+	IECore::ConstStringDataPtr s = IECore::runTimeCast<const IECore::StringData>( app->getClipboardContents() );
+	if( s )
+	{
+		execute( s->readable() );
+	}
+}
+
+void ScriptNode::deleteNodes( ConstNodeSetPtr filter )
+{
+	ChildNodeIterator nIt;
+	for( nIt=childrenBegin<Node>(); nIt!=childrenEnd<Node>(); )
+	{
+	
+		ChildNodeIterator next = nIt; next++;
+		
+		if( !filter || filter->contains( *nIt ) )
+		{
+			
+			for( InputPlugIterator it=(*nIt)->inputPlugsBegin(); it!=(*nIt)->inputPlugsEnd(); it++ )
+			{
+				(*it)->setInput( 0 );
+			}
+
+			for( OutputPlugIterator it=(*nIt)->outputPlugsBegin(); it!=(*nIt)->outputPlugsEnd(); it++ )
+			{
+				(*it)->removeOutputs();
+			}
+
+			selection()->remove( *nIt );
+
+			(*nIt)->parent<GraphComponent>()->removeChild( (*nIt) );
+		}
+		
+		nIt = next;
+		
 	}
 
-	for( InputPlugIterator it=child->inputPlugsBegin(); it!=child->inputPlugsEnd(); it++ )
-	{
-		(*it)->setInput( 0 );
-	}
-	
-	for( OutputPlugIterator it=child->outputPlugsBegin(); it!=child->outputPlugsEnd(); it++ )
-	{
-		(*it)->removeOutputs();
-	}
-	
-	selection()->remove( child );
-	child->parent<GraphComponent>()->removeChild( child );
 }
 
 StringPlugPtr ScriptNode::fileNamePlug()

@@ -38,3 +38,13 @@ ConstScriptContainerPtr ApplicationRoot::scripts() const
 {
 	return getChild<ScriptContainer>( "scripts" );
 }
+
+IECore::ConstObjectPtr ApplicationRoot::getClipboardContents() const
+{
+	return m_clipboardContents;
+}
+
+void ApplicationRoot::setClipboardContents( IECore::ConstObjectPtr clip )
+{
+	m_clipboardContents = clip->copy();
+}

@@ -24,9 +24,28 @@ class ApplicationRoot : public GraphComponent
 		ScriptContainerPtr scripts();
 		ConstScriptContainerPtr scripts() const;
 		
+		//! @name Clipboard
+		/// The ApplicationRoot class holds a clipboard which is
+		/// shared by all ScriptNodes belonging to the application.
+		/// The cut, copy and paste methods of the ScriptNodes
+		/// operate using this central clipboard. The contents of the
+		/// clipboard is simply stored as an IECore::Object.
+		////////////////////////////////////////////////////////
+		//@{
+		/// Returns the clipboard contents, a copy should be taken
+		/// if it must be modified.
+		IECore::ConstObjectPtr getClipboardContents() const;
+		/// Sets the clipboard contents - a copy of clip is taken.
+		void setClipboardContents( IECore::ConstObjectPtr clip );
+		//@}
+		
 		/// \todo Implement
 		//NodePtr preferences();
 		//ConstNodePtr preferences() const;
+
+	private :
+	
+		IECore::ObjectPtr m_clipboardContents;
 	
 };
 
