@@ -2,6 +2,7 @@
 #define GAFFERBINDINGS_SETBINDING_INL
 
 #include "boost/python.hpp"
+#include "boost/python/suite/indexing/container_utils.hpp"
 
 #include "GafferBindings/SignalBinding.h"
 #include "GafferBindings/CatchingSlotCaller.h"
@@ -39,7 +40,20 @@ boost::python::object sequencedSetMembers( T &s )
 	return boost::python::tuple( l );
 }
 
+template<typename T>
+typename T::Ptr setConstructor( boost::python::object o )
+{
+	typename T::Ptr result = new T;
+	std::vector<typename T::ValuePtr> members;
+	boost::python::container_utils::extend_container( members, o );
+	for( unsigned i=0; i<members.size(); i++ )
+	{
+		result->add( members[i] );
+	}
+	return result;
 }
+
+} // namespace Detail
 
 template <typename T>
 void bindSet()
@@ -47,6 +61,7 @@ void bindSet()
 	
 	boost::python::scope s = IECore::RunTimeTypedClass<T>()
 		.def( boost::python::init<>() )
+		.def( "__init__", boost::python::make_constructor( Detail::setConstructor<T> ) )
 		.def( "add", &T::add )
 		.def( "remove", &T::remove )
 		.def( "clear", &T::clear )

@@ -142,6 +142,16 @@ class SetTest( unittest.TestCase ) :
 		
 		self.assertEqual( ps, s.members() ) 
 		
+	def testConstructFromSequence( self ) :
+	
+		n1 = Gaffer.Node()
+		n2 = Gaffer.Node()
+		n3 = Gaffer.Node()
+		
+		s = Gaffer.NodeSet( ( n1, n2 ) )
+		self.assert_( n1 in s )
+		self.assert_( n2 in s )
+		self.assert_( not n3 in s )
 		
 if __name__ == "__main__":
 	unittest.main()
