@@ -208,8 +208,12 @@ class GadgetWidget( GLWidget ) :
 
 	def __enterNotify( self, widget, event ) :
 	
-		widget.grab_focus()
-		return True
+		if event.mode==gtk.gdk.CROSSING_NORMAL :
+			# very important we only grab focus when its the mouse which
+			# is entering the window. the other crossing modes are for gaining
+			# or losing focus and grabbing focus in those seems to stop anyone
+			# else from getting focus properly.
+			widget.grab_focus()
 		
 	def __keyPress( self, widget, event ) :
 	
