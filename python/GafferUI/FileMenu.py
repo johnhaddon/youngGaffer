@@ -44,7 +44,6 @@ def open( menu ) :
 	currentScript = scriptWindow.getScript()
 	application = scriptWindow.getScript().ancestor( Gaffer.ApplicationRoot.staticTypeId() )
 	
-	## \todo When we have a scriptChanged plug then we can use that rather than count nodes.
 	currentNodes = [ n for n in currentScript.children() if n.isInstanceOf( Gaffer.Node.staticTypeId() ) ]
 	if not currentNodes and not currentScript["fileName"].getValue() :
 		script = currentScript
