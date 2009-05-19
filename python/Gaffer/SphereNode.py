@@ -27,7 +27,7 @@ class SphereNode( Gaffer.Node ) :
 
 	def dirty( self, plug ) :
 	
-		if plug.getName() in ( "radius", "zMin", "zMaz", "theta" ) :
+		if plug.getName() in ( "radius", "zMin", "zMax", "theta" ) :
 		
 			self["output"].setDirty()
 			
