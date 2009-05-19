@@ -10,7 +10,7 @@ class Viewer( GafferUI.NodeSetEditor ) :
 		GafferUI.NodeSetEditor.__init__( self, gtk.EventBox(), scriptNode )
 
 		self.__renderableGadget = GafferUI.RenderableGadget( None )
-		self.__gadgetWidget = GafferUI.GadgetWidget( self.__renderableGadget, cameraMode=GafferUI.GadgetWidget.CameraMode.Mode3D )
+		self.__gadgetWidget = GafferUI.GadgetWidget( self.__renderableGadget, bufferOptions=set( ( GafferUI.GLWidget.BufferOptions.Depth, ) ), cameraMode=GafferUI.GadgetWidget.CameraMode.Mode3D )
 		
 		self.gtkWidget().add( self.__gadgetWidget.gtkWidget() )
 		

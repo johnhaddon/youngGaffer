@@ -27,9 +27,9 @@ class GadgetWidget( GLWidget ) :
 
 	CameraMode = IECore.Enum.create( "None", "Mode2D", "Mode3D" )
 
-	def __init__( self, gadget=None, cameraMode=CameraMode.Mode2D ) :
+	def __init__( self, gadget=None, bufferOptions=set(), cameraMode=CameraMode.Mode2D ) :
 		
-		GLWidget.__init__( self )
+		GLWidget.__init__( self, bufferOptions )
 		
 		self.gtkWidget().add_events( gtk.gdk.BUTTON_PRESS_MASK )
 		self.gtkWidget().add_events( gtk.gdk.BUTTON_RELEASE_MASK )
