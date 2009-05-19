@@ -127,6 +127,7 @@ class GadgetWidget( GLWidget ) :
 		self.__renderer.worldBegin()
 		if 1 :
 			
+			## \todo Should be able to rely on the IECoreGL::Renderer having a better default shader
 			self.__renderer.shader( "surface", "constant", {} )
 			self.__gadget.render( self.__renderer )
 
