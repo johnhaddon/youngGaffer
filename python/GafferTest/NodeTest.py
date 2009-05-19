@@ -39,6 +39,9 @@ class NodeTest( unittest.TestCase ) :
 			NodeTest.lastSet = plug.fullName()
 						
 		n1 = Gaffer.AddNode()
+		self.assertEqual( n1["sum"].getDirty(), True )
+		n1["sum"].getValue()
+		self.assertEqual( n1["sum"].getDirty(), False )
 		
 		cb = []
 		cb.append( n1.plugSetSignal().connect( setCallback ) )	
@@ -69,6 +72,10 @@ class NodeTest( unittest.TestCase ) :
 		
 		n2 = Gaffer.AddNode()
 		n2.setName( "Add2" )
+		self.assertEqual( n2["sum"].getDirty(), True )
+		n2["sum"].getValue()
+		self.assertEqual( n2["sum"].getDirty(), False )
+		
 		cb.append( n2.plugSetSignal().connect( setCallback ) )
 		cb.append( n2.plugDirtiedSignal().connect( dirtyCallback) )
 		
@@ -117,7 +124,7 @@ class NodeTest( unittest.TestCase ) :
 		n2 = Gaffer.AddNode( "N2" )
 		
 		n2.getChild( "op1" ).setInput( n1.getChild( "sum" ) )
-		self.assertEqual( n2.getChild( "sum" ).getDirty(), False )
+		self.assertEqual( n2.getChild( "sum" ).getDirty(), True )
 				
 		n1.getChild( "op1" ).setValue( 1 )
 		self.assertEqual( n1.getChild( "sum" ).getDirty(), True )
@@ -147,7 +154,12 @@ class NodeTest( unittest.TestCase ) :
 		
 		n2 = Gaffer.AddNode( "goodbye", op1 = n["sum"] )
 		self.assert_( n2["op1"].getInput().isSame( n["sum"] ) )
-									
+	
+	def testOutputsDirtyForNewNodes( self ) :
+	
+		n = Gaffer.AddNode()
+		self.assertEqual( n["sum"].getDirty(), True )
+										
 if __name__ == "__main__":
 	unittest.main()
 	
