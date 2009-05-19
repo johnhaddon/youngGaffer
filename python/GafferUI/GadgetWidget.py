@@ -10,6 +10,12 @@ from _GafferUI import ButtonEvent, ModifiableEvent, ContainerGadget, DragDropEve
 # hosting a Gadget within a Widget based interface.
 # Widgets are UI elements implemented using GTK, whereas
 # Gadgets are implemented on top of the Cortex infrastructure.
+#
+# Camera motion is achieved by holding down either Ctrl or Alt and clicking
+# and dragging. Use the left button for tumbling, the middle mouse button
+# for tracking and the right mouse button for dollying. Prefer Ctrl rather than
+# Alt on Apple's X11 with a single mouse button and 3 button emulation turned on.
+#
 ## \todo It feels like this could be split into two classes - one that just
 # takes gtk events and turns them into GafferUI events, and one that takes
 # those events and forwards them to the Gadgets appropriately, maintaining
@@ -52,6 +58,8 @@ class GadgetWidget( GLWidget ) :
 		
 		self.__lastButtonPressGadget = None
 		self.__dragDropEvent = None
+		
+		self.__cameraInMotion = False
 		
 	def setGadget( self, gadget ) :
 	
@@ -135,7 +143,7 @@ class GadgetWidget( GLWidget ) :
 		if not gadgetEvent.buttons :
 			return False		
 
-		if gadgetEvent.modifiers & ModifiableEvent.Modifiers.Alt :
+		if gadgetEvent.modifiers & ModifiableEvent.Modifiers.Alt or gadgetEvent.modifiers & ModifiableEvent.Modifiers.Control :
 			return self.__cameraButtonPress( event );
 
 		gadgets = self.__select( event )
@@ -151,13 +159,13 @@ class GadgetWidget( GLWidget ) :
 	
 		if not self.__gadget :
 			return True
+
+		if self.__cameraInMotion :
+			return self.__cameraButtonRelease( event );
 		
 		gadgetEvent = self.__gtkEventToGadgetEvent( event )
 		if not gadgetEvent.buttons :
 			return True		
-
-		if gadgetEvent.modifiers & ModifiableEvent.Modifiers.Alt :
-			return self.__cameraButtonRelease( event );
 
 		gadgets = self.__select( event )
 		if self.__dragDropEvent :
@@ -181,8 +189,7 @@ class GadgetWidget( GLWidget ) :
 		if not self.__gadget :
 			return True
 		
-		buttonEvent = self.__gtkEventToGadgetEvent( event, ButtonEvent() )
-		if buttonEvent.modifiers & ModifiableEvent.Modifiers.Alt :
+		if self.__cameraInMotion :
 			return self.__cameraMotion( event );
 
 		if self.__lastButtonPressGadget and not self.__dragDropEvent :
@@ -357,36 +364,26 @@ class GadgetWidget( GLWidget ) :
 		return False
 	
 	def __cameraButtonPress( self, event ) :
-				
+								
 		motionType = IECore.CameraController.MotionType.None
 		if event.button==1 :
-			if event.state & gtk.gdk.CONTROL_MASK :
-				motionType = IECore.CameraController.MotionType.Dolly
-			elif event.state & gtk.gdk.SHIFT_MASK :
-				motionType = IECore.CameraController.MotionType.Track
-			elif event.state & gtk.gdk.BUTTON2_MASK :
-				motionType = IECore.CameraController.MotionType.Dolly
-			else :
-				motionType = IECore.CameraController.MotionType.Tumble
+			motionType = IECore.CameraController.MotionType.Tumble
 		elif event.button==2 :
-			if event.state & gtk.gdk.BUTTON1_MASK :
-				motionType = IECore.CameraController.MotionType.Dolly
-			else :
-				motionType = IECore.CameraController.MotionType.Track
+			motionType = IECore.CameraController.MotionType.Track
+		elif event.button==3 :
+			motionType = IECore.CameraController.MotionType.Dolly
 				
 		if motionType==IECore.CameraController.MotionType.Tumble and self.__cameraMode==self.CameraMode.Mode2D :
 			motionType = IECore.CameraController.MotionType.Track
 				
 		if motionType :
 			self.__cameraController.motionStart( motionType, IECore.V2i( int(event.x), int(event.y) ) )
+			self.__cameraInMotion = True
 			
 		return True
 	
 	def __cameraMotion( self, event ) :
-	
-		if not event.state & ( gtk.gdk.BUTTON1_MASK | gtk.gdk.BUTTON2_MASK | gtk.gdk.BUTTON3_MASK ) :
-			return True
-	
+		
 		self.__cameraController.motionUpdate( IECore.V2i( int(event.x), int(event.y) ) )
 		self.gtkWidget().queue_draw()
 
@@ -395,7 +392,8 @@ class GadgetWidget( GLWidget ) :
 	def __cameraButtonRelease( self, event ) :
 
 		self.__cameraController.motionEnd( IECore.V2i( int(event.x), int(event.y) ) )
-		self.gtkWidget().queue_draw()	
+		self.gtkWidget().queue_draw()
+		self.__cameraInMotion = False
 		return True
 		
 	def __scroll( self, widget, event ) :
