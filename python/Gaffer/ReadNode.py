@@ -35,3 +35,5 @@ class ReadNode( Gaffer.Node ) :
 				result = reader.read()
 		
 		plug.setValue( result )
+
+IECore.registerRunTimeTyped( ReadNode, 405002, Gaffer.Node )

@@ -37,3 +37,5 @@ class WriteNode( Gaffer.Node ) :
 				writer.write()
 		
 		plug.setValue( filename )
+
+IECore.registerRunTimeTyped( WriteNode, 405003, Gaffer.Node )
