@@ -35,13 +35,24 @@ class Menu( Widget ) :
 
 	@staticmethod
 	def __commandWrapper( command, menuItem ) :
-	
+		
+		args = []
 		kw = {}
 		commandArgs = inspect.getargspec( command )[0]
 		if "menu" in commandArgs :
 			kw["menu"] = Widget.owner( menuItem )
-	
-		command( **kw )
+		
+		if "checkBox" in commandArgs :
+			kw["checkBox"] = menuItem.get_active()
+		elif isinstance( menuItem, gtk.CheckMenuItem ) :
+			# workaround for the fact that curried functions
+			# don't have arguments we can query right now. we
+			# just assume that if it's a check menu item then
+			# there must be an argument to receive the check
+			# status.
+			args.append( menuItem.get_active() )
+			
+		command( *args, **kw )
 
 	@staticmethod
 	def __show( menu, definition ) :
@@ -86,23 +97,28 @@ class Menu( Widget ) :
 						subMenu = gtk.Menu()
 						subMenu.connect( "show", Menu.__show, item.subMenu )
 						menuItem = gtk.MenuItem( label = name )
-						menuItem.set_submenu( subMenu )
+						menuItem.set_submenu( subMenu )						
 											
 					else :
 					
-						menuItem = gtk.MenuItem( label = name )
+						if item.checkBox :
+							menuItem = gtk.CheckMenuItem( label = name )
+							menuItem.set_active( item.checkBox() )
+						else :
+							menuItem = gtk.MenuItem( label = name )
 						
+						active = False
 						if item.command :
 						
 							active = item.active
 							if callable( active ) :
 								active = active()
-								
-							menuItem.connect( "activate", curry( Menu.__commandWrapper, item.command ) )
-					
-						else :
-							active = False
 							
+							if item.checkBox :	
+								menuItem.connect( "toggled", curry( Menu.__commandWrapper, item.command ) )							
+							else :
+								menuItem.connect( "activate", curry( Menu.__commandWrapper, item.command ) )
+												
 						menuItem.set_sensitive( active )
 				
 				menuItem.show()
