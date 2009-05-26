@@ -61,6 +61,8 @@ class GadgetWidget( GLWidget ) :
 		
 		self.__cameraInMotion = False
 		
+		self.__baseState = IECoreGL.State( True )
+		
 	def setGadget( self, gadget ) :
 	
 		self.__gadget = gadget
@@ -105,7 +107,14 @@ class GadgetWidget( GLWidget ) :
 		if self.__scene :
 			
 			self.__scene.setCamera( IECoreGL.ToGLCameraConverter( self.__camera ).convert() )
-			self.__scene.render()
+			self.__scene.render( self.__baseState )
+	
+	## Returns the IECoreGL.State object used as the base display style for the
+	# rendering of the held Gadget. This may be modified freely to
+	# change the display style.
+	def baseState( self ) :
+	
+		return self.__baseState
 	
 	def __renderRequest( self, gadget ) :
 	
