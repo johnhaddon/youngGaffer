@@ -74,3 +74,4 @@ settings = gtk.settings_get_default()
 m = gtk.Menu() # have to make a menu for the property to be created
 del m
 settings.set_property( "gtk-menu-popup-delay", 0 )
+settings.set_property( "gtk-menu-popdown-delay", 0 )
