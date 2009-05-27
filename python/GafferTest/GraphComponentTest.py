@@ -161,6 +161,10 @@ class GraphComponentTest( unittest.TestCase ) :
 		p.addChild( c3 )
 		self.assertEqual( c3.getName(), "a2" )
 		
+		c4 = Gaffer.GraphComponent( "a1" )
+		p.addChild( c4 )
+		self.assertEqual( c4.getName(), "a3" )
+		
 	def testAncestor( self ) :
 	
 		a = Gaffer.ApplicationRoot()
