@@ -240,7 +240,7 @@ class GadgetWidget( GLWidget ) :
 		if event.keyval==102 :
 			bound = self.__gadget.bound()
 			if not bound.isEmpty() :
-				self.__cameraController.frame( self.__gadget.bound() )
+				self.__cameraController.frame( bound )
 				widget.queue_draw()
 			return True
 		
