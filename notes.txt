@@ -337,6 +337,9 @@ lights + shading
 * should be able to get realtime shadows in gl, and drag them around interactively
 * need nice area shadow implementation using depth maps
 * need to be able to constrain lights to things
+* forget about supporting the old skool gl lights at all. just start with the renderman implementations
+ and add gl support later on. gl support will be based entirely on glsl and maybe deferred rendering
+ and skip the old lighting stuff.
 
 features
 ========
