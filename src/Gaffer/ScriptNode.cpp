@@ -6,6 +6,9 @@
 #include "Gaffer/Action.h"
 #include "Gaffer/ApplicationRoot.h"
 
+#include "boost/bind.hpp"
+#include "boost/bind/placeholders.hpp"
+
 using namespace Gaffer;
 
 GAFFER_DECLARECONTAINERSPECIALISATIONS( ScriptContainer, ScriptContainerTypeId )
@@ -103,7 +106,16 @@ void ScriptNode::paste()
 	IECore::ConstStringDataPtr s = IECore::runTimeCast<const IECore::StringData>( app->getClipboardContents() );
 	if( s )
 	{
-		execute( s->readable() );
+		// set up something catch all the newly created nodes
+		GraphComponentSetPtr newNodes = new GraphComponentSet;
+		childAddedSignal().connect( boost::bind( (bool (GraphComponentSet::*)( GraphComponentPtr ) )&GraphComponentSet::add, newNodes.get(), ::_2 ) );
+			
+			// do the paste
+			execute( s->readable() );
+
+		// transfer the newly created nodes into the selection
+		selection()->clear();
+		selection()->add( newNodes->sequencedMembers().begin(), newNodes->sequencedMembers().end() );
 	}
 }
 
