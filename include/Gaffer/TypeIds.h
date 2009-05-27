@@ -19,6 +19,7 @@ enum TypeId
 	ScriptContainerTypeId = 400009,
 	NodeSetTypeId = 400010,
 	ObjectPlugTypeId = 400011,
+	GraphComponentSetTypeId = 400012,
 
 	FirstPythonTypeId = 405000,
 	

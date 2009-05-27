@@ -67,11 +67,43 @@ bool Set<T>::add( typename T::Ptr member )
 }
 
 template<typename T>
+template<typename I>
+size_t Set<T>::add( I first, I last )
+{
+	size_t numAdded = 0;
+	for( I it=first; it!=last; it++ )
+	{
+		ValuePtr v = IECore::runTimeCast<T>( *it );
+		if( v )
+		{
+			numAdded += add( v );
+		}
+	}
+	return numAdded;
+}
+
+template<typename T>
 bool Set<T>::remove( typename T::Ptr member )
 {
 	bool result = m_members.erase( member );
 	memberRemovedSignal()( this, member );
 	return result;
+}
+
+template<typename T>
+template<typename I>
+size_t Set<T>::remove( I first, I last )
+{
+	size_t numRemoved = 0;
+	for( I it=first; it!=last; it++ )
+	{
+		ValuePtr v = IECore::runTimeCast<T>( *it );
+		if( v )
+		{
+			numRemoved += remove( v );
+		}
+	}
+	return numRemoved;
 }
 
 template<typename T>

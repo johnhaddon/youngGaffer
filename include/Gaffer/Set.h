@@ -13,7 +13,7 @@ namespace Gaffer
 {
 
 template<typename T>
-class Set : public IECore::RunTimeTyped
+class Set : public IECore::RunTimeTyped, public boost::signals::trackable
 {
 
 	public :
@@ -54,9 +54,18 @@ class Set : public IECore::RunTimeTyped
 		/// Adds a member to the set. Returns true if the member
 		/// was not already present, and false otherwise.
 		bool add( typename T::Ptr member );
+		/// Adds all the objects in the specified range into this set, returning
+		/// the number of new members added. Uses IECore::runTimeCast
+		/// to weed out unsuitable members.
+		template<typename I>
+		size_t add( I first, I last );
 		/// Removes a member from the set. Returns true if the member
 		/// is removed and false if it wasn't there in the first place.
 		bool remove( typename T::Ptr member );
+		/// Removes all the in the specified range from this set, returning the
+		/// number of members removed.
+		template<typename I>
+		size_t remove( I first, I last );
 		/// Removes all members from the set.
 		void clear();
 		/// Returns true if the object is a member of the set.
@@ -103,6 +112,10 @@ class Set : public IECore::RunTimeTyped
 	}																		\
 	template<> 																\
 	const IECore::RunTimeTyped::TypeDescription<TYPENAME>  TYPENAME::g_typeDescription; \
+
+
+typedef Set<GraphComponent> GraphComponentSet;
+IE_CORE_DECLAREPTR( GraphComponentSet );
 
 typedef Set<Node> NodeSet;
 IE_CORE_DECLAREPTR( NodeSet );
