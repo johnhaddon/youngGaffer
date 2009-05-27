@@ -43,9 +43,9 @@ static boost::python::tuple outputs( Plug &p )
 	return boost::python::tuple( l );
 }
 
-static PlugPtr constructor( const std::string &name, Plug::Direction direction, Plug::Flags flags, PlugPtr input )
+static PlugPtr constructor( const std::string &name, Plug::Direction direction, Plug::Flags flags )
 {
-	return new Plug( name, direction, flags, input );
+	return new Plug( name, direction, flags );
 }
 
 void GafferBindings::bindPlug()
@@ -72,8 +72,7 @@ void GafferBindings::bindPlug()
 				(
 					boost::python::arg_( "name" )=Plug::staticTypeName(),
 					boost::python::arg_( "direction" )=Plug::In,
-					boost::python::arg_( "flags" )=Plug::None,
-					boost::python::arg_( "input" )=PlugPtr( 0 )
+					boost::python::arg_( "flags" )=Plug::None
 				)
 			)
 		)

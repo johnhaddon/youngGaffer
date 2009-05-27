@@ -78,7 +78,7 @@ TypedPlug<T>::TypedPlug(
 	const T &defaultValue,
 	unsigned flags
 )
-	:	ValuePlug( name, direction, flags, 0 ),
+	:	ValuePlug( name, direction, flags ),
 		m_value( defaultValue ),
 		m_defaultValue( defaultValue )
 {

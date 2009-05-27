@@ -27,8 +27,7 @@ class TypedObjectPlug : public ValuePlug
 			const std::string &name = staticTypeName(),
 			Direction direction=In,
 			ConstValuePtr defaultValue = ValuePtr(),
-			unsigned flags = None,
-			PlugPtr input = 0
+			unsigned flags = None
 		);
 		virtual ~TypedObjectPlug();
 

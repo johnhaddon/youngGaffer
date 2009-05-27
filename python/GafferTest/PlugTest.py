@@ -91,16 +91,7 @@ class PlugTest( unittest.TestCase ) :
 		
 		p.setFlags( Gaffer.Plug.Flags.Dynamic, False )
 		self.assertEqual( p.getFlags( Gaffer.Plug.Flags.Dynamic ), False )
-		
-			
-	def testConstructWithInput( self ) :
-	
-		p = Gaffer.Plug()
-		self.assertEqual( p.getInput(), None )
-		
-		p2 = Gaffer.Plug( input=p )
-		self.assert_( p2.getInput().isSame( p ) )
-		
+				
 if __name__ == "__main__":
 	unittest.main()
 	

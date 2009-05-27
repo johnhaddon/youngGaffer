@@ -49,10 +49,7 @@ class Plug : public GraphComponent
 			All = Dynamic
 		};
 	
-		/// When implementing derived classes, they should call the base class constructor with input==0 at all times,
-		/// and then if necessary call setInput() at the end of their constructor - otherwise the acceptsInput method
-		/// will not be evaluated in the derived class and unwanted connections could result.
-		Plug( const std::string &name=staticTypeName(), Direction direction=In, unsigned flags=None, PlugPtr input=0 );
+		Plug( const std::string &name=staticTypeName(), Direction direction=In, unsigned flags=None );
 		virtual ~Plug();
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( Plug, PlugTypeId, GraphComponent );
