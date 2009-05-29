@@ -43,6 +43,7 @@ class Serialiser
 		/// Makes sure the module needed for object o is imported, and returns a string
 		/// which can be used to refer to it.
 		std::string modulePath( Gaffer::ConstGraphComponentPtr o );
+		std::string modulePath( boost::python::object &o );
 		/// Adds the specified object to the serialisation and returns the name of
 		/// a local variable which can be used to reference it in subsequent parts of the
 		/// serialisation. If component is not in filter then nothing is done and the empty

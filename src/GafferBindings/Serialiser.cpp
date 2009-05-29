@@ -36,8 +36,13 @@ std::string Serialiser::serialise( Gaffer::ConstNodePtr context, Gaffer::ConstNo
 std::string Serialiser::modulePath( Gaffer::ConstGraphComponentPtr o )
 {
 	object po( boost::const_pointer_cast<Gaffer::GraphComponent>( o ) ); // we can only push non-const objects to python so we need the cast
-	std::string className = extract<std::string>( po.attr( "__class__" ).attr( "__name__" ) );
-	std::string modulePath = extract<std::string>( po.attr( "__module__" ) );
+	return modulePath( po );
+}
+
+std::string Serialiser::modulePath( boost::python::object &o )
+{
+	std::string className = extract<std::string>( o.attr( "__class__" ).attr( "__name__" ) );
+	std::string modulePath = extract<std::string>( o.attr( "__module__" ) );
 
 	typedef boost::tokenizer<boost::char_separator<char> > Tokenizer;
 	std::string sanitisedModulePath;
