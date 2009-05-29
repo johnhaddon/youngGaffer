@@ -12,6 +12,7 @@ from PathTest import PathTest
 from PathFilterTest import PathFilterTest
 from UndoTest import UndoTest
 from SpeedTest import SpeedTest
+from KeywordPlugNode import KeywordPlugNode
 
 if __name__ == "__main__":
 	import unittest

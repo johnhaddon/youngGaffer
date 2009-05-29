@@ -6,6 +6,7 @@ import gc
 import IECore
 
 import Gaffer
+import GafferTest
 
 class ScriptNodeTest( unittest.TestCase ) :
 
@@ -163,6 +164,15 @@ class ScriptNodeTest( unittest.TestCase ) :
 		
 		self.assert_( s1["n1"].isInstanceOf( Gaffer.AddNode.staticTypeId() ) )
 		self.assert_( s2["n1"].isInstanceOf( Gaffer.AddNode.staticTypeId() ) )
+
+	def testSerialisationWithKeywords( self ) :
+			
+		s = Gaffer.ScriptNode()
+		s["n1"] = GafferTest.KeywordPlugNode()
+		
+		se = s.serialise()
+		s2 = Gaffer.ScriptNode()
+		s2.execute( se )
 			
 if __name__ == "__main__":
 	unittest.main()
