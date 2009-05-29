@@ -42,7 +42,7 @@ class ValuePlug : public Plug
 		/// date) and propagates the dirty status to any dependent
 		/// Plugs. This takes no arguments as a Plug is made clean
 		/// by using the implementation specific setValue() function.
-		void setDirty();
+		virtual void setDirty();
 		/// Returns true if the Plug is dirty - ie the value held is
 		/// not valid.
 		bool getDirty() const;
