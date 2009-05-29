@@ -173,6 +173,18 @@ class ScriptNodeTest( unittest.TestCase ) :
 		se = s.serialise()
 		s2 = Gaffer.ScriptNode()
 		s2.execute( se )
+	
+	def testSerialisationWithNodeKeywords( self ) :
+	
+		s = Gaffer.ScriptNode()
+		s["in"] = Gaffer.Node()
+		
+		se = s.serialise()
+		
+		s2 = Gaffer.ScriptNode()
+		s2.execute( se )
+		
+		self.assertEqual( s2["in"].typeName(), "Node" )
 			
 if __name__ == "__main__":
 	unittest.main()
