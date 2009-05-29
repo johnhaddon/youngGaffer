@@ -37,7 +37,7 @@ bool Plug::acceptsParent( const GraphComponent *potentialParent ) const
 	{
 		return false;
 	}
-	return potentialParent->isInstanceOf( (IECore::TypeId)NodeTypeId );
+	return potentialParent->isInstanceOf( (IECore::TypeId)NodeTypeId ) || potentialParent->isInstanceOf( Plug::staticTypeId() );
 }
 
 NodePtr Plug::node()
