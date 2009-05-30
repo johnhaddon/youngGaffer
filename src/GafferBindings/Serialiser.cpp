@@ -41,8 +41,12 @@ std::string Serialiser::modulePath( Gaffer::ConstGraphComponentPtr o )
 
 std::string Serialiser::modulePath( boost::python::object &o )
 {
-	std::string className = extract<std::string>( o.attr( "__class__" ).attr( "__name__" ) );
+	if( !PyObject_HasAttrString( o.ptr(), "__module__" ) )
+	{
+		return "";
+	}
 	std::string modulePath = extract<std::string>( o.attr( "__module__" ) );
+	std::string className = extract<std::string>( o.attr( "__class__" ).attr( "__name__" ) );
 
 	typedef boost::tokenizer<boost::char_separator<char> > Tokenizer;
 	std::string sanitisedModulePath;
