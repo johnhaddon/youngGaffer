@@ -1,40 +1,45 @@
 #ifndef GAFFER_GRAPHCOMPONENT_INL
 #define GAFFER_GRAPHCOMPONENT_INL
 
+#include "boost/tokenizer.hpp"
+
 namespace Gaffer
 {
 
 template<typename T>
 typename T::Ptr GraphComponent::getChild( const std::string &name )
 {
-	IECore::InternedString internedName( name );
-	/// \todo is a linear search going to cut it for many children? perhaps we should map
-	/// name->child when there are large numbers of children?
-	for( ChildContainer::const_iterator it=m_children.begin(); it!=m_children.end(); it++ )
-	{
-		if( (*it)->m_name==internedName )
-		{
-			return IECore::runTimeCast<T>( *it );
-		}
-	}
-	return 0;
+	// preferring the nasty casts over mainaining two nearly identical implementations for getChild.
+	return boost::const_pointer_cast<T>( const_cast<const GraphComponent *>( this )->getChild<T>( name ) );
 }
 
 template<typename T>
 typename T::ConstPtr GraphComponent::getChild( const std::string &name ) const
 {
-	IECore::InternedString internedName( name );
-	for( ChildContainer::const_iterator it=m_children.begin(); it!=m_children.end(); it++ )
+	typedef boost::tokenizer<boost::char_separator<char> > Tokenizer;
+
+	Tokenizer t( name, boost::char_separator<char>( "." ) );
+	const GraphComponent *result = this;
+	for( Tokenizer::iterator tIt=t.begin(); tIt!=t.end(); tIt++ )
 	{
-		if( (*it)->m_name==internedName )
+		const GraphComponent *child = 0;
+		IECore::InternedString internedName( *tIt );
+		for( ChildContainer::const_iterator it=result->m_children.begin(); it!=result->m_children.end(); it++ )
 		{
-			if( (*it)->isInstanceOf( T::staticTypeId() ) )
+			if( (*it)->m_name==internedName )
 			{
-				return static_cast<const T *>( (*it).get() );
+				child = it->get();
+				break;
 			}
 		}
+		if( !child )
+		{
+			return 0;
+		}
+		result = child;
 	}
-	return 0;
+	
+	return IECore::runTimeCast<const T>( result );
 }
 
 template<typename T>

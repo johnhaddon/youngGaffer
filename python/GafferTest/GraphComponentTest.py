@@ -198,7 +198,19 @@ class GraphComponentTest( unittest.TestCase ) :
 		
 		p.addChild( c )
 		c.setName( "c" )
-		p.removeChild( c )	
+		p.removeChild( c )
+		
+	def testGetChildWithPath( self ) :
+	
+		p1 = Gaffer.GraphComponent()
+		p2 = Gaffer.GraphComponent()
+		p3 = Gaffer.GraphComponent()
+		
+		p1["p2"] = p2
+		p2["p3"] = p3
+		
+		self.failUnless( p1.getChild( "p2.p3" ).isSame( p3 ) )
+	
 if __name__ == "__main__":
 	unittest.main()
 	
