@@ -48,6 +48,9 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		const std::string &getName() const;
 		/// Returns the full path name from the topmost parent to this component.
 		std::string fullName() const;
+		/// Returns the relative path name from the specified ancestor to this component.
+		/// Passing 0 for ancestor yields the same result as calling fullName().
+		std::string relativeName( ConstGraphComponentPtr ancestor ) const;
 		/// A signal which is emitted whenever a name is changed.
 		UnarySignal &nameChangedSignal();
 		//@}

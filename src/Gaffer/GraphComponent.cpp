@@ -85,12 +85,22 @@ const std::string &GraphComponent::getName() const
 
 std::string GraphComponent::fullName() const
 {
+	return relativeName( 0 );
+}
+
+std::string GraphComponent::relativeName( ConstGraphComponentPtr ancestor ) const
+{
 	string fullName = m_name;
-	GraphComponent *c = m_parent;
-	while( c )
+	GraphComponent *c = this->m_parent;
+	while( c && c!=ancestor.get() )
 	{
 		fullName = c->m_name.value() + "." + fullName;
 		c = c->m_parent;
+	}
+	if( ancestor && c!=ancestor.get() )
+	{
+		string what = boost::str( boost::format( "Object \"%s\" is not an ancestor of \"%s\"." ) % ancestor->m_name.value() % m_name.value() );
+		throw Exception( what );
 	}
 	return fullName;
 }

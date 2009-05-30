@@ -42,6 +42,8 @@ class GraphComponentTest( unittest.TestCase ) :
 		c.addChild( child2 )
 		self.assertEqual( child2.getName(), "GraphComponent1" )
 		self.assertEqual( child2.fullName(), "newName.GraphComponent1" )
+		self.assertEqual( child2.relativeName( None ), "newName.GraphComponent1" )
+		self.assertEqual( child2.relativeName( c ), "GraphComponent1" )
 		self.assertEqual( GraphComponentTest.name, "GraphComponent1" )
 		
 	def testParenting( self ) :
