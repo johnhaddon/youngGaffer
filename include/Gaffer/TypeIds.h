@@ -20,7 +20,12 @@ enum TypeId
 	NodeSetTypeId = 400010,
 	ObjectPlugTypeId = 400011,
 	GraphComponentSetTypeId = 400012,
-
+	CompoundPlugTypeId = 400013,
+	V2fPlugTypeId = 400014,
+	V3fPlugTypeId = 400015,
+	V2iPlugTypeId = 400016,
+	V3iPlugTypeId = 400017,
+	
 	FirstPythonTypeId = 405000,
 	
 	LastTypeId = 409999

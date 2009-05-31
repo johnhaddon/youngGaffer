@@ -13,6 +13,8 @@ from PathFilterTest import PathFilterTest
 from UndoTest import UndoTest
 from SpeedTest import SpeedTest
 from KeywordPlugNode import KeywordPlugNode
+from CompoundNumericPlugTest import CompoundNumericPlugTest
+from CompoundNumericNode import CompoundNumericNode
 
 if __name__ == "__main__":
 	import unittest

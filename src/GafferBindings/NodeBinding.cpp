@@ -9,7 +9,7 @@
 #include "GafferBindings/CatchingSlotCaller.h"
 #include "GafferBindings/Serialiser.h"
 #include "Gaffer/ScriptNode.h"
-#include "Gaffer/Plug.h"
+#include "Gaffer/CompoundPlug.h"
 
 #include "IECore/bindings/Wrapper.h"
 #include "IECore/bindings/RunTimeTypedBinding.h"
@@ -17,6 +17,61 @@
 using namespace boost::python;
 using namespace GafferBindings;
 using namespace Gaffer;
+
+static std::string serialisePlug( Serialiser &s, ConstGraphComponentPtr ancestor, PlugPtr plug )
+{
+	if( plug->getFlags( Plug::Dynamic ) )
+	{
+		// we need to serialise the whole plug
+		std::string plugSerialisation = s.serialiseC( plug );
+		return "\"" + plug->relativeName( ancestor ) + "\" : " + plugSerialisation + ", ";	
+	}
+	else
+	{
+		// not dynamic, we can just serialise the connection/value				
+		if( plug->isInstanceOf( CompoundPlug::staticTypeId() ) )
+		{
+			std::string result;
+			CompoundPlug *cPlug = static_cast<CompoundPlug *>( plug.get() );
+			InputPlugIterator pIt( cPlug->children().begin(), cPlug->children().end() );
+			while( pIt!=cPlug->children().end() )
+			{
+				result += serialisePlug( s, ancestor, *pIt++ );
+			}
+			return result;
+		}
+		else
+		{
+			std::string connectTo = "";
+			PlugPtr srcPlug = plug->getInput<Plug>();
+			if( srcPlug && srcPlug->node() )
+			{
+				std::string srcNodeName = s.add( srcPlug->node() );
+				if( srcNodeName!="" )
+				{
+					connectTo = srcNodeName + "[\"" + srcPlug->relativeName( srcPlug->node() ) + "\"]";
+				}
+			}
+
+			if( connectTo!="" )
+			{
+				return "\"" + plug->relativeName( ancestor ) + "\" : " + connectTo + ", ";
+			}
+			else
+			{
+				if( plug->isInstanceOf( ValuePlug::staticTypeId() ) )
+				{
+					object pythonPlug( plug );
+					object pythonValue = pythonPlug.attr( "getValue" )();
+					s.modulePath( pythonValue ); // to get the import statement for the module in the serialisation
+					std::string value = extract<std::string>( pythonValue.attr( "__repr__" )() );
+					return "\"" + plug->relativeName( ancestor ) + "\" : " + value + ", ";
+				}
+			}
+		}
+	}
+	return "";
+}
 
 std::string serialiseNode( Serialiser &s, ConstGraphComponentPtr g )
 {
@@ -28,46 +83,14 @@ std::string serialiseNode( Serialiser &s, ConstGraphComponentPtr g )
 		% node->getName()
 	);
 
+	result += "**{ ";
 	for( InputPlugIterator pIt=node->inputPlugsBegin(); pIt!=pIt.end(); pIt++ )
 	{
 		PlugPtr plug = *pIt;
-		std::string connectTo = "";
-		PlugPtr srcPlug = plug->getInput<Plug>();
-		if( srcPlug && srcPlug->node() )
-		{
-			std::string srcNodeName = s.add( srcPlug->node() );
-			if( srcNodeName!="" )
-			{
-				connectTo = srcNodeName + "[\"" + srcPlug->getName() + "\"]";
-			}
-		}
-
-		if( !plug->getFlags( Plug::Dynamic ) )
-		{
-			// we can just serialise the connection/value				
-			if( connectTo!="" )
-			{
-				result += plug->getName() + " = " + connectTo + ", ";
-			}
-			else
-			{
-				if( plug->isInstanceOf( ValuePlug::staticTypeId() ) )
-				{
-					object pythonPlug( plug );
-					object pythonValue = pythonPlug.attr( "getValue" )();
-					std::string value = extract<std::string>( pythonValue.attr( "__repr__" )() );
-					result += plug->getName() + " = " + value + ", ";
-				}
-			}
-		}
-		else
-		{
-			// we need to serialise the whole plug
-			std::string plugSerialisation = s.serialiseC( plug );
-			result += plug->getName() + " = " + plugSerialisation + ", ";
-		}
+		std::string ps = serialisePlug( s, node, *pIt );
+		result += ps;
 	}
-
+	result += " }";
 	result += ")";
 	return result;
 }
