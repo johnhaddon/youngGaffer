@@ -138,14 +138,15 @@ class CompoundNumericPlugTest( unittest.TestCase ) :
 		s = Gaffer.ScriptNode()
 		n = Gaffer.Node()
 		n["p"] = Gaffer.V3fPlug( flags=Gaffer.Plug.Flags.Dynamic )
+		n["p"].setValue( IECore.V3f( 1, 2, 3 ) )
 		s["n"] = n
 		
 		ss = s.serialise()
-		
+				
 		s = Gaffer.ScriptNode()
 		s.execute( ss )
 		
-		self.assertEqual( s["n"]["p"].getValue( IECore.V3f( 1, 2, 3 ) ) )
+		self.assertEqual( s["n"]["p"].getValue(), IECore.V3f( 1, 2, 3 ) )
 
 if __name__ == "__main__":
 	unittest.main()
