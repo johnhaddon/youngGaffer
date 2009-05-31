@@ -216,7 +216,7 @@ class GraphComponentTest( unittest.TestCase ) :
 		n = Gaffer.GraphComponent()
 		
 		for name in ( "0", "0a", "@A", "a.A", ".", "A:", "a|", "a(" ) :
-			self.assertRaises( ValueError, n.setName, "0" )
+			self.assertRaises( Exception, n.setName, "0" )
 			
 if __name__ == "__main__":
 	unittest.main()

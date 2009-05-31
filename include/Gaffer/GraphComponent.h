@@ -34,8 +34,8 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		
 		/// @name Naming
 		/// All GraphComponents have a name, which must be unique among
-		/// siblings.
-		/// \todo Enforce name constraints.
+		/// siblings. Names may contain only A-Z, a-z, _ and 0-9, with the
+		/// additional constraint that they must not start with a number.
 		////////////////////////////////////////////////////////////////////
 		//@{
 		/// Sets the name for this component. Note that the requested name
@@ -141,6 +141,8 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		//@}
 		
 	private :
+
+		bool nameExists( const IECore::InternedString &name );
 
 		void setNameInternal( const IECore::InternedString &name );
 		void addChildInternal( GraphComponentPtr child );

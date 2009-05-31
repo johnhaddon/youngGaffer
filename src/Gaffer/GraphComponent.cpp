@@ -5,6 +5,8 @@
 
 #include "boost/format.hpp"
 #include "boost/bind.hpp"
+#include "boost/regex.hpp"
+#include "boost/lexical_cast.hpp"
 
 #include <set>
 
@@ -31,33 +33,55 @@ GraphComponent::~GraphComponent()
 	}	
 }
 
+bool GraphComponent::nameExists( const IECore::InternedString &name )
+{
+	for( ChildContainer::const_iterator it=m_parent->m_children.begin(); it!=m_parent->m_children.end(); it++ )
+	{
+		if( it->get()!=this && (*it)->m_name==name )
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 const std::string &GraphComponent::setName( const std::string &name )
 {
-	int suffix = 0;
+	// make sure the name is valid
+	static boost::regex validator( "^[A-Za-z_]+[A-Za-z0-9]*" );
+	if( !regex_match( name.c_str(), validator ) )
+	{
+		std::string what = boost::str( boost::format( "Invalid name \"%s\"" ) % name );
+		throw IECore::Exception( what );
+	}
+	
+	// make sure the name is unique
 	IECore::InternedString newName = name;
 	if( m_parent )
 	{
-		bool unique = true;
-		do
+		if( nameExists( newName ) )
 		{
-			if( suffix!=0 )
+			std::string prefix = newName.value();
+			int suffix = 1;
+			
+			static boost::regex reg( "^(.*[^0-9]+)([0-9]+)$" );
+			boost::cmatch match;
+			if( regex_match( newName.value().c_str(), match, reg ) )
 			{
-				newName = boost::str( boost::format( "%s%d" ) % name % suffix );
+				prefix = match[1];
+				suffix = boost::lexical_cast<int>( match[2] );
 			}
-
-			unique = true;
-			for( ChildContainer::const_iterator it=m_parent->m_children.begin(); it!=m_parent->m_children.end(); it++ )
+			
+			do
 			{
-				if( (*it)!=this && (*it)->m_name==newName)
-				{
-					unique = false;
-					break;
-				}
-			}
-			suffix++;
-		} while( !unique );
+				static boost::format formatter( "%s%d" );
+				newName = boost::str( formatter % prefix % suffix );
+				suffix++;
+			} while( nameExists( newName ) );	
+		}
 	}
-
+	
+	// set the new name if it's different to the old
 	if( newName==m_name.value() )
 	{
 		return m_name.value();

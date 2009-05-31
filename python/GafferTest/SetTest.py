@@ -95,7 +95,7 @@ class SetTest( unittest.TestCase ) :
 		l = []
 		for i in range( 0, 1000 ) :
 			n = Gaffer.Node()
-			n.setName( str( i ) )
+			n.setName( "s" + str( i ) )
 			l.append( n )
 			s.add( n )
 			
@@ -103,7 +103,7 @@ class SetTest( unittest.TestCase ) :
 		self.assert_( isinstance( m, tuple ) )
 		self.assertEqual( len( m ), s.size() )
 		for i in range( 0, len( m ) ) :
-			self.assertEqual( m[i].getName(), str( i ) )
+			self.assertEqual( m[i].getName(), "s" + str( i ) )
 	
 	def testLastAdded( self ) :
 	
