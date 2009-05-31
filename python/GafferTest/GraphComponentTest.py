@@ -211,6 +211,13 @@ class GraphComponentTest( unittest.TestCase ) :
 		
 		self.failUnless( p1.getChild( "p2.p3" ).isSame( p3 ) )
 	
+	def testNameConstraints( self ) :
+	
+		n = Gaffer.GraphComponent()
+		
+		for name in ( "0", "0a", "@A", "a.A", ".", "A:", "a|", "a(" ) :
+			self.assertRaises( ValueError, n.setName, "0" )
+			
 if __name__ == "__main__":
 	unittest.main()
 	
