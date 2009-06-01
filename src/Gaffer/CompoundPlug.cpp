@@ -73,3 +73,11 @@ void CompoundPlug::setDirty()
 	}
 	ValuePlug::setDirty();
 }
+
+void CompoundPlug::setFromInput()
+{
+	// no need to do anything, as our value is stored
+	// in the child plugs, and their setFromInput methods
+	// will be called anyway when their individual setInput()
+	// methods etc get called.
+}

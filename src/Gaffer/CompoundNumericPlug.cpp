@@ -12,7 +12,7 @@ CompoundNumericPlug<T>::CompoundNumericPlug(
 	T maxValue,
 	unsigned flags
 )
-	:	CompoundPlug( name, direction )
+	:	CompoundPlug( name, direction, flags )
 {
 	const char **n = childNames();
 	for( unsigned i=0; i<T::dimensions(); i++ )
@@ -134,15 +134,6 @@ T CompoundNumericPlug<T>::getValue()
 		result[i] = getChild( i )->getValue();
 	}
 	return result;
-}
-
-template<typename T>
-void CompoundNumericPlug<T>::setFromInput()
-{
-	// no need to do anything, as our value is stored
-	// in the child plugs, and their setFromInput methods
-	// will be called anyway when their individual setInput()
-	// methods etc get called.
 }
 
 template<typename T>

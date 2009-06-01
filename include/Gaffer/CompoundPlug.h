@@ -29,6 +29,10 @@ class CompoundPlug : public ValuePlug
 
 		/// Sets all child plugs dirty.
 		virtual void setDirty();
+
+	protected :
+
+		virtual void setFromInput();
 									
 };
 
