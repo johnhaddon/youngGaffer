@@ -15,6 +15,8 @@ from SpeedTest import SpeedTest
 from KeywordPlugNode import KeywordPlugNode
 from CompoundNumericPlugTest import CompoundNumericPlugTest
 from CompoundNumericNode import CompoundNumericNode
+from CompoundPlugTest import CompoundPlugTest
+from CompoundPlugNode import CompoundPlugNode
 
 if __name__ == "__main__":
 	import unittest
