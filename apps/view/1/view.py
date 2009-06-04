@@ -29,11 +29,11 @@ class view( Gaffer.Application ) :
 		
 	def doRun( self, args ) :
 	
-		if len( args.files ) < 1 or len( args.files ) > 2 :
+		if len( args["files"] ) < 1 or len( args["files"] ) > 2 :
 		
 			raise Exception( "Must view exactly one file." )
 	
-		o = IECore.Reader.create( args.files[0] ).read()
+		o = IECore.Reader.create( args["files"][0] ).read()
 		
 		window = GafferUI.Window( title = "Gaffer Viewer" )
 		## \todo Remove gtk from the interface.
