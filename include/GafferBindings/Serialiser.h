@@ -1,3 +1,6 @@
+#ifndef GAFFERBINDINGS_SERIALISER_H
+#define GAFFERBINDINGS_SERIALISER_H
+
 #include "boost/python.hpp"
 
 #include "Gaffer/Node.h"
@@ -77,3 +80,5 @@ class Serialiser
 };
 
 } // namespace GafferBindings
+
+#endif // GAFFERBINDINGS_SERIALISER_H
