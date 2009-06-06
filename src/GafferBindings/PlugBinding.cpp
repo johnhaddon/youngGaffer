@@ -32,6 +32,22 @@ std::string GafferBindings::serialisePlugFlags( unsigned flags )
 	return "Gaffer.Plug.Flags.None";
 }
 
+std::string GafferBindings::serialisePlugInput( Serialiser &s, PlugPtr plug )
+{
+	std::string result = "";
+	PlugPtr srcPlug = plug->getInput<Plug>();
+	if( srcPlug && srcPlug->node() )
+	{
+		std::string srcNodeName = s.add( srcPlug->node() );
+		if( srcNodeName!="" )
+		{
+			result = srcNodeName + "[\"" + srcPlug->relativeName( srcPlug->node() ) + "\"]";
+		}
+	}
+
+	return result;
+}
+
 static boost::python::tuple outputs( Plug &p )
 {
 	const Plug::OutputContainer &o = p.outputs();

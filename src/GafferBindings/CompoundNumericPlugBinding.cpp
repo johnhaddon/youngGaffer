@@ -3,6 +3,7 @@
 
 #include "GafferBindings/CompoundNumericPlugBinding.h"
 #include "GafferBindings/PlugBinding.h"
+#include "GafferBindings/ValuePlugBinding.h"
 #include "GafferBindings/Serialiser.h"
 #include "Gaffer/CompoundNumericPlug.h"
 
@@ -12,7 +13,15 @@ using namespace boost::python;
 using namespace GafferBindings;
 using namespace Gaffer;
 
-/*template<typename T>
+template<typename T>
+static std::string serialiseValue( Serialiser &s, const T &value )
+{
+	object pythonValue( value );
+	s.modulePath( pythonValue );
+	return extract<std::string>( pythonValue.attr( "__repr__" )() );
+}
+
+template<typename T>
 static std::string serialise( Serialiser &s, ConstGraphComponentPtr g )
 {
 	typename T::ConstPtr plug = boost::static_pointer_cast<const T>( g );
@@ -25,17 +34,17 @@ static std::string serialise( Serialiser &s, ConstGraphComponentPtr g )
 	
 	if( plug->defaultValue()!=typename T::ValueType() )
 	{
-		result += "defaultValue = " + boost::lexical_cast<std::string>( plug->defaultValue() ) + ", ";
+		result += "defaultValue = " + serialiseValue( s, plug->defaultValue() ) + ", ";
 	}
 	
 	if( plug->hasMinValue() )
 	{
-		result += "minValue = " + boost::lexical_cast<std::string>( plug->minValue() ) + ", ";
+		result += "minValue = " + serialiseValue( s, plug->minValue() ) + ", ";
 	}
 	
 	if( plug->hasMaxValue() )
 	{
-		result += "maxValue = " + boost::lexical_cast<std::string>( plug->maxValue() ) + ", ";
+		result += "maxValue = " + serialiseValue( s, plug->maxValue() ) + ", ";
 	}
 	
 	if( plug->getFlags() )
@@ -43,32 +52,19 @@ static std::string serialise( Serialiser &s, ConstGraphComponentPtr g )
 		result += "flags = " + serialisePlugFlags( plug->getFlags() ) + ", ";
 	}
 	
-	bool connected = false;
-	ConstPlugPtr srcPlug = plug->template getInput<Plug>();
-	if( srcPlug )
+	std::string value = "( ";
+	PlugIterator pIt( plug->children().begin(), plug->children().end() );
+	while( pIt!=plug->children().end() )
 	{
-		std::string srcNodeName = s.add( srcPlug->node() );
-		if( srcNodeName!="" )
-		{
-			connected = true;
-			result += "input = " + srcNodeName + "[\"" + srcPlug->getName() + "\"]";
-		}
+		value += serialisePlugValue( s, boost::static_pointer_cast<ValuePlug>( *pIt++ ) ) + ", ";
 	}
-	
-	if( !connected && plug->direction()==Plug::In )
-	{
-		typename T::Ptr p = boost::const_pointer_cast<T>( plug );
-		typename T::ValueType value = p->getValue();
-		if( value!=plug->defaultValue() )
-		{
-			result += "value = " + boost::lexical_cast<std::string>( value ) + ", ";
-		}
-	}
+	value += " )";
+	result += "value = " + value + ", ";
 	
 	result += ")";
 
 	return result;
-}*/
+}
 
 template<typename T>
 static typename T::Ptr construct(
@@ -78,23 +74,34 @@ static typename T::Ptr construct(
 	typename T::ValueType minValue,
 	typename T::ValueType maxValue,
 	unsigned flags,
-	PlugPtr input,
 	object value
 )
 {
 	typename T::Ptr result = new T( name, direction, defaultValue, minValue, maxValue, flags );
-	if( input && value!=object() )
+	if( value!=object() )
 	{
-		throw std::invalid_argument( "Must specify only one of input or value." );
-	}
-	if( input )
-	{
-		result->setInput( input );
-	}
-	else if( value!=object() )
-	{
-		typename T::ValueType v = extract<typename T::ValueType>( value )();
-		result->setValue( v );
+		extract<typename T::ValueType> valueExtractor( value );
+		if( valueExtractor.check() )
+		{
+			typename T::ValueType v = valueExtractor();
+			result->setValue( v );
+		}
+		else
+		{
+			tuple t = extract<tuple>( value )();
+			size_t l = extract<size_t>( t.attr( "__len__" )() )();
+			if( l!=T::ValueType::dimensions() )
+			{
+				PyErr_SetString( PyExc_ValueError, "Wrong number of items in value tuple." );			
+				throw_error_already_set();
+			}
+			size_t i = 0;
+			PlugIterator pIt( result->children().begin(), result->children().end() );
+			while( pIt!=result->children().end() )
+			{
+				setPlugValue( boost::static_pointer_cast<ValuePlug>( *pIt++ ), t[i++] );
+			}
+		}
 	}
 	return result;
 }
@@ -113,7 +120,6 @@ static void bind()
 					boost::python::arg_( "minValue" )=V(Imath::limits<typename V::BaseType>::min()),
 					boost::python::arg_( "maxValue" )=V(Imath::limits<typename V::BaseType>::max()),
 					boost::python::arg_( "flags" )=Plug::None,
-					boost::python::arg_( "input" )=PlugPtr( 0 ),
 					boost::python::arg_( "value" )=object()
 				)
 			)
@@ -127,7 +133,7 @@ static void bind()
 		.def( "getValue", &T::getValue )
 	;
 
-	//Serialiser::registerSerialiser( T::staticTypeId(), serialise<T> );
+	Serialiser::registerSerialiser( T::staticTypeId(), serialise<T> );
 
 }
 

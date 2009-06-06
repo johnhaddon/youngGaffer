@@ -4,6 +4,7 @@
 #include "boost/format.hpp"
 
 #include "GafferBindings/NodeBinding.h"
+#include "GafferBindings/ValuePlugBinding.h"
 #include "GafferBindings/SignalBinding.h"
 #include "GafferBindings/RawConstructor.h"
 #include "GafferBindings/CatchingSlotCaller.h"
@@ -40,34 +41,11 @@ static std::string serialisePlug( Serialiser &s, ConstGraphComponentPtr ancestor
 			}
 			return result;
 		}
-		else
+		
+		std::string value = serialisePlugValue( s, plug );
+		if( value!="" )
 		{
-			std::string connectTo = "";
-			PlugPtr srcPlug = plug->getInput<Plug>();
-			if( srcPlug && srcPlug->node() )
-			{
-				std::string srcNodeName = s.add( srcPlug->node() );
-				if( srcNodeName!="" )
-				{
-					connectTo = srcNodeName + "[\"" + srcPlug->relativeName( srcPlug->node() ) + "\"]";
-				}
-			}
-
-			if( connectTo!="" )
-			{
-				return "\"" + plug->relativeName( ancestor ) + "\" : " + connectTo + ", ";
-			}
-			else
-			{
-				if( plug->isInstanceOf( ValuePlug::staticTypeId() ) )
-				{
-					object pythonPlug( plug );
-					object pythonValue = pythonPlug.attr( "getValue" )();
-					s.modulePath( pythonValue ); // to get the import statement for the module in the serialisation
-					std::string value = extract<std::string>( pythonValue.attr( "__repr__" )() );
-					return "\"" + plug->relativeName( ancestor ) + "\" : " + value + ", ";
-				}
-			}
+			return "\"" + plug->relativeName( ancestor ) + "\" : " + value + ", ";		
 		}
 	}
 	return "";
@@ -155,17 +133,7 @@ void GafferBindings::setPlugs( NodePtr node, const boost::python::dict &keywords
 		else
 		{
 			// plug already exists, connect it or set its value
-			object pythonPlug( plug );
-
-			extract<PlugPtr> inputExtractor( items[i][1] );
-			if( inputExtractor.check() )
-			{
-				pythonPlug.attr( "setInput" )( object( items[i][1] ) );
-			}
-			else
-			{
-				pythonPlug.attr( "setValue" )( object( items[i][1] ) );
-			}			
+			setPlugValue( plug, items[i][1] );
 		}
 	}
 }
