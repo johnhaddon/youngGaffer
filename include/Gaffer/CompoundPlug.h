@@ -33,7 +33,17 @@ class CompoundPlug : public ValuePlug
 	protected :
 
 		virtual void setFromInput();
-									
+		
+	private :
+	
+		void parentChanged();
+		void childAddedOrRemoved();
+	
+		boost::signals::connection m_plugInputChangedConnection;
+		void plugInputChanged( PlugPtr plug );
+		
+		void updateInputFromChildInputs( PlugPtr checkFirst );
+		
 };
 
 IE_CORE_DECLAREPTR( CompoundPlug );

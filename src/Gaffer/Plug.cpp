@@ -20,9 +20,13 @@ Plug::Plug( const std::string &name, Direction direction, unsigned flags )
 Plug::~Plug()
 {
 	setInputInternal( 0, false );
-	for( OutputContainer::iterator it=m_outputs.begin(); it!=m_outputs.end(); it++ )
-	{
+	for( OutputContainer::iterator it=m_outputs.begin(); it!=m_outputs.end(); )
+	{	
+	 	// get the next iterator now, as the call to setInputInternal invalidates
+		// the current iterator.
+		OutputContainer::iterator next = it; next++;
 		(*it)->setInputInternal( 0, true );
+		it = next;
 	}
 }
 

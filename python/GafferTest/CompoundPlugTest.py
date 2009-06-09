@@ -1,5 +1,7 @@
 import unittest
+import gc
 
+import IECore
 import Gaffer
 import GafferTest
 
@@ -47,6 +49,60 @@ class CompoundPlugTest( unittest.TestCase ) :
 		
 		self.assertEqual( s["n1"]["p"]["f"].getValue(), 10 )
 		
+	def testMasterConnectionTracksChildConnections( self ) :
+	
+		c = Gaffer.CompoundPlug( "c" )
+		c["f1"] = Gaffer.FloatPlug()
+		c["f2"] = Gaffer.FloatPlug()
+		n = Gaffer.Node()
+		n["c"] = c		
+
+		c2 = Gaffer.CompoundPlug( "c" )
+		c2["f1"] = Gaffer.FloatPlug()
+		c2["f2"] = Gaffer.FloatPlug()
+		n2 = Gaffer.Node()
+		n2["c"] = c2		
+		
+		n2["c"]["f1"].setInput( n["c"]["f1"] )
+		n2["c"]["f2"].setInput( n["c"]["f2"] )
+		self.failUnless( n2["c"].getInput().isSame( n["c"] ) )
+		
+		n2["c"]["f2"].setInput( None )
+		self.failUnless( n2["c"].getInput() is None )
+
+		n2["c"]["f2"].setInput( n["c"]["f2"] )
+		self.failUnless( n2["c"].getInput().isSame( n["c"] ) )
+
+		c["f3"] = Gaffer.FloatPlug()
+		c2["f3"] = Gaffer.FloatPlug()
+		
+		self.failUnless( n2["c"].getInput() is None )
+		
+		n2["c"]["f3"].setInput( n["c"]["f3"] )
+		self.failUnless( n2["c"].getInput().isSame( n["c"] ) )
+		
+
+	def testInputChangedCrash( self ) :
+	
+		ca = Gaffer.CompoundPlug( "ca" )
+		ca["fa1"] = Gaffer.FloatPlug()
+		ca["fa2"] = Gaffer.FloatPlug()
+		na = Gaffer.Node()
+		na["ca"] = ca		
+
+		cb = Gaffer.CompoundPlug( "cb" )
+		cb["fb1"] = Gaffer.FloatPlug()
+		cb["fb2"] = Gaffer.FloatPlug()
+		nb = Gaffer.Node()
+		nb["cb"] = cb		
+		
+		nb["cb"]["fb1"].setInput( na["ca"]["fa1"] )
+				
+		del ca, na, cb, nb
+		while gc.collect() :
+			pass
+		IECore.RefCounted.collectGarbage()
+						
 if __name__ == "__main__":
 	unittest.main()
 	
