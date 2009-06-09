@@ -159,6 +159,29 @@ class NodeTest( unittest.TestCase ) :
 	
 		n = Gaffer.AddNode()
 		self.assertEqual( n["sum"].getDirty(), True )
+	
+	def testDynamicPlugSerialisationOrder( self ) :
+	
+		n = Gaffer.Node()
+		
+		n["p1"] = Gaffer.FloatPlug( flags = Gaffer.Plug.Flags.Dynamic )
+		n["p2"] = Gaffer.FloatPlug( flags = Gaffer.Plug.Flags.Dynamic )
+		n["p3"] = Gaffer.FloatPlug( flags = Gaffer.Plug.Flags.Dynamic )
+		self.assertEqual( n.children()[0].getName(), "p1" )
+		self.assertEqual( n.children()[1].getName(), "p2" )
+		self.assertEqual( n.children()[2].getName(), "p3" )
+		
+		s = Gaffer.ScriptNode()
+		s["n"] = n
+		
+		ss = s.serialise()
+		
+		s = Gaffer.ScriptNode()
+		s.execute( ss )
+		
+		self.assertEqual( s["n"].children()[0].getName(), "p1" )
+		self.assertEqual( s["n"].children()[1].getName(), "p2" )
+		self.assertEqual( s["n"].children()[2].getName(), "p3" )
 										
 if __name__ == "__main__":
 	unittest.main()
