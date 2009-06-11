@@ -49,6 +49,11 @@ static GraphComponentPtr getItem( GraphComponent &g, const char *n )
 	return 0; // shouldn't get here
 }
 
+static bool contains( GraphComponent &g, const char *n )
+{
+	return g.getChild<GraphComponent>( n );
+}
+
 static GraphComponentPtr parent( GraphComponent &g )
 {
 	return g.parent<GraphComponent>();
@@ -105,6 +110,7 @@ void GafferBindings::bindGraphComponent()
 		.def( "getChild", (GraphComponentPtr (GraphComponent::*)( const std::string & ))&GraphComponent::getChild<GraphComponent> )
 		.def( "__getitem__", getItem )
 		.def( "__setitem__", setItem )
+		.def( "__contains__", contains )
 		.def( "children", &children )
 		.def( "parent", &parent )
 		.def( "ancestor", (GraphComponentPtr (GraphComponent::*)( IECore::TypeId ))&GraphComponent::ancestor )
