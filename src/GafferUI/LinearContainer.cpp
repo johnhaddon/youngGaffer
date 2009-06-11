@@ -120,15 +120,18 @@ void LinearContainer::calculateChildTransforms() const
 	for( ChildContainer::const_iterator it=children().begin(); it!=children().end(); it++ )
 	{
 		Box3f b = static_cast<const Gadget *>(it->get())->bound();
-		for( int a=0; a<3; a++ )
+		if( !b.isEmpty() )
 		{
-			if( a==axis )
+			for( int a=0; a<3; a++ )
 			{
-				size[a] += b.size()[a];
-			}
-			else
-			{
-				size[a] = max( size[a], b.size()[a] );
+				if( a==axis )
+				{
+					size[a] += b.size()[a];
+				}
+				else
+				{
+					size[a] = max( size[a], b.size()[a] );
+				}
 			}
 		}
 		bounds.push_back( b );
@@ -142,34 +145,38 @@ void LinearContainer::calculateChildTransforms() const
 	{
 		const Box3f &b = bounds[i++];
 		
-		V3f childOffset;
-		for( int a=0; a<3; a++ )
+		V3f childOffset( 0 );
+		if( !b.isEmpty() )
 		{
-			if( a==axis )
+			for( int a=0; a<3; a++ )
 			{
-				childOffset[a] = offset - b.min[a];
-			}
-			else
-			{
-				switch( m_alignment )
+				if( a==axis )
 				{
-					case Min :
-						childOffset[a] = -size[a]/2.0f - b.min[a];
-						break;
-					case Centre :
-						childOffset[a] = -b.center()[a];
-						break;
-					default :
-						// max
-						childOffset[a] = size[a]/2.0f - b.max[a];
+					childOffset[a] = offset - b.min[a];
+				}
+				else
+				{
+					switch( m_alignment )
+					{
+						case Min :
+							childOffset[a] = -size[a]/2.0f - b.min[a];
+							break;
+						case Centre :
+							childOffset[a] = -b.center()[a];
+							break;
+						default :
+							// max
+							childOffset[a] = size[a]/2.0f - b.max[a];
+					}
 				}
 			}
+			offset += b.size()[axis];
 		}
+		offset += m_spacing;
 		
 		M44f m; m.translate( childOffset );
 		static_cast<const Gadget *>(it->get())->setTransform( m );
-		
-		offset += b.size()[axis] + m_spacing;
+				
 	}
 	
 	m_clean = true;
