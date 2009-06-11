@@ -55,7 +55,7 @@ class Viewer( GafferUI.NodeSetEditor ) :
 	
 		renderable = None			
 		node = self.getNodeSet().lastAdded()
-		if node :
+		if node and "output" in node :
 			renderable = node["output"].getValue()
 				
 		self.__renderableGadget.setRenderable( renderable )
