@@ -137,4 +137,4 @@ class Widget( object ) :
 	def _setDefaultColors( gtkWidget, recurse=False ) :
 	
 		for s in ( gtk.STATE_NORMAL, gtk.STATE_ACTIVE, gtk.STATE_PRELIGHT, gtk.STATE_SELECTED, gtk.STATE_INSENSITIVE ) :
-			Widget._setColors( gtkWidget, s, Widget._defaultFGColors[s], Widget._defaultBGColors[int(s)], recurse )
+			Widget._setColors( gtkWidget, s, Widget._defaultFGColors[s], Widget._defaultBGColors[s], recurse )
