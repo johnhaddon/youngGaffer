@@ -65,6 +65,7 @@ from TextInputDialogue import TextInputDialogue
 from Viewer import Viewer
 from Frame import Frame
 from CompoundNumericPlugValueWidget import CompoundNumericPlugValueWidget
+from Collapsible import Collapsible
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?
