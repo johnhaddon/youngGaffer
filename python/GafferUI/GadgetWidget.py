@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 from OpenGL.GL import *
 import gtk
 import IECore
@@ -133,15 +135,12 @@ class GadgetWidget( GLWidget ) :
 		if self.__scene :
 			return
 			
-		self.__renderer.worldBegin()
-		if 1 :
-			
+		with IECore.WorldBlock( self.__renderer ) :
+		
 			## \todo Should be able to rely on the IECoreGL::Renderer having a better default shader
 			self.__renderer.shader( "surface", "constant", {} )
 			self.__gadget.render( self.__renderer )
 
-		self.__renderer.worldEnd()
-		
 		self.__scene = self.__renderer.scene()
 
 	def __buttonPress( self, widget, event ) :
