@@ -66,6 +66,7 @@ from Viewer import Viewer
 from Frame import Frame
 from CompoundNumericPlugValueWidget import CompoundNumericPlugValueWidget
 from Collapsible import Collapsible
+from NodeUI import NodeUI
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?

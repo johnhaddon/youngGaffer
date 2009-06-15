@@ -1,5 +1,7 @@
 import gtk
 
+import IECore
+
 import Gaffer
 import GafferUI
 
@@ -13,7 +15,7 @@ class NodeEditor( GafferUI.NodeSetEditor ) :
 		self.gtkWidget().add( self._column.gtkWidget() )
 		
 		self._updateFromSet()
-		
+				
 	def __repr__( self ) :
 
 		return "GafferUI.NodeEditor()"
@@ -32,33 +34,20 @@ class NodeEditor( GafferUI.NodeSetEditor ) :
 		
 		self._column.append( GafferUI.NameWidget( node ) )
 
+		nodeHierarchy = IECore.RunTimeTyped.baseTypeIds( node.typeId() )
+		for typeId in [ node.typeId() ] + nodeHierarchy :	
+			uiBuilder = self.__uiBuilders.get( typeId, None )
+			if uiBuilder is not None :
+				break
+						
 		frame = GafferUI.Frame()
 		self._column.append( frame, expand=True )
-		uiBuilder = self.__uiBuilders.get( node.__class__, self.__defaultNodeUI )
-		uiBuilder( frame, node )
+		frame.setChild( uiBuilder( node ) )
 	
-	## \todo Some sort of NodeUI class to simplify the building process? This should
-	# provide a simple mechanism for adjusting already existing uis in simple ways - for
-	# instance to override the filename parts of nodes to provide fancy asset management.
-	# It could also provide a simple means of having different bits of the ui disabled based
-	# on callbacks from specific plugs.
 	__uiBuilders = {}
 	@classmethod
 	def registerNodeUI( cls, nodeType, uiBuilder ) :
 	
-		__uiBuilders[nodeType] = uiBuilder
-		
-	@staticmethod
-	def __defaultNodeUI( frame, node ) :
-		
-		column = GafferUI.ListContainer( GafferUI.ListContainer.Orientation.Vertical )
-		frame.setChild( column )
-		
-		plugs = [ x for x in node.children() if x.isInstanceOf( Gaffer.Plug.staticTypeId() ) ]
-		plugs = [ x for x in plugs if x.direction()==Gaffer.Plug.Direction.In and not x.getName().startswith( "__" ) ]
-		for plug in plugs :
-		
-			plugWidget = GafferUI.PlugWidget( plug )
-			column.append( plugWidget )
-		
+		cls.__uiBuilders[nodeType] = uiBuilder	
+				
 GafferUI.EditorWidget.registerType( "NodeEditor", NodeEditor )
