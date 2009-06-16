@@ -156,6 +156,8 @@ class CompoundPlugTest( unittest.TestCase ) :
 			if plug.isSame( c ) :
 				self.set = True
 
+		cn = n.plugSetSignal().connect( setCallback )
+
 		self.set = False
 		
 		c["f1"].setValue( 10 )

@@ -102,10 +102,13 @@ void CompoundPlug::setFromInput()
 void CompoundPlug::parentChanged()
 {
 	m_plugInputChangedConnection.disconnect();
+	m_plugSetConnection.disconnect();
+	
 	NodePtr n = node();
 	if( n )
 	{
 		m_plugInputChangedConnection = n->plugInputChangedSignal().connect( boost::bind( &CompoundPlug::plugInputChanged, this, ::_1 ) );
+		m_plugSetConnection = n->plugSetSignal().connect( boost::bind( &CompoundPlug::plugSet, this, ::_1 ) );
 	}
 }
 
@@ -116,9 +119,21 @@ void CompoundPlug::childAddedOrRemoved()
 
 void CompoundPlug::plugInputChanged( PlugPtr plug )
 {
-	if( plug->ancestor<CompoundPlug>()==this )
+	if( plug->parent<CompoundPlug>()==this )
 	{
 		updateInputFromChildInputs( plug );
+	}
+}
+
+void CompoundPlug::plugSet( PlugPtr plug )
+{
+	if( plug->parent<CompoundPlug>()==this )
+	{
+		NodePtr n = node();
+		if( n )
+		{
+			n->plugSetSignal()( this );
+		}
 	}
 }
 
