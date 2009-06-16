@@ -143,4 +143,6 @@ void GafferBindings::bindCompoundNumericPlug()
 	bind<V3fPlug>();
 	bind<V2iPlug>();
 	bind<V3iPlug>();
+	bind<Color3fPlug>();
+	bind<Color4fPlug>();
 }

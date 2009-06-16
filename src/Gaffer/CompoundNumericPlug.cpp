@@ -149,6 +149,8 @@ IECORE_RUNTIMETYPED_DEFINETEMPLATESPECIALISATION( V2fPlug, V2fPlugTypeId )
 IECORE_RUNTIMETYPED_DEFINETEMPLATESPECIALISATION( V3fPlug, V3fPlugTypeId )
 IECORE_RUNTIMETYPED_DEFINETEMPLATESPECIALISATION( V2iPlug, V2iPlugTypeId )
 IECORE_RUNTIMETYPED_DEFINETEMPLATESPECIALISATION( V3iPlug, V3iPlugTypeId )
+IECORE_RUNTIMETYPED_DEFINETEMPLATESPECIALISATION( Color3fPlug, Color3fPlugTypeId )
+IECORE_RUNTIMETYPED_DEFINETEMPLATESPECIALISATION( Color4fPlug, Color4fPlugTypeId )
 
 // explicit instantiations
 
@@ -156,3 +158,5 @@ template class CompoundNumericPlug<Imath::V2f>;
 template class CompoundNumericPlug<Imath::V3f>;
 template class CompoundNumericPlug<Imath::V2i>;
 template class CompoundNumericPlug<Imath::V3i>;
+template class CompoundNumericPlug<Imath::Color3f>;
+template class CompoundNumericPlug<Imath::Color4f>;

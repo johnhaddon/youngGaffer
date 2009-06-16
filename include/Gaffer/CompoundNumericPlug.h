@@ -2,6 +2,7 @@
 #define GAFFER_COMPOUNDNUMERICPLUG_H
 
 #include "OpenEXR/ImathVec.h"
+#include "OpenEXR/ImathColor.h"
 
 #include "Gaffer/CompoundPlug.h"
 #include "Gaffer/NumericPlug.h"
@@ -64,10 +65,15 @@ typedef CompoundNumericPlug<Imath::V3f> V3fPlug;
 typedef CompoundNumericPlug<Imath::V2i> V2iPlug;
 typedef CompoundNumericPlug<Imath::V3i> V3iPlug;
 
+typedef CompoundNumericPlug<Imath::Color3f> Color3fPlug;
+typedef CompoundNumericPlug<Imath::Color4f> Color4fPlug;
+
 IE_CORE_DECLAREPTR( V2fPlug );
 IE_CORE_DECLAREPTR( V3fPlug );
 IE_CORE_DECLAREPTR( V2iPlug );
 IE_CORE_DECLAREPTR( V3iPlug );
+IE_CORE_DECLAREPTR( Color3fPlug );
+IE_CORE_DECLAREPTR( Color4fPlug );
 
 } // namespace Gaffer
 

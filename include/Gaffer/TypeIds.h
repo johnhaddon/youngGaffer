@@ -25,6 +25,8 @@ enum TypeId
 	V3fPlugTypeId = 400015,
 	V2iPlugTypeId = 400016,
 	V3iPlugTypeId = 400017,
+	Color3fPlugTypeId = 400018,
+	Color4fPlugTypeId = 400019,
 	
 	FirstPythonTypeId = 405000,
 	
