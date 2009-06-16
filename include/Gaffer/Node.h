@@ -19,13 +19,6 @@ IE_CORE_FORWARDDECLARE( ScriptNode )
 ///
 ///		- can we allow multiple computes() at once?
 ///		- or do we have to resort to computes() being threaded internally?
-///
-/// difference between dynamic and static plugs and children?
-///		- flag in plug?
-///		- implement as Node::acceptsRemoval()
-///			- don't thing plugs need to know their dynamic/static status
-///			- but nodes do for serialisation i think
-///				- or they do clever addition of plugs during parsing
 class Node : public GraphComponent
 {
 
