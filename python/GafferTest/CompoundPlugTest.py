@@ -102,7 +102,47 @@ class CompoundPlugTest( unittest.TestCase ) :
 		while gc.collect() :
 			pass
 		IECore.RefCounted.collectGarbage()
+		
+	def testDirtyPropagation( self ) :
+	
+		c = Gaffer.CompoundPlug( direction=Gaffer.Plug.Direction.Out )
+		c["f1"] = Gaffer.FloatPlug( direction=Gaffer.Plug.Direction.Out )
+		c["f2"] = Gaffer.FloatPlug( direction=Gaffer.Plug.Direction.Out )
+		
+		n = Gaffer.Node()
+		n["c"] = c
+
+		c["f1"].setValue( 10 )
+		c["f2"].setValue( 10 )
+		
+		self.failIf( c["f1"].getDirty() )
+		self.failIf( c["f2"].getDirty() )
+		self.failIf( n["c"].getDirty() )
+		
+		c["f1"].setDirty()
+
+		self.failUnless( c["f1"].getDirty() )
+		self.failIf( c["f2"].getDirty() )
+		self.failUnless( n["c"].getDirty() )
+		
+		c["f1"].setValue( 10 )
 						
+		self.failIf( c["f1"].getDirty() )
+		self.failIf( c["f2"].getDirty() )
+		self.failIf( n["c"].getDirty() )
+
+		c.setDirty()
+		self.failUnless( c["f1"].getDirty() )
+		self.failUnless( c["f2"].getDirty() )
+		self.failUnless( n["c"].getDirty() )
+
+		c["f1"].setValue( 10 )
+		c["f2"].setValue( 10 )
+
+		self.failIf( c["f1"].getDirty() )
+		self.failIf( c["f2"].getDirty() )
+		self.failIf( n["c"].getDirty() )
+		
 if __name__ == "__main__":
 	unittest.main()
 	
