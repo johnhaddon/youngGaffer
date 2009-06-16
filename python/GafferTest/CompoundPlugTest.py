@@ -143,6 +143,25 @@ class CompoundPlugTest( unittest.TestCase ) :
 		self.failIf( c["f2"].getDirty() )
 		self.failIf( n["c"].getDirty() )
 		
+	def testPlugSetPropagation( self ) :
+	
+		c = Gaffer.CompoundPlug()
+		c["f1"] = Gaffer.FloatPlug()
+		
+		n = Gaffer.Node()
+		n["c"] = c
+		
+		def setCallback( plug ) :
+			
+			if plug.isSame( c ) :
+				self.set = True
+
+		self.set = False
+		
+		c["f1"].setValue( 10 )
+		
+		self.failUnless( self.set )
+		
 if __name__ == "__main__":
 	unittest.main()
 	
