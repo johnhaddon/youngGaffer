@@ -67,6 +67,7 @@ from Frame import Frame
 from CompoundNumericPlugValueWidget import CompoundNumericPlugValueWidget
 from Collapsible import Collapsible
 from NodeUI import NodeUI
+from ColorSwatch import ColorSwatch
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?
