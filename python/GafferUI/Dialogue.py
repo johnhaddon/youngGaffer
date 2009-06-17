@@ -41,7 +41,7 @@ class Dialogue( GafferUI.Window ) :
 	
 		self.__column[0] = widget
 		
-	def _getWidget( self, widget ) :
+	def _getWidget( self ) :
 		
 		return self.__column[0]
 		
