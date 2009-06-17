@@ -16,6 +16,11 @@ class Window( ContainerWidget ) :
 
 		self.__closedSignal = GafferUI.WidgetSignal()
 		self.gtkWidget().connect( "delete-event", self.__deleted )
+	
+	def show( self ) :
+	
+		ContainerWidget.show( self )
+		self.gtkWidget().present()
 		
 	def setTitle( self, title ) :
 	
