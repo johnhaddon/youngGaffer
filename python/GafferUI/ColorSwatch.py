@@ -35,7 +35,7 @@ class ColorSwatch( GafferUI.Widget ) :
 		allocation = self.gtkWidget().get_allocation()
 		
 		# draw checkerboard background if necessary
-		if self.__color.a < 1 :
+		if self.__color.dimensions()==4 and self.__color.a < 1 :
 			checkSize = 6
 			nx = 1 + allocation.width / checkSize
 			ny = 1 + allocation.height / checkSize
@@ -46,8 +46,11 @@ class ColorSwatch( GafferUI.Widget ) :
 					context.rectangle( x * checkSize, y * checkSize, checkSize, checkSize )
 					context.fill()
 		
-		# draw colour	
-		context.set_source_rgba( self.__color.r, self.__color.g, self.__color.b, self.__color.a )
+		# draw colour
+		if self.__color.dimensions()==4 :
+			context.set_source_rgba( self.__color.r, self.__color.g, self.__color.b, self.__color.a )
+		else :
+			context.set_source_rgb( self.__color.r, self.__color.g, self.__color.b )
 		context.rectangle( 0, 0, allocation.width, allocation.height )
 		context.fill()
 		
