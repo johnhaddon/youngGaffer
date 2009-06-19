@@ -56,6 +56,7 @@ class GadgetWidget( GLWidget ) :
 		self.__renderer.setOption( "gl:mode", IECore.StringData( "deferred" ) )
 				
 		self.setCameraMode( cameraMode )
+		self.setBackgroundColor( IECore.Color3f( 0 ) )
 		self.setGadget( gadget )
 		
 		self.__lastButtonPressGadget = None
@@ -97,11 +98,21 @@ class GadgetWidget( GLWidget ) :
 				
 	def getCameraMode( self ) :
 	
-		return self.__cameraMode	
+		return self.__cameraMode
+	
+	## \todo Should there be a standard way of setting colors for all Widgets?	
+	def setBackgroundColor( self, color ) :
+	
+		self.__backgroundColor = color
+	
+	def getBackgroundColor( self ) :
+	
+		return self.__backgroundColor
 	
 	def draw( self ) :
 	
-		glClearColor( 0.0, 0.0, 0.0, 0.0 )
+		bg = self.__backgroundColor.linearToSRGB()
+		glClearColor( bg[0], bg[1], bg[2], 0.0 )
 		glClearDepth( 1.0 )
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT )
 			  

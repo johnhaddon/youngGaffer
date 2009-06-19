@@ -10,6 +10,7 @@ class GraphEditor( EditorWidget ) :
 	def __init__( self, scriptNode=None ) :
 	
 		self.__gadgetWidget = GadgetWidget( cameraMode = GadgetWidget.CameraMode.Mode2D )
+		self.__gadgetWidget.setBackgroundColor( self._defaultBGColors[0] )
 		
 		EditorWidget.__init__( self, self.__gadgetWidget.gtkWidget(), scriptNode )
 		
