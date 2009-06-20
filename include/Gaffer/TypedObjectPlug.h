@@ -4,6 +4,7 @@
 #include "IECore/Object.h"
 
 #include "Gaffer/ValuePlug.h"
+#include "Gaffer/PlugIterator.h"
 
 namespace Gaffer
 {
@@ -75,6 +76,10 @@ class TypedObjectPlug : public ValuePlug
 typedef TypedObjectPlug<IECore::Object> ObjectPlug;
 
 IE_CORE_DECLAREPTR( ObjectPlug );
+
+typedef FilteredChildIterator<PlugPredicate<Plug::Invalid, ObjectPlug> > ObjectPlugIterator;
+typedef FilteredChildIterator<PlugPredicate<Plug::In, ObjectPlug> > InputObjectPlugIterator;
+typedef FilteredChildIterator<PlugPredicate<Plug::Out, ObjectPlug> > OutputObjectPlugIterator;
 
 } // namespace Gaffer
 
