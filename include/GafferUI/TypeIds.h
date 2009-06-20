@@ -20,6 +20,7 @@ enum TypeId
 	NoduleTypeId = 410011,
 	LinearContainerTypeId = 410012,
 	ConnectionGadgetTypeId = 410013,
+	StandardNodeGadgetTypeId = 410014,
 	
 	LastTypeId = 419999
 };

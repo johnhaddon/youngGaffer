@@ -1,0 +1,11 @@
+#ifndef GAFFERUIBINDINGS_STANDARDNODEGADGETBINDING_H
+#define GAFFERUIBINDINGS_STANDARDNODEGADGETBINDING_H
+
+namespace GafferUIBindings
+{
+
+void bindStandardNodeGadget();
+
+} // namespace GafferUIBindings
+
+#endif // GAFFERUIBINDINGS_STANDARDNODEGADGETBINDING_H

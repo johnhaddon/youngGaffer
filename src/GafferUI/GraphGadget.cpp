@@ -250,7 +250,7 @@ void GraphGadget::addNodeGadget( Gaffer::Node *node )
 	node->plugInputChangedSignal().connect( boost::bind( &GraphGadget::inputChanged, this, ::_1 ) );
 	node->plugSetSignal().connect( boost::bind( &GraphGadget::plugSet, this, ::_1 ) );
 	
-	NodeGadgetPtr nodeGadget = new NodeGadget( node );
+	NodeGadgetPtr nodeGadget = NodeGadget::create( node );
 	
 	addChild( nodeGadget );
 	m_nodeGadgets[node] = nodeGadget.get();

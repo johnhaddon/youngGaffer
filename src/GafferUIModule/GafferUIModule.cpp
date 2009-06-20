@@ -18,6 +18,7 @@
 #include "GafferUIBindings/DragDropEventBinding.h"
 #include "GafferUIBindings/ConnectionGadgetBinding.h"
 #include "GafferUIBindings/WidgetSignalBinding.h"
+#include "GafferUIBindings/StandardNodeGadgetBinding.h"
 
 using namespace GafferUIBindings;
 
@@ -42,5 +43,6 @@ BOOST_PYTHON_MODULE( _GafferUI )
 	bindDragDropEvent();
 	bindConnectionGadget();
 	bindWidgetSignal();
+	bindStandardNodeGadget();
 	
 }

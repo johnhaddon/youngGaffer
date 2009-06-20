@@ -13,8 +13,8 @@ using namespace GafferUI;
 void GafferUIBindings::bindNodeGadget()
 {
 	IECore::RunTimeTypedClass<NodeGadget>()
-		.def( init<Gaffer::NodePtr>() )
 		.def( "node", (Gaffer::NodePtr (NodeGadget::*)())&NodeGadget::node )
 		.def( "nodule", (NodulePtr (NodeGadget::*)( Gaffer::ConstPlugPtr ))&NodeGadget::nodule )
+		.def( "create", &NodeGadget::create ).staticmethod( "create" )
 	;
 }
