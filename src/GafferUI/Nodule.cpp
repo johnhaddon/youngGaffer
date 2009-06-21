@@ -46,8 +46,6 @@ Imath::Box3f Nodule::bound() const
 
 void Nodule::doRender( IECore::RendererPtr renderer ) const
 {
-	getStyle()->renderNodule( renderer, 0.5 );
-	
 	if( m_dragging )
 	{
 		// technically we shouldn't be drawing outside of our bound like this.
@@ -56,6 +54,8 @@ void Nodule::doRender( IECore::RendererPtr renderer ) const
 		// just to draw this line. it seems like unecessary effort now though.
 		getStyle()->renderConnection( renderer, V3f( 0 ), m_dragPosition );
 	}
+	
+	getStyle()->renderNodule( renderer, 0.5 );
 }
 
 bool Nodule::buttonPress( GadgetPtr gadget, const ButtonEvent &event )
