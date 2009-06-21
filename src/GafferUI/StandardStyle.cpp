@@ -89,7 +89,7 @@ void StandardStyle::renderConnection( IECore::RendererPtr renderer, const Imath:
 		
 	renderer->attributeBegin();
 	
-		renderer->shader( "surface", "ui/nodule", CompoundDataMap() );
+		renderer->shader( "surface", "ui/connection", CompoundDataMap() );
 		c->render( renderer );
 		
 	renderer->attributeEnd();

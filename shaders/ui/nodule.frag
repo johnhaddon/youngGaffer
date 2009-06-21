@@ -1,10 +1,9 @@
+#include "IECoreGL/FilterAlgo.h"
+
 void main()
 {
 	float r = length( gl_TexCoord[0].xy - vec2( 0.5 ) );
-
-	/// when this is used as the alpha we get circles but
-	/// then selection mode stops working
-	float a = 1.0 - smoothstep( 0.45, 0.5, r );
-
-	gl_FragColor = vec4( 0.2, 0.2, 0.2, 1 );
+	float g = mix( 0.5, 0.05, ieFilteredStep( 0.35, r ) );
+	float a = 1.0 - ieFilteredStep( 0.45, r );
+	gl_FragColor = vec4( g, g, g, a );
 }
