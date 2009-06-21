@@ -36,7 +36,12 @@ void StandardStyle::renderFrame( IECore::RendererPtr renderer, const Imath::Box2
 	
 		renderer->setAttribute( "color", new Color3fData( backgroundColor( renderer ) ) );
 	
-		renderer->shader( "surface", "ui/frame", CompoundDataMap() );
+		CompoundDataMap parameters;
+		parameters["cornerSizes"] = new IECore::V2fData( Imath::V2f(
+			borderWidth / ( frame.size().x + 2 * borderWidth ),
+			borderWidth / ( frame.size().y + 2 * borderWidth )
+		) );
+		renderer->shader( "surface", "ui/frame", parameters );
 	
 		M44f m;
 		m.setTranslation( V3f( frame.min.x - borderWidth, frame.min.y - borderWidth, 0 ) );
