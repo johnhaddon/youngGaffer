@@ -54,6 +54,27 @@ GraphGadget::~GraphGadget()
 {
 }
 
+void GraphGadget::doRender( IECore::RendererPtr renderer ) const
+{
+	// render connection first so they go underneath
+	for( ChildContainer::const_iterator it=children().begin(); it!=children().end(); it++ )
+	{
+		if( ConnectionGadgetPtr c = IECore::runTimeCast<ConnectionGadget>( *it ) )
+		{
+			c->render( renderer );
+		}
+	}
+	
+	// then render the rest on top
+	for( ChildContainer::const_iterator it=children().begin(); it!=children().end(); it++ )
+	{
+		if( !((*it)->isInstanceOf( ConnectionGadget::staticTypeId() )) )
+		{
+			boost::static_pointer_cast<const Gadget>( *it )->render( renderer );
+		}
+	}
+}
+
 bool GraphGadget::keyPressed( GadgetPtr gadget, const KeyEvent &event )
 {
 	cerr << "KEYPRESS" << endl;

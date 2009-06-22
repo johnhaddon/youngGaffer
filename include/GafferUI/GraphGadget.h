@@ -28,6 +28,8 @@ class GraphGadget : public ContainerGadget
 
 	protected :
 
+		void doRender( IECore::RendererPtr renderer ) const;
+
 		void childAdded( GraphComponent *parent, GraphComponent *child );
 		void childRemoved( GraphComponent *parent, GraphComponent *child );
 		void inputChanged( Gaffer::PlugPtr dstPlug );
