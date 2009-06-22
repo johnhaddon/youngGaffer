@@ -81,7 +81,7 @@ void StandardStyle::renderConnection( IECore::RendererPtr renderer, const Imath:
 		v->writable().push_back( 4 );
 		c = new CurvesPrimitive( v, CubicBasisf::bezier(), false );
 		c->variables["P"] = PrimitiveVariable( PrimitiveVariable::Vertex, p );
-		c->variables["width"] = PrimitiveVariable( PrimitiveVariable::Constant, new FloatData( 0.1 ) );
+		c->variables["width"] = PrimitiveVariable( PrimitiveVariable::Constant, new FloatData( 0.3 ) );
 	}
 	
 	vector<V3f> &pp = p->writable();
