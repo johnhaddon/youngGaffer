@@ -147,12 +147,12 @@ class NodeTest( unittest.TestCase ) :
 				
 		self.assertRaises( Exception, Gaffer.Node, "too", "many" )
 		
-		n = Gaffer.AddNode( "hello", op1 = 1, op2 = 2 )
+		n = Gaffer.AddNode( "hello", inputs = { "op1" : 1, "op2" : 2 } )
 		self.assertEqual( n.getName(), "hello" )
 		self.assertEqual( n["op1"].getValue(), 1 )
 		self.assertEqual( n["op2"].getValue(), 2 )
 		
-		n2 = Gaffer.AddNode( "goodbye", op1 = n["sum"] )
+		n2 = Gaffer.AddNode( "goodbye", inputs = { "op1" : n["sum"] } )
 		self.assert_( n2["op1"].getInput().isSame( n["sum"] ) )
 	
 	def testOutputsDirtyForNewNodes( self ) :
