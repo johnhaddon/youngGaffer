@@ -64,6 +64,11 @@ static PlugPtr constructor( const std::string &name, Plug::Direction direction, 
 	return new Plug( name, direction, flags );
 }
 
+static NodePtr node( Plug &p )
+{
+	return p.node();
+}
+
 void GafferBindings::bindPlug()
 {
 
@@ -92,7 +97,7 @@ void GafferBindings::bindPlug()
 				)
 			)
 		)
-		.def( "node", (NodePtr (Plug::*)())&Plug::node )
+		.def( "node", &node )
 		.def( "direction", &Plug::direction )
 		.def( "getFlags", (unsigned (Plug::*)() const )&Plug::getFlags )
 		.def( "getFlags", (bool (Plug::*)( unsigned ) const )&Plug::getFlags )

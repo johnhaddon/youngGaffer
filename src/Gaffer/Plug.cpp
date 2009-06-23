@@ -44,13 +44,13 @@ bool Plug::acceptsParent( const GraphComponent *potentialParent ) const
 	return potentialParent->isInstanceOf( (IECore::TypeId)NodeTypeId ) || potentialParent->isInstanceOf( Plug::staticTypeId() );
 }
 
-NodePtr Plug::node()
+Node *Plug::node()
 {
 	return ancestor<Node>();
 }
 
 
-ConstNodePtr Plug::node() const
+const Node *Plug::node() const
 {
 	return ancestor<Node>();
 }

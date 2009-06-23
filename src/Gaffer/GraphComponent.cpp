@@ -230,7 +230,7 @@ const GraphComponent::ChildContainer &GraphComponent::children() const
 	return m_children;
 }
 
-GraphComponentPtr GraphComponent::ancestor( IECore::TypeId type )
+GraphComponent *GraphComponent::ancestor( IECore::TypeId type )
 {
 	GraphComponent *a = m_parent;
 	while( a )
@@ -244,7 +244,7 @@ GraphComponentPtr GraphComponent::ancestor( IECore::TypeId type )
 	return 0;
 }
 
-ConstGraphComponentPtr GraphComponent::ancestor( IECore::TypeId type ) const
+const GraphComponent *GraphComponent::ancestor( IECore::TypeId type ) const
 {
 	return const_cast<GraphComponent *>( this )->ancestor( type );
 }

@@ -104,7 +104,7 @@ void CompoundPlug::parentChanged()
 	m_plugInputChangedConnection.disconnect();
 	m_plugSetConnection.disconnect();
 	
-	NodePtr n = node();
+	Node *n = node();
 	if( n )
 	{
 		m_plugInputChangedConnection = n->plugInputChangedSignal().connect( boost::bind( &CompoundPlug::plugInputChanged, this, ::_1 ) );

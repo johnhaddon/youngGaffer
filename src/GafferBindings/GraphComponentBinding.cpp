@@ -59,6 +59,11 @@ static GraphComponentPtr parent( GraphComponent &g )
 	return g.parent<GraphComponent>();
 }
 
+static GraphComponentPtr ancestor( GraphComponent &g, IECore::TypeId t )
+{
+	return g.ancestor( t );
+}
+
 struct UnarySlotCaller
 {
 	boost::signals::detail::unusable operator()( boost::python::object slot, GraphComponentPtr g )
@@ -113,7 +118,7 @@ void GafferBindings::bindGraphComponent()
 		.def( "__contains__", contains )
 		.def( "children", &children )
 		.def( "parent", &parent )
-		.def( "ancestor", (GraphComponentPtr (GraphComponent::*)( IECore::TypeId ))&GraphComponent::ancestor )
+		.def( "ancestor", &ancestor )
 		.def( "commonAncestor", (GraphComponentPtr (GraphComponent::*)( ConstGraphComponentPtr, IECore::TypeId ))&GraphComponent::commonAncestor )
 		.def( "childAddedSignal", &GraphComponent::childAddedSignal, return_internal_reference<1>() )
 		.def( "childRemovedSignal", &GraphComponent::childRemovedSignal, return_internal_reference<1>() )

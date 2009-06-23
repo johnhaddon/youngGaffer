@@ -67,15 +67,15 @@ const T *GraphComponent::parent() const
 }
 
 template<typename T>
-typename T::Ptr GraphComponent::ancestor()
+T *GraphComponent::ancestor()
 {
-	return boost::static_pointer_cast<T>( ancestor( T::staticTypeId() ) );
+	return static_cast<T *>( ancestor( T::staticTypeId() ) );
 }
 
 template<typename T>
-typename T::ConstPtr GraphComponent::ancestor() const
+const T *GraphComponent::ancestor() const
 {
-	return boost::static_pointer_cast<const T>( ancestor( T::staticTypeId() ) );
+	return static_cast<const T *>( ancestor( T::staticTypeId() ) );
 }
 
 template<typename T>

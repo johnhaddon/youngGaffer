@@ -112,13 +112,13 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		const T *parent() const;
 		/// Returns the first ancestor of type T.
 		template<typename T>
-		typename T::Ptr ancestor();
+		T *ancestor();
 		/// Returns the first ancestor of type T.
 		template<typename T>
-		typename T::ConstPtr ancestor() const;
+		const T *ancestor() const;
 		/// As above, but taking a TypeId to specify type - this is mainly provided for the binding.
-		GraphComponentPtr ancestor( IECore::TypeId ancestorType );
-		ConstGraphComponentPtr ancestor( IECore::TypeId ancestorType ) const;
+		GraphComponent *ancestor( IECore::TypeId ancestorType );
+		const GraphComponent *ancestor( IECore::TypeId ancestorType ) const;
 		/// Returns the first ancestor of type T which
 		/// is also an ancestor of other.
 		template<typename T>
