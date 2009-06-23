@@ -6,7 +6,7 @@ import Gaffer
 
 class RIBRendererNode( Gaffer.Node ) :
 
-	def __init__( self, name="RIBRenderer", **kw ) :
+	def __init__( self, name="RIBRenderer", inputs={}, dynamicPlugs=() ) :
 	
 		Gaffer.Node.__init__( self, name )
 		
@@ -16,7 +16,7 @@ class RIBRendererNode( Gaffer.Node ) :
 		resultPlug = Gaffer.IntPlug( "output", Gaffer.Plug.Direction.Out )
 		self.addChild( resultPlug )
 
-		self.setPlugs( **kw )
+		self._init( inputs, dynamicPlugs )
 		
 	def dirty( self, plug ) :
 		

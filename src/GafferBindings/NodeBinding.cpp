@@ -51,7 +51,7 @@ static std::string serialisePlug( Serialiser &s, ConstGraphComponentPtr ancestor
 	return "";
 }
 
-std::string serialiseNode( Serialiser &s, ConstGraphComponentPtr g )
+static std::string serialiseNode( Serialiser &s, ConstGraphComponentPtr g )
 {
 	ConstNodePtr node = boost::static_pointer_cast<const Node>( g );
 	
@@ -61,14 +61,30 @@ std::string serialiseNode( Serialiser &s, ConstGraphComponentPtr g )
 		% node->getName()
 	);
 
-	result += "**{ ";
+	std::string inputs = "";
+	std::string dynamicPlugs = "";
 	for( InputPlugIterator pIt=node->inputPlugsBegin(); pIt!=pIt.end(); pIt++ )
 	{
 		PlugPtr plug = *pIt;
-		std::string ps = serialisePlug( s, node, *pIt );
-		result += ps;
+		if( plug->getFlags( Plug::Dynamic ) )
+		{
+			dynamicPlugs += s.serialiseC( plug ) + ", ";
+		}
+		else
+		{
+			inputs += serialisePlug( s, node, *pIt );
+		}
 	}
-	result += " }";
+	
+	if( inputs.size() )
+	{
+		result += "inputs = { " + inputs + "}, ";
+	}
+	if( dynamicPlugs.size() )
+	{
+		result += "dynamicPlugs = ( " + dynamicPlugs + "), ";
+	}
+	
 	result += ")";
 	return result;
 }
@@ -78,9 +94,10 @@ class NodeWrapper : public Node, public IECore::Wrapper<Node>
 
 	public :
 		
-		NodeWrapper( PyObject *self, const std::string &name=staticTypeName() )
+		NodeWrapper( PyObject *self, const std::string &name=staticTypeName(), const dict &inputs, const tuple &dynamicPlugs )
 			:	Node( name ), IECore::Wrapper<Node>( self, this )
 		{
+			initNode( this, inputs, dynamicPlugs );
 		}		
 		
 		virtual void dirty( ConstPlugPtr dirty ) const
@@ -105,9 +122,9 @@ class NodeWrapper : public Node, public IECore::Wrapper<Node>
 
 IE_CORE_DECLAREPTR( NodeWrapper );
 
-void GafferBindings::setPlugs( NodePtr node, const boost::python::dict &keywords )
+static void setPlugs( Node *node, const boost::python::dict &inputs )
 {
-	list items = keywords.items();
+	list items = inputs.items();
 	long l = len( items );
 	for( long i=0; i<l; i++ )
 	{
@@ -116,70 +133,47 @@ void GafferBindings::setPlugs( NodePtr node, const boost::python::dict &keywords
 		PlugPtr plug = node->getChild<Plug>( name );
 		if( !plug )
 		{
-			// plug doesn't exist yet, hopefully a dynamic plug is being added
-			extract<PlugPtr> plugExtractor( items[i][1] );
-			if( plugExtractor.check() )
-			{
-				// add dynamic plug
-				PlugPtr p = plugExtractor();
-				node->addChild( p );
-			}
-			else
-			{
-				std::string err = boost::str( boost::format( "No plug named \"%s\"." ) % name );
-				throw std::invalid_argument( err.c_str() );	
-			}
+			std::string err = boost::str( boost::format( "No plug named \"%s\"." ) % name );
+			throw std::invalid_argument( err.c_str() );	
 		}
 		else
 		{
-			// plug already exists, connect it or set its value
 			setPlugValue( plug, items[i][1] );
 		}
 	}
 }
 
-// really we want a void return type but raw_function doesn't seem to like that
-static bool setPlugsRaw( tuple t, dict d )
+static void addDynamicPlugs( Node *node, const boost::python::tuple &dynamicPlugs )
 {
-	if( len( t ) > 1 )
+	long l = len( dynamicPlugs );
+	for( long i=0; i<l; i++ )
 	{
-		throw std::invalid_argument( "Expected only keyword arguments." );
+		PlugPtr p = extract<PlugPtr>( dynamicPlugs[i] );
+		node->addChild( p );
 	}
-	NodePtr node = extract<NodePtr>( t[0] );
-	setPlugs( node, d );
-	return true;
 }
 
-static NodePtr constructor( tuple t, dict d )
+void GafferBindings::initNode( Node *node, const boost::python::dict &inputs, const boost::python::tuple &dynamicPlugs )
 {
-	long l = len( t );
-	if( !l )
-	{
-		throw std::invalid_argument( "Expected self for first argument to constructor." );
-	}
-	if( l>2 )
-	{
-		throw std::invalid_argument( "Too many arguments." );
-	}
-	
-	std::string name = Node::staticTypeName();
-	if( l==2 )
-	{
-		name = extract<std::string>( t[1] )();
-	}
-		
-	NodePtr result = new NodeWrapper( ((object)t[0]).ptr(), name );
-	setPlugs( result, d );
-	return result;
+	setPlugs( node, inputs );
+	addDynamicPlugs( node, dynamicPlugs );
 }
 
 void GafferBindings::bindNode()
 {
 	
-	scope s = IECore::RunTimeTypedClass<Node>()
-		.def( "__init__", rawConstructor( constructor ) )
+	scope s = IECore::RunTimeTypedClass<Node, NodeWrapperPtr>()
+		.def( 	init< const std::string &, const dict &, const tuple & >
+				(
+					(
+						arg( "name" ) = Node::staticTypeName(),
+						arg( "inputs" ) = dict(),
+						arg( "dynamicPlugs" ) = tuple()
+					)
+				)
+		)
 		.def( "scriptNode", (ScriptNodePtr (Node::*)())&Node::scriptNode )
-		.def( "setPlugs", raw_function( setPlugsRaw, 1 ) )
+		.def( "_init", &initNode )
 		.def( "plugSetSignal", &Node::plugSetSignal, return_internal_reference<1>() )
 		.def( "plugDirtiedSignal", &Node::plugDirtiedSignal, return_internal_reference<1>() )
 		.def( "plugInputChangedSignal", &Node::plugInputChangedSignal, return_internal_reference<1>() )

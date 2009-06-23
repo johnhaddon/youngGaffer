@@ -4,7 +4,7 @@ import Gaffer
 
 class WriteNode( Gaffer.Node ) :
 
-	def __init__( self, name="Write", **kw ) :
+	def __init__( self, name="Write", inputs={}, dynamicPlugs=() ) :
 	
 		Gaffer.Node.__init__( self, name )
 		
@@ -17,7 +17,7 @@ class WriteNode( Gaffer.Node ) :
 		resultPlug = Gaffer.StringPlug( "output", Gaffer.Plug.Direction.Out )
 		self.addChild( resultPlug )
 		
-		self.setPlugs( **kw )
+		self._init( inputs, dynamicPlugs )
 
 	def dirty( self, plug ) :
 	

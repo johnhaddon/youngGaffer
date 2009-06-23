@@ -3,7 +3,7 @@ import Gaffer
 ## This class is used by the CompoundPlugTest.
 class CompoundPlugNode( Gaffer.Node ) :
 
-	def __init__( self, name="Test", **kw ) :
+	def __init__( self, name="Test", inputs={}, dynamicPlugs=() ) :
 	
 		Gaffer.Node.__init__( self, name )
 		
@@ -14,7 +14,7 @@ class CompoundPlugNode( Gaffer.Node ) :
 		p.addChild( c2 )
 		self.addChild( p )
 		
-		self.setPlugs( **kw )
+		self._init( inputs, dynamicPlugs )
 		
 	def dirty( self, inputPlug ) :
 	

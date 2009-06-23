@@ -4,7 +4,7 @@ import Gaffer
 
 class SphereNode( Gaffer.Node ) :
 
-	def __init__( self, name="Sphere", **kw ) :
+	def __init__( self, name="Sphere", inputs={}, dynamicPlugs=() ) :
 	
 		Gaffer.Node.__init__( self, name )
 		
@@ -23,7 +23,7 @@ class SphereNode( Gaffer.Node ) :
 		resultPlug = Gaffer.ObjectPlug( "output", Gaffer.Plug.Direction.Out )
 		self.addChild( resultPlug )
 		
-		self.setPlugs( **kw )
+		self._init( inputs, dynamicPlugs )
 
 	def dirty( self, plug ) :
 	

@@ -8,7 +8,7 @@ namespace GafferBindings
 
 void bindNode();
 
-void setPlugs( Gaffer::NodePtr node, const boost::python::dict &keywords );
+void initNode( Gaffer::Node *node, const boost::python::dict &inputs, const boost::python::tuple &dynamicPlugs );
 
 } // namespace GafferBindings
 

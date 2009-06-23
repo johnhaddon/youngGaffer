@@ -4,7 +4,7 @@ import Gaffer
 
 class ReadNode( Gaffer.Node ) :
 
-	def __init__( self, name="Read", **kw ) :
+	def __init__( self, name="Read", inputs={}, dynamicPlugs=() ) :
 	
 		Gaffer.Node.__init__( self, name )
 		
@@ -14,7 +14,7 @@ class ReadNode( Gaffer.Node ) :
 		resultPlug = Gaffer.ObjectPlug( "output", Gaffer.Plug.Direction.Out )
 		self.addChild( resultPlug )
 		
-		self.setPlugs( **kw )
+		self._init( inputs, dynamicPlugs )
 
 	def dirty( self, plug ) :
 	

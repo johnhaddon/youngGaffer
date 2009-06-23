@@ -3,7 +3,7 @@ import Gaffer
 
 class AddNode( Gaffer.Node ) :
 		
-	def __init__( self, name="AddNode", **kw ) :
+	def __init__( self, name="AddNode", inputs={}, dynamicPlugs=() ) :
 
 		Gaffer.Node.__init__( self, name )
 
@@ -17,7 +17,7 @@ class AddNode( Gaffer.Node ) :
 
 		self.addChild( p3 )
 		
-		self.setPlugs( **kw )
+		self._init( inputs, dynamicPlugs )
 
 	def dirty( self, plug ) :
 

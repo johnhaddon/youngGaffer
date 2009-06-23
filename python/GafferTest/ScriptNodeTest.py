@@ -73,8 +73,8 @@ class ScriptNodeTest( unittest.TestCase ) :
 	
 		s = Gaffer.ScriptNode()
 		
-		s["a1"] = Gaffer.AddNode( op1=5, op2=6 )
-		s["a2"] = Gaffer.AddNode( op1 = s["a1"]["sum"], op2 = 10 )
+		s["a1"] = Gaffer.AddNode( inputs = { "op1" : 5, "op2" : 6 } )
+		s["a2"] = Gaffer.AddNode( inputs = { "op1" : s["a1"]["sum"], "op2" : 10 } )
 		
 		s2 = Gaffer.ScriptNode()
 		se = s.serialise()
@@ -117,8 +117,8 @@ class ScriptNodeTest( unittest.TestCase ) :
 	
 		s = Gaffer.ScriptNode()
 		
-		s["a1"] = Gaffer.AddNode( op1=5, op2=6 )
-		s["a2"] = Gaffer.AddNode( op1 = s["a1"]["sum"], op2 = 10 )
+		s["a1"] = Gaffer.AddNode( inputs = { "op1" : 5, "op2" : 6 } )
+		s["a2"] = Gaffer.AddNode( inputs = { "op1" : s["a1"]["sum"], "op2" : 10 } )
 		
 		s["fileName"].setValue( "/tmp/test.gfr" )
 		s.save()
@@ -132,7 +132,7 @@ class ScriptNodeTest( unittest.TestCase ) :
 	def testSaveFailureHandling( self ) :
 	
 		s = Gaffer.ScriptNode()
-		s["a1"] = Gaffer.AddNode( op1=5, op2=6 )
+		s["a1"] = Gaffer.AddNode( inputs = { "op1" : 5, "op2" : 6 } )
 
 		s["fileName"].setValue( "/this/directory/doesnt/exist" )
 		self.assertRaises( Exception, s.save )
@@ -140,7 +140,7 @@ class ScriptNodeTest( unittest.TestCase ) :
 	def testLoadFailureHandling( self ) :
 	
 		s = Gaffer.ScriptNode()
-		s["a1"] = Gaffer.AddNode( op1=5, op2=6 )
+		s["a1"] = Gaffer.AddNode( inputs = { "op1" : 5, "op2" : 6 } )
 
 		s["fileName"].setValue( "/this/file/doesnt/exist" )
 		self.assertRaises( Exception, s.load )
