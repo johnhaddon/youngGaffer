@@ -185,7 +185,25 @@ class ScriptNodeTest( unittest.TestCase ) :
 		s2.execute( se )
 		
 		self.assertEqual( s2["in"].typeName(), "Node" )
+	
+	# Executing the result of serialise() shouldn't leave behind any residue.
+	def testSerialisationPollution( self ) :
+	
+		s = Gaffer.ScriptNode()
+		s["n"] = Gaffer.AddNode()
+		s["n2"] = Gaffer.AddNode()
+		s["n"]["op1"].setInput( s["n2"]["sum"] )
 			
+		se = s.serialise()
+		
+		l = s.evaluate( "set( locals().keys() )" )
+		g = s.evaluate( "set( globals().keys() )" )
+
+		s.execute( se )
+		
+		self.failUnless( s.evaluate( "set( locals().keys() )" )==l )
+		self.failUnless( s.evaluate( "set( globals().keys() )" )==g )
+					
 if __name__ == "__main__":
 	unittest.main()
 	
