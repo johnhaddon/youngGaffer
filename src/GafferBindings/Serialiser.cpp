@@ -30,7 +30,7 @@ std::string Serialiser::serialise( Gaffer::ConstNodePtr context, Gaffer::ConstNo
 		importStatements += "import " + *it + "\n";
 	}
 	
-	return importStatements + "\n" + s.m_result;
+	return importStatements + "\n__nodes = {}\n\n" + s.m_result + "\n\ndel __nodes\n";
 }
 
 std::string Serialiser::modulePath( Gaffer::ConstGraphComponentPtr o )
@@ -86,7 +86,7 @@ std::string Serialiser::add( Gaffer::ConstNodePtr o )
 	}
 	if( m_visited.find( o )!=m_visited.end() )
 	{
-		return o->getName();
+		return "__nodes[\"" + o->getName() + "\"]";
 	}
 	
 	std::string s = serialiseC( o );
@@ -95,9 +95,10 @@ std::string Serialiser::add( Gaffer::ConstNodePtr o )
 		return s;
 	}
 
-	m_visited.insert( o );	
-	m_result += o->getName() + " = " + s + "\n";
-	m_result += "addChild( " + o->getName() + " )\n\n";
+	m_visited.insert( o );
+	std::string name = "__nodes[\"" + o->getName() + "\"]";
+	m_result += name + " = " + s + "\n";
+	m_result += "addChild( " + name + " )\n\n";
 	return o->getName();
 }
 

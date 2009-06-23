@@ -193,17 +193,19 @@ class ScriptNodeTest( unittest.TestCase ) :
 		s["n"] = Gaffer.AddNode()
 		s["n2"] = Gaffer.AddNode()
 		s["n"]["op1"].setInput( s["n2"]["sum"] )
+		
+		s.execute( "import Gaffer" ) # we don't want to complain that this would be added by the serialisation and execution
 			
 		se = s.serialise()
-		
+				
 		l = s.evaluate( "set( locals().keys() )" )
 		g = s.evaluate( "set( globals().keys() )" )
 
 		s.execute( se )
-		
+
 		self.failUnless( s.evaluate( "set( locals().keys() )" )==l )
 		self.failUnless( s.evaluate( "set( globals().keys() )" )==g )
-					
+							
 if __name__ == "__main__":
 	unittest.main()
 	
