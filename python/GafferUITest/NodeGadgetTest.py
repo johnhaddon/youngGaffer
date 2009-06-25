@@ -27,9 +27,20 @@ class NodeGadgetTest( unittest.TestCase ) :
 		self.assert_( g.nodule( n["op2"] ) )
 		self.assert_( g.nodule( n["sum"] ) )
 		
-		n["d"] = Gaffer.FloatPlug()
+		d = Gaffer.FloatPlug()
+		n["d"] = d
 		
-		self.assert_( g.nodule( n["d"] ) )			
+		self.assert_( g.nodule( n["op1"] ) )
+		self.assert_( g.nodule( n["op2"] ) )
+		self.assert_( g.nodule( n["sum"] ) )
+		self.assert_( g.nodule( d ) )
+		
+		n.removeChild( d )
+		
+		self.assert_( g.nodule( n["op1"] ) )
+		self.assert_( g.nodule( n["op2"] ) )
+		self.assert_( g.nodule( n["sum"] ) )
+		self.assert_( not g.nodule( d ) )
 	
 if __name__ == "__main__":
 	unittest.main()

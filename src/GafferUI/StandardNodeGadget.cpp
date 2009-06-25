@@ -193,7 +193,7 @@ void StandardNodeGadget::childRemoved( Gaffer::GraphComponentPtr parent, Gaffer:
 		NodulePtr n = nodule( p );
 		if( n )
 		{
-			removeChild( n );
+			n->parent<Gaffer::GraphComponent>()->removeChild( n );
 			m_nodules.erase( p.get() );
 		}
 	}	
