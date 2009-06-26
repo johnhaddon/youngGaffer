@@ -63,9 +63,11 @@ class NodeUI( GafferUI.Widget ) :
 			plug = self._node().getChild( plugOrPlugPath )
 		else :
 			plug = plugOrPlugPath
-			
-		w = GafferUI.PlugWidget( plug )
-		self._addWidget( w )
+		
+		vw = GafferUI.PlugValueWidget.create( plug )
+		if vw :	
+			w = GafferUI.PlugWidget( vw )
+			self._addWidget( w )
 
 	## This method is called from the constructor to build the ui. It is
 	# intended to be overriden in derived classes.
