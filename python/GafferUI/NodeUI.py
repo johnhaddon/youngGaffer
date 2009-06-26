@@ -91,6 +91,6 @@ class NodeUI( GafferUI.Widget ) :
 	@staticmethod
 	def _registerPlugWidget( self, nodeTypeId, plugPath, widgetType, **kw ) :
 	
-		pass
+		raise NotImplementedError
 		
 GafferUI.NodeEditor.registerNodeUI( Gaffer.Node.staticTypeId(), NodeUI )
