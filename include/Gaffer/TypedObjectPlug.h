@@ -9,7 +9,10 @@
 namespace Gaffer
 {
 
-/// A Plug type which can store value derived from IECore::Object.
+/// A Plug type which can store values derived from IECore::Object.
+/// \todo Should we remove the ability to specify a default value, since
+/// we can't serialise all values? Or should we use some nasty MemIndexedIO
+/// thing to support that?
 template<typename T>
 class TypedObjectPlug : public ValuePlug
 {
@@ -21,7 +24,7 @@ class TypedObjectPlug : public ValuePlug
 		typedef boost::intrusive_ptr<const T> ConstValuePtr;
 		
 		typedef boost::intrusive_ptr<TypedObjectPlug> Ptr;
-		typedef boost::intrusive_ptr<TypedObjectPlug> ConstPtr;
+		typedef boost::intrusive_ptr<const TypedObjectPlug> ConstPtr;
 
 		/// A copy of defaultValue is taken.
 		TypedObjectPlug(
