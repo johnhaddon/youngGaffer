@@ -1,6 +1,8 @@
 #ifndef GAFFER_TYPEDPLUG_H
 #define GAFFER_TYPEDPLUG_H
 
+#include "OpenEXR/ImathMatrix.h"
+
 #include "Gaffer/ValuePlug.h"
 
 namespace Gaffer
@@ -65,8 +67,12 @@ class TypedPlug : public ValuePlug
 };
 
 typedef TypedPlug<std::string> StringPlug;
+typedef TypedPlug<Imath::M33f> M33fPlug;
+typedef TypedPlug<Imath::M44f> M44fPlug;
 
 IE_CORE_DECLAREPTR( StringPlug );
+IE_CORE_DECLAREPTR( M33fPlug );
+IE_CORE_DECLAREPTR( M44fPlug );
 
 } // namespace Gaffer
 

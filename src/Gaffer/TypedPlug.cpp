@@ -139,6 +139,10 @@ void TypedPlug<T>::setFromInput()
 }
 
 SPECIALISE( StringPlug )
+SPECIALISE( M33fPlug )
+SPECIALISE( M44fPlug )
 
 // explicit instantiation
 template class TypedPlug<std::string>;
+template class TypedPlug<Imath::M33f>;
+template class TypedPlug<Imath::M44f>;
