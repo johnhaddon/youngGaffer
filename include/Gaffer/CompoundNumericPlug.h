@@ -25,8 +25,8 @@ class CompoundNumericPlug : public CompoundPlug
 			const std::string &name = staticTypeName(),
 			Direction direction=In,
 			T defaultValue = T( 0 ),
-			T minValue = T( Imath::limits<T>::min() ),
-			T maxValue = T( Imath::limits<T>::max() ),
+			T minValue = T( Imath::limits<typename T::BaseType>::min() ),
+			T maxValue = T( Imath::limits<typename T::BaseType>::max() ),
 			unsigned flags = None
 		);
 		virtual ~CompoundNumericPlug();
