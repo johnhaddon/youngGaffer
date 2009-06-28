@@ -21,33 +21,25 @@ using namespace Gaffer;
 
 static std::string serialisePlug( Serialiser &s, ConstGraphComponentPtr ancestor, PlugPtr plug )
 {
-	if( plug->getFlags( Plug::Dynamic ) )
+	// not dynamic, we can just serialise the connection/value				
+	if( plug->isInstanceOf( CompoundPlug::staticTypeId() ) )
 	{
-		// we need to serialise the whole plug
-		std::string plugSerialisation = s.serialiseC( plug );
-		return "\"" + plug->relativeName( ancestor ) + "\" : " + plugSerialisation + ", ";	
+		std::string result;
+		CompoundPlug *cPlug = static_cast<CompoundPlug *>( plug.get() );
+		InputPlugIterator pIt( cPlug->children().begin(), cPlug->children().end() );
+		while( pIt!=cPlug->children().end() )
+		{
+			result += serialisePlug( s, ancestor, *pIt++ );
+		}
+		return result;
 	}
-	else
+
+	std::string value = serialisePlugValue( s, plug );
+	if( value!="" )
 	{
-		// not dynamic, we can just serialise the connection/value				
-		if( plug->isInstanceOf( CompoundPlug::staticTypeId() ) )
-		{
-			std::string result;
-			CompoundPlug *cPlug = static_cast<CompoundPlug *>( plug.get() );
-			InputPlugIterator pIt( cPlug->children().begin(), cPlug->children().end() );
-			while( pIt!=cPlug->children().end() )
-			{
-				result += serialisePlug( s, ancestor, *pIt++ );
-			}
-			return result;
-		}
-		
-		std::string value = serialisePlugValue( s, plug );
-		if( value!="" )
-		{
-			return "\"" + plug->relativeName( ancestor ) + "\" : " + value + ", ";		
-		}
+		return "\"" + plug->relativeName( ancestor ) + "\" : " + value + ", ";		
 	}
+
 	return "";
 }
 
@@ -61,16 +53,12 @@ static std::string serialiseNode( Serialiser &s, ConstGraphComponentPtr g )
 		% node->getName()
 	);
 
+	// non dynamic input plugs
 	std::string inputs = "";
-	std::string dynamicPlugs = "";
 	for( InputPlugIterator pIt=node->inputPlugsBegin(); pIt!=pIt.end(); pIt++ )
 	{
 		PlugPtr plug = *pIt;
-		if( plug->getFlags( Plug::Dynamic ) )
-		{
-			dynamicPlugs += s.serialiseC( plug ) + ", ";
-		}
-		else
+		if( !plug->getFlags( Plug::Dynamic ) )
 		{
 			inputs += serialisePlug( s, node, *pIt );
 		}
@@ -80,6 +68,18 @@ static std::string serialiseNode( Serialiser &s, ConstGraphComponentPtr g )
 	{
 		result += "inputs = { " + inputs + "}, ";
 	}
+
+	// dynamic plugs of any direction
+	std::string dynamicPlugs = "";
+	for( PlugIterator pIt=node->plugsBegin(); pIt!=pIt.end(); pIt++ )
+	{
+		PlugPtr plug = *pIt;
+		if( plug->getFlags( Plug::Dynamic ) )
+		{
+			dynamicPlugs += s.serialiseC( plug ) + ", ";
+		}	
+	}
+
 	if( dynamicPlugs.size() )
 	{
 		result += "dynamicPlugs = ( " + dynamicPlugs + "), ";

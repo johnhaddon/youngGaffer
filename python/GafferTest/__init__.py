@@ -17,6 +17,7 @@ from CompoundNumericPlugTest import CompoundNumericPlugTest
 from CompoundNumericNode import CompoundNumericNode
 from CompoundPlugTest import CompoundPlugTest
 from CompoundPlugNode import CompoundPlugNode
+from TypedObjectPlugTest import TypedObjectPlugTest
 
 if __name__ == "__main__":
 	import unittest
