@@ -18,6 +18,7 @@ from CompoundNumericNode import CompoundNumericNode
 from CompoundPlugTest import CompoundPlugTest
 from CompoundPlugNode import CompoundPlugNode
 from TypedObjectPlugTest import TypedObjectPlugTest
+from SplinePlugTest import SplinePlugTest
 
 if __name__ == "__main__":
 	import unittest

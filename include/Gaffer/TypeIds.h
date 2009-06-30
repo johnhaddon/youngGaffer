@@ -27,6 +27,10 @@ enum TypeId
 	V3iPlugTypeId = 400017,
 	Color3fPlugTypeId = 400018,
 	Color4fPlugTypeId = 400019,
+	SplineffPlugTypeId = 400020,
+	SplinefColor3fPlugTypeId = 400021,
+	M33fPlugTypeId = 400022,
+	M44fPlugTypeId = 400023,
 	
 	FirstPythonTypeId = 405000,
 	
