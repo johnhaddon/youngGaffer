@@ -1,3 +1,4 @@
+import IECore
 import Gaffer
 import GafferUI
 
@@ -12,5 +13,6 @@ GafferUI.NodeMenu.append( "/File/Write", Gaffer.WriteNode )
 GafferUI.NodeMenu.append( "/File/RIBRenderer", Gaffer.RIBRendererNode )
 GafferUI.NodeMenu.append( "/Utility/Node", Gaffer.Node )
 GafferUI.NodeMenu.append( "/Maths/Add", Gaffer.AddNode )
-GafferUI.NodeMenu.append( "/Primitives/Sphere", Gaffer.SphereNode )
+GafferUI.NodeMenu.append( "/Primitive/Sphere", Gaffer.SphereNode )
 GafferUI.NodeMenu.append( "/Group", Gaffer.GroupNode )
+GafferUI.NodeMenu.definition().append( "/Shader/", { "subMenu" : GafferUI.SLOMenu.definition() } )

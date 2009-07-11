@@ -72,6 +72,7 @@ from ColorPlugValueWidget import ColorPlugValueWidget
 from Slider import Slider
 from ColorChooser import ColorChooser
 from ColorChooserDialogue import ColorChooserDialogue
+import SLOMenu
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?
