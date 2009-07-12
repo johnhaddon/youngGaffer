@@ -64,6 +64,9 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		////////////////////////////////////////////////////////////////////
 		//@{
 		/// The datatype used internally to store children.
+		/// \todo There might be a good case for making this a vector - we don't do insertions
+		/// or removals very often and constant time access to the nth element might be
+		/// very useful.
 		typedef std::list<GraphComponentPtr> ChildContainer;
 		typedef ChildContainer::const_iterator ChildIterator;
 		/// Components can accept or reject potential children by implementing this
