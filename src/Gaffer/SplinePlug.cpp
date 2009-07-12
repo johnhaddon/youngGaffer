@@ -5,6 +5,9 @@
 using namespace Gaffer;
 
 template<typename T>
+const IECore::RunTimeTyped::TypeDescription<SplinePlug<T> > SplinePlug<T>::g_typeDescription;
+
+template<typename T>
 SplinePlug<T>::SplinePlug( const std::string &name, Direction direction, const T &defaultValue, unsigned flags )
 	:	CompoundPlug( name, direction, flags ), m_defaultValue( defaultValue )
 {

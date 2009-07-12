@@ -22,6 +22,7 @@ class SplinePlug : public CompoundPlug
 		typedef typename PlugType<typename T::YType>::Type YPlugType;
 		
 		IECORE_RUNTIMETYPED_DECLARETEMPLATE( SplinePlug<T>, CompoundPlug );
+		IE_CORE_DECLARERUNTIMETYPEDDESCRIPTION( SplinePlug<T> );
 
 		SplinePlug(
 			const std::string &name = staticTypeName(),
