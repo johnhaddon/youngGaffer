@@ -153,6 +153,10 @@ class ColorChooser( GafferUI.Widget ) :
 				co.block()
 	
 			c = self.getColor()
+
+			for slider in self.__sliders.values() :
+				slider.setColor( c )		
+
 			self.__sliders["r"].setPosition( c[0] )
 			self.__sliders["g"].setPosition( c[1] )
 			self.__sliders["b"].setPosition( c[2] )
@@ -161,7 +165,7 @@ class ColorChooser( GafferUI.Widget ) :
 			self.__sliders["h"].setPosition( c[0] )
 			self.__sliders["s"].setPosition( c[1] )
 			self.__sliders["v"].setPosition( c[2] )
-
+			
 		finally :
 		
 			for co in self.__sliderConnections :
