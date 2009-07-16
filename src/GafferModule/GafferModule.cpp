@@ -14,6 +14,7 @@
 #include "GafferBindings/UndoContextBinding.h"
 #include "GafferBindings/CompoundPlugBinding.h"
 #include "GafferBindings/CompoundNumericPlugBinding.h"
+#include "GafferBindings/SplinePlugBinding.h"
 
 using namespace GafferBindings;
 
@@ -35,6 +36,7 @@ BOOST_PYTHON_MODULE( _Gaffer )
 	bindUndoContext();
 	bindCompoundPlug();
 	bindCompoundNumericPlug();
+	bindSplinePlug();
 	
 	typedef boost::signal<int ( float )> TestSignal;
 	SignalBinder<TestSignal>::bind( "TestSignal" );
