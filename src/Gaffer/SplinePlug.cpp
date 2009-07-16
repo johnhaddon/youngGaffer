@@ -11,9 +11,9 @@ template<typename T>
 SplinePlug<T>::SplinePlug( const std::string &name, Direction direction, const T &defaultValue, unsigned flags )
 	:	CompoundPlug( name, direction, flags ), m_defaultValue( defaultValue )
 {
-	CompoundPlugPtr basis = new CompoundPlug( "basis" );
-	M44fPlugPtr basisMatrix = new M44fPlug( "matrix" );
-	IntPlugPtr basisStep = new IntPlug( "step" );
+	CompoundPlugPtr basis = new CompoundPlug( "basis", direction );
+	M44fPlugPtr basisMatrix = new M44fPlug( "matrix", direction, defaultValue.basis.matrix );
+	IntPlugPtr basisStep = new IntPlug( "step", direction, defaultValue.basis.step );
 	basis->addChild( basisMatrix );
 	basis->addChild( basisStep );
 	addChild( basis );
@@ -159,13 +159,27 @@ unsigned SplinePlug<T>::addPoint()
 	
 	addChild( p );
 	
-	return n + 1;
+	return n;
 }
 
 template<typename T>
 void SplinePlug<T>::removePoint( unsigned pointIndex )
 {
 	removeChild( pointPlug( pointIndex ) );
+}
+
+template<typename T>
+void SplinePlug<T>::clearPoints()
+{
+	unsigned i = numPoints();
+	if( !i )
+	{
+		return;
+	}
+	
+	do {
+		removePoint( --i );
+	} while( i!=0 ); 
 }
 
 template<typename T>
@@ -178,7 +192,8 @@ std::string SplinePlug<T>::pointPlugName( unsigned pointIndex ) const
 template<typename T>
 CompoundPlugPtr SplinePlug<T>::pointPlug( unsigned pointIndex )
 {
-	return getChild<CompoundPlug>( pointPlugName( pointIndex ) );
+	CompoundPlugPtr p = getChild<CompoundPlug>( pointPlugName( pointIndex ) );
+	return p;
 }
 
 template<typename T>

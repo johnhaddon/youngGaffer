@@ -52,7 +52,10 @@ class SplinePlug : public CompoundPlug
 		unsigned numPoints() const;
 		unsigned addPoint();
 		void removePoint( unsigned pointIndex );
+		void clearPoints();
 		std::string pointPlugName( unsigned pointIndex ) const;
+		/// \todo These could be quicker if GraphComponent children were stored in a
+		/// vector rather than a list.
 		CompoundPlugPtr pointPlug( unsigned pointIndex );
 		ConstCompoundPlugPtr pointPlug( unsigned pointIndex ) const;
 		typename XPlugType::Ptr pointXPlug( unsigned pointIndex );
