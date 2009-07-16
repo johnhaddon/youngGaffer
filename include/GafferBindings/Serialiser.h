@@ -40,7 +40,8 @@ class Serialiser
 		/// These functions are for use within serialisation functions registered
 		/// with registerSerialiser. As a Serialiser cannot be instantiated directly
 		/// they're of no use to anything else.
-		/// \todo merge add and serialiseC together? or rename them nicely?
+		/// \todo merge add and serialiseC together? or rename them nicely? make serialiseC
+		/// specific to plugs only?
 		/////////////////////////////////////////////////////////////////////////////////
 		//@{
 		/// Makes sure the module needed for object o is imported, and returns a string
