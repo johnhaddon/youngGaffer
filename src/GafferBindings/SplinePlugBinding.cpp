@@ -3,8 +3,10 @@
 #include "GafferBindings/SplinePlugBinding.h"
 #include "GafferBindings/Serialiser.h"
 #include "GafferBindings/PlugBinding.h"
+#include "GafferBindings/ValuePlugBinding.h"
 #include "Gaffer/Node.h"
 #include "Gaffer/SplinePlug.h"
+#include "Gaffer/TypedPlug.h"
 
 #include "IECore/bindings/Wrapper.h"
 #include "IECore/bindings/RunTimeTypedBinding.h"
@@ -13,20 +15,24 @@ using namespace boost::python;
 using namespace GafferBindings;
 using namespace Gaffer;
 
-/*template<typename T>
+template<typename T>
 static std::string serialise( Serialiser &s, ConstGraphComponentPtr g )
 {
-	typename T::ConstPtr plug = boost::static_pointer_cast<const T>( g );
+	typename T::Ptr plug = boost::const_pointer_cast<T>( boost::static_pointer_cast<const T>( g ) );
 	std::string result = s.modulePath( g ) + "." + g->typeName() + "( \"" + g->getName() + "\", ";
-	
+		
 	if( plug->direction()!=Plug::In )
 	{
 		result += "direction = " + serialisePlugDirection( plug->direction() ) + ", ";
 	}
 	
+	object pythonPlug( plug );
 	if( plug->defaultValue()!=typename T::ValueType() )
 	{
-		result += "defaultValue = " + boost::lexical_cast<std::string>( plug->defaultValue() ) + ", ";
+		object pythonValue = pythonPlug.attr( "defaultValue" )();
+		s.modulePath( pythonValue );
+		std::string value = extract<std::string>( pythonValue.attr( "__repr__" )() );
+		result += "defaultValue = " + value + ", ";
 	}
 	
 	if( plug->getFlags() )
@@ -34,57 +40,63 @@ static std::string serialise( Serialiser &s, ConstGraphComponentPtr g )
 		result += "flags = " + serialisePlugFlags( plug->getFlags() ) + ", ";
 	}
 	
-	bool connected = false;
-	ConstPlugPtr srcPlug = plug->template getInput<Plug>();
-	if( srcPlug )
-	{
-		std::string srcNodeName = s.add( srcPlug->node() );
-		if( srcNodeName!="" )
-		{
-			connected = true;
-			result += "input = " + srcNodeName + "[\"" + srcPlug->getName() + "\"]";
-		}
-	}
+	result += "basisMatrix = " + serialisePlugValue( s, plug->basisMatrixPlug() ) + ", ";
+	result += "basisStep = " + serialisePlugValue( s, plug->basisStepPlug() ) + ", ";
 	
-	if( !connected && plug->direction()==Plug::In )
+	unsigned numPoints = plug->numPoints();
+	if( numPoints )
 	{
-		typename T::Ptr p = boost::const_pointer_cast<T>( plug );
-		typename T::ValueType value = p->getValue();
-		if( value!=plug->defaultValue() )
+		result += "points = ( ";
+	
+		for( unsigned i=0; i<numPoints; i++ )
 		{
-			result += "value = \"" + boost::lexical_cast<std::string>( value ) + "\", ";
+			result += "( " + serialisePlugValue( s, plug->pointXPlug( i ) ) + ", " +
+				serialisePlugValue( s, plug->pointYPlug( i ) ) + " ), ";
 		}
+	
+		result += "), ";
 	}
 	
 	result += ")";
 
 	return result;
-}*/
+}
 
 template<typename T>
 static typename T::Ptr construct(
 	const char *name,
 	Plug::Direction direction,
 	typename T::ValueType defaultValue,
-	unsigned flags
-	//PlugPtr input,
-	//object value
+	unsigned flags,
+	object basisMatrix,
+	object basisStep,
+	object points
 )
 {
 	typename T::Ptr result = new T( name, direction, defaultValue, flags );
-	/*if( input && value!=object() )
+	
+	if( basisMatrix!=object() )
 	{
-		throw std::invalid_argument( "Must specify only one of input or value." );
+		setPlugValue( result->basisMatrixPlug(), basisMatrix );
 	}
-	if( input )
+	if( basisStep!=object() )
 	{
-		result->setInput( input );
+		setPlugValue( result->basisStepPlug(), basisStep );
 	}
-	else if( value!=object() )
+	
+	if( points!=object() )
 	{
-		typename T::ValueType v = extract<typename T::ValueType>( value )();
-		result->setValue( v );
-	}*/
+		result->clearPoints();
+		size_t s = extract<size_t>( points.attr( "__len__" )() );
+		for( size_t i=0; i<s; i++ )
+		{
+			tuple t = extract<tuple>( points[i] );
+			unsigned pi = result->addPoint();
+			setPlugValue( result->pointXPlug( pi ), t[0] );
+			setPlugValue( result->pointYPlug( pi ), t[1] );
+		}
+	}
+		
 	return result;
 }
 
@@ -99,9 +111,10 @@ static void bind()
 					boost::python::arg_( "name" )=T::staticTypeName(),
 					boost::python::arg_( "direction" )=Plug::In,
 					boost::python::arg_( "defaultValue" )=V(),
-					boost::python::arg_( "flags" )=Plug::None
-					//boost::python::arg_( "input" )=PlugPtr( 0 ),
-					//boost::python::arg_( "value" )=object()
+					boost::python::arg_( "flags" )=Plug::None,
+					boost::python::arg_( "basisMatrix" )=object(),
+					boost::python::arg_( "basisStep" )=object(),
+					boost::python::arg_( "points" )=object()
 				)
 			)
 		)
@@ -110,7 +123,7 @@ static void bind()
 		.def( "getValue", &T::getValue )
 	;
 	
-	//Serialiser::registerSerialiser( T::staticTypeId(), serialise<T> );
+	Serialiser::registerSerialiser( T::staticTypeId(), serialise<T> );
 }
 
 void GafferBindings::bindSplinePlug()
