@@ -6,7 +6,7 @@ import IECore
 import IECoreGL
 
 from GLWidget import GLWidget
-from _GafferUI import ButtonEvent, ModifiableEvent, ContainerGadget, DragDropEvent
+from _GafferUI import ButtonEvent, ModifiableEvent, ContainerGadget, DragDropEvent, KeyEvent
 
 ## The GadgetWidget class provides a means of
 # hosting a Gadget within a Widget based interface.
@@ -246,13 +246,19 @@ class GadgetWidget( GLWidget ) :
 	
 		if not self.__gadget :
 			return True
-			
+		
+		# 'f' for framing	
 		if event.keyval==102 :
 			bound = self.__gadget.bound()
 			if not bound.isEmpty() :
 				self.__cameraController.frame( bound )
 				widget.queue_draw()
 			return True
+		
+		# pass the key to the gadget
+		if event.keyval < 256 :
+			gadgetEvent = self.__gtkEventToGadgetEvent( event )
+			self.__dispatchEvent( self.getGadget(), "keyPressSignal", gadgetEvent )
 		
 		return True
 	
@@ -447,6 +453,8 @@ class GadgetWidget( GLWidget ) :
 				gadgetEvent = ButtonEvent()
 			elif gtkEvent.type==gtk.gdk.MOTION_NOTIFY :
 				gadgetEvent = ButtonEvent()
+			elif gtkEvent.type==gtk.gdk.KEY_PRESS :
+				gadgetEvent = KeyEvent()
 			else :
 				raise ValueError( "Unsupported event type" )
 		
@@ -463,6 +471,10 @@ class GadgetWidget( GLWidget ) :
 			if hasattr( gtkEvent, "x" ) :
 			
 				gadgetEvent.line.p0, gadgetEvent.line.p1 = self.__cameraController.unproject( IECore.V2i( int(gtkEvent.x), int(gtkEvent.y) ) )
+		
+		if isinstance( gadgetEvent, KeyEvent ) :
+		
+			gadgetEvent.key = chr( gtkEvent.keyval )
 		
 		return gadgetEvent
 		
