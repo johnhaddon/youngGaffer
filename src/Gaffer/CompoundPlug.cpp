@@ -127,13 +127,23 @@ void CompoundPlug::plugInputChanged( PlugPtr plug )
 
 void CompoundPlug::plugSet( PlugPtr plug )
 {
-	if( plug->parent<CompoundPlug>()==this )
+	// the CompoundPlug immediately below the Node takes on the task
+	// of emitting the plugSet signals for all CompoundPlugs between
+	// the plug and the Node.
+	NodePtr n = node();
+	if( !n )
 	{
-		NodePtr n = node();
-		if( n )
-		{
-			n->plugSetSignal()( this );
-		}
+		return;
+	}
+	if( this->isAncestorOf( plug ) )
+	{
+		PlugPtr p = plug;
+		m_plugSetConnection.block();
+			do {
+				p = p->parent<Plug>();
+				n->plugSetSignal()( p );
+			} while( p!=this );
+		m_plugSetConnection.unblock();
 	}
 }
 

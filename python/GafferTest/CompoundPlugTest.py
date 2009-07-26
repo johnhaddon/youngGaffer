@@ -163,7 +163,31 @@ class CompoundPlugTest( unittest.TestCase ) :
 		c["f1"].setValue( 10 )
 		
 		self.failUnless( self.set )
+	
+	def testMultipleLevelsOfPlugSetPropagation( self ) :
+	
+		c = Gaffer.CompoundPlug( "c" )
+		c["c1"] = Gaffer.CompoundPlug()
+		c["c1"]["f1"] = Gaffer.FloatPlug()
 		
+		n = Gaffer.Node()
+		n["c"] = c
+		
+		def setCallback( plug ) :
+		
+			self.setPlugs.append( plug.getName() )
+		
+		cn = n.plugSetSignal().connect( setCallback )
+		
+		self.setPlugs = []
+		
+		c["c1"]["f1"].setValue( 10 )
+				
+		self.failUnless( len( self.setPlugs )==3 )
+		self.failUnless( "c" in self.setPlugs )
+		self.failUnless( "c1" in self.setPlugs )
+		self.failUnless( "f1" in self.setPlugs )
+				
 if __name__ == "__main__":
 	unittest.main()
 	
