@@ -224,7 +224,20 @@ class GraphComponentTest( unittest.TestCase ) :
 		self.failIf( "c" in n )
 		n["c"] = Gaffer.GraphComponent()
 		self.failUnless( "c" in n )
-			
+		
+	def testIsAncestorOf( self ) :
+	
+		n = Gaffer.GraphComponent()
+		n["c"] = Gaffer.GraphComponent()
+		n["c"]["c"] = Gaffer.GraphComponent()
+		n2 = Gaffer.GraphComponent()
+		
+		self.failUnless( n.isAncestorOf( n["c"]["c"] ) )
+		self.failUnless( n.isAncestorOf( n["c"] ) )
+		self.failIf( n.isAncestorOf( n ) )
+		self.failIf( n2.isAncestorOf( n ) )
+		self.failIf( n.isAncestorOf( n2 ) )
+		
 if __name__ == "__main__":
 	unittest.main()
 	

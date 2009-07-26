@@ -133,6 +133,8 @@ class GraphComponent : public IECore::RunTimeTyped, public boost::signals::track
 		/// As above, but taking a TypeId to specify type - this is mainly provided for the binding.
 		GraphComponentPtr commonAncestor( ConstGraphComponentPtr other, IECore::TypeId ancestorType );
 		ConstGraphComponentPtr commonAncestor( ConstGraphComponentPtr other, IECore::TypeId ancestorType ) const;
+		/// Returns true if this GraphComponent is an ancestor (or direct parent) of other.
+		bool isAncestorOf( ConstGraphComponentPtr other ) const;
 		/// A signal emitted when a child is added to this component. Slots should
 		/// be of the form void ( parent, child ).
 		BinarySignal &childAddedSignal();

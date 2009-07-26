@@ -283,6 +283,20 @@ ConstGraphComponentPtr GraphComponent::commonAncestor( ConstGraphComponentPtr ot
 	return const_cast<GraphComponent *>( this )->commonAncestor( other, ancestorType );
 }
 
+bool GraphComponent::isAncestorOf( ConstGraphComponentPtr other ) const
+{
+	const GraphComponent *p = other.get();
+	while( p )
+	{
+		if( p->m_parent==this )
+		{
+			return true;
+		}
+		p = p->m_parent;
+	}
+	return false;
+}
+
 GraphComponent::BinarySignal &GraphComponent::childAddedSignal()
 {
 	return m_childAddedSignal;
