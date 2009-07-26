@@ -23,6 +23,7 @@ class StandardStyle : public Style
 		virtual void renderFrame( IECore::RendererPtr renderer, const Imath::Box2f &frame, float borderWidth ) const;
 		virtual void renderNodule( IECore::RendererPtr renderer, float radius ) const;
 		virtual void renderConnection( IECore::RendererPtr renderer, const Imath::V3f &src, const Imath::V3f &dst ) const;
+		virtual void renderHandle( IECore::RendererPtr renderer, const Imath::V3f &p ) const;
 
 	private :
 	

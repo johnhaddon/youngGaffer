@@ -2,6 +2,7 @@
 
 #include "IECore/MeshPrimitive.h"
 #include "IECore/CurvesPrimitive.h"
+#include "IECore/PointsPrimitive.h"
 #include "IECore/SimpleTypedData.h"
 #include "IECore/ObjectWriter.h"
 #include "IECore/FileNameParameter.h"
@@ -99,6 +100,25 @@ void StandardStyle::renderConnection( IECore::RendererPtr renderer, const Imath:
 		
 	renderer->attributeEnd();
 	
+}
+
+void StandardStyle::renderHandle( IECore::RendererPtr renderer, const Imath::V3f &p ) const
+{
+	static V3fVectorDataPtr points = new V3fVectorData();
+	points->writable().resize( 1 );
+	static PointsPrimitivePtr prim = new PointsPrimitive( points );
+	static StringDataPtr glPoints = new StringData( "forAll" );
+	static FloatDataPtr pointWidth = new FloatData( 8.0f );
+	points->writable()[0] = p;
+	renderer->attributeBegin();
+	
+		renderer->setAttribute( "gl:pointsPrimitive:useGLPoints", glPoints );
+		renderer->setAttribute( "gl:pointsPrimitive:glPointWidth", pointWidth );
+		renderer->setAttribute( "color", new Color3fData( backgroundColor( renderer ) ) );
+		
+		prim->render( renderer );
+	
+	renderer->attributeEnd();
 }
 
 Imath::Color3f StandardStyle::backgroundColor( IECore::RendererPtr renderer ) const

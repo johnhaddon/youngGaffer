@@ -30,6 +30,7 @@ class Style : public IECore::RunTimeTyped
 		virtual void renderFrame( IECore::RendererPtr renderer, const Imath::Box2f &frame, float borderWidth ) const = 0;
 		virtual void renderNodule( IECore::RendererPtr renderer, float radius ) const = 0;
 		virtual void renderConnection( IECore::RendererPtr renderer, const Imath::V3f &src, const Imath::V3f &dst ) const = 0;
+		virtual void renderHandle( IECore::RendererPtr renderer, const Imath::V3f &p ) const = 0;
 	
 		//! @name User attributes
 		/// Additional control is provided over the rendering
