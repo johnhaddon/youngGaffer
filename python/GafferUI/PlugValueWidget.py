@@ -12,9 +12,16 @@ class PlugValueWidget( Widget ) :
 	def setPlug( self, plug ) :
 	
 		self.__plug = plug
-		self.__plugSetConnection = plug.node().plugSetSignal().connect( self.__plugSetSlot )
-		self.__plugDirtiedConnection = plug.node().plugDirtiedSignal().connect( self.__plugDirtiedSlot )
-		self.__plugInputChangedConnection = plug.node().plugInputChangedSignal().connect( self.__plugInputChangedSlot )
+
+		if self.__plug is not None :
+			self.__plugSetConnection = plug.node().plugSetSignal().connect( self.__plugSetSlot )
+			self.__plugDirtiedConnection = plug.node().plugDirtiedSignal().connect( self.__plugDirtiedSlot )
+			self.__plugInputChangedConnection = plug.node().plugInputChangedSignal().connect( self.__plugInputChangedSlot )
+		else :
+			self.__plugSetConnection = None
+			self.__plugDirtiedConnection = None
+			self.__plugInputChangedConnection = None
+
 		self.updateFromPlug()
 		
 	def getPlug( self ) :
@@ -32,6 +39,10 @@ class PlugValueWidget( Widget ) :
 	def _editable( self ) :
 	
 		plug = self.getPlug()
+		
+		if plug is None :
+			return False
+		
 		if plug.direction()==Gaffer.Plug.Direction.Out :
 			return False
 		if plug.getInput() :

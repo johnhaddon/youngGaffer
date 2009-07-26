@@ -45,12 +45,15 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 			# we're still constructing
 			return
 		
-		value = self.getPlug().getValue()
-		if self.__floatPlug() :
-			text = "%.4f" % value
+		if self.getPlug() is not None :
+			value = self.getPlug().getValue()
+			if self.__floatPlug() :
+				text = "%.4f" % value
+			else :
+				text = "%d" % value
 		else :
-			text = "%d" % value
-
+			text = ""
+			
 		self.gtkEntry.set_text( text )
 		
 		self.gtkEntry.set_editable( self._editable() )
@@ -167,7 +170,8 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 		
 	def __focusOut( self, widget, event ) :
 	
-		self.__setPlugValue()	
+		if self._editable() :
+			self.__setPlugValue()	
 		
 	def __floatPlug( self ) :
 	
