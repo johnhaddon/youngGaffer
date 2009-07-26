@@ -31,6 +31,7 @@ enum TypeId
 	SplinefColor3fPlugTypeId = 400021,
 	M33fPlugTypeId = 400022,
 	M44fPlugTypeId = 400023,
+	PlugSetTypeId = 400024,
 	
 	FirstPythonTypeId = 405000,
 	

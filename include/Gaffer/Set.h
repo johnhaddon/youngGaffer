@@ -119,6 +119,9 @@ IE_CORE_DECLAREPTR( GraphComponentSet );
 
 typedef Set<Node> NodeSet;
 IE_CORE_DECLAREPTR( NodeSet );
+
+typedef Set<Plug> PlugSet;
+IE_CORE_DECLAREPTR( PlugSet );
 	
 } // namespace Gaffer
 
