@@ -10,8 +10,8 @@ using namespace GafferUI;
 void GafferUIBindings::bindKeyEvent()
 {
 	class_<KeyEvent, bases<ModifiableEvent> >( "KeyEvent" )
-		.def( init<char>() )
-		.def( init<char, ModifiableEvent::Modifiers>() )
+		.def( init<const char *>() )
+		.def( init<const char *, ModifiableEvent::Modifiers>() )
 		.def_readwrite( "key", &KeyEvent::key )
 	;
 }

@@ -254,11 +254,10 @@ class GadgetWidget( GLWidget ) :
 				self.__cameraController.frame( bound )
 				widget.queue_draw()
 			return True
-		
+				
 		# pass the key to the gadget
-		if event.keyval < 256 :
-			gadgetEvent = self.__gtkEventToGadgetEvent( event )
-			self.__dispatchEvent( self.getGadget(), "keyPressSignal", gadgetEvent )
+		gadgetEvent = self.__gtkEventToGadgetEvent( event )
+		self.__dispatchEvent( self.getGadget(), "keyPressSignal", gadgetEvent )
 		
 		return True
 	
@@ -474,7 +473,7 @@ class GadgetWidget( GLWidget ) :
 		
 		if isinstance( gadgetEvent, KeyEvent ) :
 		
-			gadgetEvent.key = chr( gtkEvent.keyval )
+			gadgetEvent.key = gtk.gdk.keyval_name( gtkEvent.keyval ) 
 		
 		return gadgetEvent
 		

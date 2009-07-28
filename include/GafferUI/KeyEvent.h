@@ -12,7 +12,7 @@ namespace GafferUI
 struct KeyEvent : public ModifiableEvent
 {
 	KeyEvent(
-		char k = 'a',
+		const char *k = "a",
 		Modifiers m = ModifiableEvent::None
 	)
 		:	ModifiableEvent( m ), key( k )
@@ -20,8 +20,7 @@ struct KeyEvent : public ModifiableEvent
 	};
 	
 	/// The key pressed.
-	/// \todo Might be a better type to use than char?
-	char key;
+	std::string key;
 		
 };
 
