@@ -148,7 +148,7 @@ template<typename T>
 unsigned SplinePlug<T>::addPoint()
 {
 	unsigned n = numPoints();
-	CompoundPlugPtr p = new CompoundPlug( pointPlugName( n ), direction() );
+	CompoundPlugPtr p = new CompoundPlug( "p0", direction() );
 	typename XPlugType::Ptr x = new XPlugType( "x", direction(), typename T::XType( 0 ) );
 	x->setFlags( Plug::Dynamic );
 	p->addChild( x );
@@ -183,47 +183,77 @@ void SplinePlug<T>::clearPoints()
 }
 
 template<typename T>
-std::string SplinePlug<T>::pointPlugName( unsigned pointIndex ) const
-{
-	static boost::format formatter( "p%1%" );
-	return boost::str( formatter % pointIndex );
-}
-
-template<typename T>
 CompoundPlugPtr SplinePlug<T>::pointPlug( unsigned pointIndex )
 {
-	CompoundPlugPtr p = getChild<CompoundPlug>( pointPlugName( pointIndex ) );
-	return p;
+	if( pointIndex >= numPoints() )
+	{
+		throw IECore::Exception( "Point index out of range." );
+	}
+	GraphComponent::ChildContainer::const_iterator it = children().begin();
+	for( unsigned i=0; i<=pointIndex; i++)
+	{
+		it++;
+	}
+	return boost::static_pointer_cast<CompoundPlug>( *it );
 }
 
 template<typename T>
 ConstCompoundPlugPtr SplinePlug<T>::pointPlug( unsigned pointIndex ) const
 {
-	return getChild<CompoundPlug>( pointPlugName( pointIndex ) );
+	if( pointIndex >= numPoints() )
+	{
+		throw IECore::Exception( "Point index out of range." );
+	}
+	GraphComponent::ChildContainer::const_iterator it = children().begin();
+	for( unsigned i=0; i<=pointIndex; i++)
+	{
+		it++;
+	}
+	return boost::static_pointer_cast<CompoundPlug>( *it );
 }
 
 template<typename T>
 typename SplinePlug<T>::XPlugType::Ptr SplinePlug<T>::pointXPlug( unsigned pointIndex )
 {
-	return pointPlug( pointIndex )->getChild<XPlugType>( "x" );
+	typename XPlugType::Ptr p = pointPlug( pointIndex )->getChild<XPlugType>( "x" );
+	if( !p )
+	{
+		throw IECore::Exception( "Child Plug for x point position has been removed." );
+	}
+	return p;
 }
 
 template<typename T>
 typename SplinePlug<T>::XPlugType::ConstPtr SplinePlug<T>::pointXPlug( unsigned pointIndex ) const
 {
-	return pointPlug( pointIndex )->getChild<XPlugType>( "x" );
+	typename XPlugType::ConstPtr p = pointPlug( pointIndex )->getChild<XPlugType>( "x" );
+	if( !p )
+	{
+		throw IECore::Exception( "Child Plug for x point position has been removed." );
+	}
+	return p;
 }
 
 template<typename T>
 typename SplinePlug<T>::YPlugType::Ptr SplinePlug<T>::pointYPlug( unsigned pointIndex )
 {
-	return pointPlug( pointIndex )->getChild<YPlugType>( "y" );
+	typename YPlugType::Ptr p = pointPlug( pointIndex )->getChild<YPlugType>( "y" );
+	if( !p )
+	{
+		throw IECore::Exception( "Child Plug for y point position has been removed." );
+	}
+	return p;
 }
 
 template<typename T>
 typename SplinePlug<T>::YPlugType::ConstPtr SplinePlug<T>::pointYPlug( unsigned pointIndex ) const
 {
-	return pointPlug( pointIndex )->getChild<YPlugType>( "y" );
+	typename YPlugType::ConstPtr p = pointPlug( pointIndex )->getChild<YPlugType>( "y" );
+	if( !p )
+	{
+		throw IECore::Exception( "Child Plug for y point position has been removed." );
+	}
+	return p;
 }
 
 // RunTimeTyped specialisation
