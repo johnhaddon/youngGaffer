@@ -24,7 +24,7 @@ class GroupNode( Gaffer.Node ) :
 	def matrix( self ) :
 	
 		translate = IECore.M44f.createTranslated( self["translate"].getValue() )
-		rotate = IECore.Eulerf( self["rotate"].getValue(), IECore.Eulerf.Order.XYZ, IECore.Eulerf.InputLayout.XYZLayout )
+		rotate = IECore.Eulerf( IECore.degreesToRadians( self["rotate"].getValue() ), IECore.Eulerf.Order.XYZ, IECore.Eulerf.InputLayout.XYZLayout )
 		rotate = rotate.toMatrix44()
 		scale = IECore.M44f.createScaled( self["scale"].getValue() )
 		transforms = {
