@@ -49,6 +49,19 @@ static GraphComponentPtr getItem( GraphComponent &g, const char *n )
 	return 0; // shouldn't get here
 }
 
+static void delItem( GraphComponent &g, const char *n )
+{
+	GraphComponentPtr c = g.getChild<GraphComponent>( n );
+	if( c )
+	{
+		g.removeChild( c );
+		return;
+	}
+	
+	PyErr_SetString( PyExc_KeyError, n );
+	throw_error_already_set();
+}
+
 static bool contains( GraphComponent &g, const char *n )
 {
 	return g.getChild<GraphComponent>( n );
@@ -115,6 +128,7 @@ void GafferBindings::bindGraphComponent()
 		.def( "getChild", (GraphComponentPtr (GraphComponent::*)( const std::string & ))&GraphComponent::getChild<GraphComponent> )
 		.def( "__getitem__", getItem )
 		.def( "__setitem__", setItem )
+		.def( "__delitem__", delItem )
 		.def( "__contains__", contains )
 		.def( "children", &children )
 		.def( "parent", &parent )

@@ -142,6 +142,18 @@ class GraphComponentTest( unittest.TestCase ) :
 		self.assert_( c2.parent().isSame( p ) )
 		self.assert_( c.parent() is None )
 		
+		# check delitem
+		c3 = Gaffer.GraphComponent()
+		p["c3"] = c3
+		self.assert_( p.getChild( "c3" ).isSame( c3 ) )
+		self.assert_( p["c3"].isSame( c3 ) )
+		self.assert_( "c3" in p )
+		
+		del p["c3"]
+		
+		self.assert_( not "c3" in p )
+		
+		self.assertRaises( KeyError, p.__delitem__, "xxxx" )
 		
 	def testUniqueNaming( self ) :
 	
