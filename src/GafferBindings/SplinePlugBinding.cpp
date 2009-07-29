@@ -121,6 +121,13 @@ static void bind()
 		.def( "defaultValue", &T::defaultValue, return_value_policy<copy_const_reference>() )
 		.def( "setValue", &T::setValue )
 		.def( "getValue", &T::getValue )
+		.def( "numPoints", &T::numPoints )
+		.def( "addPoint", &T::addPoint )
+		.def( "removePoint", &T::removePoint )
+		.def( "clearPoints", &T::clearPoints )
+		.def( "pointPlug", (CompoundPlugPtr (T::*)( unsigned ))&T::pointPlug )
+		.def( "pointXPlug", (typename T::XPlugType::Ptr (T::*)( unsigned ))&T::pointXPlug )
+		.def( "pointYPlug", (typename T::YPlugType::Ptr (T::*)( unsigned ))&T::pointYPlug )
 	;
 	
 	Serialiser::registerSerialiser( T::staticTypeId(), serialise<T> );
