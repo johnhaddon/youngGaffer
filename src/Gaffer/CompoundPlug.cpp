@@ -115,6 +115,15 @@ void CompoundPlug::parentChanged()
 void CompoundPlug::childAddedOrRemoved()
 {
 	updateInputFromChildInputs( 0 );
+	// addition or removal of a child to a compound is considered to
+	// change its value, so we emit the appropriate signal. this is
+	// mostly of use for the SplinePlug, as points are added by adding
+	// plugs and removed by removing them.
+	NodePtr n = node();
+	if( n )
+	{
+		n->plugSetSignal()( this );
+	}
 }
 
 void CompoundPlug::plugInputChanged( PlugPtr plug )

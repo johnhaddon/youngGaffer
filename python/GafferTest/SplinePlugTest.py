@@ -153,6 +153,43 @@ class SplinePlugTest( unittest.TestCase ) :
 		self.assertRaises( Exception, p.pointXPlug, 0 )
 		self.assertRaises( Exception, p.pointYPlug, 0 )
 		
+	def testPlugSetSignal( self ) :
+	
+		s = IECore.Splineff(
+			IECore.CubicBasisf.catmullRom(),
+			(
+				( 0, 0 ),
+				( 0, 0 ),
+				( 0.2, 0.3 ),
+				( 0.4, 0.9 ),
+				( 1, 1 ),
+				( 1, 1 ),
+			)
+		)
+		p = Gaffer.SplineffPlug( "a", defaultValue=s, flags=Gaffer.Plug.Flags.Dynamic )
+		n = Gaffer.Node()
+		n["p"] = p
+		
+		self.__plugSetCount = 0
+		def plugSet( plug ) :
+			
+			if plug.isSame( p ) :
+				self.__plugSetCount += 1
+			
+		c = n.plugSetSignal().connect( plugSet )
+			
+		p.pointYPlug( 2 ).setValue( 1.0 )
+		
+		self.assertEqual( self.__plugSetCount, 1 )
+		
+		pointIndex = p.addPoint()
+		
+		self.assertEqual( self.__plugSetCount, 2 )
+		 
+		p.removePoint( pointIndex )
+		
+		self.assertEqual( self.__plugSetCount, 3 )		
+		
 if __name__ == "__main__":
 	unittest.main()
 	
