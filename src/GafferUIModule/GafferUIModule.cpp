@@ -19,6 +19,7 @@
 #include "GafferUIBindings/ConnectionGadgetBinding.h"
 #include "GafferUIBindings/WidgetSignalBinding.h"
 #include "GafferUIBindings/StandardNodeGadgetBinding.h"
+#include "GafferUIBindings/SplinePlugGadgetBinding.h"
 
 using namespace GafferUIBindings;
 
@@ -44,5 +45,6 @@ BOOST_PYTHON_MODULE( _GafferUI )
 	bindConnectionGadget();
 	bindWidgetSignal();
 	bindStandardNodeGadget();
+	bindSplinePlugGadget();
 	
 }

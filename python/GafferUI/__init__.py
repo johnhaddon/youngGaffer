@@ -72,6 +72,9 @@ from ColorPlugValueWidget import ColorPlugValueWidget
 from Slider import Slider
 from ColorChooser import ColorChooser
 from ColorChooserDialogue import ColorChooserDialogue
+from SplineWidget import SplineWidget
+from SplinePlugValueWidget import SplinePlugValueWidget
+from SplineEditor import SplineEditor
 import SLOMenu
 
 ## \todo Move the settings munging somewhere else

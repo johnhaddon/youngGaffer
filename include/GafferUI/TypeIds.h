@@ -21,6 +21,7 @@ enum TypeId
 	LinearContainerTypeId = 410012,
 	ConnectionGadgetTypeId = 410013,
 	StandardNodeGadgetTypeId = 410014,
+	SplinePlugGadgetTypeId = 410015,
 	
 	LastTypeId = 419999
 };
