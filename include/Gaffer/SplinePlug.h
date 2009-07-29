@@ -50,8 +50,11 @@ class SplinePlug : public CompoundPlug
 		ConstIntPlugPtr basisStepPlug() const;
 		
 		unsigned numPoints() const;
+		/// \undoable
 		unsigned addPoint();
+		/// \undoable
 		void removePoint( unsigned pointIndex );
+		/// \undoable
 		void clearPoints();
 		/// \todo These could be quicker if GraphComponent children were stored in a
 		/// vector rather than a list.
