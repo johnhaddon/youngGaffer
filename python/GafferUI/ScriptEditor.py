@@ -10,7 +10,6 @@ from EditorWidget import EditorWidget
 #		- but how do we know which script editor to output to? eh?
 #			- perhaps we should only output things that this editor does and ignore all other actions?
 #			- then where do messages go? a special console ui?
-## \todo Fix the horizontal bar so it doesn't move unless asked - the subwindows should scroll instead
 ## \todo Custom right click menu with script load, save, execute file, undo, redo etc.
 ## \todo Standard way for users to customise all menus
 ## \todo Tab completion and popup help. rlcompleter module should be useful for tab completion. Completer( dict ) constructs a completer
@@ -28,14 +27,20 @@ class ScriptEditor( EditorWidget ) :
 		self.__gtkOutputWidget.set_editable( False )
 		self.__gtkOutputWidget.set_cursor_visible( False )
 		self.__gtkOutputWidget.connect( "button-press-event", self.__buttonPress )
-		self.__paned.pack1( self.__gtkOutputWidget, True )
+		self.__gtkOutputScroller = gtk.ScrolledWindow()
+		self.__gtkOutputScroller.set_policy( gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC )
+		self.__gtkOutputScroller.add( self.__gtkOutputWidget )
+		self.__paned.pack1( self.__gtkOutputScroller, True )
 		
 		self.__gtkInputBuffer = gtk.TextBuffer()
 		self.__gtkInputWidget = gtk.TextView( self.__gtkInputBuffer )
 		self.__gtkInputWidget.connect( "key-press-event", self.__keyPress )
 		self.__gtkInputWidget.connect( "button-press-event", self.__buttonPress )
+		self.__gtkInputScroller = gtk.ScrolledWindow()
+		self.__gtkInputScroller.set_policy( gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC )
+		self.__gtkInputScroller.add( self.__gtkInputWidget )
 		
-		self.__paned.pack2( self.__gtkInputWidget, True )
+		self.__paned.pack2( self.__gtkInputScroller, True )
 			
 		self.__paned.show_all()
 		
@@ -61,12 +66,14 @@ class ScriptEditor( EditorWidget ) :
 	
 		assert( scriptNode.isSame( self.getScriptNode() ) )
 		self.__gtkOutputBuffer.insert( self.__gtkOutputBuffer.get_bounds()[1], script + "\n" )
-
+		self.__gtkOutputWidget.scroll_to_iter( self.__gtkOutputBuffer.get_bounds()[1], 0.0 )
+		
 	def __evalSlot( self, scriptNode, script, result ) :
 	
 		assert( scriptNode.isSame( self.getScriptNode() ) )
 		text = script + "\nResult : " + str( result ) + "\n"
 		self.__gtkOutputBuffer.insert( self.__gtkOutputBuffer.get_bounds()[1], text )
+		self.__gtkOutputWidget.scroll_to_iter( self.__gtkOutputBuffer.get_bounds()[1], 0.0 )
 		
 	def __keyPress( self, widget, event ) :
 	
