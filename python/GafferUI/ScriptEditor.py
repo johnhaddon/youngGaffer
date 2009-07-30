@@ -23,24 +23,24 @@ class ScriptEditor( EditorWidget ) :
 	
 		self.__paned = self.gtkWidget()
 			
-		self.gtkOutputBuffer = gtk.TextBuffer()
-		self.gtkOutputWidget = gtk.TextView( self.gtkOutputBuffer )
-		self.gtkOutputWidget.set_editable( False )
-		self.gtkOutputWidget.set_cursor_visible( False )
-		self.gtkOutputWidget.connect( "button-press-event", self.__buttonPress )
-		self.__paned.pack1( self.gtkOutputWidget, True )
+		self.__gtkOutputBuffer = gtk.TextBuffer()
+		self.__gtkOutputWidget = gtk.TextView( self.__gtkOutputBuffer )
+		self.__gtkOutputWidget.set_editable( False )
+		self.__gtkOutputWidget.set_cursor_visible( False )
+		self.__gtkOutputWidget.connect( "button-press-event", self.__buttonPress )
+		self.__paned.pack1( self.__gtkOutputWidget, True )
 		
-		self.gtkInputBuffer = gtk.TextBuffer()
-		self.gtkInputWidget = gtk.TextView( self.gtkInputBuffer )
-		self.gtkInputWidget.connect( "key-press-event", self.__keyPress )
-		self.gtkInputWidget.connect( "button-press-event", self.__buttonPress )
+		self.__gtkInputBuffer = gtk.TextBuffer()
+		self.__gtkInputWidget = gtk.TextView( self.__gtkInputBuffer )
+		self.__gtkInputWidget.connect( "key-press-event", self.__keyPress )
+		self.__gtkInputWidget.connect( "button-press-event", self.__buttonPress )
 		
-		self.__paned.pack2( self.gtkInputWidget, True )
+		self.__paned.pack2( self.__gtkInputWidget, True )
 			
 		self.__paned.show_all()
 		
 		self._setDefaultColors( self.gtkWidget(), True )
-		self._setColors( self.gtkInputWidget, gtk.STATE_NORMAL, self._textEntryFGColor, self._textEntryBGColor )
+		self._setColors( self.__gtkInputWidget, gtk.STATE_NORMAL, self._textEntryFGColor, self._textEntryBGColor )
 
 	def setScriptNode( self, scriptNode ) :
 	
@@ -60,39 +60,39 @@ class ScriptEditor( EditorWidget ) :
 	def __execSlot( self, scriptNode, script ) :
 	
 		assert( scriptNode.isSame( self.getScriptNode() ) )
-		self.gtkOutputBuffer.insert( self.gtkOutputBuffer.get_bounds()[1], script + "\n" )
+		self.__gtkOutputBuffer.insert( self.__gtkOutputBuffer.get_bounds()[1], script + "\n" )
 
 	def __evalSlot( self, scriptNode, script, result ) :
 	
 		assert( scriptNode.isSame( self.getScriptNode() ) )
 		text = script + "\nResult : " + str( result ) + "\n"
-		self.gtkOutputBuffer.insert( self.gtkOutputBuffer.get_bounds()[1], text )
+		self.__gtkOutputBuffer.insert( self.__gtkOutputBuffer.get_bounds()[1], text )
 		
 	def __keyPress( self, widget, event ) :
 	
-		assert( widget is self.gtkInputWidget )
+		assert( widget is self.__gtkInputWidget )
 			
 		if event.keyval == 65293 and event.state & gtk.gdk.CONTROL_MASK :
 			
 			# Ctrl-Return pressed. Execute.
 			
-			haveSelection = self.gtkInputBuffer.get_has_selection()
+			haveSelection = self.__gtkInputBuffer.get_has_selection()
 			if haveSelection :
-				sel = self.gtkInputBuffer.get_selection_bounds()
-				toExecute = self.gtkInputBuffer.get_text( sel[0], sel[1] )
+				sel = self.__gtkInputBuffer.get_selection_bounds()
+				toExecute = self.__gtkInputBuffer.get_text( sel[0], sel[1] )
 			else :
-				toExecute = self.gtkInputBuffer.get_property( "text" )
+				toExecute = self.__gtkInputBuffer.get_property( "text" )
 			
 			try :
 			
 				self.getScriptNode().execute( toExecute )
 				if not haveSelection :
-					bounds = self.gtkInputBuffer.get_bounds()
-					self.gtkInputBuffer.delete( bounds[0], bounds[1] )
+					bounds = self.__gtkInputBuffer.get_bounds()
+					self.__gtkInputBuffer.delete( bounds[0], bounds[1] )
 			
 			except Exception, e :
 			
-				self.gtkOutputBuffer.insert( self.gtkOutputBuffer.get_bounds()[1], str( e ) + "\n" )
+				self.__gtkOutputBuffer.insert( self.__gtkOutputBuffer.get_bounds()[1], str( e ) + "\n" )
 			
 			return True
 			
