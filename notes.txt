@@ -319,6 +319,7 @@ lights + shading
 * reflection cards
 * gummi light
 * a light component may be connected to any number of lights
+	* but also many light components can exist on a single node for neatness?
 * how do we do map generation??
 * what units do we use for light intensity, diffuse reflectance etc?
 	* exposure based?
