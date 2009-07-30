@@ -18,7 +18,7 @@ TextGadget::~TextGadget()
 {
 }
 
-IECore::FontPtr TextGadget::getFont() const
+IECore::ConstFontPtr TextGadget::getFont() const
 {
 	return const_pointer_cast<Font>( m_font ? m_font : getStyle()->labelFont() );
 }

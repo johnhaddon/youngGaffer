@@ -20,9 +20,7 @@ class TextGadget : public Gadget
 
 		/// Returns the font that will be used to display the text.
 		/// If this has not been set it will default to getStyle()->labelFont().
-		/// \todo This should return ConstFontPtr, but there are non-const methods
-		/// which should be const in IECore::Font.
-		IECore::FontPtr getFont() const;
+		IECore::ConstFontPtr getFont() const;
 		/// Sets the font used to display the text - this overrides the font
 		/// set by the Style. Passing 0 reverts to the font from the Style.
 		void setFont( IECore::FontPtr font );
