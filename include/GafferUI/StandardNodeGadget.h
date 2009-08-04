@@ -38,7 +38,7 @@ class StandardNodeGadget : public NodeGadget
 		typedef std::map<const Gaffer::Plug *, Nodule *> NoduleMap;
 		NoduleMap m_nodules;
 				
-		void selectionChanged( Gaffer::NodeSetPtr selection, Gaffer::NodePtr node );
+		void selectionChanged( Gaffer::SetPtr selection, IECore::RunTimeTypedPtr node );
 		void childAdded( Gaffer::GraphComponentPtr parent, Gaffer::GraphComponentPtr child );
 		void childRemoved( Gaffer::GraphComponentPtr parent, Gaffer::GraphComponentPtr child );
 

@@ -34,7 +34,7 @@ class Serialiser
 		/// Serialises all the children of context, yielding a string which should
 		/// be executed in an equivalent context to reconstruct it. The filter can be
 		/// used to restrict the set of children which are serialised.
-		static std::string serialise( Gaffer::ConstNodePtr context, Gaffer::ConstNodeSetPtr filter=0 );
+		static std::string serialise( Gaffer::ConstNodePtr context, Gaffer::ConstSetPtr filter=0 );
 		
 		//! @name Serialiser methods
 		/// These functions are for use within serialisation functions registered
@@ -64,11 +64,11 @@ class Serialiser
 		
 	private :
 
-		Serialiser( Gaffer::ConstNodePtr context, Gaffer::ConstNodeSetPtr filter );
+		Serialiser( Gaffer::ConstNodePtr context, Gaffer::ConstSetPtr filter );
 		
 		std::string m_result;
 		
-		Gaffer::ConstNodeSetPtr m_filter;
+		Gaffer::ConstSetPtr m_filter;
 		
 		std::set<std::string> m_modules;
 		

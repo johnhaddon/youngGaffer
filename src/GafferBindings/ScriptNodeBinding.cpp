@@ -87,7 +87,7 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 			return result.ptr();
 		}
 
-		virtual std::string serialise( ConstNodeSetPtr filter=0 ) const
+		virtual std::string serialise( ConstSetPtr filter=0 ) const
 		{
 			return Serialiser::serialise( this, filter );
 		}
@@ -185,7 +185,7 @@ void bindScriptNode()
 	scope s = IECore::RunTimeTypedClass<ScriptNode, ScriptNodeWrapperPtr>()
 		.def( init<>() )
 		.def( init<const std::string &>() )
-		.def( "selection", (NodeSetPtr (ScriptNode::*)())&ScriptNode::selection )
+		.def( "selection", (SetPtr (ScriptNode::*)())&ScriptNode::selection )
 		.def( "undo", &ScriptNode::undo )
 		.def( "redo", &ScriptNode::redo )
 		.def( "copy", &ScriptNode::copy, copyOverloads() )

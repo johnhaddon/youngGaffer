@@ -180,7 +180,7 @@ class SignalsTest( unittest.TestCase ) :
 			
 				raise Exception
 	
-		s = Gaffer.NodeSet()
+		s = Gaffer.Set()
 		t = T( s )
 		w = weakref.ref( t )
 		

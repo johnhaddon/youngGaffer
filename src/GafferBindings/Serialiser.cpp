@@ -10,12 +10,12 @@ using namespace boost::python;
 
 Serialiser::FunctionMap Serialiser::g_serialisers;
 
-Serialiser::Serialiser( Gaffer::ConstNodePtr context, Gaffer::ConstNodeSetPtr filter )
+Serialiser::Serialiser( Gaffer::ConstNodePtr context, Gaffer::ConstSetPtr filter )
 	:	m_filter( filter )
 {
 }
 
-std::string Serialiser::serialise( Gaffer::ConstNodePtr context, Gaffer::ConstNodeSetPtr filter )
+std::string Serialiser::serialise( Gaffer::ConstNodePtr context, Gaffer::ConstSetPtr filter )
 {
 	Serialiser s( context, filter );
 	Gaffer::ChildNodeIterator nIt;

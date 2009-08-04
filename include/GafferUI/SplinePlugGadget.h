@@ -20,12 +20,12 @@ class SplinePlugGadget : public Gadget
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( SplinePlugGadget, SplinePlugGadgetTypeId, Gadget );
 
 		/// The splines to be edited
-		Gaffer::PlugSetPtr splines();
-		Gaffer::ConstPlugSetPtr splines() const;
+		Gaffer::SetPtr splines();
+		Gaffer::ConstSetPtr splines() const;
 
 		/// The selected spline points
-		Gaffer::PlugSetPtr selection();
-		Gaffer::ConstPlugSetPtr selection() const;
+		Gaffer::SetPtr selection();
+		Gaffer::ConstSetPtr selection() const;
 
 		virtual Imath::Box3f bound() const;
 		
@@ -35,11 +35,11 @@ class SplinePlugGadget : public Gadget
 		
 	private :
 	
-		void splineAdded( Gaffer::PlugSetPtr splineSet, Gaffer::PlugPtr splinePlug );
-		void splineRemoved( Gaffer::PlugSetPtr splineSet, Gaffer::PlugPtr splinePlug );
+		void splineAdded( Gaffer::SetPtr splineSet, IECore::RunTimeTypedPtr splinePlug );
+		void splineRemoved( Gaffer::SetPtr splineSet, IECore::RunTimeTypedPtr splinePlug );
 		void plugSet( Gaffer::PlugPtr plug );
-		Gaffer::PlugSetPtr m_splines;
-		Gaffer::PlugSetPtr m_selection;
+		Gaffer::SetPtr m_splines;
+		Gaffer::SetPtr m_selection;
 		
 		void pointAdded( Gaffer::GraphComponentPtr spline, Gaffer::GraphComponentPtr point );
 		void pointRemoved( Gaffer::GraphComponentPtr spline, Gaffer::GraphComponentPtr point );

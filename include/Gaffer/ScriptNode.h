@@ -54,8 +54,8 @@ class ScriptNode : public Node
 		/// the script.
 		////////////////////////////////////////////////////////////////////
 		//@{
-		NodeSetPtr selection();
-		ConstNodeSetPtr selection() const;
+		SetPtr selection();
+		ConstSetPtr selection() const;
 		//@}
 		
 		//! @name History and undo
@@ -77,10 +77,10 @@ class ScriptNode : public Node
 		////////////////////////////////////////////////////////////////////
 		/// Copies the contents of this script to the clipboard in the
 		/// application(). If specified then filter limits what is copied.
-		void copy( ConstNodeSetPtr filter=0 );
+		void copy( ConstSetPtr filter=0 );
 		/// Performs a copy() and then deletes the copied nodes.
 		/// \undoable
-		void cut( ConstNodeSetPtr filter=0 );
+		void cut( ConstSetPtr filter=0 );
 		/// Pastes the contents of the global clipboard into the script.
 		/// \undoable
 		void paste();
@@ -88,7 +88,7 @@ class ScriptNode : public Node
 		/// disconnected from the remaining Nodes and removed from the current
 		/// selection. If specified then filter limits what is deleted.
 		/// \undoable
-		void deleteNodes( ConstNodeSetPtr filter=0 );
+		void deleteNodes( ConstSetPtr filter=0 );
 		//@}
 			
 		//! @name Script evaluation
@@ -131,9 +131,9 @@ class ScriptNode : public Node
 		////////////////////////////////////////////////////////////////////
 		//@{
 		/// Returns a string which when executed will recreate the child nodes
-		/// of this script and the connections between them. A NodeSet may be
+		/// of this script and the connections between them. A Set may be
 		/// specified to limit the serialised nodes to those contained in the set.
-		virtual std::string serialise( ConstNodeSetPtr filter=0 ) const;
+		virtual std::string serialise( ConstSetPtr filter=0 ) const;
 		/// Returns the plug which specifies the file used in all load and save
 		/// operations.
 		StringPlugPtr fileNamePlug();
@@ -152,7 +152,7 @@ class ScriptNode : public Node
 			
 	private :
 		
-		NodeSetPtr m_selection;
+		SetPtr m_selection;
 
 		friend class Action;
 		friend class UndoContext;

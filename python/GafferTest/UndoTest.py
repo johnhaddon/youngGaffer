@@ -88,7 +88,7 @@ class UndoTest( unittest.TestCase ) :
 		self.assert_( n3["op2"].getInput().isSame( n2["sum"] ) )
 		
 		with Gaffer.UndoContext( s ) :
-			s.deleteNodes( Gaffer.NodeSet( [ n2 ] ) )
+			s.deleteNodes( Gaffer.Set( [ n2 ] ) )
 			
 		self.assertEqual( n2["op1"].getInput(), None )
 		self.assertEqual( n2["op2"].getInput(), None )

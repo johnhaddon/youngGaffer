@@ -12,7 +12,34 @@
 namespace Gaffer
 {
 
-template<typename T>
+namespace Detail
+{
+
+struct MemberAcceptanceCombiner
+{
+	typedef bool result_type;
+	
+	template<typename InputIterator>
+	bool operator()( InputIterator first, InputIterator last ) const
+	{
+		if( first==last )
+		{
+			return true;
+		}
+		while( first!=last )
+		{
+			if( !(*first) )
+			{
+				return false;
+			}
+			++first;
+		}
+		return true;
+	}
+};
+
+} // namespace Detail
+
 class Set : public IECore::RunTimeTyped, public boost::signals::trackable
 {
 
@@ -21,47 +48,44 @@ class Set : public IECore::RunTimeTyped, public boost::signals::trackable
 		Set();
 		virtual ~Set();
 
-		IE_CORE_DECLAREMEMBERPTR( Set );
+		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( Set, SetTypeId, IECore::RunTimeTyped );
 	
-		typedef T ValueType;
-		typedef typename T::Ptr ValuePtr;
+		typedef IECore::RunTimeTyped Member;
+		typedef Member::Ptr MemberPtr;
+		typedef Member::ConstPtr ConstMemberPtr;
 		
 		typedef boost::multi_index::multi_index_container<
-			ValuePtr,
+			MemberPtr,
 			boost::multi_index::indexed_by<
-				boost::multi_index::ordered_unique<boost::multi_index::identity<ValuePtr> >,
+				boost::multi_index::ordered_unique<boost::multi_index::identity<MemberPtr> >,
 				boost::multi_index::sequenced<>
 			>
 		> MemberContainer;
 		
-		typedef const typename MemberContainer::template nth_index<0>::type OrderedIndex;
-		typedef const typename MemberContainer::template nth_index<1>::type SequencedIndex;
+		typedef const MemberContainer::nth_index<0>::type OrderedIndex;
+		typedef const MemberContainer::nth_index<1>::type SequencedIndex;
 
-		//! @name RunTimeTyped interface
-		////////////////////////////////////////////////////////////
-		//@{
-		virtual IECore::TypeId typeId() const;
-		virtual const char *typeName() const;
-		virtual bool isInstanceOf( IECore::TypeId typeId ) const;
-		virtual bool isInstanceOf( const char *typeName ) const;
-		static IECore::TypeId staticTypeId();
-		static const char *staticTypeName();
-		static bool inheritsFrom( IECore::TypeId typeId );
-		static bool inheritsFrom( const char *typeName );
-		typedef IECore::RunTimeTyped BaseClass;
-		//@}
+		typedef boost::signal<bool ( ConstPtr, ConstMemberPtr ), Detail::MemberAcceptanceCombiner> MemberAcceptanceSignal;
+		/// This signal is emitted to determine whether or not a member is eligible
+		/// to be in the Set. Members are only added if all slots of the signal
+		/// return true, or if no slots have been connected.
+		MemberAcceptanceSignal &memberAcceptanceSignal();
+		/// A function suitable for use as a memberAcceptanceSignal slot. This rejects all
+		/// members not derived from T.
+		template<typename T>
+		static bool typedMemberAcceptor( Ptr set, ConstMemberPtr potentialMember );
 
 		/// Adds a member to the set. Returns true if the member
-		/// was not already present, and false otherwise.
-		bool add( typename T::Ptr member );
+		/// was not already present and passes the acceptance tests,
+		/// and false otherwise.
+		bool add( MemberPtr member );
 		/// Adds all the objects in the specified range into this set, returning
-		/// the number of new members added. Uses IECore::runTimeCast
-		/// to weed out unsuitable members.
+		/// the number of new members added.
 		template<typename I>
 		size_t add( I first, I last );
 		/// Removes a member from the set. Returns true if the member
 		/// is removed and false if it wasn't there in the first place.
-		bool remove( typename T::Ptr member );
+		bool remove( MemberPtr member );
 		/// Removes all the in the specified range from this set, returning the
 		/// number of members removed.
 		template<typename I>
@@ -69,27 +93,26 @@ class Set : public IECore::RunTimeTyped, public boost::signals::trackable
 		/// Removes all members from the set.
 		void clear();
 		/// Returns true if the object is a member of the set.
-		bool contains( typename T::ConstPtr object ) const;
+		bool contains( ConstMemberPtr object ) const;
 		/// Returns the number of members of the set.
 		size_t size() const;
 		/// Returns the last object added to the Set, or 0 if the set is
 		/// empty.
-		typename T::Ptr lastAdded();
-		typename T::ConstPtr lastAdded() const;
+		MemberPtr lastAdded();
+		ConstMemberPtr lastAdded() const;
 		
 		/// Const access to the internal container indices to allow iteration etc.
 		const OrderedIndex &members() const;
 		const SequencedIndex &sequencedMembers() const;
 
-		typedef boost::signal<void ( Ptr, typename T::Ptr )> MemberSignal;
+		typedef boost::signal<void ( Ptr, MemberPtr )> MemberSignal;
 		
 		MemberSignal &memberAddedSignal();
 		MemberSignal &memberRemovedSignal();
-		
 
 	private :
 
-		IE_CORE_DECLARERUNTIMETYPEDDESCRIPTION( Set<T> );
+		MemberAcceptanceSignal m_memberAcceptanceSignal;
 
 		MemberContainer m_members;
 
@@ -98,30 +121,7 @@ class Set : public IECore::RunTimeTyped, public boost::signals::trackable
 		
 };
 
-#define GAFFER_DECLARESETSPECIALISATIONS( TYPENAME, TYPEID  )				\
-																			\
-	template<>																\
-	IECore::TypeId TYPENAME::staticTypeId()									\
-	{																		\
-		return (IECore::TypeId)TYPEID;										\
-	}																		\
-	template<>																\
-	const char *TYPENAME::staticTypeName()									\
-	{																		\
-		return #TYPENAME;													\
-	}																		\
-	template<> 																\
-	const IECore::RunTimeTyped::TypeDescription<TYPENAME>  TYPENAME::g_typeDescription; \
-
-
-typedef Set<GraphComponent> GraphComponentSet;
-IE_CORE_DECLAREPTR( GraphComponentSet );
-
-typedef Set<Node> NodeSet;
-IE_CORE_DECLAREPTR( NodeSet );
-
-typedef Set<Plug> PlugSet;
-IE_CORE_DECLAREPTR( PlugSet );
+IE_CORE_DECLAREPTR( Set );
 	
 } // namespace Gaffer
 

@@ -13,7 +13,7 @@ void GafferUIBindings::bindSplinePlugGadget()
 {
 	IECore::RunTimeTypedClass<SplinePlugGadget>()
 		.def( init<>() )
-		.def( "splines", (Gaffer::PlugSetPtr (SplinePlugGadget::*)())&SplinePlugGadget::splines )
-		.def( "selection", (Gaffer::PlugSetPtr (SplinePlugGadget::*)())&SplinePlugGadget::selection )
+		.def( "splines", (Gaffer::SetPtr (SplinePlugGadget::*)())&SplinePlugGadget::splines )
+		.def( "selection", (Gaffer::SetPtr (SplinePlugGadget::*)())&SplinePlugGadget::selection )
 	;
 }

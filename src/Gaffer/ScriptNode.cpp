@@ -16,7 +16,7 @@ GAFFER_DECLARECONTAINERSPECIALISATIONS( ScriptContainer, ScriptContainerTypeId )
 IE_CORE_DEFINERUNTIMETYPED( ScriptNode );
 
 ScriptNode::ScriptNode( const std::string &name )
-	:	Node( name ), m_selection( new NodeSet ), m_undoIterator( m_undoList.end() )
+	:	Node( name ), m_selection( new Set ), m_undoIterator( m_undoList.end() )
 {
 	m_fileNamePlug = new StringPlug( "fileName", Plug::In, "" );
 	addChild( m_fileNamePlug );
@@ -41,12 +41,12 @@ ConstApplicationRootPtr ScriptNode::application() const
 	return ancestor<ApplicationRoot>();
 }
 
-NodeSetPtr ScriptNode::selection()
+SetPtr ScriptNode::selection()
 {
 	return m_selection;
 }
 
-ConstNodeSetPtr ScriptNode::selection() const
+ConstSetPtr ScriptNode::selection() const
 {
 	return m_selection;
 }
@@ -77,7 +77,7 @@ void ScriptNode::redo()
 	m_undoIterator++;
 }
 
-void ScriptNode::copy( ConstNodeSetPtr filter )
+void ScriptNode::copy( ConstSetPtr filter )
 {
 	ApplicationRootPtr app = application();
 	if( !app )
@@ -89,7 +89,7 @@ void ScriptNode::copy( ConstNodeSetPtr filter )
 	app->setClipboardContents( new IECore::StringData( s ) );
 }
 
-void ScriptNode::cut( ConstNodeSetPtr filter )
+void ScriptNode::cut( ConstSetPtr filter )
 {
 	copy( filter );
 	deleteNodes( filter );
@@ -107,8 +107,8 @@ void ScriptNode::paste()
 	if( s )
 	{
 		// set up something catch all the newly created nodes
-		GraphComponentSetPtr newNodes = new GraphComponentSet;
-		childAddedSignal().connect( boost::bind( (bool (GraphComponentSet::*)( GraphComponentPtr ) )&GraphComponentSet::add, newNodes.get(), ::_2 ) );
+		SetPtr newNodes = new Set;
+		childAddedSignal().connect( boost::bind( (bool (Set::*)( IECore::RunTimeTypedPtr ) )&Set::add, newNodes.get(), ::_2 ) );
 			
 			// do the paste
 			execute( s->readable() );
@@ -119,7 +119,7 @@ void ScriptNode::paste()
 	}
 }
 
-void ScriptNode::deleteNodes( ConstNodeSetPtr filter )
+void ScriptNode::deleteNodes( ConstSetPtr filter )
 {
 	ChildNodeIterator nIt;
 	for( nIt=childrenBegin<Node>(); nIt!=childrenEnd<Node>(); )
@@ -190,7 +190,7 @@ ScriptNode::ScriptEvaluatedSignal &ScriptNode::scriptEvaluatedSignal()
 	return m_scriptEvaluatedSignal;
 }
 
-std::string ScriptNode::serialise( ConstNodeSetPtr filter ) const
+std::string ScriptNode::serialise( ConstSetPtr filter ) const
 {
 	throw IECore::Exception( "Cannot serialise scripts on a ScriptNode not created in Python." );
 }

@@ -67,7 +67,7 @@ class ScriptNodeTest( unittest.TestCase ) :
 	def testSelection( self ) :
 	
 		s = Gaffer.ScriptNode()
-		self.assert_( isinstance( s.selection(), Gaffer.NodeSet ) )
+		self.assert_( isinstance( s.selection(), Gaffer.Set ) )
 		
 	def testSerialisation( self ) :
 	

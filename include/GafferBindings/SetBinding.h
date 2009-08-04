@@ -4,11 +4,6 @@
 namespace GafferBindings
 {
 
-/// Binds the standard set types.
-void bindSet();
-
-/// Can be used to bind custom set types.
-template <typename T>
 void bindSet();
 
 } // namespace GafferBindings

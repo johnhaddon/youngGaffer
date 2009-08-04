@@ -168,7 +168,7 @@ NodulePtr StandardNodeGadget::addNodule( Gaffer::PlugPtr plug )
 	return nodule;
 }
 
-void StandardNodeGadget::selectionChanged( Gaffer::NodeSetPtr selection, Gaffer::NodePtr n )
+void StandardNodeGadget::selectionChanged( Gaffer::SetPtr selection, IECore::RunTimeTypedPtr n )
 {
 	if( n==node() )
 	{

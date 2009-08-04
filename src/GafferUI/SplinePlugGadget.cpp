@@ -25,7 +25,7 @@ struct SplinePlugGadget::UI
 };
 
 SplinePlugGadget::SplinePlugGadget( const std::string &name )
-	:	Gadget( name ), m_splines( new PlugSet ), m_selection( new PlugSet )
+	:	Gadget( name ), m_splines( new Set ), m_selection( new Set )
 {
 	m_splines->memberAddedSignal().connect( boost::bind( &SplinePlugGadget::splineAdded, this, ::_1,  ::_2 ) );
 	m_splines->memberRemovedSignal().connect( boost::bind( &SplinePlugGadget::splineRemoved, this, ::_1,  ::_2 ) );
@@ -41,22 +41,22 @@ SplinePlugGadget::~SplinePlugGadget()
 {
 }
 
-PlugSetPtr SplinePlugGadget::splines()
+SetPtr SplinePlugGadget::splines()
 {
 	return m_splines;
 }
 
-ConstPlugSetPtr SplinePlugGadget::splines() const
+ConstSetPtr SplinePlugGadget::splines() const
 {
 	return m_splines;
 }
 
-PlugSetPtr SplinePlugGadget::selection()
+SetPtr SplinePlugGadget::selection()
 {
 	return m_selection;
 }
 
-ConstPlugSetPtr SplinePlugGadget::selection() const
+ConstSetPtr SplinePlugGadget::selection() const
 {
 	return m_selection;
 }
@@ -65,7 +65,7 @@ Imath::Box3f SplinePlugGadget::bound() const
 {
 	Box3f result;
 	
-	PlugSet::SequencedIndex::iterator it;
+	Set::SequencedIndex::iterator it;
 	for( it=m_splines->sequencedMembers().begin(); it!=m_splines->sequencedMembers().end(); it++ )
 	{
 		SplineffPlugPtr spline = IECore::runTimeCast<SplineffPlug>( *it );
@@ -86,7 +86,7 @@ Imath::Box3f SplinePlugGadget::bound() const
 
 void SplinePlugGadget::doRender( IECore::RendererPtr renderer ) const
 {
-	PlugSet::SequencedIndex::iterator it;
+	Set::SequencedIndex::iterator it;
 	for( it=m_splines->sequencedMembers().begin(); it!=m_splines->sequencedMembers().end(); it++ )
 	{
 		SplineffPlugPtr spline = IECore::runTimeCast<SplineffPlug>( *it );
@@ -131,13 +131,13 @@ void SplinePlugGadget::doRender( IECore::RendererPtr renderer ) const
 	}
 }
 
-void SplinePlugGadget::splineAdded( PlugSetPtr splineSet, PlugPtr splinePlug )
+void SplinePlugGadget::splineAdded( SetPtr splineSet, IECore::RunTimeTypedPtr splinePlug )
 {
 	SplineffPlugPtr s = IECore::runTimeCast<SplineffPlug>( splinePlug );
 	if( s )
 	{
 		m_uis[s.get()] = UI();
-		NodePtr node = splinePlug->node();
+		NodePtr node = s->node();
 		/// \todo Only connect this once when there are many splines from the same node.
 		/// Also remove the connections when all the splines from that node are removed.
 		node->plugSetSignal().connect( boost::bind( &SplinePlugGadget::plugSet, this, ::_1 ) );
@@ -157,9 +157,9 @@ void SplinePlugGadget::pointRemoved( GraphComponentPtr spline, GraphComponentPtr
 	renderRequestSignal()( this );
 }
 
-void SplinePlugGadget::splineRemoved( PlugSetPtr splineSet, PlugPtr splinePlug )
+void SplinePlugGadget::splineRemoved( SetPtr splineSet, IECore::RunTimeTypedPtr splinePlug )
 {
-	m_uis.erase( splinePlug.get() );
+	m_uis.erase( static_cast<Plug *>( splinePlug.get() ) );
 }
 
 void SplinePlugGadget::plugSet( PlugPtr plug )
@@ -212,7 +212,7 @@ bool SplinePlugGadget::buttonPress( GadgetPtr, const ButtonEvent &event )
 	bool clearedOnce = false;
 	bool handled = false;
 	bool shiftHeld = event.modifiers && ButtonEvent::Shift;
-	PlugSet::SequencedIndex::iterator it;
+	Set::SequencedIndex::iterator it;
 	for( it=m_splines->sequencedMembers().begin(); it!=m_splines->sequencedMembers().end(); it++ )
 	{
 		SplineffPlugPtr spline = IECore::runTimeCast<SplineffPlug>( *it );
@@ -290,7 +290,7 @@ bool SplinePlugGadget::dragUpdate( GadgetPtr gadget, const ButtonEvent &event )
 		V2f pos = V2f( i.x, i.y );
 		V2f delta = pos - m_lastDragPosition;
 	
-		for( PlugSet::OrderedIndex::iterator it=m_selection->members().begin(); it!=m_selection->members().end(); it++ )
+		for( Set::OrderedIndex::iterator it=m_selection->members().begin(); it!=m_selection->members().end(); it++ )
 		{
 			PlugPtr plug = IECore::runTimeCast<Plug>( *it );
 			FloatPlugPtr xPlug = plug->getChild<FloatPlug>( "x" );
@@ -309,18 +309,20 @@ bool SplinePlugGadget::keyPress( GadgetPtr gadget, const KeyEvent &event )
 {
 	if( event.key=="BackSpace" && m_selection->size() )
 	{
-		UndoContext undoEnabler( (*(m_selection->members().begin()))->ancestor<ScriptNode>() );
+		Plug *firstPlug = static_cast<Plug *>( (*(m_selection->members().begin())).get() );
+		UndoContext undoEnabler( firstPlug->ancestor<ScriptNode>() );
 		
-		for( PlugSet::OrderedIndex::iterator it=m_selection->members().begin(); it!=m_selection->members().end(); it++ )
+		for( Set::OrderedIndex::iterator it=m_selection->members().begin(); it!=m_selection->members().end(); it++ )
 		{
-			GraphComponentPtr parent = (*it)->parent<GraphComponent>();
+			Plug *pointPlug = static_cast<Plug *>( (*it).get() );
+			GraphComponentPtr parent = pointPlug->parent<GraphComponent>();
 			if( parent )
 			{
-				parent->removeChild( *it );
+				parent->removeChild( pointPlug );
 			}
 			else
 			{
-				std::cerr << "NO PARENT FOR " << (*it)->getName() << std::endl;
+				std::cerr << "NO PARENT FOR " << pointPlug->getName() << std::endl;
 			}
 		}
 	}

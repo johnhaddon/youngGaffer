@@ -14,7 +14,7 @@ class NodeSetEditor( GafferUI.EditorWidget ) :
 		if scriptNode :
 			self.setNodeSet( scriptNode.selection() )
 		else :
-			self.setNodeSet( Gaffer.NodeSet() )
+			self.setNodeSet( Gaffer.Set() )
 			
 	def setNodeSet( self, nodeSet ) :
 	
