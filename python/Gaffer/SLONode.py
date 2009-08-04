@@ -42,7 +42,7 @@ class SLONode( Gaffer.Node ) :
 			IECore.StringData.staticTypeId() : Gaffer.StringPlug,			
 		}
 		for name, value in shader.parameters.items() :
-			plug = plugTypes[value.typeId()]( name=name )
+			plug = plugTypes[value.typeId()]( name=name, flags=Gaffer.Plug.Flags.Dynamic )
 			plug.setValue( value.value )
 			self["parameters"][name] = plug
 		
