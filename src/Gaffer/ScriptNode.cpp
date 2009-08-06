@@ -20,6 +20,10 @@ ScriptNode::ScriptNode( const std::string &name )
 {
 	m_fileNamePlug = new StringPlug( "fileName", Plug::In, "" );
 	addChild( m_fileNamePlug );
+	
+	m_selection->memberAcceptanceSignal().connect( boost::bind( &ScriptNode::selectionSetAcceptor, this, ::_1, ::_2 ) );
+
+	childRemovedSignal().connect( boost::bind( &ScriptNode::childRemoved, this, ::_1, ::_2 ) );
 }
 
 ScriptNode::~ScriptNode()
@@ -39,6 +43,16 @@ ApplicationRootPtr ScriptNode::application()
 ConstApplicationRootPtr ScriptNode::application() const
 {
 	return ancestor<ApplicationRoot>();
+}
+
+bool ScriptNode::selectionSetAcceptor( Set::ConstPtr s, Set::ConstMemberPtr m )
+{
+	ConstNodePtr n = IECore::runTimeCast<const Node>( m );
+	if( !n )
+	{
+		return false;
+	}
+	return n->parent<ScriptNode>()==this;
 }
 
 SetPtr ScriptNode::selection()
@@ -140,8 +154,6 @@ void ScriptNode::deleteNodes( ConstSetPtr filter )
 				(*it)->removeOutputs();
 			}
 
-			selection()->remove( *nIt );
-
 			(*nIt)->parent<GraphComponent>()->removeChild( (*nIt) );
 		}
 		
@@ -203,4 +215,9 @@ void ScriptNode::load()
 void ScriptNode::save() const
 {
 	throw IECore::Exception( "Cannot save scripts on a ScriptNode not created in Python." );
+}
+
+void ScriptNode::childRemoved( GraphComponent *parent, GraphComponent *child )
+{
+	m_selection->remove( child );
 }

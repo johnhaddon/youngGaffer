@@ -69,6 +69,20 @@ class ScriptNodeTest( unittest.TestCase ) :
 		s = Gaffer.ScriptNode()
 		self.assert_( isinstance( s.selection(), Gaffer.Set ) )
 		
+		n = Gaffer.Node()
+		
+		self.assertRaises( Exception, s.selection().add, n )
+		
+		s.addChild( n )
+		
+		s.selection().add( n )
+		
+		self.failUnless( n in s.selection() )
+		
+		s.removeChild( n )
+		
+		self.failIf( n in s.selection() )
+		
 	def testSerialisation( self ) :
 	
 		s = Gaffer.ScriptNode()

@@ -47,11 +47,6 @@ class ScriptNode : public Node
 		/// The ScriptNode maintains a list of child Nodes which are considered
 		/// to be selected - actions performing on the script can then use that
 		/// selection any way they see fit.
-		/// \todo We need to figure out how deleted nodes are removed from the
-		/// selection. Ideally just doing an unparent would deselect them i
-		/// reckon, so del script.nodeName in python would work straight off.
-		/// \todo Make sure that selected nodes are appropriate children of
-		/// the script.
 		////////////////////////////////////////////////////////////////////
 		//@{
 		SetPtr selection();
@@ -152,6 +147,7 @@ class ScriptNode : public Node
 			
 	private :
 		
+		bool selectionSetAcceptor( Set::ConstPtr s, Set::ConstMemberPtr m );
 		SetPtr m_selection;
 
 		friend class Action;
@@ -172,6 +168,8 @@ class ScriptNode : public Node
 		ScriptEvaluatedSignal m_scriptEvaluatedSignal;
 	
 		StringPlugPtr m_fileNamePlug;
+		
+		void childRemoved( GraphComponent *parent, GraphComponent *child );
 	
 };
 
