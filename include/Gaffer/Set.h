@@ -68,7 +68,8 @@ class Set : public IECore::RunTimeTyped, public boost::signals::trackable
 		typedef boost::signal<bool ( ConstPtr, ConstMemberPtr ), Detail::MemberAcceptanceCombiner> MemberAcceptanceSignal;
 		/// This signal is emitted to determine whether or not a member is eligible
 		/// to be in the Set. Members are only added if all slots of the signal
-		/// return true, or if no slots have been connected.
+		/// return true, or if no slots have been connected - otherwise an exception is thrown.
+		/// You may call the signal yourself at any time to determine if a member is eligible.
 		MemberAcceptanceSignal &memberAcceptanceSignal();
 		/// A function suitable for use as a memberAcceptanceSignal slot. This rejects all
 		/// members not derived from T.

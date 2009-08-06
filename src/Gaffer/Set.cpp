@@ -1,5 +1,7 @@
 #include "Gaffer/Set.h"
 
+#include "IECore/Exception.h"
+
 using namespace Gaffer;
 
 Set::Set()
@@ -19,7 +21,7 @@ bool Set::add( MemberPtr member )
 {
 	if( !m_memberAcceptanceSignal( this, member ) )
 	{
-		return false;
+		throw IECore::Exception( "Member is not eligible for inclusion in Set." );
 	}
 	
 	bool result = m_members.insert( member ).second;

@@ -190,7 +190,7 @@ class SetTest( unittest.TestCase ) :
 		n = Gaffer.Node()
 		p = Gaffer.Plug()
 		
-		s.add( n )
+		self.assertRaises( Exception, s.add, n )
 		
 		self.failIf( n in s )
 		
