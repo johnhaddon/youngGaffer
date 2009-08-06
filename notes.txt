@@ -17,6 +17,11 @@ ui rules
 * here is something which tells you how to set colors
 	* http://ometer.com/gtk-colors.html
 
+selection
+=========
+
+* each ScriptNode (and embedded ScriptNode) and GroupNode should have their own selection set
+
 undo/redo
 =========
 
@@ -278,13 +283,15 @@ procedurals
 	  
 	- how to determine bounds quickly for deformers and transform caches?
 	
-referencing 
+referencing and groups
 
 	- so one person can build a scene and release it as a script
 		- and another can bring that in as a single node and apply shading and wotnot afterwards
 	- should be implemented as a ScriptNode embedded within the script - so ScriptNodes can 
 	  have at least one input and output plug...they'll be like groups but they'll save/load
 	  to a separate file...
+	- i think groups and scriptnodes need to derive from a common base class
+		- which provides the selection and copy/paste/serialisation etc.
 
 	
 viewer
