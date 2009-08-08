@@ -229,6 +229,9 @@ class GraphComponentTest( unittest.TestCase ) :
 		
 		for name in ( "0", "0a", "@A", "a.A", ".", "A:", "a|", "a(" ) :
 			self.assertRaises( Exception, n.setName, "0" )
+			
+		for name in ( "hello", "_1", "brdf_0_degree_refl" ) :
+			n.setName( name )
 	
 	def testContains( self ) :
 	

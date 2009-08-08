@@ -48,7 +48,7 @@ bool GraphComponent::nameExists( const IECore::InternedString &name )
 const std::string &GraphComponent::setName( const std::string &name )
 {
 	// make sure the name is valid
-	static boost::regex validator( "^[A-Za-z_]+[A-Za-z0-9]*" );
+	static boost::regex validator( "^[A-Za-z_]+[A-Za-z_0-9]*" );
 	if( !regex_match( name.c_str(), validator ) )
 	{
 		std::string what = boost::str( boost::format( "Invalid name \"%s\"" ) % name );
