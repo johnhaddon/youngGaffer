@@ -464,7 +464,6 @@ docEnv.Depends( docs, glob.glob( "include/*/*.h" ) + glob.glob( "src/*/*.cpp" ) 
 manifest = [
 	"bin/gaffer",
 	"bin/gaffer.py",
-	"bin/python",
 	"apps/cli/1/cli.py",
 	"apps/light/1/light.py",
 	"apps/test/1/test.py",
@@ -515,7 +514,6 @@ manifest = [
 	"lib/libgdkglext-x11-1.0.0.dylib",
 	"lib/libpangox-1.0.0.dylib",
 	"lib/libGLEW.1.5.0.dylib",
-	"lib/pango/1.6.0/modules/pango-basic-atsui.so",
 	"frameworks/Python.framework",
 	"lib/python2.6/site-packages/IECore",
 	"lib/python2.6/site-packages/IECoreGL",
@@ -533,6 +531,12 @@ manifest = [
 	"glsl/IECoreGL",
 ]
 
+symlinks = [
+	# have to symlink python on the mac as the bin/python you get otherwise is just a stub with a hardcoded full
+	# path to wherever the framework was built
+	( "bin/python", "../frameworks/Python.framework/Versions/2.6/Resources/Python.app/Contents/MacOS/Python" ),
+]
+
 def installer( target, source, env ) :
 
 	shutil.rmtree( env.subst( os.path.join( "$INSTALL_DIR" ) ), True )
@@ -548,6 +552,10 @@ def installer( target, source, env ) :
 			shutil.copytree( src, dst, True )
 		else :
 			shutil.copy( src, dst )
+			
+	for s in symlinks :
+	
+		os.symlink( s[1], env.subst( os.path.join( "$INSTALL_DIR", s[0] ) ) )
 		
 install = env.Command( "$INSTALL_DIR/bin/gaffer", "$BUILD_DIR/bin/gaffer", installer )
 env.AlwaysBuild( install )
