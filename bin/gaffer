@@ -29,8 +29,13 @@ export PYTHONPATH=$GAFFER_ROOT/lib/python2.6/site-packages${PYTHONPATH:+:}${PYTH
 
 # Get library paths set up
 
+export DYLD_FRAMEWORK_PATH=$GAFFER_ROOT/frameworks${DYLD_FRAMEWORK_PATH:+:}${DYLD_FRAMEWORK_PATH:-}
 export DYLD_LIBRARY_PATH=$GAFFER_ROOT/lib/${DYLD_LIBRARY_PATH:+:}${DYLD_LIBRARY_PATH:-}
 export DYLD_LIBRARY_PATH=/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ImageIO.framework/Resources/:$DYLD_LIBRARY_PATH
+
+if [[ -n $DELIGHT ]] ; then
+	export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$DELIGHT/lib
+fi
 
 # Run gaffer itself
 
