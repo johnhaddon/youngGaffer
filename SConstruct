@@ -1,6 +1,7 @@
 import os
 import sys
 import glob
+import shutil
 
 CacheDir( "/Users/john/dev/sconsBuildCache" )
 
@@ -11,15 +12,15 @@ CacheDir( "/Users/john/dev/sconsBuildCache" )
 options = Options( "", ARGUMENTS )
 
 options.Add(
-	"INSTALL_DIR",
-	"The destination directory for the installation.",
-	"/Users/john/dev/build/gaffer",
+	"BUILD_DIR",
+	"The destination directory in which the build will be made.",
+	"/Users/john/dev/build/gaffer"
 )
 
 options.Add(
-	"DST_DIR",
-	"The destination directory in which the build will be made.",
-	"/Users/john/dev/build/gaffer"
+	"INSTALL_DIR",
+	"The destination directory for the installation.",
+	"/Users/john/dev/install/gaffer",
 )
 
 options.Add( 
@@ -237,56 +238,56 @@ depEnv = Environment(
 def runCommand( command ) :
 
 	sys.stderr.write( command + "\n" )
-	command = "export PATH=%s DYLD_LIBRARY_PATH= && %s " % ( depEnv.subst( "$DST_DIR/bin:/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin" ), depEnv.subst( command ) )
+	command = "export PATH=%s DYLD_LIBRARY_PATH= && %s " % ( depEnv.subst( "$BUILD_DIR/bin:/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin" ), depEnv.subst( command ) )
 	status = os.system( command )
 	if status :
 		raise RuntimeError( "Failed to build dependency" )
 
 pythonBuild = None
 if depEnv["BUILD_PYTHON"] :
-	runCommand( "cd $PYTHON_SRC_DIR; ./configure --enable-framework=$DST_DIR/frameworks --prefix=$DST_DIR && make clean && make && make install" )
-	runCommand( "cd $DST_DIR/bin && ln -fsh python2.6 python" )
+	runCommand( "cd $PYTHON_SRC_DIR; ./configure --enable-framework=$BUILD_DIR/frameworks --prefix=$BUILD_DIR && make clean && make && make install" )
+	runCommand( "cd $BUILD_DIR/bin && ln -fsh python2.6 python" )
 	
 if depEnv["BUILD_BOOST"] :
-	runCommand( "cd $BOOST_SRC_DIR; ./configure --prefix=$DST_DIR --with-python=$DST_DIR/bin/python2.6 && make clean && make && make install" )
+	runCommand( "cd $BOOST_SRC_DIR; ./configure --prefix=$BUILD_DIR --with-python=$BUILD_DIR/bin/python2.6 && make clean && make && make install" )
 
 if depEnv["BUILD_OPENEXR"] :
-	runCommand( "cd $ILMBASE_SRC_DIR && ./configure --prefix=$DST_DIR && make && make install" )
-	runCommand( "cd $OPENEXR_SRC_DIR && ./configure --prefix=$DST_DIR && make && make install" )
+	runCommand( "cd $ILMBASE_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
+	runCommand( "cd $OPENEXR_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
 
 if depEnv["BUILD_JPEG"] :
-	runCommand( "cd $JPEG_SRC_DIR && ./configure --prefix=$DST_DIR && make clean && make && make install-lib install-headers" )
+	runCommand( "cd $JPEG_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install-lib install-headers" )
 
 if depEnv["BUILD_TIFF"] :
-	runCommand( "cd $TIFF_SRC_DIR && ./configure --prefix=$DST_DIR && make && make install" )
+	runCommand( "cd $TIFF_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
 		
 if depEnv["BUILD_FREETYPE"] :
-	runCommand( "cd $FREETYPE_SRC_DIR && ./configure --prefix=$DST_DIR && make && make install" )
+	runCommand( "cd $FREETYPE_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
 
 if depEnv["BUILD_GLEW"] :
-	runCommand( "cd $GLEW_SRC_DIR && make install GLEW_DEST=$DST_DIR" )
+	runCommand( "cd $GLEW_SRC_DIR && make install GLEW_DEST=$BUILD_DIR" )
 	
 if depEnv["BUILD_CORTEX"] :
-	runCommand( "cd $CORTEX_SRC_DIR; /usr/local/bin/python /opt/local/bin/scons -j 2 install INSTALL_PREFIX=$DST_DIR INSTALL_PYTHON_DIR=$DST_DIR/lib/python2.6/site-packages PYTHON_CONFIG=$DST_DIR/bin/python2.6-config BOOST_INCLUDE_PATH=$DST_DIR/include/boost-1_38 LIBPATH=$DST_DIR/lib BOOST_LIB_SUFFIX=-xgcc40-mt-1_38 OPENEXR_INCLUDE_PATH=$DST_DIR/include FREETYPE_INCLUDE_PATH=$DST_DIR/include/freetype2 RMAN_ROOT=/Applications/Graphics/3Delight-6.5.52 WITH_GL=1 GLEW_INCLUDE_PATH=$DST_DIR/include/GL DOXYGEN=/opt/local/bin/doxygen" )
+	runCommand( "cd $CORTEX_SRC_DIR; /usr/local/bin/python /opt/local/bin/scons -j 2 install INSTALL_PREFIX=$BUILD_DIR INSTALL_PYTHON_DIR=$BUILD_DIR/lib/python2.6/site-packages PYTHON_CONFIG=$BUILD_DIR/bin/python2.6-config BOOST_INCLUDE_PATH=$BUILD_DIR/include/boost-1_38 LIBPATH=$BUILD_DIR/lib BOOST_LIB_SUFFIX=-xgcc40-mt-1_38 OPENEXR_INCLUDE_PATH=$BUILD_DIR/include FREETYPE_INCLUDE_PATH=$BUILD_DIR/include/freetype2 RMAN_ROOT=/Applications/Graphics/3Delight-6.5.52 WITH_GL=1 GLEW_INCLUDE_PATH=$BUILD_DIR/include/GL DOXYGEN=/opt/local/bin/doxygen" )
 	
 if depEnv["BUILD_GTK"] :
-	runCommand( "cd $GETTEXT_SRC_DIR && ./configure --prefix=$DST_DIR && make && make install" )
-	runCommand( "cd $PKGCONFIG_SRC_DIR && ./configure --prefix=$DST_DIR && make && make install" )
-	runCommand( "echo '#!/bin/sh\n' > $DST_DIR/bin/gtkdoc-rebase && chmod +x $DST_DIR/bin/gtkdoc-rebase" ) # hack to provide a stub script for glib to think it is building documentation (even though it was told not to)
-	runCommand( "cd $GLIB_SRC_DIR && ./configure --prefix=$DST_DIR CPPFLAGS=-I$DST_DIR/include LDFLAGS=-L$DST_DIR/lib && make && make install" )
-	runCommand( "cd $ATK_SRC_DIR && ./configure --prefix=$DST_DIR && make && make install" )
-	runCommand( "cd $PIXMAN_SRC_DIR && ./configure --prefix=$DST_DIR && make && make install" )
-	runCommand( "cd $PNG_SRC_DIR && ./configure --prefix=$DST_DIR && make && make install" )
-	runCommand( "cd $EXPAT_SRC_DIR && ./configure --prefix=$DST_DIR && make && make install" )
-	runCommand( "cd $FONTCONFIG_SRC_DIR && ./configure --prefix=$DST_DIR CPPFLAGS=-I$DST_DIR/include LDFLAGS=-L$DST_DIR/lib && make && make install" )
-	runCommand( "cd $CAIRO_SRC_DIR && ./configure --prefix=$DST_DIR PKG_CONFIG=$DST_DIR/bin/pkg-config && make && make install" )
-	runCommand( "cd $PANGO_SRC_DIR && ./configure --prefix=$DST_DIR PKG_CONFIG=$DST_DIR/bin/pkg-config && make clean && make && make install" )	
-	runCommand( "cd $GTK_SRC_DIR && ./configure --prefix=$DST_DIR CPPFLAGS=-I$DST_DIR/include LDFLAGS=-L$DST_DIR/lib PKG_CONFIG=$DST_DIR/bin/pkg-config --without-libjasper && make && make install" )
-	runCommand( "cd $PYGOBJECT_SRC_DIR && ./configure --prefix=$DST_DIR CPPFLAGS=-I$DST_DIR/include LDFLAGS=-L$DST_DIR/lib PKG_CONFIG=$DST_DIR/bin/pkg-config && make && make install" )
-	runCommand( "cd $PYCAIRO_SRC_DIR && ./configure --prefix=$DST_DIR CPPFLAGS=-I$DST_DIR/include LDFLAGS=-L$DST_DIR/lib PKG_CONFIG=$DST_DIR/bin/pkg-config && make clean && make && make install" )
-	runCommand( "cd $PYGTK_SRC_DIR && ./configure --prefix=$DST_DIR CPPFLAGS=-I$DST_DIR/include LDFLAGS=-L$DST_DIR/lib PKG_CONFIG=$DST_DIR/bin/pkg-config && make clean && make && make install" )
-	runCommand( "cd $GTKGLEXT_SRC_DIR && ./configure --prefix=$DST_DIR CPPFLAGS=-I$DST_DIR/include LDFLAGS=-L$DST_DIR/lib PKG_CONFIG=$DST_DIR/bin/pkg-config --with-gl-includedir=/usr/X11R6/include && make clean && make && make install" )
-	runCommand( "cd $PYGTKGLEXT_SRC_DIR && ./configure --prefix=$DST_DIR CPPFLAGS=-I$DST_DIR/include LDFLAGS=-L$DST_DIR/lib PKG_CONFIG=$DST_DIR/bin/pkg-config && make clean && make && make install" )
+	runCommand( "cd $GETTEXT_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
+	runCommand( "cd $PKGCONFIG_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
+	runCommand( "echo '#!/bin/sh\n' > $BUILD_DIR/bin/gtkdoc-rebase && chmod +x $BUILD_DIR/bin/gtkdoc-rebase" ) # hack to provide a stub script for glib to think it is building documentation (even though it was told not to)
+	runCommand( "cd $GLIB_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib && make && make install" )
+	runCommand( "cd $ATK_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
+	runCommand( "cd $PIXMAN_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
+	runCommand( "cd $PNG_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
+	runCommand( "cd $EXPAT_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
+	runCommand( "cd $FONTCONFIG_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib && make && make install" )
+	runCommand( "cd $CAIRO_SRC_DIR && ./configure --prefix=$BUILD_DIR PKG_CONFIG=$BUILD_DIR/bin/pkg-config && make && make install" )
+	runCommand( "cd $PANGO_SRC_DIR && ./configure --with-included-modules=yes --prefix=$BUILD_DIR PKG_CONFIG=$BUILD_DIR/bin/pkg-config && make clean && make && make install" )	
+	runCommand( "cd $GTK_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib PKG_CONFIG=$BUILD_DIR/bin/pkg-config --without-libjasper && make && make install" )
+	runCommand( "cd $PYGOBJECT_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib PKG_CONFIG=$BUILD_DIR/bin/pkg-config && make && make install" )
+	runCommand( "cd $PYCAIRO_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib PKG_CONFIG=$BUILD_DIR/bin/pkg-config && make clean && make && make install" )
+	runCommand( "cd $PYGTK_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib PKG_CONFIG=$BUILD_DIR/bin/pkg-config && make clean && make && make install" )
+	runCommand( "cd $GTKGLEXT_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib PKG_CONFIG=$BUILD_DIR/bin/pkg-config --with-gl-includedir=/usr/X11R6/include && make clean && make && make install" )
+	runCommand( "cd $PYGTKGLEXT_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib PKG_CONFIG=$BUILD_DIR/bin/pkg-config && make clean && make && make install" )
 	runCommand( "cd $PYOPENGL_SRC_DIR && python setup.py install" )
 	
 ###############################################################################################
@@ -305,9 +306,9 @@ env = Environment(
 
 	CPPPATH = [
 		"include",
-		"$DST_DIR/include",
-		"$DST_DIR/include/boost-1_38",
-		"$DST_DIR/include/OpenEXR",
+		"$BUILD_DIR/include",
+		"$BUILD_DIR/include/boost-1_38",
+		"$BUILD_DIR/include/OpenEXR",
 	],
 	
 	CXXFLAGS = [
@@ -317,7 +318,7 @@ env = Environment(
 	],
 	
 	LIBPATH = [
-		"$DST_DIR/lib"
+		"$BUILD_DIR/lib"
 	],
 	
 	LIBS = [
@@ -338,8 +339,8 @@ env = Environment(
 gafferLibrary = env.SharedLibrary( "lib/Gaffer", glob.glob( "src/Gaffer/*.cpp" ) )
 env.Default( gafferLibrary )
 
-gafferLibraryInstall = env.Install( "$INSTALL_DIR/lib", gafferLibrary )
-env.Alias( "install", gafferLibraryInstall )
+gafferLibraryInstall = env.Install( "$BUILD_DIR/lib", gafferLibrary )
+env.Alias( "build", gafferLibraryInstall )
 
 uiEnv = env.Copy()
 uiEnv.Append(
@@ -350,8 +351,8 @@ uiEnv.Append(
 gafferUILibrary = uiEnv.SharedLibrary( "lib/GafferUI", glob.glob( "src/GafferUI/*.cpp" ) )
 uiEnv.Default( gafferUILibrary )
 
-gafferUILibraryInstall = env.Install( "$INSTALL_DIR/lib", gafferUILibrary )
-env.Alias( "install", gafferUILibraryInstall )
+gafferUILibraryInstall = env.Install( "$BUILD_DIR/lib", gafferUILibrary )
+env.Alias( "build", gafferUILibraryInstall )
 
 ###############################################################################################
 # Gaffer python modules
@@ -363,7 +364,7 @@ pythonEnv.Append(
 
 	CPPFLAGS = [
 		"-DBOOST_PYTHON_MAX_ARITY=20",
-	] + os.popen( pythonEnv.subst( "$DST_DIR/bin/python2.6-config --includes" ) ).read().split(),
+	] + os.popen( pythonEnv.subst( "$BUILD_DIR/bin/python2.6-config --includes" ) ).read().split(),
 	
 	LIBPATH = [ "./lib" ],
 	
@@ -372,7 +373,7 @@ pythonEnv.Append(
 		"Gaffer",
 	],
 	
-	SHLINKFLAGS = os.popen( pythonEnv.subst( "$DST_DIR/bin/python2.6-config --ldflags" ) ).read().split(),
+	SHLINKFLAGS = os.popen( pythonEnv.subst( "$BUILD_DIR/bin/python2.6-config --ldflags" ) ).read().split(),
 )
 
 if pythonEnv["PLATFORM"]=="darwin" :
@@ -381,8 +382,8 @@ if pythonEnv["PLATFORM"]=="darwin" :
 gafferBindingsLibrary = pythonEnv.SharedLibrary( "lib/GafferBindings", glob.glob( "src/GafferBindings/*.cpp" ) )
 pythonEnv.Default( gafferBindingsLibrary )
 
-gafferBindingsLibraryInstall = env.Install( "$INSTALL_DIR/lib", gafferBindingsLibrary )
-env.Alias( "install", gafferBindingsLibraryInstall )
+gafferBindingsLibraryInstall = env.Install( "$BUILD_DIR/lib", gafferBindingsLibrary )
+env.Alias( "build", gafferBindingsLibraryInstall )
 
 pythonUIEnv = pythonEnv.Copy()
 pythonUIEnv.Append(
@@ -391,8 +392,8 @@ pythonUIEnv.Append(
 gafferUIBindingsLibrary = pythonUIEnv.SharedLibrary( "lib/GafferUIBindings", glob.glob( "src/GafferUIBindings/*.cpp" ) )
 pythonUIEnv.Default( gafferUIBindingsLibrary )
 
-gafferUIBindingsLibraryInstall = env.Install( "$INSTALL_DIR/lib", gafferUIBindingsLibrary )
-env.Alias( "install", gafferUIBindingsLibraryInstall )
+gafferUIBindingsLibraryInstall = env.Install( "$BUILD_DIR/lib", gafferUIBindingsLibrary )
+env.Alias( "build", gafferUIBindingsLibraryInstall )
 
 pythonModuleEnv = pythonEnv.Copy()
 pythonModuleEnv.Append(
@@ -409,9 +410,9 @@ pythonModuleEnv["SHLIBSUFFIX"] = ".so"
 gafferModule = pythonModuleEnv.SharedLibrary( "python/Gaffer/_Gaffer", glob.glob( "src/GafferModule/*.cpp" ) )
 pythonModuleEnv.Default( gafferModule )
 
-gafferModuleInstall = env.Install( "$INSTALL_DIR/lib/python2.6/site-packages/Gaffer", gafferModule )
-gafferModuleInstall += env.Install( "$INSTALL_DIR/lib/python2.6/site-packages/Gaffer", glob.glob( "python/Gaffer/*.py" ) )
-env.Alias( "install", gafferModuleInstall )
+gafferModuleInstall = env.Install( "$BUILD_DIR/lib/python2.6/site-packages/Gaffer", gafferModule )
+gafferModuleInstall += env.Install( "$BUILD_DIR/lib/python2.6/site-packages/Gaffer", glob.glob( "python/Gaffer/*.py" ) )
+env.Alias( "build", gafferModuleInstall )
 
 pythonUIModuleEnv = pythonModuleEnv.Copy()
 pythonUIModuleEnv.Append(
@@ -420,32 +421,32 @@ pythonUIModuleEnv.Append(
 gafferUIModule = pythonUIModuleEnv.SharedLibrary( "python/GafferUI/_GafferUI", glob.glob( "src/GafferUIModule/*.cpp" ) )
 pythonUIModuleEnv.Default( gafferUIModule )
 
-gafferUIModuleInstall = env.Install( "$INSTALL_DIR/lib/python2.6/site-packages/GafferUI", gafferUIModule )
-gafferUIModuleInstall += env.Install( "$INSTALL_DIR/lib/python2.6/site-packages/GafferUI", glob.glob( "python/GafferUI/*.py" ) )
-env.Alias( "install", gafferUIModuleInstall )
+gafferUIModuleInstall = env.Install( "$BUILD_DIR/lib/python2.6/site-packages/GafferUI", gafferUIModule )
+gafferUIModuleInstall += env.Install( "$BUILD_DIR/lib/python2.6/site-packages/GafferUI", glob.glob( "python/GafferUI/*.py" ) )
+env.Alias( "build", gafferUIModuleInstall )
 
 for module in ( "GafferTest", "GafferUITest" ) :
 
-	moduleInstall = env.Install( "$INSTALL_DIR/lib/python2.6/site-packages/" + module, glob.glob( "python/%s/*.py" % module ) )
-	env.Alias( "install", moduleInstall ) 
+	moduleInstall = env.Install( "$BUILD_DIR/lib/python2.6/site-packages/" + module, glob.glob( "python/%s/*.py" % module ) )
+	env.Alias( "build", moduleInstall ) 
 
 ###############################################################################################
 # Scripts and apps and stuff
 ###############################################################################################
 
-scriptsInstall = env.Install( "$INSTALL_DIR/bin", [ "bin/gaffer", "bin/gaffer.py" ] )
-env.Alias( "install", scriptsInstall )
+scriptsInstall = env.Install( "$BUILD_DIR/bin", [ "bin/gaffer", "bin/gaffer.py" ] )
+env.Alias( "build", scriptsInstall )
 
 for app in ( "light", "view", "test", "cli" ) :
-	appInstall = env.Install( "$INSTALL_DIR/apps/%s/1" % app, "apps/%s/1/%s.py" % ( app, app ) )
-	env.Alias( "install", appInstall )
+	appInstall = env.Install( "$BUILD_DIR/apps/%s/1" % app, "apps/%s/1/%s.py" % ( app, app ) )
+	env.Alias( "build", appInstall )
 
-startupScriptsInstall = env.Install( "$INSTALL_DIR/startup/ui", glob.glob( "startup/ui/*.py" ) )
-env.Alias( "install", startupScriptsInstall )
+startupScriptsInstall = env.Install( "$BUILD_DIR/startup/ui", glob.glob( "startup/ui/*.py" ) )
+env.Alias( "build", startupScriptsInstall )
 
 for d in ( "ui", "" ) :
-	shaderInstall = env.Install( "$INSTALL_DIR/shaders/%s/" % d, glob.glob( "shaders/%s/*" % d ) )
-	env.Alias( "install", shaderInstall )
+	shaderInstall = env.Install( "$BUILD_DIR/shaders/%s/" % d, glob.glob( "shaders/%s/*" % d ) )
+	env.Alias( "build", shaderInstall )
 	
 #########################################################################################################
 # Documentation
@@ -455,3 +456,102 @@ docEnv = env.Clone()
 docEnv["ENV"]["PATH"] = os.environ["PATH"]
 docs = docEnv.Command( "doc/html/index.html", "doc/config/Doxyfile", "sed 's/GAFFER_MAJOR_VERSION/$GAFFER_MAJOR_VERSION/g;s/GAFFER_MINOR_VERSION/$GAFFER_MINOR_VERSION/g;s/GAFFER_PATCH_VERSION/$GAFFER_PATCH_VERSION/g' doc/config/Doxyfile | doxygen -" )
 docEnv.Depends( docs, glob.glob( "include/*/*.h" ) + glob.glob( "src/*/*.cpp" ) + glob.glob( "python/*/*py" ) + glob.glob( "doc/src/*.dox" ) )
+
+#########################################################################################################
+# Installation
+#########################################################################################################
+
+manifest = [
+	"bin/gaffer",
+	"bin/gaffer.py",
+	"bin/python",
+	"apps/cli/1/cli.py",
+	"apps/light/1/light.py",
+	"apps/test/1/test.py",
+	"apps/view/1/view.py",
+	"lib/libboost_signals" + boostLibSuffix + ".dylib",
+	"lib/libboost_thread" + boostLibSuffix + ".dylib",
+	"lib/libboost_wave" + boostLibSuffix + ".dylib",
+	"lib/libboost_regex" + boostLibSuffix + ".dylib",
+	"lib/libboost_python" + boostLibSuffix + ".dylib",
+	"lib/libboost_date_time" + boostLibSuffix + ".dylib",
+	"lib/libboost_filesystem" + boostLibSuffix + ".dylib",
+	"lib/libboost_iostreams" + boostLibSuffix + ".dylib",
+	"lib/libboost_system" + boostLibSuffix + ".dylib",
+	"lib/libIECore.dylib",
+	"lib/libIECoreGL.dylib",
+	"lib/libIECoreRI.dylib",
+	"lib/libGaffer.dylib",
+	"lib/libGafferBindings.dylib",
+	"lib/libGafferUI.dylib",
+	"lib/libGafferUIBindings.dylib",
+	"lib/libIex.6.dylib",
+	"lib/libHalf.6.dylib",
+	"lib/libImath.6.dylib",
+	"lib/libIlmImf.6.dylib",
+	"lib/libIlmThread.6.dylib",
+	"lib/libtiff.3.dylib",
+	"lib/libfreetype.6.dylib",
+	"lib/libpyglib-2.0.0.dylib",
+	"lib/libgobject-2.0.0.dylib",
+	"lib/libgthread-2.0.0.dylib",
+	"lib/libglib-2.0.0.dylib",
+	"lib/libintl.8.dylib",
+	"lib/libgtk-x11-2.0.0.dylib",
+	"lib/libgdk-x11-2.0.0.dylib",
+	"lib/libatk-1.0.0.dylib",
+	"lib/libgdk_pixbuf-2.0.0.dylib",
+	"lib/libgio-2.0.0.dylib",
+	"lib/libpangocairo-1.0.0.dylib",
+	"lib/libpangoft2-1.0.0.dylib",
+	"lib/libcairo.2.dylib",
+	"lib/libpixman-1.0.dylib",
+	"lib/libpng12.0.dylib",
+	"lib/libpango-1.0.0.dylib",
+	"lib/libfontconfig.1.dylib",
+	"lib/libexpat.1.dylib",
+	"lib/libgmodule-2.0.0.dylib",
+	"lib/libgtkglext-x11-1.0.0.dylib",
+	"lib/libgdkglext-x11-1.0.0.dylib",
+	"lib/libpangox-1.0.0.dylib",
+	"lib/libGLEW.1.5.0.dylib",
+	"lib/pango/1.6.0/modules/pango-basic-atsui.so",
+	"frameworks/Python.framework",
+	"lib/python2.6/site-packages/IECore",
+	"lib/python2.6/site-packages/IECoreGL",
+	"lib/python2.6/site-packages/IECoreRI",
+	"lib/python2.6/site-packages/Gaffer",
+	"lib/python2.6/site-packages/GafferTest",	
+	"lib/python2.6/site-packages/GafferUI",
+	"lib/python2.6/site-packages/GafferUITest",
+	"lib/python2.6/site-packages/pygtk.pyc",
+	"lib/python2.6/site-packages/gtk-2.0",
+	"lib/python2.6/site-packages/cairo",
+	"startup/ui/menus.py",
+	"startup/ui/layouts.py",
+	"shaders",
+	"glsl/IECoreGL",
+]
+
+def installer( target, source, env ) :
+
+	shutil.rmtree( env.subst( os.path.join( "$INSTALL_DIR" ) ), True )
+	for f in manifest :
+
+		src = env.subst( os.path.join( "$BUILD_DIR", f ) )
+		dst = env.subst( os.path.join( "$INSTALL_DIR", f ) )
+		dstDir = os.path.dirname( dst )
+		if not os.path.isdir( dstDir ) :
+			os.makedirs( dstDir )
+				
+		if os.path.isdir( src ) :	
+			shutil.copytree( src, dst, True )
+		else :
+			shutil.copy( src, dst )
+		
+install = env.Command( "$INSTALL_DIR/bin/gaffer", "$BUILD_DIR/bin/gaffer", installer )
+env.AlwaysBuild( install )
+env.NoCache( install )
+
+env.Alias( "install", install )
+
