@@ -209,54 +209,88 @@ bool SplinePlugGadget::buttonPress( GadgetPtr, const ButtonEvent &event )
 		return false;
 	}
 	
-	bool clearedOnce = false;
-	bool handled = false;
-	bool shiftHeld = event.modifiers && ButtonEvent::Shift;
-	Set::SequencedIndex::iterator it;
-	for( it=m_splines->sequencedMembers().begin(); it!=m_splines->sequencedMembers().end(); it++ )
+	if( event.modifiers && ModifiableEvent::Control )
 	{
-		SplineffPlugPtr spline = IECore::runTimeCast<SplineffPlug>( *it );
-		if( spline )
+		// control click to make new points
+		V3f intersection;
+		if( !event.line.intersect( Plane3f( V3f( 0, 0, 1 ), 0 ), intersection ) )
 		{
-			unsigned n = spline->numPoints();
-			for( unsigned i=0; i<n; i++ )
-			{
-				V3f p( 0 );
-				p.x = spline->pointXPlug( i )->getValue();
-				p.y = spline->pointYPlug( i )->getValue();
+			return false;
+		}
+		if( !m_splines->size() )
+		{
+			return false;
+		}
+		SplineffPlugPtr spline = IECore::runTimeCast<SplineffPlug>( m_splines->lastAdded() );
+		if( !spline )
+		{
+			return false;
+		}
 
-				float d = event.line.distanceTo( p );
-				PlugPtr pointPlug = spline->pointPlug( i );
-				if( d < 0.25f ) /// \todo This ain't right
+		UndoContext undoEnabler( spline->ancestor<ScriptNode>() );
+
+		unsigned pointIndex = spline->addPoint();
+		spline->pointXPlug( pointIndex )->setValue( intersection.x );
+		spline->pointYPlug( pointIndex )->setValue( intersection.y );
+		
+		m_selection->clear();
+		m_selection->add( spline->pointPlug( pointIndex ) );
+		return true;
+	}
+	else
+	{
+		// click or shift click to choose points etc.
+		bool clearedOnce = false;
+		bool handled = false;
+		bool shiftHeld = event.modifiers && ButtonEvent::Shift;
+		Set::SequencedIndex::iterator it;
+		for( it=m_splines->sequencedMembers().begin(); it!=m_splines->sequencedMembers().end(); it++ )
+		{
+			SplineffPlugPtr spline = IECore::runTimeCast<SplineffPlug>( *it );
+			if( spline )
+			{
+				unsigned n = spline->numPoints();
+				for( unsigned i=0; i<n; i++ )
 				{
-					if( m_selection->contains( pointPlug ) )
+					V3f p( 0 );
+					p.x = spline->pointXPlug( i )->getValue();
+					p.y = spline->pointYPlug( i )->getValue();
+
+					float d = event.line.distanceTo( p );
+					PlugPtr pointPlug = spline->pointPlug( i );
+					if( d < 0.25f ) /// \todo This ain't right
 					{
-						if( shiftHeld )
+						if( m_selection->contains( pointPlug ) )
 						{
-							m_selection->remove( pointPlug );
+							if( shiftHeld )
+							{
+								m_selection->remove( pointPlug );
+							}
 						}
-					}
-					else
-					{
-						if( !shiftHeld && !clearedOnce )
+						else
 						{
-							m_selection->clear();
-							clearedOnce = true;
+							if( !shiftHeld && !clearedOnce )
+							{
+								m_selection->clear();
+								clearedOnce = true;
+							}
+							m_selection->add( pointPlug );
 						}
-						m_selection->add( pointPlug );
+						handled = true;
 					}
-					handled = true;
 				}
 			}
 		}
+
+		if( handled )
+		{
+			renderRequestSignal()( this );
+		}
+
+		return handled;
 	}
-	
-	if( handled )
-	{
-		renderRequestSignal()( this );
-	}
-	
-	return handled;
+	// shouldn't get here
+	return false;
 }
 
 IECore::RunTimeTypedPtr SplinePlugGadget::dragBegin( GadgetPtr gadget, const ButtonEvent &event )
@@ -319,10 +353,6 @@ bool SplinePlugGadget::keyPress( GadgetPtr gadget, const KeyEvent &event )
 			if( parent )
 			{
 				parent->removeChild( pointPlug );
-			}
-			else
-			{
-				std::cerr << "NO PARENT FOR " << pointPlug->getName() << std::endl;
 			}
 		}
 	}
