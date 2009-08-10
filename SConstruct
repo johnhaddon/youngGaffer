@@ -23,6 +23,12 @@ options.Add(
 	"/Users/john/dev/install/gaffer",
 )
 
+options.Add(
+	"PACKAGE_FILE",
+	"The file in which the final gaffer file will be created by the package target.",
+	"/Users/john/dev/install/gaffer.tar.gz",
+)
+
 options.Add( 
 	BoolOption( "BUILD_DEPENDENCIES", "Set this to build all the library dependencies gaffer has.", False )
 )
@@ -557,9 +563,23 @@ def installer( target, source, env ) :
 	
 		os.symlink( s[1], env.subst( os.path.join( "$INSTALL_DIR", s[0] ) ) )
 		
-install = env.Command( "$INSTALL_DIR/bin/gaffer", "$BUILD_DIR/bin/gaffer", installer )
+install = env.Command( "$INSTALL_DIR/bin/gaffer", "$BUILD_DIR", installer )
 env.AlwaysBuild( install )
 env.NoCache( install )
 
 env.Alias( "install", install )
 
+#########################################################################################################
+# Packaging
+#########################################################################################################
+
+def packager( target, source, env ) :
+
+	installDir = env.subst( "$INSTALL_DIR" )
+	b = os.path.basename( installDir )
+	d = os.path.dirname( installDir )
+	runCommand( env.subst( "tar -czf $PACKAGE_FILE -C %s %s" % ( d, b ) ) )
+	
+package = env.Command( "$PACKAGE_FILE", install, packager )
+env.NoCache( package )
+env.Alias( "package", package )
