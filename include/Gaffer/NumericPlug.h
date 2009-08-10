@@ -15,8 +15,9 @@ class NumericPlug : public ValuePlug
 	public :
 
 		typedef T ValueType;
-		typedef boost::intrusive_ptr<NumericPlug> Ptr;
-		typedef boost::intrusive_ptr<const NumericPlug> ConstPtr;
+
+		IECORE_RUNTIMETYPED_DECLARETEMPLATE( NumericPlug<T>, ValuePlug );
+		IE_CORE_DECLARERUNTIMETYPEDDESCRIPTION( NumericPlug<T> );
 
 		NumericPlug(
 			const std::string &name = staticTypeName(),
@@ -27,20 +28,6 @@ class NumericPlug : public ValuePlug
 			unsigned flags = None
 		);
 		virtual ~NumericPlug();
-
-		//! @name RunTimeTyped functions
-		////////////////////////////////////
-		//@{
-		virtual IECore::TypeId typeId() const;
-		virtual const char *typeName() const;
-		virtual bool isInstanceOf( IECore::TypeId typeId ) const;
-		virtual bool isInstanceOf( const char *typeName ) const;
-		static IECore::TypeId staticTypeId();
-		static const char *staticTypeName();
-		static bool inheritsFrom( IECore::TypeId typeId );
-		static bool inheritsFrom( const char *typeName );
-		typedef ValuePlug BaseClass;
-		//@}
 
 		/// Accepts other NumericPlugs, including those of different types.
 		virtual bool acceptsInput( ConstPlugPtr input ) const;

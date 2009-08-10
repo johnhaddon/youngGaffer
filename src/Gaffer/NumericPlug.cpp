@@ -7,67 +7,8 @@
 
 using namespace Gaffer;
 
-#define SPECIALISE( TNAME )															\
-																					\
-	template<>																		\
-	IECore::TypeId TNAME::staticTypeId()											\
-	{																				\
-		return (IECore::TypeId)TNAME ## TypeId;										\
-	}																				\
-																					\
-	template<>																		\
-	const char *TNAME::staticTypeName()												\
-	{																				\
-		return # TNAME;																\
-	}																				\
-																					\
-
-template<class T>
-IECore::TypeId NumericPlug<T>::typeId() const
-{
-	return staticTypeId();
-}
-
-template<class T>
-const char *NumericPlug<T>::typeName() const
-{
-	return staticTypeName();
-}
-
-template<class T>
-bool NumericPlug<T>::isInstanceOf( IECore::TypeId typeId ) const
-{
-	if( typeId==staticTypeId() )
-	{
-		return true;
-	}
-	return ValuePlug::isInstanceOf( typeId );
-}
-
-
-template<class T>
-bool NumericPlug<T>::isInstanceOf( const char *typeName ) const
-{
-	if( 0==strcmp( typeName, staticTypeName() ) )
-	{
-		return true;
-	}
-	return ValuePlug::isInstanceOf( typeName );
-}
-
-
-template<class T>
-bool NumericPlug<T>::inheritsFrom( IECore::TypeId typeId )
-{
-	return ValuePlug::staticTypeId()==typeId ? true : ValuePlug::inheritsFrom( typeId );
-}
-
-
-template<class T>
-bool NumericPlug<T>::inheritsFrom( const char *typeName )
-{
-	return 0==strcmp( ValuePlug::staticTypeName(), typeName ) ? true : ValuePlug::inheritsFrom( typeName );
-}
+template<typename T>
+const IECore::RunTimeTyped::TypeDescription<NumericPlug<T> > NumericPlug<T>::g_typeDescription;
 
 template<class T>
 NumericPlug<T>::NumericPlug(
@@ -176,8 +117,9 @@ void NumericPlug<T>::setFromInput()
 	}
 }
 
-SPECIALISE( IntPlug )
-SPECIALISE( FloatPlug )
+// RunTimeTyped specialisation
+IECORE_RUNTIMETYPED_DEFINETEMPLATESPECIALISATION( IntPlug, IntPlugTypeId )
+IECORE_RUNTIMETYPED_DEFINETEMPLATESPECIALISATION( FloatPlug, FloatPlugTypeId )
 
 // explicit instantiation
 template class NumericPlug<float>;
