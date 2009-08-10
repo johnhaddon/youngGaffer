@@ -163,7 +163,7 @@ class GadgetWidget( GLWidget ) :
 		if not gadgetEvent.buttons :
 			return False		
 
-		if gadgetEvent.modifiers & ModifiableEvent.Modifiers.Alt or gadgetEvent.modifiers & ModifiableEvent.Modifiers.Control :
+		if gadgetEvent.modifiers & ModifiableEvent.Modifiers.Alt or gadgetEvent.modifiers & ModifiableEvent.Modifiers.Control and not gadgetEvent.modifiers & ModifiableEvent.Modifiers.Shift :
 			return self.__cameraButtonPress( event );
 
 		gadgets = self.__select( event )
