@@ -14,6 +14,7 @@ from TabbedContainerTest import TabbedContainerTest
 from GraphEditorTest import GraphEditorTest
 from WidgetSignalTest import WidgetSignalTest
 from EventLoopTest import EventLoopTest
+from SplinePlugGadgetTest import SplinePlugGadgetTest
 
 if __name__ == "__main__":
 	unittest.main()
