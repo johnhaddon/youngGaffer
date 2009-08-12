@@ -44,6 +44,8 @@ class SplinePlugGadget : public Gadget
 		void pointAdded( Gaffer::GraphComponentPtr spline, Gaffer::GraphComponentPtr point );
 		void pointRemoved( Gaffer::GraphComponentPtr spline, Gaffer::GraphComponentPtr point );
 		
+		bool selectionAcceptance( Gaffer::ConstSetPtr selection, IECore::ConstRunTimeTypedPtr point );
+		
 		struct UI;
 		typedef std::map<Gaffer::Plug *, UI> SplineUIMap;
 		mutable SplineUIMap m_uis;

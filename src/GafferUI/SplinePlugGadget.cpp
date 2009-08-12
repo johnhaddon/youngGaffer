@@ -30,6 +30,8 @@ SplinePlugGadget::SplinePlugGadget( const std::string &name )
 	m_splines->memberAddedSignal().connect( boost::bind( &SplinePlugGadget::splineAdded, this, ::_1,  ::_2 ) );
 	m_splines->memberRemovedSignal().connect( boost::bind( &SplinePlugGadget::splineRemoved, this, ::_1,  ::_2 ) );
 
+	m_selection->memberAcceptanceSignal().connect( boost::bind( &SplinePlugGadget::selectionAcceptance, this, ::_1, ::_2 ) );
+
 	buttonPressSignal().connect( boost::bind( &SplinePlugGadget::buttonPress, this, ::_1,  ::_2 ) );
 	dragBeginSignal().connect( boost::bind( &SplinePlugGadget::dragBegin, this, ::_1, ::_2 ) );
 	dragUpdateSignal().connect( boost::bind( &SplinePlugGadget::dragUpdate, this, ::_1, ::_2 ) );
@@ -155,6 +157,21 @@ void SplinePlugGadget::pointAdded( GraphComponentPtr spline, GraphComponentPtr p
 void SplinePlugGadget::pointRemoved( GraphComponentPtr spline, GraphComponentPtr pointPlug )
 {
 	renderRequestSignal()( this );
+}
+
+bool SplinePlugGadget::selectionAcceptance( ConstSetPtr selection, IECore::ConstRunTimeTypedPtr point )
+{
+	ConstPlugPtr p = IECore::runTimeCast<const Plug>( point );
+	if( !p )
+	{
+		return false;
+	}
+	ConstGraphComponentPtr pp = p->parent<GraphComponent>();
+	if( !pp )
+	{
+		return false;
+	}
+	return m_splines->contains( pp );
 }
 
 void SplinePlugGadget::splineRemoved( SetPtr splineSet, IECore::RunTimeTypedPtr splinePlug )
