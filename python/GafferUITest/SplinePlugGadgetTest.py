@@ -9,13 +9,16 @@ class SplinePlugGadgetTest( unittest.TestCase ) :
 	
 		g = GafferUI.SplinePlugGadget()
 		
+		n = Gaffer.Node()
 		p = Gaffer.SplineffPlug()
+		n.addChild( p )
+		
 		p1 = p.pointPlug( p.addPoint() )
 		p2 = p.pointPlug( p.addPoint() )
 		
 		self.failIf( p1 in g.selection() )
 		self.failIf( p2 in g.selection() )
-		
+				
 		# shouldn't be able to add a point to the selection if
 		# the spline isn't being edited
 		self.assertRaises( Exception, g.selection().add, p1 )
