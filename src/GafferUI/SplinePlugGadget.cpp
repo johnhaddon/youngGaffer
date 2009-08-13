@@ -156,6 +156,7 @@ void SplinePlugGadget::pointAdded( GraphComponentPtr spline, GraphComponentPtr p
 
 void SplinePlugGadget::pointRemoved( GraphComponentPtr spline, GraphComponentPtr pointPlug )
 {
+	m_selection->remove( pointPlug );
 	renderRequestSignal()( this );
 }
 
@@ -177,6 +178,17 @@ bool SplinePlugGadget::selectionAcceptance( ConstSetPtr selection, IECore::Const
 void SplinePlugGadget::splineRemoved( SetPtr splineSet, IECore::RunTimeTypedPtr splinePlug )
 {
 	m_uis.erase( static_cast<Plug *>( splinePlug.get() ) );
+	
+	// remove the points from the selection
+	SplineffPlugPtr p = IECore::runTimeCast<SplineffPlug>( splinePlug );
+	if( p )
+	{
+		unsigned numPoints = p->numPoints();
+		for( unsigned i = 0; i<numPoints; i++ )
+		{
+			m_selection->remove( p->pointPlug( i ) );
+		}
+	}
 }
 
 void SplinePlugGadget::plugSet( PlugPtr plug )
