@@ -77,6 +77,7 @@ from SplinePlugValueWidget import SplinePlugValueWidget
 from SplineEditor import SplineEditor
 import SLOMenu
 from ShowURL import showURL
+import ApplicationMenu
 
 ## \todo Move the settings munging somewhere else
 # - perhaps this is best done by the Preferences node?

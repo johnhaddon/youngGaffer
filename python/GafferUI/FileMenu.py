@@ -13,8 +13,6 @@ def appendDefinitions( menuDefinition, prefix="" ) :
 	menuDefinition.append( prefix + "/Save", { "command" : save }	)
 	menuDefinition.append( prefix + "/Save As...", { "command" : saveAs }	)
 	menuDefinition.append( prefix + "/Revert To Saved", { "command" : revertToSaved }	)
-	menuDefinition.append( prefix + "/SaveDivider", { "divider" : True } )
-	menuDefinition.append( prefix + "/Exit", {}	)
 
 ## A function suitable as the command for a File/New menu item. It must be invoked from a menu which
 # has a ScriptWindow in its ancestry.

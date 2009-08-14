@@ -1,8 +1,12 @@
+import os
+
 import IECore
 import Gaffer
 import GafferUI
 
 scriptWindowMenu = GafferUI.ScriptWindow.menuDefinition()
+
+GafferUI.ApplicationMenu.appendDefinitions( scriptWindowMenu, prefix="/Gaffer" )
 
 GafferUI.FileMenu.appendDefinitions( scriptWindowMenu, prefix="/File" )
 GafferUI.EditMenu.appendDefinitions( scriptWindowMenu, prefix="/Edit" )
