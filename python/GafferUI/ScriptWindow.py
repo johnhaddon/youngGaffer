@@ -40,6 +40,8 @@ class ScriptWindow( GafferUI.Window ) :
 
 		self._setDefaultColors( self.gtkWidget() )
 
+		ScriptWindow.__instances.append( self )
+
 	## \todo Implement setScript() - and decide on naming so it matches the Editor method (getScriptNode)
 	def getScript( self ) :
 	
@@ -85,6 +87,17 @@ class ScriptWindow( GafferUI.Window ) :
 			
 		self.setTitle( "Gaffer : %s %s" % ( f, d ) )
 
+	## Returns the ScriptWindow for the specified script, creating one
+	# if necessary.
+	@staticmethod
+	def acquire( script ) :
+	
+		for i in ScriptWindow.__instances :
+			if i.getScript().isSame( script ) :
+				return i
+				
+		return ScriptWindow( script )
+
 	## Returns an IECore.MenuDefinition which is used to define the menu bars for all ScriptWindows.
 	# This can be edited at any time to modify subsequently created ScriptWindows - typically editing
 	# would be done as part of gaffer startup.
@@ -109,7 +122,7 @@ class ScriptWindow( GafferUI.Window ) :
 	@staticmethod
 	def __scriptAdded( scriptContainer, script ) :
 	
-		ScriptWindow.__instances.append( ScriptWindow( script ) )
+		ScriptWindow( script )
 		
 	@staticmethod
 	def __staticScriptRemoved( scriptContainer, script ) :
