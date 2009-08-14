@@ -4,7 +4,7 @@ import GafferUI
 import gtk
 import os
 
-class light( Gaffer.Application ) :
+class gui( Gaffer.Application ) :
 
 	def __init__( self ) :
 	

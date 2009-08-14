@@ -443,7 +443,7 @@ for module in ( "GafferTest", "GafferUITest" ) :
 scriptsInstall = env.Install( "$BUILD_DIR/bin", [ "bin/gaffer", "bin/gaffer.py" ] )
 env.Alias( "build", scriptsInstall )
 
-for app in ( "light", "view", "test", "cli" ) :
+for app in ( "gui", "view", "test", "cli" ) :
 	appInstall = env.Install( "$BUILD_DIR/apps/%s/1" % app, "apps/%s/1/%s.py" % ( app, app ) )
 	env.Alias( "build", appInstall )
 
