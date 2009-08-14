@@ -44,6 +44,35 @@ class light( Gaffer.Application ) :
 		else :
 			application["scripts"]["script1"] = Gaffer.ScriptNode()
 		
+			n = Gaffer.AddNode()
+			n.addChild( Gaffer.SplineffPlug( "spline",
+				defaultValue = IECore.Splineff(
+				IECore.CubicBasisf.catmullRom(),
+				(
+					( 0, 0 ),
+					( 0, 0 ),
+					( 0.2, 0.3 ),
+					( 0.4, 0.9 ),
+					( 1, 1 ),
+					( 1, 1 ),
+				)
+			) ) )
+			n.addChild( Gaffer.SplineffPlug( "spline2",
+				defaultValue = IECore.Splineff(
+				IECore.CubicBasisf.bezier(),
+				(
+					( 0, 0 ),
+					( 0, 1 ),
+					( 0.2, 0.3 ),
+					( 0.4, 0.9 ),
+					( 0.8, 1.3 ),
+					( 2, 2 ),
+					( 1.7, 2 ),
+				)
+			) ) )
+		
+			application["scripts"]["script1"].addChild( n )
+		
 		GafferUI.EventLoop.start()
 		
 		return 0
