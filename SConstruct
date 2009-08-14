@@ -274,7 +274,7 @@ if depEnv["BUILD_GLEW"] :
 	runCommand( "cd $GLEW_SRC_DIR && make install GLEW_DEST=$BUILD_DIR" )
 	
 if depEnv["BUILD_CORTEX"] :
-	runCommand( "cd $CORTEX_SRC_DIR; /usr/local/bin/python /opt/local/bin/scons -j 2 install INSTALL_PREFIX=$BUILD_DIR INSTALL_PYTHON_DIR=$BUILD_DIR/lib/python2.6/site-packages PYTHON_CONFIG=$BUILD_DIR/bin/python2.6-config BOOST_INCLUDE_PATH=$BUILD_DIR/include/boost-1_38 LIBPATH=$BUILD_DIR/lib BOOST_LIB_SUFFIX=-xgcc40-mt-1_38 OPENEXR_INCLUDE_PATH=$BUILD_DIR/include FREETYPE_INCLUDE_PATH=$BUILD_DIR/include/freetype2 RMAN_ROOT=/Applications/Graphics/3Delight-6.5.52 WITH_GL=1 GLEW_INCLUDE_PATH=$BUILD_DIR/include/GL DOXYGEN=/opt/local/bin/doxygen" )
+	runCommand( "cd $CORTEX_SRC_DIR; /usr/local/bin/python /opt/local/bin/scons -j 2 install INSTALL_PREFIX=$BUILD_DIR INSTALL_PYTHON_DIR=$BUILD_DIR/lib/python2.6/site-packages PYTHON_CONFIG=$BUILD_DIR/bin/python2.6-config BOOST_INCLUDE_PATH=$BUILD_DIR/include/boost-1_38 LIBPATH=$BUILD_DIR/lib BOOST_LIB_SUFFIX=-xgcc40-mt-1_38 OPENEXR_INCLUDE_PATH=$BUILD_DIR/include FREETYPE_INCLUDE_PATH=$BUILD_DIR/include/freetype2 RMAN_ROOT=/Applications/Graphics/3Delight-6.5.52 WITH_GL=1 GLEW_INCLUDE_PATH=$BUILD_DIR/include/GL DOXYGEN=/opt/local/bin/doxygen INSTALL_DOC_DIR=$BUILD_DIR/doc/cortex" )
 	
 if depEnv["BUILD_GTK"] :
 	runCommand( "cd $GETTEXT_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
@@ -460,8 +460,13 @@ for d in ( "ui", "" ) :
 
 docEnv = env.Clone()
 docEnv["ENV"]["PATH"] = os.environ["PATH"]
-docs = docEnv.Command( "doc/html/index.html", "doc/config/Doxyfile", "sed 's/GAFFER_MAJOR_VERSION/$GAFFER_MAJOR_VERSION/g;s/GAFFER_MINOR_VERSION/$GAFFER_MINOR_VERSION/g;s/GAFFER_PATCH_VERSION/$GAFFER_PATCH_VERSION/g' doc/config/Doxyfile | doxygen -" )
+for v in ( "BUILD_DIR", "GAFFER_MAJOR_VERSION", "GAFFER_MINOR_VERSION", "GAFFER_PATCH_VERSION" ) :
+	docEnv["ENV"][v] = docEnv[v]
+docs = docEnv.Command( "doc/html/index.html", "doc/config/Doxyfile", "doxygen doc/config/Doxyfile" )
 docEnv.Depends( docs, glob.glob( "include/*/*.h" ) + glob.glob( "src/*/*.cpp" ) + glob.glob( "python/*/*py" ) + glob.glob( "doc/src/*.dox" ) )
+
+docInstall = docEnv.Install( "$BUILD_DIR/doc/gaffer", "doc/html" )
+docEnv.Alias( "build", docInstall )
 
 #########################################################################################################
 # Installation
@@ -535,6 +540,8 @@ manifest = [
 	"startup/ui/layouts.py",
 	"shaders",
 	"glsl/IECoreGL",
+	"doc/gaffer/html",
+	"doc/cortex/html",
 ]
 
 symlinks = [
