@@ -31,5 +31,8 @@ def __creatorWrapper( nodeCreator ) :
 
 		with Gaffer.UndoContext( script ) :
 			script.addChild( node )
+			
+		script.selection().clear()
+		script.selection().add( node )
 
 	return f
