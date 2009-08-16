@@ -27,6 +27,9 @@ class ConnectionGadget : public Gadget
 		virtual bool acceptsParent( const Gaffer::GraphComponent *potentialParent ) const;		
 		virtual Imath::Box3f bound() const;
 		
+		NodulePtr srcNodule();
+		NodulePtr dstNodule();
+		
 	protected :
 
 		void setSrcPos( const Imath::V3f &p );

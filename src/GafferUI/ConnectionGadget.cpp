@@ -40,6 +40,16 @@ bool ConnectionGadget::acceptsParent( const Gaffer::GraphComponent *potentialPar
 	return IECore::runTimeCast<const GraphGadget>( potentialParent );
 }	
 
+NodulePtr ConnectionGadget::srcNodule()
+{
+	return m_srcNodule;
+}
+
+NodulePtr ConnectionGadget::dstNodule()
+{
+	return m_dstNodule;
+}
+
 void ConnectionGadget::setSrcPos( const Imath::V3f &p )
 {
 	if( m_srcPos!=p )
@@ -140,27 +150,17 @@ bool ConnectionGadget::dragUpdate( GadgetPtr gadget, const DragDropEvent &event 
 
 bool ConnectionGadget::dragEnd( GadgetPtr gadget, const DragDropEvent &event )
 {
-	bool shouldDisconnect = false;
 	if( !event.destination )
 	{
 		// noone wanted the drop so we'll disconnect
-		shouldDisconnect = true;
-	}
-	else
-	{
-		NodulePtr n = IECore::runTimeCast<Nodule>( event.destination );
-		if( n && event.dropResult && n->plug()->direction()==Gaffer::Plug::In )
-		{
-			// it was dropped on a nodule and the nodule changed the connection
-			// to point somewhere else.
-			shouldDisconnect = true;
-		}
-	}
-	if( shouldDisconnect )
-	{
 		Gaffer::UndoContext undoEnabler( m_dstNodule->plug()->ancestor<Gaffer::ScriptNode>() );
 		m_dstNodule->plug()->setInput( 0 );
 	}
+	else
+	{
+		// we let the Nodule do all the work when a drop has actually landed
+	}
+
 	m_dragEnd = Gaffer::Plug::Invalid;
 	renderRequestSignal()( this );
 	return true;

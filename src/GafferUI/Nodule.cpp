@@ -1,5 +1,6 @@
 #include "GafferUI/Nodule.h"
 #include "GafferUI/Style.h"
+#include "GafferUI/ConnectionGadget.h"
 
 #include "Gaffer/Plug.h"
 #include "Gaffer/UndoContext.h"
@@ -105,10 +106,19 @@ bool Nodule::drop( GadgetPtr gadget, const DragDropEvent &event )
 				input = plug;
 				output = m_plug;
 			}
+						
 			if( input->acceptsInput( output ) )
 			{
 				Gaffer::UndoContext undoEnabler( input->ancestor<Gaffer::ScriptNode>() );
-				input->setInput( output );
+
+					ConnectionGadgetPtr connection = IECore::runTimeCast<ConnectionGadget>( event.source );
+					if( connection && m_plug->direction()==Gaffer::Plug::In )
+					{
+						connection->dstNodule()->plug()->setInput( 0 );
+					}
+
+					input->setInput( output );
+					
 				return true;
 			}
 		}
