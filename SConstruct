@@ -2,6 +2,7 @@ import os
 import sys
 import glob
 import shutil
+import py_compile
 
 CacheDir( "/Users/john/dev/sconsBuildCache" )
 
@@ -9,7 +10,7 @@ CacheDir( "/Users/john/dev/sconsBuildCache" )
 # Command line options
 ###############################################################################################
 
-options = Options( "", ARGUMENTS )
+options = Variables( "", ARGUMENTS )
 
 options.Add(
 	"BUILD_DIR",
@@ -30,7 +31,7 @@ options.Add(
 )
 
 options.Add( 
-	BoolOption( "BUILD_DEPENDENCIES", "Set this to build all the library dependencies gaffer has.", False )
+	BoolVariable( "BUILD_DEPENDENCIES", "Set this to build all the library dependencies gaffer has.", False )
 )
 
 options.Add(
@@ -40,7 +41,7 @@ options.Add(
 )
 
 options.Add(
-	BoolOption( "BUILD_PYTHON", "Set this to build python.", "$BUILD_DEPENDENCIES" )
+	BoolVariable( "BUILD_PYTHON", "Set this to build python.", "$BUILD_DEPENDENCIES" )
 )
 
 options.Add(
@@ -50,7 +51,7 @@ options.Add(
 )
 
 options.Add(
-	BoolOption( "BUILD_BOOST", "Set this to build boost.", "$BUILD_DEPENDENCIES" )
+	BoolVariable( "BUILD_BOOST", "Set this to build boost.", "$BUILD_DEPENDENCIES" )
 )
 
 options.Add(
@@ -60,7 +61,7 @@ options.Add(
 )
 
 options.Add(
-	BoolOption( "BUILD_OPENEXR", "Set this to build openexr.", "$BUILD_DEPENDENCIES" )
+	BoolVariable( "BUILD_OPENEXR", "Set this to build openexr.", "$BUILD_DEPENDENCIES" )
 )
 
 options.Add(
@@ -76,7 +77,7 @@ options.Add(
 )
 
 options.Add(
-	BoolOption( "BUILD_JPEG", "Set this to build the jpeg library.", "$BUILD_DEPENDENCIES" )
+	BoolVariable( "BUILD_JPEG", "Set this to build the jpeg library.", "$BUILD_DEPENDENCIES" )
 )
 
 options.Add(
@@ -86,7 +87,7 @@ options.Add(
 )
 
 options.Add(
-	BoolOption( "BUILD_TIFF", "Set this to build the tiff library.", "$BUILD_DEPENDENCIES" )
+	BoolVariable( "BUILD_TIFF", "Set this to build the tiff library.", "$BUILD_DEPENDENCIES" )
 )
 
 options.Add(
@@ -96,7 +97,7 @@ options.Add(
 )
 
 options.Add(
-	BoolOption( "BUILD_FREETYPE", "Set this to build freetype.", "$BUILD_DEPENDENCIES" )
+	BoolVariable( "BUILD_FREETYPE", "Set this to build freetype.", "$BUILD_DEPENDENCIES" )
 )
 
 options.Add(
@@ -106,7 +107,7 @@ options.Add(
 )
 
 options.Add(
-	BoolOption( "BUILD_GLEW", "Set this to build GLEW.", "$BUILD_DEPENDENCIES" )
+	BoolVariable( "BUILD_GLEW", "Set this to build GLEW.", "$BUILD_DEPENDENCIES" )
 )
 
 options.Add(
@@ -116,7 +117,7 @@ options.Add(
 )
 
 options.Add(
-	BoolOption( "BUILD_CORTEX", "Set this to build cortex.", "$BUILD_DEPENDENCIES" )
+	BoolVariable( "BUILD_CORTEX", "Set this to build cortex.", "$BUILD_DEPENDENCIES" )
 )
 
 options.Add(
@@ -126,7 +127,7 @@ options.Add(
 )
 
 options.Add(
-	BoolOption( "BUILD_GTK", "Set this to build gtk.", "$BUILD_DEPENDENCIES" )
+	BoolVariable( "BUILD_GTK", "Set this to build gtk.", "$BUILD_DEPENDENCIES" )
 )
 
 options.Add(
@@ -348,7 +349,7 @@ env.Default( gafferLibrary )
 gafferLibraryInstall = env.Install( "$BUILD_DIR/lib", gafferLibrary )
 env.Alias( "build", gafferLibraryInstall )
 
-uiEnv = env.Copy()
+uiEnv = env.Clone()
 uiEnv.Append(
 
 	LIBS = [ gafferLibrary ],
@@ -364,7 +365,7 @@ env.Alias( "build", gafferUILibraryInstall )
 # Gaffer python modules
 ###############################################################################################
 
-pythonEnv = env.Copy()
+pythonEnv = env.Clone()
 
 pythonEnv.Append(
 
@@ -391,7 +392,7 @@ pythonEnv.Default( gafferBindingsLibrary )
 gafferBindingsLibraryInstall = env.Install( "$BUILD_DIR/lib", gafferBindingsLibrary )
 env.Alias( "build", gafferBindingsLibraryInstall )
 
-pythonUIEnv = pythonEnv.Copy()
+pythonUIEnv = pythonEnv.Clone()
 pythonUIEnv.Append(
 	LIBS = [ "GafferUI", "GafferBindings" ],
 )
@@ -401,7 +402,7 @@ pythonUIEnv.Default( gafferUIBindingsLibrary )
 gafferUIBindingsLibraryInstall = env.Install( "$BUILD_DIR/lib", gafferUIBindingsLibrary )
 env.Alias( "build", gafferUIBindingsLibraryInstall )
 
-pythonModuleEnv = pythonEnv.Copy()
+pythonModuleEnv = pythonEnv.Clone()
 pythonModuleEnv.Append(
 
 	LIBS = [
@@ -420,7 +421,7 @@ gafferModuleInstall = env.Install( "$BUILD_DIR/lib/python2.6/site-packages/Gaffe
 gafferModuleInstall += env.Install( "$BUILD_DIR/lib/python2.6/site-packages/Gaffer", glob.glob( "python/Gaffer/*.py" ) )
 env.Alias( "build", gafferModuleInstall )
 
-pythonUIModuleEnv = pythonModuleEnv.Copy()
+pythonUIModuleEnv = pythonModuleEnv.Clone()
 pythonUIModuleEnv.Append(
 	LIBS = [ "GafferUI", "GafferUIBindings" ],
 )
@@ -463,6 +464,7 @@ docEnv["ENV"]["PATH"] = os.environ["PATH"]
 for v in ( "BUILD_DIR", "GAFFER_MAJOR_VERSION", "GAFFER_MINOR_VERSION", "GAFFER_PATCH_VERSION" ) :
 	docEnv["ENV"][v] = docEnv[v]
 docs = docEnv.Command( "doc/html/index.html", "doc/config/Doxyfile", "doxygen doc/config/Doxyfile" )
+env.NoCache( docs )
 docEnv.Depends( docs, glob.glob( "include/*/*.h" ) + glob.glob( "src/*/*.cpp" ) + glob.glob( "python/*/*py" ) + glob.glob( "doc/src/*.dox" ) )
 
 docInstall = docEnv.Install( "$BUILD_DIR/doc/gaffer", "doc/html" )
@@ -526,22 +528,22 @@ manifest = [
 	"lib/libpangox-1.0.0.dylib",
 	"lib/libGLEW.1.5.0.dylib",
 	"frameworks/Python.framework",
-	"lib/python2.6/site-packages/IECore",
-	"lib/python2.6/site-packages/IECoreGL",
-	"lib/python2.6/site-packages/IECoreRI",
-	"lib/python2.6/site-packages/Gaffer",
-	"lib/python2.6/site-packages/GafferTest",	
-	"lib/python2.6/site-packages/GafferUI",
-	"lib/python2.6/site-packages/GafferUITest",
-	"lib/python2.6/site-packages/pygtk.pyc",
-	"lib/python2.6/site-packages/gtk-2.0",
-	"lib/python2.6/site-packages/cairo",
 	"startup/ui/menus.py",
 	"startup/ui/layouts.py",
 	"shaders",
 	"glsl/IECoreGL",
 	"doc/gaffer/html",
 	"doc/cortex/html",
+	"lib/python2.6/site-packages/IECore",
+	"lib/python2.6/site-packages/IECoreGL",
+	"lib/python2.6/site-packages/IECoreRI",
+	"lib/python2.6/site-packages/Gaffer/_Gaffer.so",	
+	"lib/python2.6/site-packages/GafferTest",	
+	"lib/python2.6/site-packages/GafferUI/_GafferUI.so",
+	"lib/python2.6/site-packages/GafferUITest",
+	"lib/python2.6/site-packages/pygtk.pyc",
+	"lib/python2.6/site-packages/gtk-2.0",
+	"lib/python2.6/site-packages/cairo",
 ]
 
 symlinks = [
@@ -550,9 +552,24 @@ symlinks = [
 	( "bin/python", "../frameworks/Python.framework/Versions/2.6/Resources/Python.app/Contents/MacOS/Python" ),
 ]
 
+pythonSourceToCompile = [
+	"lib/python2.6/site-packages/Gaffer/*.py",
+	"lib/python2.6/site-packages/GafferUI/*.py",
+]
+
+def expandSourceFiles( files, env ) :
+
+	result = []
+	root = env.subst( "$BUILD_DIR" )
+	for f in files :
+		for ff in glob.glob( os.path.join( root, f ) ) :
+			result.append( ff[len(root)+1:] )
+	
+	return result
+
 def installer( target, source, env ) :
 
-	shutil.rmtree( env.subst( os.path.join( "$INSTALL_DIR" ) ), True )
+	shutil.rmtree( env.subst( "$INSTALL_DIR" ), True )
 	for f in manifest :
 
 		src = env.subst( os.path.join( "$BUILD_DIR", f ) )
@@ -569,7 +586,14 @@ def installer( target, source, env ) :
 	for s in symlinks :
 	
 		os.symlink( s[1], env.subst( os.path.join( "$INSTALL_DIR", s[0] ) ) )
+
+	for f in expandSourceFiles( pythonSourceToCompile, env ) :
 		
+		src = env.subst( os.path.join( "$BUILD_DIR", f ) )
+		dst = env.subst( os.path.join( "$INSTALL_DIR", f + "c" ) )
+		
+		py_compile.compile( src, dst, doraise=True )
+										
 install = env.Command( "$INSTALL_DIR/bin/gaffer", "$BUILD_DIR", installer )
 env.AlwaysBuild( install )
 env.NoCache( install )
