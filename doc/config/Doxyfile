@@ -556,8 +556,6 @@ INPUT                  = include/Gaffer \
                          include/GafferUI \
                          src/Gaffer \
                          src/GafferUI \
-                         python/Gaffer \
-                         python/GafferUI \
 						 doc/src
 
 # This tag can be used to specify the character encoding of the source files 
