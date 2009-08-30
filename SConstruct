@@ -557,6 +557,33 @@ pythonSourceToCompile = [
 	"lib/python2.6/site-packages/GafferUI/*.py",
 ]
 
+licenses = [
+	( "python", "$PYTHON_SRC_DIR/LICENSE" ),
+	( "atk", "$ATK_SRC_DIR/COPYING" ),
+	( "boost", "$BOOST_SRC_DIR/LICENSE_1_0.txt" ),
+	( "cairo", "$CAIRO_SRC_DIR/COPYING-LGPL-2.1" ),
+	( "cortex", "$CORTEX_SRC_DIR/LICENSE" ),
+	( "expat", "$EXPAT_SRC_DIR/COPYING" ),
+	( "fontconfig", "$FONTCONFIG_SRC_DIR/COPYING" ),
+	( "freetype", "$FREETYPE_SRC_DIR/docs/FTL.TXT" ),
+	( "libintl", "$GETTEXT_SRC_DIR/gettext-runtime/intl/COPYING.LIB-2.1" ),
+	( "glew", "$GLEW_SRC_DIR/LICENSE.txt" ),
+	( "glib", "$GLIB_SRC_DIR/COPYING" ),
+	( "gtk+", "$GTK_SRC_DIR/COPYING" ),
+	( "gtkglext", "$GTKGLEXT_SRC_DIR/COPYING.LIB" ),
+	( "ilmbase", "$ILMBASE_SRC_DIR/COPYING" ),
+	( "libjpeg", "$JPEG_SRC_DIR/README" ),
+	( "libpng", "$PNG_SRC_DIR/LICENSE" ),
+	( "openexr", "$OPENEXR_SRC_DIR/LICENSE" ),
+	( "pango", "$PANGO_SRC_DIR/COPYING" ),
+	( "pixman", "$PIXMAN_SRC_DIR/COPYING" ),
+	( "pycairo", "$PYCAIRO_SRC_DIR/COPYING" ),
+	( "pygobject", "$PYGOBJECT_SRC_DIR/COPYING" ),
+	( "pygtk", "$PYGTK_SRC_DIR/COPYING" ),
+	( "pygtkglext", "$PYGTKGLEXT_SRC_DIR/COPYING" ),
+	( "libtiff", "$TIFF_SRC_DIR/COPYRIGHT" ),
+]
+
 def expandSourceFiles( files, env ) :
 
 	result = []
@@ -593,6 +620,15 @@ def installer( target, source, env ) :
 		dst = env.subst( os.path.join( "$INSTALL_DIR", f + "c" ) )
 		
 		py_compile.compile( src, dst, doraise=True )
+		
+	licenseDir = env.subst( "$INSTALL_DIR/doc/licenses" )
+	os.makedirs( licenseDir )
+	for l in licenses :
+	
+		src = env.subst( l[1] )
+		dst = os.path.join( licenseDir, l[0] )
+		
+		shutil.copy( src, dst )
 										
 install = env.Command( "$INSTALL_DIR/bin/gaffer", "$BUILD_DIR", installer )
 env.AlwaysBuild( install )
