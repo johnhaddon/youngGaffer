@@ -459,13 +459,42 @@ for d in ( "ui", "" ) :
 # Documentation
 #########################################################################################################
 
+def docMunger( target, source, env ) :
+
+	f = open( str( source[0] ) )
+	o = open( str( target[0] ), "w" )
+	for l in f :
+		
+		w = l.split()
+		if len( w ) < 2 :
+			continue
+			
+		if w[0]=="from" :
+			
+			if not w[1].startswith( "_" ) :
+				ff = open( os.path.dirname( str( source[0] ) ) + "/" + w[1] + ".py" )
+				for ll in ff :
+					o.write( ll )
+					
+		elif w[0]=="import" :
+			sourceFileName = os.path.dirname( str( source[0] ) ) + "/" + w[1] + ".py"
+			if os.path.exists( sourceFileName ) :
+				shutil.copyfile( sourceFileName, os.path.dirname( str( target[0] ) ) + "/" + w[1] + ".py" )
+	
 docEnv = env.Clone()
 docEnv["ENV"]["PATH"] = os.environ["PATH"]
 for v in ( "BUILD_DIR", "GAFFER_MAJOR_VERSION", "GAFFER_MINOR_VERSION", "GAFFER_PATCH_VERSION" ) :
 	docEnv["ENV"][v] = docEnv[v]
+
+gafferMunged = env.Command( "doc/src/Gaffer.py", "python/Gaffer/__init__.py", docMunger )
+env.Depends( gafferMunged, glob.glob( "python/Gaffer/*.py" ) )
+
+gafferUIMunged = env.Command( "doc/src/GafferUI.py", "python/GafferUI/__init__.py", docMunger )
+env.Depends( gafferUIMunged, glob.glob( "python/GafferUI/*.py" ) )
+
 docs = docEnv.Command( "doc/html/index.html", "doc/config/Doxyfile", "doxygen doc/config/Doxyfile" )
 env.NoCache( docs )
-docEnv.Depends( docs, glob.glob( "include/*/*.h" ) + glob.glob( "src/*/*.cpp" ) + glob.glob( "python/*/*py" ) + glob.glob( "doc/src/*.dox" ) )
+docEnv.Depends( docs, glob.glob( "include/*/*.h" ) + gafferMunged + gafferUIMunged + glob.glob( "doc/src/*.dox" ) )
 
 docInstall = docEnv.Install( "$BUILD_DIR/doc/gaffer", "doc/html" )
 docEnv.Alias( "build", docInstall )
