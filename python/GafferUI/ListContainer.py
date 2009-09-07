@@ -10,7 +10,7 @@ class ListContainer( ContainerWidget ) :
 
 	Orientation = Enum.create( "Vertical", "Horizontal" )
 
-	def __init__( self, orientation, homogeneous=False ) :
+	def __init__( self, orientation, homogeneous=False, spacing=0 ) :
 	
 		if orientation==self.Orientation.Vertical :
 			ContainerWidget.__init__( self, gtk.VBox() )
@@ -18,7 +18,8 @@ class ListContainer( ContainerWidget ) :
 			ContainerWidget.__init__( self, gtk.HBox() )
 	
 		self.gtkWidget().set_homogeneous( homogeneous )
-	
+		self.gtkWidget().set_spacing( spacing )
+		
 		self.__orientation = orientation
 		self.__widgets = []
 	
