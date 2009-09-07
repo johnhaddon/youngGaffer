@@ -19,6 +19,8 @@ IE_CORE_FORWARDDECLARE( ScriptNode )
 ///
 ///		- can we allow multiple computes() at once?
 ///		- or do we have to resort to computes() being threaded internally?
+///		- perhaps we could have a method which takes a bunch of input plugs, and guarantees
+///		  that they'll have been computed upon return? that method could deal with the threading.
 class Node : public GraphComponent
 {
 
