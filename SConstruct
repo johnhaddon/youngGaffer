@@ -418,7 +418,13 @@ gafferModule = pythonModuleEnv.SharedLibrary( "python/Gaffer/_Gaffer", glob.glob
 pythonModuleEnv.Default( gafferModule )
 
 gafferModuleInstall = env.Install( "$BUILD_DIR/lib/python2.6/site-packages/Gaffer", gafferModule )
-gafferModuleInstall += env.Install( "$BUILD_DIR/lib/python2.6/site-packages/Gaffer", glob.glob( "python/Gaffer/*.py" ) )
+sedSubstitutions = "s/!GAFFER_MAJOR_VERSION!/$GAFFER_MAJOR_VERSION/g"
+sedSubstitutions += "; s/!GAFFER_MINOR_VERSION!/$GAFFER_MINOR_VERSION/g"
+sedSubstitutions += "; s/!GAFFER_PATCH_VERSION!/$GAFFER_PATCH_VERSION/g"
+
+for f in glob.glob( "python/Gaffer/*.py" ) :
+	gafferModuleInstall += env.Command( "$BUILD_DIR/lib/python2.6/site-packages/Gaffer/" + os.path.basename( f ), f, "sed \"" + sedSubstitutions + "\" $SOURCE > $TARGET" )
+
 env.Alias( "build", gafferModuleInstall )
 
 pythonUIModuleEnv = pythonModuleEnv.Clone()
