@@ -18,6 +18,7 @@ class Viewer( GafferUI.NodeSetEditor ) :
 		self.__renderableGadget = GafferUI.RenderableGadget( None )
 		self.__gadgetWidget = GafferUI.GadgetWidget( self.__renderableGadget, bufferOptions=set( ( GafferUI.GLWidget.BufferOptions.Depth, ) ), cameraMode=GafferUI.GadgetWidget.CameraMode.Mode3D )
 		self.__gadgetWidget.gtkWidget().connect( "button-press-event", self.__buttonPress )
+		self.__gadgetWidget.baseState().add( IECoreGL.PrimitiveWireframe( True ) )
 		
 		self.gtkWidget().add( self.__gadgetWidget.gtkWidget() )
 		
