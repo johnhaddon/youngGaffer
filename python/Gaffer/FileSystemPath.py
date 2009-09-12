@@ -27,13 +27,19 @@ class FileSystemPath( Gaffer.Path ) :
 		result = Gaffer.Path.info( self )
 		if result is None :
 			return None
-			
+					
 		s = os.stat( str( self ) )
-		p = pwd.getpwuid( s.st_uid )
-		g = grp.getgrgid( s.st_gid )
+		try :
+			p = pwd.getpwuid( s.st_uid )
+		except :
+			p = None
+		try :
+			g = grp.getgrgid( s.st_gid )
+		except :
+			g = None
 				
-		result["fileSystem:owner"] = p.pw_name
-		result["fileSystem:group"] = g.gr_name
+		result["fileSystem:owner"] = p.pw_name if p is not None else ""
+		result["fileSystem:group"] = g.gr_name if g is not None else ""
 		result["fileSystem:modificationTime"] = s.st_mtime
 		result["fileSystem:accessTime"] = s.st_atime
 		
