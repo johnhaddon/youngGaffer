@@ -8,7 +8,7 @@ class Dialogue( GafferUI.Window ) :
 		
 		self.__column = GafferUI.ListContainer( GafferUI.ListContainer.Orientation.Vertical )
 		
-		self.__widget = GafferUI.Button() ## \todo Need some kind of empty widget
+		self.__widget = GafferUI.Frame()
 		self.__column.append( self.__widget, True )
 		
 		self.__buttonRow = GafferUI.ListContainer( GafferUI.ListContainer.Orientation.Horizontal, homogeneous=True )
