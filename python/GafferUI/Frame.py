@@ -10,7 +10,7 @@ class Frame( GafferUI.ContainerWidget ) :
 	
 		GafferUI.ContainerWidget.__init__( self, gtk.Frame() )
 		self.gtkWidget().set_shadow_type( gtk.SHADOW_NONE )
-		self.gtkWidget().set_property( "border-width", borderWidth )
+		self.gtkWidget().set_border_width( borderWidth )
 		
 		self.__child = None
 		
