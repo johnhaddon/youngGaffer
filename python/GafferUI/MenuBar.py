@@ -1,14 +1,13 @@
 import gtk
 import IECore
 
-from Widget import Widget
-from Menu import Menu
+import GafferUI
 
-class MenuBar( Widget ) :
+class MenuBar( GafferUI.Widget ) :
 
 	def __init__( self, definition ) :
 	
-		Widget.__init__( self, gtk.MenuBar() )
+		GafferUI.Widget.__init__( self, gtk.MenuBar() )
 		
 		self.__menuBar = self.gtkWidget()
 		
@@ -36,7 +35,7 @@ class MenuBar( Widget ) :
 						subMenuDefinition = item.subMenu or IECore.MenuDefinition()
 				
 					menuItem = gtk.MenuItem( label = name )
-					menu = Menu( subMenuDefinition )
+					menu = GafferUI.Menu( subMenuDefinition )
 					menuItem.set_submenu( menu.gtkWidget() )
 					menuItem.show()
 					self.__menuBar.append( menuItem )

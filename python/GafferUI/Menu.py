@@ -3,14 +3,14 @@ import inspect
 import gtk
 from IECore import curry
 
-from Widget import Widget
+import GafferUI
 import CamelCase
 
-class Menu( Widget ) :
+class Menu( GafferUI.Widget ) :
 
 	def __init__( self, definition ) :
 	
-		Widget.__init__( self, gtk.Menu() )
+		GafferUI.Widget.__init__( self, gtk.Menu() )
 	
 		self.definition = definition
 		self.__menu = self.gtkWidget()
@@ -38,7 +38,7 @@ class Menu( Widget ) :
 		kw = {}
 		commandArgs = inspect.getargspec( command )[0]
 		if "menu" in commandArgs :
-			kw["menu"] = Widget.owner( menuItem )
+			kw["menu"] = GafferUI.Widget.owner( menuItem )
 		
 		if "checkBox" in commandArgs :
 			kw["checkBox"] = menuItem.get_active()
@@ -127,7 +127,7 @@ class Menu( Widget ) :
 				
 import IECore
 
-Widget._parseRCStyle(
+GafferUI.Widget._parseRCStyle(
 
 	"""
 	style "gafferMenuItem"
@@ -140,7 +140,7 @@ Widget._parseRCStyle(
 	""",
 	
 	{
-		"fgInsensitive" : Widget._gtkRCColor( IECore.Color3f( 0.1 ) ),
+		"fgInsensitive" : GafferUI.Widget._gtkRCColor( IECore.Color3f( 0.1 ) ),
 	}
 
 )

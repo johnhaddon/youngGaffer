@@ -4,7 +4,6 @@ import gtk
 
 import Gaffer
 import GafferUI
-from PlugValueWidget import PlugValueWidget
 
 ## User docs :
 #
@@ -13,11 +12,11 @@ from PlugValueWidget import PlugValueWidget
 #
 # \todo Right click menu for cut and paste
 # \todo Stop editing for non editable plugs.
-class StringPlugValueWidget( PlugValueWidget ) :
+class StringPlugValueWidget( GafferUI.PlugValueWidget ) :
 
 	def __init__( self, plug ) :
 	
-		PlugValueWidget.__init__( self, gtk.Entry(), plug )
+		GafferUI.PlugValueWidget.__init__( self, gtk.Entry(), plug )
 
 		self.gtkEntry = self.gtkWidget()
 		self.gtkEntry.connect( "key-press-event", self.__keyPress )
@@ -60,6 +59,6 @@ class StringPlugValueWidget( PlugValueWidget ) :
 		with Gaffer.UndoContext( self.getPlug().ancestor( Gaffer.ScriptNode.staticTypeId() ) ) :
 			self.getPlug().setValue( text )
 
-PlugValueWidget.registerType( Gaffer.StringPlug.staticTypeId(), StringPlugValueWidget )
+GafferUI.PlugValueWidget.registerType( Gaffer.StringPlug.staticTypeId(), StringPlugValueWidget )
 
 GafferUI.Widget._parseRCStyle( "widget '*gafferStringPlugEntry' style 'gafferTextEntry'" )

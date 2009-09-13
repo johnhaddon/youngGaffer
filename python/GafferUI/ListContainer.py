@@ -1,21 +1,21 @@
 import gtk
 from IECore import Enum
 
-from ContainerWidget import ContainerWidget
+import GafferUI
 
 ## The ListContainer holds a series of Widgets either in a column or a row.
 # It attempts to provide a list like interface for manipulation of the widgets.
 # \todo Support more list-like operations including slicing.
-class ListContainer( ContainerWidget ) :
+class ListContainer( GafferUI.ContainerWidget ) :
 
 	Orientation = Enum.create( "Vertical", "Horizontal" )
 
 	def __init__( self, orientation, homogeneous=False, spacing=0 ) :
 	
 		if orientation==self.Orientation.Vertical :
-			ContainerWidget.__init__( self, gtk.VBox() )
+			GafferUI.ContainerWidget.__init__( self, gtk.VBox() )
 		else :
-			ContainerWidget.__init__( self, gtk.HBox() )
+			GafferUI.ContainerWidget.__init__( self, gtk.HBox() )
 	
 		self.gtkWidget().set_homogeneous( homogeneous )
 		self.gtkWidget().set_spacing( spacing )

@@ -6,6 +6,7 @@ import gtk
 import pango
 import IECore
 
+import GafferUI
 from PlugValueWidget import PlugValueWidget
 from StringPlugValueWidget import StringPlugValueWidget
 from Menu import Menu
@@ -20,7 +21,7 @@ from Menu import Menu
 ## \todo Make the button do somethin
 ## \todo Filter on extension, sequence, file or dir etc
 ## \todo Use FileNameWidget.
-class FileNamePlugValueWidget( PlugValueWidget ) :
+class FileNamePlugValueWidget( GafferUI.PlugValueWidget ) :
 
 	def __init__( self, plug ) :
 	

@@ -1,11 +1,11 @@
 import Gaffer
-from Widget import Widget
+import GafferUI
 
-class PlugValueWidget( Widget ) :
+class PlugValueWidget( GafferUI.Widget ) :
 
 	def __init__( self, gtkWidget, plug ) :
 	
-		Widget.__init__( self, gtkWidget )
+		GafferUI.Widget.__init__( self, gtkWidget )
 	
 		self.setPlug( plug )
 		

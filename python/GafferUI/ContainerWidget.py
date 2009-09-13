@@ -1,12 +1,12 @@
-from Widget import Widget
+import GafferUI
 
 ## The ContainerWidget class provides a base for all
 # Widgets which may hold other Widgets as children.
-class ContainerWidget( Widget ) :
+class ContainerWidget( GafferUI.Widget ) :
 
 	def __init__( self, gtkWidget ) :
 	
-		Widget.__init__( self, gtkWidget )
+		GafferUI.Widget.__init__( self, gtkWidget )
 	
 	## Must be implemented in subclasses to remove
 	# any references to the specified child. This allows

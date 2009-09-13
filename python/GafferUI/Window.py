@@ -1,13 +1,12 @@
 import gtk
 
 import GafferUI
-from ContainerWidget import ContainerWidget
 
-class Window( ContainerWidget ) :
+class Window( GafferUI.ContainerWidget ) :
 
 	def __init__( self, title="GafferUI.Window" ) :
 	
-		ContainerWidget.__init__( self, gtk.Window( gtk.WINDOW_TOPLEVEL ) )
+		GafferUI.ContainerWidget.__init__( self, gtk.Window( gtk.WINDOW_TOPLEVEL ) )
 		
 		self.__gtkWindow = self.gtkWidget()
 		self.__child = None
@@ -19,7 +18,7 @@ class Window( ContainerWidget ) :
 	
 	def show( self ) :
 	
-		ContainerWidget.show( self )
+		GafferUI.ContainerWidget.show( self )
 		self.gtkWidget().present()
 		
 	def setTitle( self, title ) :

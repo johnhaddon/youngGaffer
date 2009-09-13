@@ -1,11 +1,11 @@
 from Gaffer import ScriptNode
-from GafferUI import Widget
+import GafferUI
 
-class EditorWidget( Widget ) :
+class EditorWidget( GafferUI.Widget ) :
 
 	def __init__( self, gtkWidget, scriptNode=None ) :
 	
-		Widget.__init__( self, gtkWidget )
+		GafferUI.Widget.__init__( self, gtkWidget )
 		
 		self.setScriptNode( scriptNode )
 	

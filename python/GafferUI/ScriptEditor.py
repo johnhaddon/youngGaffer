@@ -2,6 +2,7 @@ import gtk
 import IECore
 
 from Gaffer import ScriptNode
+import GafferUI
 from Menu import Menu
 from Widget import Widget
 from EditorWidget import EditorWidget
@@ -14,11 +15,11 @@ from EditorWidget import EditorWidget
 ## \todo Standard way for users to customise all menus
 ## \todo Tab completion and popup help. rlcompleter module should be useful for tab completion. Completer( dict ) constructs a completer
 # that works in a specific namespace.
-class ScriptEditor( EditorWidget ) :
+class ScriptEditor( GafferUI.EditorWidget ) :
 
 	def __init__( self, scriptNode=None ) :
 	
-		EditorWidget.__init__( self, gtk.VPaned(), scriptNode )
+		GafferUI.EditorWidget.__init__( self, gtk.VPaned(), scriptNode )
 	
 		self.__paned = self.gtkWidget()
 			
@@ -48,7 +49,7 @@ class ScriptEditor( EditorWidget ) :
 
 	def setScriptNode( self, scriptNode ) :
 	
-		EditorWidget.setScriptNode( self, scriptNode )
+		GafferUI.EditorWidget.setScriptNode( self, scriptNode )
 		
 		if scriptNode :
 			self.__execConnection = self.getScriptNode().scriptExecutedSignal().connect( self.__execSlot )
@@ -134,6 +135,6 @@ class ScriptEditor( EditorWidget ) :
 			
 		return False
 		
-EditorWidget.registerType( "ScriptEditor", ScriptEditor )
+GafferUI.EditorWidget.registerType( "ScriptEditor", ScriptEditor )
 
-Widget._parseRCStyle( "widget '*gafferScriptEditorInput' style 'gafferTextEntry'" )
+GafferUI.Widget._parseRCStyle( "widget '*gafferScriptEditorInput' style 'gafferTextEntry'" )

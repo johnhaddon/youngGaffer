@@ -1,17 +1,17 @@
 import gtk
 
-from Widget import Widget
+import GafferUI
 from PlugValueWidget import PlugValueWidget
 import CamelCase
 
 ## \todo Make tooltips work
 ## \todo Useful popup menu on label - connect, disconnect, expressions etc
 ## Or does that belong on the PlugValueWidget?
-class PlugWidget( Widget ) :
+class PlugWidget( GafferUI.Widget ) :
 
 	def __init__( self, plugOrPlugValueWidget, label=None, description=None ) :
 	
-		Widget.__init__( self, gtk.HBox( spacing = 5 ) )
+		GafferUI.Widget.__init__( self, gtk.HBox( spacing = 5 ) )
 
 		self.__gtkHBox = self.gtkWidget()
 	

@@ -10,11 +10,11 @@ from OpenGL.GL import *
 import IECoreGL
 import IECore
 
-from Widget import Widget
+import GafferUI
 
 ## The GLWidget is a base class for all widgets which wish to draw using OpenGL.
 # Derived classes override the draw() method to achieve this.
-class GLWidget( Widget ) :
+class GLWidget( GafferUI.Widget ) :
 
 	## This enum defines the optional elements of the GL buffer used
 	# for display.
@@ -40,7 +40,7 @@ class GLWidget( Widget ) :
 		glConfig = gtk.gdkgl.Config( mode=displayMode )
 		drawingArea = gtk.gtkgl.DrawingArea( glConfig, share_list=self.__glContext() )
 		
-		Widget.__init__( self, drawingArea )
+		GafferUI.Widget.__init__( self, drawingArea )
 				
 		drawingArea.connect( "configure_event", self.__configure )
 		drawingArea.connect( "expose_event", self.__expose )

@@ -1,18 +1,17 @@
 import IECore
 import gtk
 
-from ContainerWidget import ContainerWidget
-from Widget import Widget
+import GafferUI
 
 ## \todo Ctrl drag moves divider and other close by dividers, or the opposite way round
 ## \todo Figure out the size allocation to work better - moving one slider doesn't move the others
-class Splittable( ContainerWidget ) :
+class Splittable( GafferUI.ContainerWidget ) :
 
 	SplitDirection = IECore.Enum.create( "None", "Vertical", "Horizontal" )
 
 	def __init__( self ) :
 	
-		ContainerWidget.__init__( self, gtk.EventBox() )
+		GafferUI.ContainerWidget.__init__( self, gtk.EventBox() )
 		
 		# an event box is always our top level gtk widget
 		self.__eventBox = self.gtkWidget()
@@ -51,7 +50,7 @@ class Splittable( ContainerWidget ) :
 		assert( not self.isSplit() )
 	
 		if self.__child :
-			assert( Widget.owner( self.__eventBox.get_child() ) is self.__child )
+			assert( GafferUI.Widget.owner( self.__eventBox.get_child() ) is self.__child )
 		
 		return self.__child
 		
@@ -194,7 +193,7 @@ class Splittable( ContainerWidget ) :
 			self.__paned.set_position( int( size * self.__positionToSetOnAllocate ) )
 			self.__positionToSetOnAllocate = None
 
-Widget._parseRCStyle(
+GafferUI.Widget._parseRCStyle(
 
 	"""
 	style "gafferPaned" = "gafferWidget"

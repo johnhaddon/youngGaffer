@@ -1,14 +1,13 @@
 import gtk
 import IECore
 
-from Widget import Widget
-from ContainerWidget import ContainerWidget
+import GafferUI
 
-class TabbedContainer( ContainerWidget ) :
+class TabbedContainer( GafferUI.ContainerWidget ) :
 
 	def __init__( self ) :
 	
-		ContainerWidget.__init__( self, gtk.Notebook() )
+		GafferUI.ContainerWidget.__init__( self, gtk.Notebook() )
 		
 		self.__widgets = []
 								
@@ -69,7 +68,7 @@ class TabbedContainer( ContainerWidget ) :
 		self.__widgets.remove( child )
 		self.gtkWidget().remove( child.gtkWidget() )
 
-Widget._parseRCStyle(
+GafferUI.Widget._parseRCStyle(
 
 	"""
 	style "gafferTabbed" = "gafferWidget"
@@ -88,8 +87,8 @@ Widget._parseRCStyle(
 	""",
 	
 	{
-		"bgActive" : Widget._gtkRCColor( IECore.Color3f( 0.05 ) ),
-		"fgActive" : Widget._gtkRCColor( IECore.Color3f( 0.6 ) ),
+		"bgActive" : GafferUI.Widget._gtkRCColor( IECore.Color3f( 0.05 ) ),
+		"fgActive" : GafferUI.Widget._gtkRCColor( IECore.Color3f( 0.6 ) ),
 	}
 
 )

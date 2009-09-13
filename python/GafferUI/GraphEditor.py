@@ -7,7 +7,7 @@ import Gaffer
 import GafferUI
 from GafferUI import EditorWidget, GraphGadget, GadgetWidget
 
-class GraphEditor( EditorWidget ) :
+class GraphEditor( GafferUI.EditorWidget ) :
 
 	def __init__( self, scriptNode=None ) :
 	

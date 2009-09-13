@@ -4,7 +4,6 @@ import gtk
 
 import Gaffer
 import GafferUI
-from PlugValueWidget import PlugValueWidget
 
 ## User docs :
 #
@@ -21,11 +20,11 @@ from PlugValueWidget import PlugValueWidget
 ## \todo Enter names of other plugs to create a connection
 ## \todo Color change for connected plugs and output plugs
 ## \todo Reject drag and drop of anything that's not a number
-class NumericPlugValueWidget( PlugValueWidget ) :
+class NumericPlugValueWidget( GafferUI.PlugValueWidget ) :
 
 	def __init__( self, plug ) :
 	
-		PlugValueWidget.__init__( self, gtk.Entry(), plug )
+		GafferUI.PlugValueWidget.__init__( self, gtk.Entry(), plug )
 
 		self.gtkEntry = self.gtkWidget()
 		self.gtkEntry.connect( "key-press-event", self.__keyPress )
@@ -237,7 +236,7 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 			newIndex = 0
 		self.gtkEntry.set_position( newIndex )
 
-PlugValueWidget.registerType( Gaffer.FloatPlug.staticTypeId(), NumericPlugValueWidget )
-PlugValueWidget.registerType( Gaffer.IntPlug.staticTypeId(), NumericPlugValueWidget )
+GafferUI.PlugValueWidget.registerType( Gaffer.FloatPlug.staticTypeId(), NumericPlugValueWidget )
+GafferUI.PlugValueWidget.registerType( Gaffer.IntPlug.staticTypeId(), NumericPlugValueWidget )
 
 GafferUI.Widget._parseRCStyle( "widget '*gafferNumericPlugEntry' style 'gafferTextEntry'" )

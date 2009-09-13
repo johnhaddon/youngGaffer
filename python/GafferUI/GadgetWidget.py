@@ -5,6 +5,7 @@ import gtk
 import IECore
 import IECoreGL
 
+import GafferUI
 from GLWidget import GLWidget
 from _GafferUI import ButtonEvent, ModifiableEvent, ContainerGadget, DragDropEvent, KeyEvent
 
@@ -25,7 +26,7 @@ from _GafferUI import ButtonEvent, ModifiableEvent, ContainerGadget, DragDropEve
 # other hosts.
 ## \todo The camera movement should be coming from somewhere else - some kind
 # of ViewportGadget or summink?
-class GadgetWidget( GLWidget ) :
+class GadgetWidget( GafferUI.GLWidget ) :
 
 	CameraMode = IECore.Enum.create( "None", "Mode2D", "Mode3D" )
 
