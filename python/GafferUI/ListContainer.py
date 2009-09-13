@@ -10,7 +10,7 @@ class ListContainer( GafferUI.ContainerWidget ) :
 
 	Orientation = Enum.create( "Vertical", "Horizontal" )
 
-	def __init__( self, orientation, homogeneous=False, spacing=0 ) :
+	def __init__( self, orientation, homogeneous=False, spacing=0, borderWidth=0 ) :
 	
 		if orientation==self.Orientation.Vertical :
 			GafferUI.ContainerWidget.__init__( self, gtk.VBox() )
@@ -19,6 +19,7 @@ class ListContainer( GafferUI.ContainerWidget ) :
 	
 		self.gtkWidget().set_homogeneous( homogeneous )
 		self.gtkWidget().set_spacing( spacing )
+		self.gtkWidget().set_border_width( borderWidth )
 		
 		self.__orientation = orientation
 		self.__widgets = []
