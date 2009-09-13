@@ -1,4 +1,5 @@
 import weakref
+import string
 
 import gtk
 import IECore
@@ -22,7 +23,6 @@ class Widget( object ) :
 		self.__gtkWidget = gtkWidget
 		Widget.__gtkWidgetOwners[gtkWidget] = weakref.ref( self )
 		
-		self._setDefaultColors( self.__gtkWidget, False )
 		self.show()
 		
 	## \todo Should be setVisible() and getVisible() for consistency
@@ -96,45 +96,67 @@ class Widget( object ) :
 	def _gtkColor( coreColor ) :
 	
 		c = coreColor.linearToSRGB()
-		return gtk.gdk.Color( int( c[0] * 65535 ), int( c[1] * 65535 ), int( c[2] * 65535 ) )	
+		return gtk.gdk.Color( int( c[0] * 65535 ), int( c[1] * 65535 ), int( c[2] * 65535 ) )
+		
+	@staticmethod
+	def _gtkRCColor( coreColor ) :
+	
+		c = coreColor.linearToSRGB()
+		return "{ %f, %f, %f }" % tuple( c )
 	
 	@staticmethod
-	def _setColors( gtkWidget, gtkWidgetState, fg, bg, recurse=False ) :
-		
-		gtkFG = Widget._gtkColor( fg )
-		gtkBG = Widget._gtkColor( bg )
-		
-		gtkWidget.modify_bg( gtkWidgetState, gtkBG )
-		gtkWidget.modify_base( gtkWidgetState, gtkBG )
-
-		gtkWidget.modify_fg( gtkWidgetState, gtkFG )
-		gtkWidget.modify_text( gtkWidgetState, gtkFG )
-
-		if recurse and isinstance( gtkWidget, gtk.Container ) :
-			for c in gtkWidget.get_children() :				
-				Widget._setColors( c, gtkWidgetState, fg, bg, recurse )
-		
-	_defaultFGColors = [
-		IECore.Color3f( 0.8 ),
-		IECore.Color3f( 0.9 ),
-		IECore.Color3f( 0.9 ),
-		IECore.Color3f( 0.9 ),
-		IECore.Color3f( 0.7 ),
-	]
+	def _parseRCStyle( template, substitutions={} ) :
 	
-	_defaultBGColors = [
-		IECore.Color3f( 0.07 ),
-		IECore.Color3f( 0, 0.03, 0.2 ),
-		IECore.Color3f( 0, 0.03, 0.2 ),
-		IECore.Color3f( 0, 0.03, 0.2 ),
-		IECore.Color3f( 0.05 ),
-	]
-	
-	_textEntryBGColor = IECore.Color3f( 0.1 )
-	_textEntryFGColor = IECore.Color3f( 1 )
+		t = string.Template( template )
+		s = t.safe_substitute( substitutions )
+		gtk.rc_parse_string( s )
+		gtk.rc_reset_styles( gtk.settings_get_default() )
+		
+Widget._parseRCStyle(
 
-	@staticmethod
-	def _setDefaultColors( gtkWidget, recurse=False ) :
+	"""
+	style "gafferWidget"
+	{
+		font_name = "Sans Bold 11"
+		bg[NORMAL] = $bgNormal
+		bg[ACTIVE] = $bgBlue
+		bg[PRELIGHT] = $bgBlue
+		bg[SELECTED] = $bgBlue
+		bg[INSENSITIVE] = $bgInsensitive
+		fg[NORMAL] = $fgNormal
+		fg[ACTIVE] = $fgWhite
+		fg[PRELIGHT] = $fgWhite
+		fg[SELECTED] = $fgWhite
+		fg[INSENSITIVE] = $fgInsensitive
+		base[NORMAL] = $bgNormal
+		base[ACTIVE] = $bgBlue
+		base[PRELIGHT] = $bgBlue
+		base[SELECTED] = $bgBlue
+		base[INSENSITIVE] = $bgInsensitive
+		text[NORMAL] = $fgNormal
+		text[ACTIVE] = $fgWhite
+		text[PRELIGHT] = $fgWhite
+		text[SELECTED] = $fgWhite
+		text[INSENSITIVE] = $fgInsensitive
+	}
+
+	style "gafferTextEntry" = "gafferWidget"
+	{
+		bg[NORMAL] = $textEntryBG
+		base[NORMAL] = $textEntryBG
+	}
 	
-		for s in ( gtk.STATE_NORMAL, gtk.STATE_ACTIVE, gtk.STATE_PRELIGHT, gtk.STATE_SELECTED, gtk.STATE_INSENSITIVE ) :
-			Widget._setColors( gtkWidget, s, Widget._defaultFGColors[s], Widget._defaultBGColors[s], recurse )
+	class "GtkWidget" style "gafferWidget"
+	""",
+	
+	{
+		"bgNormal" : Widget._gtkRCColor( IECore.Color3f( 0.07 ) ),
+		"bgBlue" : Widget._gtkRCColor( IECore.Color3f( 0, 0.03, 0.2 ) ),
+		"bgInsensitive" : Widget._gtkRCColor( IECore.Color3f( 0.05 ) ),
+		"fgNormal" : Widget._gtkRCColor( IECore.Color3f( 0.8 ) ),
+		"fgWhite" : Widget._gtkRCColor( IECore.Color3f( 1 ) ),
+		"fgInsensitive" : Widget._gtkRCColor( IECore.Color3f( 0.3 ) ),
+		"textEntryBG" : Widget._gtkRCColor( IECore.Color3f( 0.1 ) ),
+	}
+
+)

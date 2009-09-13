@@ -1,3 +1,5 @@
+import IECore
+
 import GafferUI
 
 class SplineEditor( GafferUI.EditorWidget ) :
@@ -13,7 +15,7 @@ class SplineEditor( GafferUI.EditorWidget ) :
 		self.__selectionRemovedConnection = self.__splineGadget.selection().memberRemovedSignal().connect( self.__selectionChanged )
 		
 		self.__gadgetWidget = GafferUI.GadgetWidget( self.__splineGadget, cameraMode=GafferUI.GadgetWidget.CameraMode.Mode2D )
-		self.__gadgetWidget.setBackgroundColor( self._defaultBGColors[0] )
+		self.__gadgetWidget.setBackgroundColor( IECore.Color3f( 0.07 ) )
 		
 		self.__column.append( self.__gadgetWidget, expand=True )
 		

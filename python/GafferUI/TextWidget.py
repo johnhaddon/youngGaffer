@@ -14,8 +14,8 @@ class TextWidget( GafferUI.Widget ) :
 		self.gtkWidget().connect( "activate", self.__activate )
 
 		self.setText( text )
-
-		self._setColors( self.gtkWidget(), gtk.STATE_NORMAL, self._textEntryFGColor, self._textEntryBGColor )
+		
+		self.gtkWidget().set_name( "gafferTextWidget" )
 
 	def setText( self, text ) :
 	
@@ -79,3 +79,4 @@ class TextWidget( GafferUI.Widget ) :
 			
 		signal( self )		
 	
+GafferUI.Widget._parseRCStyle( "widget '*gafferTextWidget' style 'gafferTextEntry'" )

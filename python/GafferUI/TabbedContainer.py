@@ -11,12 +11,7 @@ class TabbedContainer( ContainerWidget ) :
 		ContainerWidget.__init__( self, gtk.Notebook() )
 		
 		self.__widgets = []
-		
-		self._setDefaultColors( self.gtkWidget() )
-		# the backgrounds of tabs which aren't currently being viewed are drawn with the active state for some reason.
-		# we want them to be dark so we set the active state to a dark colour here.
-		self._setColors( self.gtkWidget(), gtk.STATE_ACTIVE, IECore.Color3f( 0 ), IECore.Color3f( 0.04 ), True )
-						
+								
 	def append( self, child ) :
 	
 		oldParent = child.parent()
@@ -35,10 +30,7 @@ class TabbedContainer( ContainerWidget ) :
 		assert child in self.__widgets
 	
 		self.gtkWidget().set_tab_label_text( child.gtkWidget(), labelText )
-		
-		labelWidget = self.gtkWidget().get_tab_label( child.gtkWidget() )
-		self._setDefaultColors( labelWidget, True )
-	
+			
 	def getLabel( self, child ) :
 	
 		return self.gtkWidget().get_tab_label_text( child.gtkWidget() )
@@ -76,3 +68,28 @@ class TabbedContainer( ContainerWidget ) :
 	
 		self.__widgets.remove( child )
 		self.gtkWidget().remove( child.gtkWidget() )
+
+Widget._parseRCStyle(
+
+	"""
+	style "gafferTabbed" = "gafferWidget"
+	{
+		bg[ACTIVE] = $bgActive # for some reason the active color is used for the unselected tabs
+	}
+
+	style "gafferTabbedLabel" = "gafferWidget"
+	{
+		fg[ACTIVE] = $fgActive
+		text[ACTIVE] = $fgActive
+	}
+
+	widget_class "*<GtkNotebook>" style "gafferTabbed"
+	widget_class "*<GtkNotebook>.*" style "gafferTabbedLabel"
+	""",
+	
+	{
+		"bgActive" : Widget._gtkRCColor( IECore.Color3f( 0.05 ) ),
+		"fgActive" : Widget._gtkRCColor( IECore.Color3f( 0.6 ) ),
+	}
+
+)

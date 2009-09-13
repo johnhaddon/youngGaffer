@@ -1,5 +1,7 @@
 import gtk
 
+import IECore
+
 import GafferUI
 
 class Collapsible( GafferUI.ContainerWidget ) :
@@ -11,11 +13,6 @@ class Collapsible( GafferUI.ContainerWidget ) :
 		labelWidget = gtk.Label()
 		labelWidget.show()
 		self.gtkWidget().set_label_widget( labelWidget )
-		
-		self._setDefaultColors( self.gtkWidget(), True )
-		# get rid of the highlighting of the label when you hover over it
-		for s in ( gtk.STATE_ACTIVE, gtk.STATE_PRELIGHT, gtk.STATE_SELECTED ) :
-			self._setColors( self.gtkWidget(), s, self._defaultFGColors[gtk.STATE_NORMAL], self._defaultBGColors[gtk.STATE_NORMAL], True )
 		
 		self.setLabel( label )
 		self.setCollapsed( collapsed )
@@ -72,3 +69,26 @@ class Collapsible( GafferUI.ContainerWidget ) :
 		assert( widget is self.gtkWidget() )
 		
 		self.stateChangedSignal()( self )
+		
+GafferUI.Widget._parseRCStyle(
+
+	"""
+	style "gafferCollapsible"
+	{
+		bg[ACTIVE] = $bg
+		bg[PRELIGHT] = $bg
+		bg[SELECTED] = $bg
+		fg[ACTIVE] = $fg
+		fg[PRELIGHT] = $fg
+		fg[SELECTED] = $fg
+	}
+
+	widget_class "*<GtkExpander>" style "gafferCollapsible"
+	""",
+	
+	{
+		"bg" : GafferUI.Widget._gtkRCColor( IECore.Color3f( 0.1 ) ),
+		"fg" : GafferUI.Widget._gtkRCColor( IECore.Color3f( 0.8 ) ),
+	}
+
+)

@@ -3,6 +3,7 @@ import pango
 import gtk
 
 import Gaffer
+import GafferUI
 from PlugValueWidget import PlugValueWidget
 
 ## User docs :
@@ -30,13 +31,10 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 		self.gtkEntry.connect( "key-press-event", self.__keyPress )
 		self.gtkEntry.connect( "button-press-event", self.__buttonPress )
 		self.gtkEntry.connect( "focus-out-event", self.__focusOut )
-		
-		self._setColors( self.gtkEntry, gtk.STATE_NORMAL, self._textEntryFGColor, self._textEntryBGColor )
-		
+		self.gtkEntry.set_name( "gafferNumericPlugEntry" )
+				
 		self.gtkEntry.show()
 		
-		## \todo Consider the style of these widgets
-		# self.gtkEntry.set_has_frame( False )
 		self.updateFromPlug()
 		
 	def updateFromPlug( self ) :
@@ -242,3 +240,4 @@ class NumericPlugValueWidget( PlugValueWidget ) :
 PlugValueWidget.registerType( Gaffer.FloatPlug.staticTypeId(), NumericPlugValueWidget )
 PlugValueWidget.registerType( Gaffer.IntPlug.staticTypeId(), NumericPlugValueWidget )
 
+GafferUI.Widget._parseRCStyle( "widget '*gafferNumericPlugEntry' style 'gafferTextEntry'" )

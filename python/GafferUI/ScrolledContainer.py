@@ -4,15 +4,15 @@ import IECore
 
 import GafferUI
 
-## \todo Get the colours of the scrollbars set right.
 class ScrolledContainer( GafferUI.ContainerWidget ) :
 
 	ScrollMode = IECore.Enum.create( "Never", "Always", "Automatic" )
 
-	def __init__( self, horizontalMode=ScrollMode.Automatic, verticalMode=ScrollMode.Automatic ) :
+	def __init__( self, horizontalMode=ScrollMode.Automatic, verticalMode=ScrollMode.Automatic, borderWidth=0 ) :
 	
 		GafferUI.ContainerWidget.__init__( self, gtk.ScrolledWindow() )
 		
+		self.gtkWidget().set_property( "border-width", borderWidth )
 		self.setHorizontalMode( horizontalMode )
 		self.setVerticalMode( verticalMode )
 		
@@ -79,5 +79,26 @@ class ScrolledContainer( GafferUI.ContainerWidget ) :
 		p = self.gtkWidget().get_policy()
 		return self.__policiesToModes[p[1]]
 		
-		
+GafferUI.Widget._parseRCStyle(
+
+	"""
+	style "gafferScrollbar"
+	{
+		GtkScrollbar::slider-width = 12
+		GtkScrollbar::has-backward-stepper = 0
+		GtkScrollbar::has-secondary-backward-stepper = 1
+		bg[ACTIVE] = $dull
+		bg[PRELIGHT] = $bright
+		bg[SELECTED] = $bright
+	}
+
+	widget_class "*<GtkScrollbar>*" style "gafferScrollbar"
+	""",
+	
+	{
+		"dull" : GafferUI.Widget._gtkRCColor( IECore.Color3f( 0.05 ) ),
+		"bright" : GafferUI.Widget._gtkRCColor( IECore.Color3f( 0.1 ) ),
+	}
+
+)
 		

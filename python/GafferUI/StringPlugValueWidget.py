@@ -3,6 +3,7 @@ from __future__ import with_statement
 import gtk
 
 import Gaffer
+import GafferUI
 from PlugValueWidget import PlugValueWidget
 
 ## User docs :
@@ -21,6 +22,7 @@ class StringPlugValueWidget( PlugValueWidget ) :
 		self.gtkEntry = self.gtkWidget()
 		self.gtkEntry.connect( "key-press-event", self.__keyPress )
 		self.gtkEntry.connect( "focus-out-event", self.__focusOut )
+		self.gtkEntry.set_name( "gafferStringPlugEntry" )
 
 		self.gtkEntry.show()
 
@@ -59,3 +61,5 @@ class StringPlugValueWidget( PlugValueWidget ) :
 			self.getPlug().setValue( text )
 
 PlugValueWidget.registerType( Gaffer.StringPlug.staticTypeId(), StringPlugValueWidget )
+
+GafferUI.Widget._parseRCStyle( "widget '*gafferStringPlugEntry' style 'gafferTextEntry'" )

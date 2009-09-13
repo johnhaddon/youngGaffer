@@ -36,6 +36,7 @@ class ScriptEditor( EditorWidget ) :
 		self.__gtkInputWidget = gtk.TextView( self.__gtkInputBuffer )
 		self.__gtkInputWidget.connect( "key-press-event", self.__keyPress )
 		self.__gtkInputWidget.connect( "button-press-event", self.__buttonPress )
+		self.__gtkInputWidget.set_name( "gafferScriptEditorInput" )
 		self.__gtkInputScroller = gtk.ScrolledWindow()
 		self.__gtkInputScroller.set_policy( gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC )
 		self.__gtkInputScroller.add( self.__gtkInputWidget )
@@ -44,8 +45,6 @@ class ScriptEditor( EditorWidget ) :
 			
 		self.__paned.show_all()
 		
-		self._setDefaultColors( self.gtkWidget(), True )
-		self._setColors( self.__gtkInputWidget, gtk.STATE_NORMAL, self._textEntryFGColor, self._textEntryBGColor )
 
 	def setScriptNode( self, scriptNode ) :
 	
@@ -136,3 +135,5 @@ class ScriptEditor( EditorWidget ) :
 		return False
 		
 EditorWidget.registerType( "ScriptEditor", ScriptEditor )
+
+Widget._parseRCStyle( "widget '*gafferScriptEditorInput' style 'gafferTextEntry'" )

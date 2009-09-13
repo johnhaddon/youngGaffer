@@ -1,6 +1,8 @@
 from __future__ import with_statement
 import gtk
 
+import IECore
+
 import Gaffer
 import GafferUI
 from GafferUI import EditorWidget, GraphGadget, GadgetWidget
@@ -10,7 +12,7 @@ class GraphEditor( EditorWidget ) :
 	def __init__( self, scriptNode=None ) :
 	
 		self.__gadgetWidget = GadgetWidget( cameraMode = GadgetWidget.CameraMode.Mode2D )
-		self.__gadgetWidget.setBackgroundColor( self._defaultBGColors[0] )
+		self.__gadgetWidget.setBackgroundColor( IECore.Color3f( 0.07 ) )
 		
 		EditorWidget.__init__( self, self.__gadgetWidget.gtkWidget(), scriptNode )
 		

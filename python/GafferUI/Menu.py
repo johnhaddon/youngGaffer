@@ -6,8 +6,6 @@ from IECore import curry
 from Widget import Widget
 import CamelCase
 
-## \todo Decide how this interacts with the other UI components to
-# popup when wanted.
 class Menu( Widget ) :
 
 	def __init__( self, definition ) :
@@ -121,9 +119,29 @@ class Menu( Widget ) :
 												
 						menuItem.set_sensitive( active )
 				
+				menuItem.set_name( "aaaa" )
 				menuItem.show()
 				menu.append( menuItem )
 						
 				done.add( name )
-		
-		Widget._setDefaultColors( menu, True )
+				
+import IECore
+
+Widget._parseRCStyle(
+
+	"""
+	style "gafferMenuItem"
+	{
+		fg[INSENSITIVE] = $fgInsensitive
+		text[INSENSITIVE] = $fgInsensitive
+	}
+
+	widget_class "*<GtkMenuItem>*" style "gafferMenuItem"
+	""",
+	
+	{
+		"fgInsensitive" : Widget._gtkRCColor( IECore.Color3f( 0.1 ) ),
+	}
+
+)
+

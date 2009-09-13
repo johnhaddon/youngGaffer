@@ -38,8 +38,6 @@ class ScriptWindow( GafferUI.Window ) :
 	
 		self.__updateTitle()
 
-		self._setDefaultColors( self.gtkWidget() )
-
 		ScriptWindow.__instances.append( self )
 
 	## \todo Implement setScript() - and decide on naming so it matches the Editor method (getScriptNode)

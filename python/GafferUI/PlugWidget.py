@@ -28,7 +28,6 @@ class PlugWidget( Widget ) :
 
 		labelEventBox = gtk.EventBox()
 		labelEventBox.add( label )
-		self._setDefaultColors( labelEventBox, True )
 		
 		self.__gtkHBox.pack_start( labelEventBox, False )			
 		if self.__valueWidget :

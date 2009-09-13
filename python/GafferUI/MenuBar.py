@@ -43,6 +43,4 @@ class MenuBar( Widget ) :
 					self.__subMenus.append( menu )
 					
 				done.add( name )
-				
-		Widget._setDefaultColors( self.gtkWidget(), True )
 					

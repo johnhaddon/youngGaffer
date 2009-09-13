@@ -94,8 +94,6 @@ class Splittable( ContainerWidget ) :
 		if child :
 			self.__subPanels[childSubPanelIndex].setChild( child )
 		
-		Widget._setDefaultColors( self.__paned )
-
 		self.__paned.show()
 		self.__eventBox.add( self.__paned )
 				
@@ -195,3 +193,16 @@ class Splittable( ContainerWidget ) :
 		
 			self.__paned.set_position( int( size * self.__positionToSetOnAllocate ) )
 			self.__positionToSetOnAllocate = None
+
+Widget._parseRCStyle(
+
+	"""
+	style "gafferPaned" = "gafferWidget"
+	{
+		GtkPaned::handle-size = 3
+	}
+
+	widget_class "*<GtkPaned>" style "gafferPaned"
+	""",
+
+)
