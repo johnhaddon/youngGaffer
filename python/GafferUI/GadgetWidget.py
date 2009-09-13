@@ -455,7 +455,7 @@ class GadgetWidget( GLWidget ) :
 			elif gtkEvent.type==gtk.gdk.KEY_PRESS :
 				gadgetEvent = KeyEvent()
 			else :
-				raise ValueError( "Unsupported event type" )
+				raise ValueError( "Unsupported event type " + str( gtkEvent.type ) )
 		
 		if isinstance( gadgetEvent, ModifiableEvent ) :
 			gadgetEvent.modifiers = GadgetWidget.__gtkStateToEventModifiers( gtkEvent.state )
