@@ -513,7 +513,7 @@ manifest = [
 	"bin/gaffer",
 	"bin/gaffer.py",
 	"apps/cli/1/cli.py",
-	"apps/light/1/light.py",
+	"apps/gui/1/gui.py",
 	"apps/test/1/test.py",
 	"apps/view/1/view.py",
 	"lib/libboost_signals" + boostLibSuffix + ".dylib",
