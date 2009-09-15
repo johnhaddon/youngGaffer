@@ -77,6 +77,9 @@ from SplinePlugValueWidget import SplinePlugValueWidget
 from SplineEditor import SplineEditor
 import SLOMenu
 from ShowURL import showURL
+from Label import Label
+from URLWidget import URLWidget
+from AboutWindow import AboutWindow
 import ApplicationMenu
 
 ## \todo Move the settings munging somewhere else
