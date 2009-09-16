@@ -6,7 +6,7 @@ import GafferUI
 
 class URLWidget( GafferUI.Widget ) :
 
-	def __init__( self, url="", label=None ) :
+	def __init__( self, url="", label=None, font={} ) :
 	
 		GafferUI.Widget.__init__( self, gtk.EventBox() )
 
@@ -24,7 +24,17 @@ class URLWidget( GafferUI.Widget ) :
 		
 		self.__url = url
 		self.__labelText = label
+		self.__font = font
 		self.__updateMarkup()
+
+	def setFont( self, **kw ) :
+	
+		self.__font = kw
+		self.__updateMarkup()
+		
+	def getFont( self ) :
+	
+		return self.__font
 
 	def getURL( self ) :
 	
@@ -61,8 +71,9 @@ class URLWidget( GafferUI.Widget ) :
 	def __updateMarkup( self ) :
 	
 		text = self.getLabel() or self.getURL()
+		font = self._pangoFont( **self.__font )
 		if self.__label.state==gtk.STATE_PRELIGHT :
-			self.__label.set_markup( "<span underline='double' underline_color='#FF0000'>" + text + "</span>" )
+			self.__label.set_markup( "<span underline='double' underline_color='#FF0000' " + font + ">" + text + "</span>" )
 		else :
-			self.__label.set_markup( "<span underline='single'>" + text + "</span>" )
+			self.__label.set_markup( "<span underline='single' " + font + ">" + text + "</span>" )
 

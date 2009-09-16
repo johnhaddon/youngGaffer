@@ -13,9 +13,11 @@ class AboutWindow( GafferUI.Window ) :
 		frame.setChild( column )
 		
 		name = GafferUI.Label( text = about.name() + " " + about.versionString() )
+		name.setFont( size=GafferUI.Widget.FontSize.Large, weight=GafferUI.Widget.FontWeight.Bold )
 		column.append( name )
 				
 		copy = GafferUI.Label( text = about.copyright() )
+		copy.setFont( size=GafferUI.Widget.FontSize.Medium, weight=GafferUI.Widget.FontWeight.Bold )
 		column.append( copy )
 		
 		url = GafferUI.URLWidget( about.url() )
@@ -43,6 +45,7 @@ class AboutWindow( GafferUI.Window ) :
 			for d in dependencies :
 			
 				name = GafferUI.Label( text = d["name"] )
+				name.setFont( size=name.FontSize.Medium, weight=name.FontWeight.Bold )
 				depColumn.append( name )
 				
 				if "license" in d :

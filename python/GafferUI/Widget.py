@@ -111,7 +111,29 @@ class Widget( object ) :
 		s = t.safe_substitute( substitutions )
 		gtk.rc_parse_string( s )
 		gtk.rc_reset_styles( gtk.settings_get_default() )
-		
+	
+	FontSize = IECore.Enum.create( "Small", "Medium", "Large" )
+	FontWeight = IECore.Enum.create( "Light", "Normal", "Bold" )
+	@staticmethod
+	def _pangoFont( size=FontSize.Medium, weight=FontWeight.Normal ) :
+	
+		return string.Template(
+			'font_family="sans" style="normal" weight="$weight" size="$size"'
+		).substitute(
+			{
+				"weight" : {
+					Widget.FontWeight.Light : "light",
+					Widget.FontWeight.Normal : "normal",
+					Widget.FontWeight.Bold : "bold",
+				}[weight],
+				"size" : {
+					Widget.FontSize.Small : str( 9 * 1000 ),
+					Widget.FontSize.Medium : str( 11 * 1000 ),
+					Widget.FontSize.Large : str( 14 * 1000 ),
+				}[size]
+			}
+		)
+			
 Widget._parseRCStyle(
 
 	"""
