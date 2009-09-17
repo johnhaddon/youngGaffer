@@ -53,6 +53,16 @@ class Window( GafferUI.ContainerWidget ) :
 	def getChild( self ) :
 	
 		return self.__child
+	
+	## Adding a child window causes the child to stay
+	# on top of the parent at all times. This is useful for
+	# preventing dialogues and the like from disappearing behind
+	# the main window.
+	def addChildWindow( self, childWindow ) :
+	
+		assert( isinstance( childWindow, Window ) )
+		
+		childWindow.gtkWidget().set_transient_for( self.gtkWidget() )
 		
 	def setResizeable( self, resizeable ) :
 	

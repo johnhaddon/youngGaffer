@@ -63,8 +63,19 @@ class WindowTest( unittest.TestCase ) :
 		self.assert_( w1.getChild() is None )
 		self.assert_( w2.getChild() is t )
 		self.assert_( GafferUI.Widget.owner( t.gtkWidget() ) is t )
+	
+	def testWindowParent( self ) :
+	
+		w1 = GafferUI.Window()
+		w2 = GafferUI.Window()
 		
-			
+		self.failUnless( w1.parent() is None )
+		self.failUnless( w2.parent() is None )
+		
+		w1.addChildWindow( w2 )
+		self.failUnless( w1.parent() is None )
+		self.failUnless( w2.parent() is w1 )
+
 if __name__ == "__main__":
 	unittest.main()
 	

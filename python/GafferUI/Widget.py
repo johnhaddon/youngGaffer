@@ -45,7 +45,9 @@ class Widget( object ) :
 		while w :
 					
 			if isinstance( w, gtk.Menu ) :
-				w = w.get_attach_widget()	
+				w = w.get_attach_widget()
+			elif isinstance( w, gtk.Window ) :
+				w = w.get_transient_for()
 			else :
 				w = w.get_parent()
 		

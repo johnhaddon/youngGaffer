@@ -27,4 +27,6 @@ def about( menu ) :
 		
 		__aboutWindow = GafferUI.AboutWindow( Gaffer.About )
 		
-	__aboutWindow.show()	
+	scriptWindow = menu.ancestor( GafferUI.ScriptWindow )
+	scriptWindow.addChildWindow( __aboutWindow )
+	__aboutWindow.show()
