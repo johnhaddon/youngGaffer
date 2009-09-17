@@ -28,17 +28,19 @@ def new( menu ) :
 # has a ScriptWindow in its ancestry.
 def open( menu ) :
 
+	scriptWindow = menu.ancestor( GafferUI.ScriptWindow )
+	
 	path = Gaffer.FileSystemPath( "/" )
 	path.addFilter( Gaffer.FileNamePathFilter( [ "*.gfr" ] ) )
 	path.addFilter( Gaffer.FileNamePathFilter( [ re.compile( "^[^.].*" ) ], leafOnly=False ) )
 	dialogue = GafferUI.PathChooserDialogue( path, title="Open script", confirmLabel="Open" )
+	scriptWindow.addChildWindow( dialogue )
 	path = dialogue.waitForPath()
 	dialogue.close()		
 
 	if not path :
 		return
 
-	scriptWindow = menu.ancestor( GafferUI.ScriptWindow )
 	currentScript = scriptWindow.getScript()
 	application = scriptWindow.getScript().ancestor( Gaffer.ApplicationRoot.staticTypeId() )
 	
@@ -76,6 +78,7 @@ def saveAs( menu ) :
 	path.addFilter( Gaffer.FileNamePathFilter( [ re.compile( "^[^.].*" ) ], leafOnly=False ) )
 
 	dialogue = GafferUI.PathChooserDialogue( path, title="Save script", confirmLabel="Save" )
+	scriptWindow.addChildWindow( dialogue )
 	path = dialogue.waitForPath()
 	dialogue.close()		
 
