@@ -29,6 +29,7 @@ class ColorPlugValueWidget( GafferUI.PlugValueWidget ) :
 		if not self.__colorChooserDialogue :	
 			self.__colorChooserDialogue = GafferUI.ColorChooserDialogue()
 		
+		self.ancestor( GafferUI.Window ).addChildWindow( self.__colorChooserDialogue )
 		self.__colorChooserDialogue.setTitle( self.getPlug().relativeName( self.getPlug().ancestor( Gaffer.ScriptNode.staticTypeId() ) ) )
 		self.__colorChooserDialogue.colorChooser().setColor( self.getPlug().getValue() )
 		self.__colorChooserDialogue.colorChooser().setInitialColor( self.getPlug().getValue() )
