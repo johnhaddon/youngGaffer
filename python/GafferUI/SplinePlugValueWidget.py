@@ -35,6 +35,7 @@ class SplinePlugValueWidget( GafferUI.PlugValueWidget ) :
 			
 			scriptNode = self.getPlug().ancestor( Gaffer.ScriptNode.staticTypeId() )
 				
+			self.ancestor( GafferUI.Window ).addChildWindow( self.__editorWindow )
 			self.__editorWindow.setTitle( self.getPlug().relativeName( scriptNode ) )
 			self.__editor.splines().clear()
 			self.__editor.splines().add( self.getPlug() )
