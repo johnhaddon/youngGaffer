@@ -39,7 +39,7 @@ class AboutWindow( GafferUI.Window ) :
 			depColumn.append( GafferUI.Label(
 				about.name() + " includes code from several open source projects.\n"
 				"Specific licensing information, credits, downloads and\n"
-				"urls are provided for each project below."
+				"URLs are provided for each project below."
 			) )
 			
 			for d in dependencies :
