@@ -275,7 +275,7 @@ if depEnv["BUILD_GLEW"] :
 	runCommand( "cd $GLEW_SRC_DIR && make install GLEW_DEST=$BUILD_DIR" )
 	
 if depEnv["BUILD_CORTEX"] :
-	runCommand( "cd $CORTEX_SRC_DIR; /usr/local/bin/python /opt/local/bin/scons -j 2 install INSTALL_PREFIX=$BUILD_DIR INSTALL_PYTHON_DIR=$BUILD_DIR/lib/python2.6/site-packages PYTHON_CONFIG=$BUILD_DIR/bin/python2.6-config BOOST_INCLUDE_PATH=$BUILD_DIR/include/boost-1_38 LIBPATH=$BUILD_DIR/lib BOOST_LIB_SUFFIX=-xgcc40-mt-1_38 OPENEXR_INCLUDE_PATH=$BUILD_DIR/include FREETYPE_INCLUDE_PATH=$BUILD_DIR/include/freetype2 RMAN_ROOT=/Applications/Graphics/3Delight-6.5.52 WITH_GL=1 GLEW_INCLUDE_PATH=$BUILD_DIR/include/GL DOXYGEN=/opt/local/bin/doxygen INSTALL_DOC_DIR=$BUILD_DIR/doc/cortex" )
+	runCommand( "cd $CORTEX_SRC_DIR; /usr/local/bin/python /opt/local/bin/scons -j 2 install INSTALL_PREFIX=$BUILD_DIR INSTALL_PYTHON_DIR=$BUILD_DIR/lib/python2.6/site-packages PYTHON_CONFIG=$BUILD_DIR/bin/python2.6-config BOOST_INCLUDE_PATH=$BUILD_DIR/include/boost-1_38 LIBPATH=$BUILD_DIR/lib BOOST_LIB_SUFFIX=-xgcc40-mt-1_38 OPENEXR_INCLUDE_PATH=$BUILD_DIR/include FREETYPE_INCLUDE_PATH=$BUILD_DIR/include/freetype2 RMAN_ROOT=/Applications/Graphics/3Delight-8.5.9 WITH_GL=1 GLEW_INCLUDE_PATH=$BUILD_DIR/include/GL DOXYGEN=/opt/local/bin/doxygen INSTALL_DOC_DIR=$BUILD_DIR/doc/cortex" )
 	
 if depEnv["BUILD_GTK"] :
 	runCommand( "cd $GETTEXT_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
@@ -450,7 +450,7 @@ for module in ( "GafferTest", "GafferUITest" ) :
 scriptsInstall = env.Install( "$BUILD_DIR/bin", [ "bin/gaffer", "bin/gaffer.py" ] )
 env.Alias( "build", scriptsInstall )
 
-for app in ( "gui", "view", "test", "cli" ) :
+for app in ( "gui", "view", "test", "cli", "license" ) :
 	appInstall = env.Install( "$BUILD_DIR/apps/%s/1" % app, "apps/%s/1/%s.py" % ( app, app ) )
 	env.Alias( "build", appInstall )
 
@@ -516,6 +516,7 @@ manifest = [
 	"apps/gui/1/gui.py",
 	"apps/test/1/test.py",
 	"apps/view/1/view.py",
+	"apps/license/1/license.py",
 	"lib/libboost_signals" + boostLibSuffix + ".dylib",
 	"lib/libboost_thread" + boostLibSuffix + ".dylib",
 	"lib/libboost_wave" + boostLibSuffix + ".dylib",
