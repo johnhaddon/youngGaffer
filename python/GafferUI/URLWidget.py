@@ -6,7 +6,7 @@ import GafferUI
 
 class URLWidget( GafferUI.Widget ) :
 
-	def __init__( self, url="", label=None, font={} ) :
+	def __init__( self, url="", label=None, font={}, alignment=IECore.V2f( 0.5, 0.5 ) ) :
 	
 		GafferUI.Widget.__init__( self, gtk.EventBox() )
 
@@ -26,6 +26,15 @@ class URLWidget( GafferUI.Widget ) :
 		self.__labelText = label
 		self.__font = font
 		self.__updateMarkup()
+		self.setAlignment( alignment )
+
+	def setAlignment( self, alignment ) :
+	
+		self.__label.set_alignment( alignment[0], alignment[1] )
+		
+	def getAlignment( self ) :
+	
+		return IECore.V2f( *self.__label.get_alignment() )
 
 	def setFont( self, **kw ) :
 	

@@ -1,17 +1,25 @@
 import gtk
+
+import IECore
+
 import GafferUI
 
 class Label( GafferUI.Widget ) :
 
-	def __init__( self, text="", font={} ) :
+	def __init__( self, text="", font={}, alignment=IECore.V2f( 0.5, 0.5 ) ) :
 	
 		GafferUI.Widget.__init__( self, gtk.Label( text ) )
-		
-		#self.gtkWidget().set_alignment( 0, 0.5 )
-		#self.gtkWidget().set_line_wrap( True )
-		#self.gtkWidget().set_max_width_chars( 500 )
 
 		self.setFont( **font )
+		self.setAlignment( alignment )
+
+	def setAlignment( self, alignment ) :
+	
+		self.gtkWidget().set_alignment( alignment[0], alignment[1] )
+		
+	def getAlignment( self ) :
+	
+		return IECore.V2f( *self.gtkWidget().get_alignment() )
 
 	def setFont( self, **kw ) :
 	
