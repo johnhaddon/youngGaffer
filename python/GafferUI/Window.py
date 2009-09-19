@@ -4,7 +4,7 @@ import GafferUI
 
 class Window( GafferUI.ContainerWidget ) :
 
-	def __init__( self, title="GafferUI.Window" ) :
+	def __init__( self, title="GafferUI.Window", resizeable=True ) :
 	
 		GafferUI.ContainerWidget.__init__( self, gtk.Window( gtk.WINDOW_TOPLEVEL ) )
 		
@@ -12,10 +12,11 @@ class Window( GafferUI.ContainerWidget ) :
 		self.__child = None
 		
 		self.setTitle( title )
+		self.setResizeable( resizeable )
 
 		self.__closedSignal = GafferUI.WidgetSignal()
 		self.gtkWidget().connect( "delete-event", self.__deleted )
-	
+		
 	def show( self ) :
 	
 		GafferUI.ContainerWidget.show( self )
