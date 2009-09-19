@@ -35,6 +35,14 @@ class About :
 	
 		return "http://haddonindustries.ca"
 	
+	@staticmethod
+	def dependenciesPreamble() :
+	
+		return ( About.name() + " includes code from several open source projects. "
+			"Specific licensing information, credits, source downloads and "
+			"URLs are provided for each project below."
+		)
+		
 	@staticmethod	
 	def dependencies() :
 	
@@ -44,7 +52,7 @@ class About :
 				"name" : "atk",
 				"url" : "http://www.gtk.org/",
 				"license" : "$GAFFER_ROOT/doc/licenses/atk",
-				"download" : About.url() + "/downloads/opensource/atk-1.26.0.tar.gz",
+				"source" : About.url() + "/downloads/opensource/atk-1.26.0.tar.gz",
 			},
 			
 			{
@@ -57,7 +65,7 @@ class About :
 				"name" : "cairo",
 				"url" : "http://cairographics.org/",
 				"license" : "$GAFFER_ROOT/doc/licenses/cairo",
-				"download" : About.url() + "/downloads/opensource/cairo-1.8.6.tar.gz",
+				"source" : About.url() + "/downloads/opensource/cairo-1.8.6.tar.gz",
 			},
 			
 			{
@@ -101,14 +109,14 @@ class About :
 				"name" : "gtk+",
 				"url" : "http://www.gtk.org/",
 				"license" : "$GAFFER_ROOT/doc/licenses/gtk+",
-				"download" : About.url() + "/downloads/opensource/gtk+-2.16.1.tar.gz",
+				"source" : About.url() + "/downloads/opensource/gtk+-2.16.1.tar.gz",
 			},
 			
 			{
 				"name" : "gtkglext",
 				"url" : "http://gtkglext.sourceforge.net/",
 				"license" : "$GAFFER_ROOT/doc/licenses/gtkglext",
-				"download" : About.url() + "/downloads/opensource/gtkglext-1.2.0.tar.gz",
+				"source" : About.url() + "/downloads/opensource/gtkglext-1.2.0.tar.gz",
 			},
 			
 			{
@@ -140,7 +148,7 @@ class About :
 				"name" : "pango",
 				"url" : "http://www.pango.org/",
 				"license" : "$GAFFER_ROOT/doc/licenses/pango",
-				"download" : About.url() + "/downloads/opensource/pango-1.24.1.tar.gz",
+				"source" : About.url() + "/downloads/opensource/pango-1.24.1.tar.gz",
 			},
 			
 			{
@@ -153,28 +161,28 @@ class About :
 				"name" : "pycairo",
 				"url" : "http://cairographics.org/",
 				"license" : "$GAFFER_ROOT/doc/licenses/pycairo",
-				"download" : About.url() + "/downloads/opensource/pycairo-1.8.4.tar.gz",
+				"source" : About.url() + "/downloads/opensource/pycairo-1.8.4.tar.gz",
 			},
 			
 			{
 				"name" : "pygobject",
 				"url" : "http://www.pygtk.org/",
 				"license" : "$GAFFER_ROOT/doc/licenses/pygobject",
-				"download" : About.url() + "/downloads/opensource/pygobject-2.16.1.tar.gz",
+				"source" : About.url() + "/downloads/opensource/pygobject-2.16.1.tar.gz",
 			},
 			
 			{
 				"name" : "pygtk",
 				"url" : "http://www.pygtk.org/",
 				"license" : "$GAFFER_ROOT/doc/licenses/pygtk",
-				"download" : About.url() + "/downloads/opensource/pygtk-2.14.1.tar.gz",
+				"source" : About.url() + "/downloads/opensource/pygtk-2.14.1.tar.gz",
 			},
 			
 			{
 				"name" : "pygtkglext",
 				"url" : "http://gtkglext.sourceforge.net/",
 				"license" : "$GAFFER_ROOT/doc/licenses/pygtkglext",
-				"download" : About.url() + "/downloads/opensource/pygtkglext-1.1.0.tar.gz",
+				"source" : About.url() + "/downloads/opensource/pygtkglext-1.1.0.tar.gz",
 			},
 			
 			{

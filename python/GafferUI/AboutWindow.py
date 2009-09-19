@@ -1,5 +1,7 @@
 import os
 
+import IECore
+
 import GafferUI
 
 class AboutWindow( GafferUI.Window ) :
@@ -26,7 +28,7 @@ class AboutWindow( GafferUI.Window ) :
 		dependencies = about.dependencies()
 		if dependencies :
 		
-			collapsible = GafferUI.Collapsible( label="Dependencies", collapsed=True )
+			collapsible = GafferUI.Collapsible( label="Dependencies", collapsed=False )
 			scrollable = GafferUI.ScrolledContainer(
 				horizontalMode=GafferUI.ScrolledContainer.ScrollMode.Never,
 				verticalMode=GafferUI.ScrolledContainer.ScrollMode.Always,
@@ -37,30 +39,42 @@ class AboutWindow( GafferUI.Window ) :
 			collapsible.setChild( scrollable )
 			
 			depColumn.append( GafferUI.Label(
-				about.name() + " includes code from several open source projects.\n"
-				"Specific licensing information, credits, downloads and\n"
-				"URLs are provided for each project below."
-			) )
+					IECore.StringUtil.wrap(
+						about.dependenciesPreamble(),
+						60
+					),
+					alignment = IECore.V2f( 0 ),
+				) 
+			)
 			
 			for d in dependencies :
 			
-				name = GafferUI.Label( text = d["name"] )
+				spacer = GafferUI.Label( text = "" )
+				depColumn.append( spacer )
+			
+				name = GafferUI.Label( text = d["name"], alignment=IECore.V2f( 0 ) )
 				name.setFont( size=name.FontSize.Medium, weight=name.FontWeight.Bold )
 				depColumn.append( name )
 				
+				if "credit" in d :
+					credit = GafferUI.Label( text=IECore.StringUtil.wrap( d["credit"], 60 ), alignment=IECore.V2f( 0 ) )
+					depColumn.append( credit )
+				
 				if "license" in d :
-					license = GafferUI.URLWidget( url="file://" + os.path.expandvars( d["license"] ), label="License" )
+					license = GafferUI.URLWidget( url="file://" + os.path.expandvars( d["license"] ), label="License", alignment=IECore.V2f( 0 ) )
 					depColumn.append( license )
 					
 				if "url" in d :
-					url = GafferUI.URLWidget( d["url"] )
+					url = GafferUI.URLWidget( d["url"], alignment=IECore.V2f( 0 ) )
 					depColumn.append( url )
 					
-				if "download" in d :
-					download = GafferUI.URLWidget( url=d["download"], label="Download" )
-					depColumn.append( download )
+				if "source" in d :
+					source = GafferUI.URLWidget( url=d["source"], label="Source", alignment=IECore.V2f( 0 ) )
+					depColumn.append( source )
 			
 			column.append( collapsible, expand=True )
 
 		self.setChild( frame )
+		
+		#self.setResizeable( False )
 
