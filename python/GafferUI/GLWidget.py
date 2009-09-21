@@ -13,7 +13,7 @@ import IECore
 import GafferUI
 
 ## The GLWidget is a base class for all widgets which wish to draw using OpenGL.
-# Derived classes override the draw() method to achieve this.
+# Derived classes override the _draw() method to achieve this.
 class GLWidget( GafferUI.Widget ) :
 
 	## This enum defines the optional elements of the GL buffer used
@@ -49,7 +49,7 @@ class GLWidget( GafferUI.Widget ) :
 
 	## Derived classes must override this to draw their contents using
 	# OpenGL calls.
-	def draw( self ) :
+	def _draw( self ) :
 	
 		raise NotImplementedError
 		
@@ -81,7 +81,7 @@ class GLWidget( GafferUI.Widget ) :
 		if not drawable.gl_begin( context )  :
 			return
 			
-		self.draw()
+		self._draw()
 		
 		if drawable.is_double_buffered() :
 			drawable.swap_buffers()

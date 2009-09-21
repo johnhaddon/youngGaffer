@@ -110,7 +110,7 @@ class GadgetWidget( GafferUI.GLWidget ) :
 	
 		return self.__backgroundColor
 	
-	def draw( self ) :
+	def _draw( self ) :
 	
 		bg = self.__backgroundColor.linearToSRGB()
 		glClearColor( bg[0], bg[1], bg[2], 0.0 )
