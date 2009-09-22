@@ -74,13 +74,12 @@ class GadgetWidget( GafferUI.GLWidget ) :
 		
 		if self.__gadget :
 			self.__renderRequestConnection = self.__gadget.renderRequestSignal().connect( self.__renderRequest )
-			bound = self.__gadget.bound()
 		else :
 			self.__renderRequestConnection = None
-			bound = IECore.Box3f()
 			
-		if not bound.isEmpty() :
-			self.__cameraController.frame( bound )
+		framingBound = self._framingBound()
+		if not framingBound.isEmpty() :
+			self.__cameraController.frame( framingBound )
 		
 	def getGadget( self ) :
 	
@@ -110,6 +109,15 @@ class GadgetWidget( GafferUI.GLWidget ) :
 	
 		return self.__backgroundColor
 	
+	## Returns the bounding box which will be framed when "f" is pressed. This
+	# may be overridden in derived classes to implement more intelligent framing.
+	def _framingBound( self ) :
+	
+		if self.__gadget :
+			return self.__gadget.bound()
+		else :
+			return IECore.Box3f()
+			
 	def _draw( self ) :
 	
 		bg = self.__backgroundColor.linearToSRGB()
@@ -250,7 +258,7 @@ class GadgetWidget( GafferUI.GLWidget ) :
 		
 		# 'f' for framing	
 		if event.keyval==102 :
-			bound = self.__gadget.bound()
+			bound = self._framingBound()
 			if not bound.isEmpty() :
 				self.__cameraController.frame( bound )
 				widget.queue_draw()
