@@ -26,6 +26,9 @@ class GraphGadget : public ContainerGadget
 
 		IE_CORE_DECLARERUNTIMETYPEDEXTENSION( GraphGadget, GraphGadgetTypeId, ContainerGadget );
 
+		NodeGadgetPtr nodeGadget( Gaffer::ConstNodePtr node );
+		ConstNodeGadgetPtr nodeGadget( Gaffer::ConstNodePtr node ) const;
+
 	protected :
 
 		void doRender( IECore::RendererPtr renderer ) const;
@@ -44,7 +47,7 @@ class GraphGadget : public ContainerGadget
 		bool dragUpdate( GadgetPtr gadget, const ButtonEvent &event );
 		
 		void addNodeGadget( Gaffer::Node *node );
-		NodeGadget *nodeGadget( Gaffer::Node *node );
+		NodeGadget *findNodeGadget( const Gaffer::Node *node ) const;
 		void updateNodeGadgetTransform( NodeGadget *nodeGadget );
 		
 		void addConnectionGadget( Gaffer::Plug *dstPlug );
@@ -56,7 +59,7 @@ class GraphGadget : public ContainerGadget
 	
 		Gaffer::Node *m_graphRoot;
 		
-		typedef std::map<Gaffer::Node *, NodeGadget *> NodeGadgetMap;
+		typedef std::map<const Gaffer::Node *, NodeGadget *> NodeGadgetMap;
 		NodeGadgetMap m_nodeGadgets;
 	
 		typedef std::map<const Gaffer::Plug *, ConnectionGadget *> ConnectionGadgetMap;

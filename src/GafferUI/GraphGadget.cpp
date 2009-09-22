@@ -54,6 +54,16 @@ GraphGadget::~GraphGadget()
 {
 }
 
+NodeGadgetPtr GraphGadget::nodeGadget( Gaffer::ConstNodePtr node )
+{
+	return findNodeGadget( node.get() );
+}
+
+ConstNodeGadgetPtr GraphGadget::nodeGadget( Gaffer::ConstNodePtr node ) const
+{
+	return findNodeGadget( node.get() );
+}
+
 void GraphGadget::doRender( IECore::RendererPtr renderer ) const
 {
 	// render connection first so they go underneath
@@ -101,7 +111,7 @@ void GraphGadget::childRemoved( GraphComponent *parent, GraphComponent *child )
 	Gaffer::Node *node = IECore::runTimeCast<Gaffer::Node>( child );
 	if( node )
 	{
-		NodeGadget *g = nodeGadget( node );
+		NodeGadget *g = findNodeGadget( node );
 		if( g )
 		{
 			removeChild( g );
@@ -134,7 +144,7 @@ void GraphGadget::plugSet( Gaffer::PlugPtr plug )
 	if( name=="__uiX" || name=="__uiY" )
 	{
 		Gaffer::NodePtr node = plug->node();
-		NodeGadget *ng = nodeGadget( node.get() );
+		NodeGadget *ng = findNodeGadget( node.get() );
 		if( ng )
 		{
 			updateNodeGadgetTransform( ng );
@@ -305,9 +315,9 @@ void GraphGadget::addNodeGadget( Gaffer::Node *node )
 	updateNodeGadgetTransform( nodeGadget.get() );
 }
 
-NodeGadget *GraphGadget::nodeGadget( Gaffer::Node *node )
+NodeGadget *GraphGadget::findNodeGadget( const Gaffer::Node *node ) const
 {
-	NodeGadgetMap::iterator it = m_nodeGadgets.find( node );
+	NodeGadgetMap::const_iterator it = m_nodeGadgets.find( node );
 	if( it==m_nodeGadgets.end() )
 	{
 		return 0;
@@ -347,8 +357,8 @@ void GraphGadget::addConnectionGadget( Gaffer::Plug *dstPlug )
 	
 	Gaffer::NodePtr srcNode = srcPlug->node();
 	
-	NodulePtr srcNodule = nodeGadget( srcNode.get() )->nodule( srcPlug );
-	NodulePtr dstNodule = nodeGadget( dstNode.get() )->nodule( dstPlug );
+	NodulePtr srcNodule = findNodeGadget( srcNode.get() )->nodule( srcPlug );
+	NodulePtr dstNodule = findNodeGadget( dstNode.get() )->nodule( dstPlug );
 	
 	if( !(srcNodule && dstNodule ) )
 	{

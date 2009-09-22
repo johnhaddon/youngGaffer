@@ -2,6 +2,7 @@
 
 #include "GafferUIBindings/GraphGadgetBinding.h"
 #include "GafferUI/GraphGadget.h"
+#include "GafferUI/NodeGadget.h"
 
 #include "Gaffer/Node.h"
 
@@ -15,5 +16,6 @@ void GafferUIBindings::bindGraphGadget()
 {
 	IECore::RunTimeTypedClass<GraphGadget>()
 		.def( init<Gaffer::NodePtr>() )
+		.def( "nodeGadget", (NodeGadgetPtr (GraphGadget::*)( Gaffer::ConstNodePtr ))&GraphGadget::nodeGadget )
 	;
 }
