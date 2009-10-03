@@ -108,8 +108,8 @@ class Plug : public GraphComponent
 
 IE_CORE_DECLAREPTR( Plug );
 
-#include "Gaffer/Plug.inl"
-
 } // namespace Gaffer
+
+#include "Gaffer/Plug.inl"
 
 #endif // GAFFER_PLUG_H
