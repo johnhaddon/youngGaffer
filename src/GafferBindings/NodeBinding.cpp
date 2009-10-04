@@ -94,7 +94,7 @@ class NodeWrapper : public Node, public IECore::Wrapper<Node>
 
 	public :
 		
-		NodeWrapper( PyObject *self, const std::string &name=staticTypeName(), const dict &inputs, const tuple &dynamicPlugs )
+		NodeWrapper( PyObject *self, const std::string &name, const dict &inputs, const tuple &dynamicPlugs )
 			:	Node( name ), IECore::Wrapper<Node>( self, this )
 		{
 			initNode( this, inputs, dynamicPlugs );
