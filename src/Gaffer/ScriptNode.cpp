@@ -11,7 +11,12 @@
 
 using namespace Gaffer;
 
+namespace Gaffer
+{
+
 GAFFER_DECLARECONTAINERSPECIALISATIONS( ScriptContainer, ScriptContainerTypeId )
+
+}
 
 IE_CORE_DEFINERUNTIMETYPED( ScriptNode );
 

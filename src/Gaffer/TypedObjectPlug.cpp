@@ -146,7 +146,12 @@ void TypedObjectPlug<T>::setFromInput()
 	setValue( getInput<TypedObjectPlug<T> >()->getValue() );
 }
 
+namespace Gaffer
+{
+
 SPECIALISE( ObjectPlug )
+
+}
 
 // explicit instantiation
 template class TypedObjectPlug<IECore::Object>;

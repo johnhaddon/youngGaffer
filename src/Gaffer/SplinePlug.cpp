@@ -256,9 +256,14 @@ typename SplinePlug<T>::YPlugType::ConstPtr SplinePlug<T>::pointYPlug( unsigned 
 	return p;
 }
 
+namespace Gaffer
+{
+
 // RunTimeTyped specialisation
 IECORE_RUNTIMETYPED_DEFINETEMPLATESPECIALISATION( SplineffPlug, SplineffPlugTypeId )
 IECORE_RUNTIMETYPED_DEFINETEMPLATESPECIALISATION( SplinefColor3fPlug, SplinefColor3fPlugTypeId )
+
+}
 
 // explicit instantiation
 template class SplinePlug<IECore::Splineff>;

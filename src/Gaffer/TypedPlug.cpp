@@ -138,9 +138,14 @@ void TypedPlug<T>::setFromInput()
 	setValue( getInput<TypedPlug<T> >()->getValue() );
 }
 
+namespace Gaffer
+{
+
 SPECIALISE( StringPlug )
 SPECIALISE( M33fPlug )
 SPECIALISE( M44fPlug )
+
+}
 
 // explicit instantiation
 template class TypedPlug<std::string>;

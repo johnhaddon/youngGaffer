@@ -10,6 +10,15 @@ using namespace Gaffer;
 template<typename T>
 const IECore::RunTimeTyped::TypeDescription<NumericPlug<T> > NumericPlug<T>::g_typeDescription;
 
+namespace Gaffer
+{
+
+// RunTimeTyped specialisation
+IECORE_RUNTIMETYPED_DEFINETEMPLATESPECIALISATION( IntPlug, IntPlugTypeId )
+IECORE_RUNTIMETYPED_DEFINETEMPLATESPECIALISATION( FloatPlug, FloatPlugTypeId )
+
+}
+
 template<class T>
 NumericPlug<T>::NumericPlug(
 	const std::string &name,
@@ -116,10 +125,6 @@ void NumericPlug<T>::setFromInput()
 			assert( 0 ); // shouldn't have connections of any other type
 	}
 }
-
-// RunTimeTyped specialisation
-IECORE_RUNTIMETYPED_DEFINETEMPLATESPECIALISATION( IntPlug, IntPlugTypeId )
-IECORE_RUNTIMETYPED_DEFINETEMPLATESPECIALISATION( FloatPlug, FloatPlugTypeId )
 
 // explicit instantiation
 template class NumericPlug<float>;
