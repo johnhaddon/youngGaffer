@@ -10,11 +10,11 @@ struct CatchingSlotCallerBase;
 template<typename Signal>
 struct CatchingSlotCallerBase<1, Signal>
 {
-	typename Signal::slot_result_type operator()( boost::python::object slot, typename Signal::arg2_type a2 )
+	typename Signal::slot_result_type operator()( boost::python::object slot, typename Signal::arg1_type a1 )
 	{
 		try
 		{
-			return boost::python::extract<typename Signal::slot_result_type>( slot( a2 ) )();
+			return boost::python::extract<typename Signal::slot_result_type>( slot( a1 ) )();
 		}
 		catch( const boost::python::error_already_set &e )
 		{
@@ -27,11 +27,11 @@ struct CatchingSlotCallerBase<1, Signal>
 template<typename Signal>
 struct CatchingSlotCallerBase<2, Signal>
 {
-	typename Signal::slot_result_type operator()( boost::python::object slot, typename Signal::arg2_type a2, typename Signal::arg3_type a3 )
+	typename Signal::slot_result_type operator()( boost::python::object slot, typename Signal::arg1_type a1, typename Signal::arg2_type a2 )
 	{
 		try
 		{
-			return boost::python::extract<typename Signal::slot_result_type>( slot( a2, a3 ) )();
+			return boost::python::extract<typename Signal::slot_result_type>( slot( a1, a2 ) )();
 		}
 		catch( const boost::python::error_already_set &e )
 		{
@@ -44,11 +44,11 @@ struct CatchingSlotCallerBase<2, Signal>
 template<typename Signal>
 struct CatchingSlotCallerBase<3, Signal>
 {
-	typename Signal::slot_result_type operator()( boost::python::object slot, typename Signal::arg2_type a2, typename Signal::arg3_type a3, typename Signal::arg4_type a4 )
+	typename Signal::slot_result_type operator()( boost::python::object slot, typename Signal::arg1_type a1, typename Signal::arg2_type a2, typename Signal::arg3_type a3 )
 	{
 		try
 		{
-			return boost::python::extract<typename Signal::slot_result_type>( slot( a2, a3, a4 ) )();
+			return boost::python::extract<typename Signal::slot_result_type>( slot( a1, a2, a3 ) )();
 		}
 		catch( const boost::python::error_already_set &e )
 		{

@@ -25,27 +25,27 @@ struct DefaultSlotCallerBase;
 template<typename Signal>
 struct DefaultSlotCallerBase<1, Signal>
 {
-	typename Signal::slot_result_type operator()( boost::python::object slot, typename Signal::arg2_type a2 )
+	typename Signal::slot_result_type operator()( boost::python::object slot, typename Signal::arg1_type a1 )
 	{
-		return boost::python::extract<typename Signal::slot_result_type>( slot( a2 ) )();
+		return boost::python::extract<typename Signal::slot_result_type>( slot( a1 ) )();
 	}
 };
 
 template<typename Signal>
 struct DefaultSlotCallerBase<2, Signal>
 {
-	typename Signal::slot_result_type operator()( boost::python::object slot, typename Signal::arg2_type a2, typename Signal::arg3_type a3 )
+	typename Signal::slot_result_type operator()( boost::python::object slot, typename Signal::arg1_type a1, typename Signal::arg2_type a2 )
 	{
-		return boost::python::extract<typename Signal::slot_result_type>( slot( a2, a3 ) )();
+		return boost::python::extract<typename Signal::slot_result_type>( slot( a1, a2 ) )();
 	}
 };
 
 template<typename Signal>
 struct DefaultSlotCallerBase<3, Signal>
 {
-	typename Signal::slot_result_type operator()( boost::python::object slot, typename Signal::arg2_type a2, typename Signal::arg3_type a3, typename Signal::arg4_type a4 )
+	typename Signal::slot_result_type operator()( boost::python::object slot, typename Signal::arg1_type a1, typename Signal::arg2_type a2, typename Signal::arg3_type a3 )
 	{
-		return boost::python::extract<typename Signal::slot_result_type>( slot( a2, a3, a4 ) )();
+		return boost::python::extract<typename Signal::slot_result_type>( slot( a1, a2, a3 ) )();
 	}
 };
 
@@ -64,9 +64,9 @@ struct SlotBase<1, Signal, Caller>
 		:	m_connection( connection )
 	{
 	}
-	typename Signal::slot_result_type operator()( typename Signal::arg2_type a2 )
+	typename Signal::slot_result_type operator()( typename Signal::arg1_type a1 )
 	{
-		return Caller()( m_connection->slot(), a2 );
+		return Caller()( m_connection->slot(), a1 );
 	}
 	Connection *m_connection;
 };
@@ -78,9 +78,9 @@ struct SlotBase<2, Signal, Caller>
 		:	m_connection( connection )
 	{
 	}
-	typename Signal::slot_result_type operator()( typename Signal::arg2_type a2, typename Signal::arg3_type a3 )
+	typename Signal::slot_result_type operator()( typename Signal::arg1_type a1, typename Signal::arg2_type a2 )
 	{
-		return Caller()( m_connection->slot(), a2, a3 );
+		return Caller()( m_connection->slot(), a1, a2 );
 	}
 	Connection *m_connection;
 };
@@ -92,9 +92,9 @@ struct SlotBase<3, Signal, Caller>
 		:	m_connection( connection )
 	{
 	}
-	typename Signal::slot_result_type operator()( typename Signal::arg2_type a2, typename Signal::arg3_type a3, typename Signal::arg4_type a4 )
+	typename Signal::slot_result_type operator()( typename Signal::arg1_type a1, typename Signal::arg2_type a2, typename Signal::arg3_type a3 )
 	{
-		return Caller()( m_connection->slot(), a2, a3, a4 );
+		return Caller()( m_connection->slot(), a1, a2, a3 );
 	}
 	Connection *m_connection;
 };

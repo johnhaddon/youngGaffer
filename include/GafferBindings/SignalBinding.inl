@@ -12,27 +12,27 @@ struct DefaultSignalCallerBase;
 template<typename Signal>
 struct DefaultSignalCallerBase<1, Signal>
 {
-	static typename Signal::result_type call( Signal &s, typename Signal::arg2_type a2 )
+	static typename Signal::result_type call( Signal &s, typename Signal::arg1_type a1 )
 	{
-		return s( a2 );
+		return s( a1 );
 	}
 };
 
 template<typename Signal>
 struct DefaultSignalCallerBase<2, Signal>
 {
-	static typename Signal::result_type call( Signal &s, typename Signal::arg2_type a2, typename Signal::arg3_type a3 )
+	static typename Signal::result_type call( Signal &s, typename Signal::arg1_type a1, typename Signal::arg2_type a2 )
 	{
-		return s( a2, a3 );
+		return s( a1, a2 );
 	}
 };
 
 template<typename Signal>
 struct DefaultSignalCallerBase<3, Signal>
 {
-	static typename Signal::result_type call( Signal &s, typename Signal::arg2_type a2, typename Signal::arg3_type a3, typename Signal::arg4_type a4 )
+	static typename Signal::result_type call( Signal &s, typename Signal::arg1_type a1, typename Signal::arg2_type a2, typename Signal::arg3_type a3 )
 	{
-		return s( a2, a3, a4 );
+		return s( a1, a2, a3 );
 	}
 };
 
