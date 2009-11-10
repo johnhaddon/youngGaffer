@@ -12,6 +12,10 @@ class cli( Gaffer.Application ) :
 
 		console = code.InteractiveConsole()
 		console.runsource( "import IECore; import Gaffer" )
-		console.interact( "Gaffer" )
+		
+		banner = Gaffer.About.name() + " " + Gaffer.About.versionString()
+		banner += "\n" + Gaffer.About.copyright()
+		
+		console.interact( banner )
 		
 		return 0
