@@ -17,7 +17,7 @@ class GraphEditor( GafferUI.EditorWidget ) :
 		
 		EditorWidget.__init__( self, self.__gadgetWidget.gtkWidget(), scriptNode )
 		
-		self.__gadgetWidget.connect( "button-press-event", self.__buttonPress )
+		self.__gadgetWidget.gtkWidget().connect( "button-press-event", self.__buttonPress )
 	
 	def setScriptNode( self, scriptNode ) :
 	
