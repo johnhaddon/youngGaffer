@@ -47,7 +47,7 @@ options.Add(
 options.Add(
 	"PYTHON_SRC_DIR",
 	"The location of the python source to be used if BUILD_PYTHON is specified.",
-	"$DEPENDENCIES_SRC_DIR/Python-2.6.1",
+	"$DEPENDENCIES_SRC_DIR/Python-2.6.3",
 )
 
 options.Add(
@@ -57,7 +57,7 @@ options.Add(
 options.Add(
 	"BOOST_SRC_DIR",
 	"The location of the boost source to be used if BUILD_BOOST is specified.",
-	"$DEPENDENCIES_SRC_DIR/boost_1_38_0",
+	"$DEPENDENCIES_SRC_DIR/boost_1_40_0",
 )
 
 options.Add(
@@ -123,11 +123,15 @@ options.Add(
 options.Add(
 	"CORTEX_SRC_DIR",
 	"The location of the boost source to be used if BUILD_CORTEX is specified.",
-	"$DEPENDENCIES_SRC_DIR/cortex/trunk",
+	"$DEPENDENCIES_SRC_DIR/cortex",
 )
 
 options.Add(
 	BoolVariable( "BUILD_GTK", "Set this to build gtk.", "$BUILD_DEPENDENCIES" )
+)
+
+options.Add(
+	BoolVariable( "BUILD_PKGCONFIG", "Set this to build the pkgconfig library.", "$BUILD_DEPENDENCIES" )
 )
 
 options.Add(
@@ -139,13 +143,13 @@ options.Add(
 options.Add(
 	"GLIB_SRC_DIR",
 	"The location of the glib source to be used if BUILD_GTK is specified.",
-	"$DEPENDENCIES_SRC_DIR/glib-2.20.1",
+	"$DEPENDENCIES_SRC_DIR/glib-2.22.2",
 )
 
 options.Add(
 	"ATK_SRC_DIR",
 	"The location of the atk source to be used if BUILD_GTK is specified.",
-	"$DEPENDENCIES_SRC_DIR/atk-1.26.0",
+	"$DEPENDENCIES_SRC_DIR/atk-1.28.0",
 )
 
 options.Add(
@@ -169,19 +173,25 @@ options.Add(
 options.Add(
 	"CAIRO_SRC_DIR",
 	"The location of the cairo source to be used if BUILD_GTK is specified.",
-	"$DEPENDENCIES_SRC_DIR/cairo-1.8.6",
+	"$DEPENDENCIES_SRC_DIR/cairo-1.8.8",
 )
 
 options.Add(
 	"PIXMAN_SRC_DIR",
 	"The location of the pixman source to be used if BUILD_GTK is specified.",
-	"$DEPENDENCIES_SRC_DIR/pixman-0.15.2",
+	"$DEPENDENCIES_SRC_DIR/pixman-0.16.2",
 )
 
 options.Add(
 	"PANGO_SRC_DIR",
 	"The location of the pango source to be used if BUILD_GTK is specified.",
-	"$DEPENDENCIES_SRC_DIR/pango-1.24.1",
+	"$DEPENDENCIES_SRC_DIR/pango-1.26.0",
+)
+
+options.Add(
+	"ICONV_SRC_DIR",
+	"The location of the libiconv source to be used if BUILD_GTK is specified.",
+	"$DEPENDENCIES_SRC_DIR/libiconv-1.13.1",
 )
 
 options.Add(
@@ -193,25 +203,25 @@ options.Add(
 options.Add(
 	"GTK_SRC_DIR",
 	"The location of the gtk source to be used if BUILD_GTK is specified.",
-	"$DEPENDENCIES_SRC_DIR/gtk+-2.16.1",
+	"$DEPENDENCIES_SRC_DIR/gtk+-2.18.3",
 )
 
 options.Add(
 	"PYGOBJECT_SRC_DIR",
 	"The location of the pygobject source to be used if BUILD_GTK is specified.",
-	"$DEPENDENCIES_SRC_DIR/pygobject-2.16.1",
+	"$DEPENDENCIES_SRC_DIR/pygobject-2.20.0",
 )
 
 options.Add(
 	"PYCAIRO_SRC_DIR",
 	"The location of the pycairo source to be used if BUILD_GTK is specified.",
-	"$DEPENDENCIES_SRC_DIR/pycairo-1.8.4",
+	"$DEPENDENCIES_SRC_DIR/pycairo-1.8.8",
 )
 
 options.Add(
 	"PYGTK_SRC_DIR",
 	"The location of the pytgtk source to be used if BUILD_GTK is specified.",
-	"$DEPENDENCIES_SRC_DIR/pygtk-2.14.1",
+	"$DEPENDENCIES_SRC_DIR/pygtk-2.16.0",
 )
 
 options.Add(
@@ -242,58 +252,72 @@ depEnv = Environment(
 	options = options,
 )
 
+depEnv["CXX_MAJOR_VERSION"] = depEnv["CXXVERSION"].split( "." )[0]
+depEnv["CXX_MINOR_VERSION"] = depEnv["CXXVERSION"].split( "." )[1]
+
 def runCommand( command ) :
 
 	sys.stderr.write( command + "\n" )
-	command = "export PATH=%s DYLD_LIBRARY_PATH= && %s " % ( depEnv.subst( "$BUILD_DIR/bin:/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin" ), depEnv.subst( command ) )
+	command = "export PATH=%s DYLD_LIBRARY_PATH= M4PATH=%s PKG_CONFIG_PATH=%s MACOSX_DEPLOYMENT_TARGET=10.4 && %s " % (
+		depEnv.subst( "$BUILD_DIR/bin:/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin" ),
+		depEnv.subst( "$BUILD_DIR/share/aclocal" ),
+		depEnv.subst( "$BUILD_DIR/lib/pkgconfig" ),
+		depEnv.subst( command )
+	)
 	status = os.system( command )
 	if status :
 		raise RuntimeError( "Failed to build dependency" )
 
 pythonBuild = None
+
+if depEnv["BUILD_PKGCONFIG"] :
+	runCommand( "cd $PKGCONFIG_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
+
 if depEnv["BUILD_PYTHON"] :
 	runCommand( "cd $PYTHON_SRC_DIR; ./configure --enable-framework=$BUILD_DIR/frameworks --prefix=$BUILD_DIR && make clean && make && make install" )
 	runCommand( "cd $BUILD_DIR/bin && ln -fsh python2.6 python" )
 	
 if depEnv["BUILD_BOOST"] :
-	runCommand( "cd $BOOST_SRC_DIR; ./configure --prefix=$BUILD_DIR --with-python=$BUILD_DIR/bin/python2.6 && make clean && make && make install" )
+	runCommand( "cd $BOOST_SRC_DIR; ./bootstrap.sh --prefix=$BUILD_DIR --with-python=$BUILD_DIR/bin/python2.6 --with-python-root=$BUILD_DIR && ./bjam install" )
 
 if depEnv["BUILD_OPENEXR"] :
-	runCommand( "cd $ILMBASE_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
-	runCommand( "cd $OPENEXR_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
+	runCommand( "cd $ILMBASE_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
+	runCommand( "cd $OPENEXR_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
 
 if depEnv["BUILD_JPEG"] :
 	runCommand( "cd $JPEG_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install-lib install-headers" )
 
 if depEnv["BUILD_TIFF"] :
-	runCommand( "cd $TIFF_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
+	runCommand( "cd $TIFF_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
 		
 if depEnv["BUILD_FREETYPE"] :
-	runCommand( "cd $FREETYPE_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
+	runCommand( "cd $FREETYPE_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
 
 if depEnv["BUILD_GLEW"] :
-	runCommand( "cd $GLEW_SRC_DIR && make install GLEW_DEST=$BUILD_DIR" )
+	runCommand( "cd $GLEW_SRC_DIR && make clean && make install GLEW_DEST=$BUILD_DIR" )
 	
 if depEnv["BUILD_CORTEX"] :
-	runCommand( "cd $CORTEX_SRC_DIR; /usr/local/bin/python /opt/local/bin/scons -j 2 install INSTALL_PREFIX=$BUILD_DIR INSTALL_PYTHON_DIR=$BUILD_DIR/lib/python2.6/site-packages PYTHON_CONFIG=$BUILD_DIR/bin/python2.6-config BOOST_INCLUDE_PATH=$BUILD_DIR/include/boost-1_38 LIBPATH=$BUILD_DIR/lib BOOST_LIB_SUFFIX=-xgcc40-mt-1_38 OPENEXR_INCLUDE_PATH=$BUILD_DIR/include FREETYPE_INCLUDE_PATH=$BUILD_DIR/include/freetype2 RMAN_ROOT=/Applications/Graphics/3Delight-8.5.9 WITH_GL=1 GLEW_INCLUDE_PATH=$BUILD_DIR/include/GL DOXYGEN=/opt/local/bin/doxygen INSTALL_DOC_DIR=$BUILD_DIR/doc/cortex" )
+	runCommand( "cd $CORTEX_SRC_DIR; /usr/bin/python /opt/local/bin/scons install INSTALL_PREFIX=$BUILD_DIR INSTALL_PYTHON_DIR=$BUILD_DIR/lib/python2.6/site-packages PYTHON_CONFIG=$BUILD_DIR/bin/python2.6-config BOOST_INCLUDE_PATH=$BUILD_DIR/include/boost-1_40 LIBPATH=$BUILD_DIR/lib BOOST_LIB_SUFFIX='' OPENEXR_INCLUDE_PATH=$BUILD_DIR/include FREETYPE_INCLUDE_PATH=$BUILD_DIR/include/freetype2 RMAN_ROOT=/Applications/Graphics/3Delight-8.5.32 WITH_GL=1 GLEW_INCLUDE_PATH=$BUILD_DIR/include/GL" )
 	
 if depEnv["BUILD_GTK"] :
-	runCommand( "cd $GETTEXT_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
-	runCommand( "cd $PKGCONFIG_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
+
+	runCommand( "cd $GETTEXT_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
+	runCommand( "cd $ICONV_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
+	runCommand( "cd $GETTEXT_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
 	runCommand( "echo '#!/bin/sh\n' > $BUILD_DIR/bin/gtkdoc-rebase && chmod +x $BUILD_DIR/bin/gtkdoc-rebase" ) # hack to provide a stub script for glib to think it is building documentation (even though it was told not to)
-	runCommand( "cd $GLIB_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib && make && make install" )
-	runCommand( "cd $ATK_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
-	runCommand( "cd $PIXMAN_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
-	runCommand( "cd $PNG_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
-	runCommand( "cd $EXPAT_SRC_DIR && ./configure --prefix=$BUILD_DIR && make && make install" )
-	runCommand( "cd $FONTCONFIG_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib && make && make install" )
-	runCommand( "cd $CAIRO_SRC_DIR && ./configure --prefix=$BUILD_DIR PKG_CONFIG=$BUILD_DIR/bin/pkg-config && make && make install" )
+	runCommand( "cd $GLIB_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib --with-libiconv=gnu && make clean && make && make install" )
+	runCommand( "cd $ATK_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
+	runCommand( "cd $PIXMAN_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
+	runCommand( "cd $PNG_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
+	runCommand( "cd $EXPAT_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
+	runCommand( "cd $FONTCONFIG_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib && make clean && make && make install" )
+	runCommand( "cd $CAIRO_SRC_DIR && ./configure --prefix=$BUILD_DIR PKG_CONFIG=$BUILD_DIR/bin/pkg-config && make clean && make && make install" )
 	runCommand( "cd $PANGO_SRC_DIR && ./configure --with-included-modules=yes --prefix=$BUILD_DIR PKG_CONFIG=$BUILD_DIR/bin/pkg-config && make clean && make && make install" )	
-	runCommand( "cd $GTK_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib PKG_CONFIG=$BUILD_DIR/bin/pkg-config --without-libjasper && make && make install" )
-	runCommand( "cd $PYGOBJECT_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib PKG_CONFIG=$BUILD_DIR/bin/pkg-config && make && make install" )
+	runCommand( "cd $GTK_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib PKG_CONFIG=$BUILD_DIR/bin/pkg-config --without-libjasper && make clean && make && make install" )
+	runCommand( "cd $PYGOBJECT_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib PKG_CONFIG=$BUILD_DIR/bin/pkg-config && make clean && make && make install" )
 	runCommand( "cd $PYCAIRO_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib PKG_CONFIG=$BUILD_DIR/bin/pkg-config && make clean && make && make install" )
 	runCommand( "cd $PYGTK_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib PKG_CONFIG=$BUILD_DIR/bin/pkg-config && make clean && make && make install" )
-	runCommand( "cd $GTKGLEXT_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib PKG_CONFIG=$BUILD_DIR/bin/pkg-config --with-gl-includedir=/usr/X11R6/include && make clean && make && make install" )
+	runCommand( "cd $GTKGLEXT_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include 'LDFLAGS=-L$BUILD_DIR/lib -L/usr/X11R6/lib' PKG_CONFIG=$BUILD_DIR/bin/pkg-config --with-gl-includedir=/usr/X11R6/include && make clean && make && make install" )
 	runCommand( "cd $PYGTKGLEXT_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib PKG_CONFIG=$BUILD_DIR/bin/pkg-config && make clean && make && make install" )
 	runCommand( "cd $PYOPENGL_SRC_DIR && python setup.py install" )
 	
@@ -301,7 +325,7 @@ if depEnv["BUILD_GTK"] :
 # Gaffer libraries
 ###############################################################################################
 
-boostLibSuffix = "-xgcc40-mt-1_38"
+boostLibSuffix = ""
 
 env = Environment(
 
@@ -314,7 +338,7 @@ env = Environment(
 	CPPPATH = [
 		"include",
 		"$BUILD_DIR/include",
-		"$BUILD_DIR/include/boost-1_38",
+		"$BUILD_DIR/include/boost-1_40",
 		"$BUILD_DIR/include/OpenEXR",
 	],
 	
@@ -322,6 +346,7 @@ env = Environment(
 		"-Wall",
 		"-Werror",
 		"-O2",
+		"-D__i386__", # there's no way this is good! it's to workaround problems with boost::interval
 	],
 	
 	LIBPATH = [
@@ -342,6 +367,8 @@ env = Environment(
 	],
 	
 )
+
+env["ENV"]["MACOSX_DEPLOYMENT_TARGET"] = "10.4"
 
 gafferLibrary = env.SharedLibrary( "lib/Gaffer", glob.glob( "src/Gaffer/*.cpp" ) )
 env.Default( gafferLibrary )
@@ -503,7 +530,7 @@ env.NoCache( docs )
 docEnv.Depends( docs, glob.glob( "include/*/*.h" ) + gafferMunged + gafferUIMunged + glob.glob( "doc/src/*.dox" ) )
 
 docInstall = docEnv.Install( "$BUILD_DIR/doc/gaffer", "doc/html" )
-docEnv.Alias( "build", docInstall )
+#docEnv.Alias( "build", docInstall )
 
 #########################################################################################################
 # Installation
@@ -603,6 +630,7 @@ licenses = [
 	( "fontconfig", "$FONTCONFIG_SRC_DIR/COPYING" ),
 	( "freetype", "$FREETYPE_SRC_DIR/docs/FTL.TXT" ),
 	( "libintl", "$GETTEXT_SRC_DIR/gettext-runtime/intl/COPYING.LIB-2.1" ),
+	( "libiconv", "$ICONV_SRC_DIR/COPYING.LIB" ),
 	( "glew", "$GLEW_SRC_DIR/LICENSE.txt" ),
 	( "glib", "$GLIB_SRC_DIR/COPYING" ),
 	( "gtk+", "$GTK_SRC_DIR/COPYING" ),

@@ -65,7 +65,7 @@ class About :
 				"name" : "cairo",
 				"url" : "http://cairographics.org/",
 				"license" : "$GAFFER_ROOT/doc/licenses/cairo",
-				"source" : About.url() + "/downloads/opensource/cairo-1.8.6.tar.gz",
+				"source" : About.url() + "/downloads/opensource/cairo-1.8.8.tar.gz",
 			},
 			
 			{
@@ -93,6 +93,12 @@ class About :
 				"credit" : "Portions of this software are copyright (c) 2009 The FreeType Project (www.freetype.org). All rights reserved."
 			},
 
+			{
+				"name" : "libiconv",
+				"url" : "http://www.gnu.org/software/libiconv/",
+				"license" : "$GAFFER_ROOT/doc/licenses/libiconv",
+			},
+			
 			{
 				"name" : "libintl",
 				"url" : "http://www.gnu.org/software/gettext/",
@@ -148,7 +154,7 @@ class About :
 				"name" : "pango",
 				"url" : "http://www.pango.org/",
 				"license" : "$GAFFER_ROOT/doc/licenses/pango",
-				"source" : About.url() + "/downloads/opensource/pango-1.24.1.tar.gz",
+				"source" : About.url() + "/downloads/opensource/pango-1.26.0.tar.gz",
 			},
 			
 			{
@@ -161,7 +167,7 @@ class About :
 				"name" : "pycairo",
 				"url" : "http://cairographics.org/",
 				"license" : "$GAFFER_ROOT/doc/licenses/pycairo",
-				"source" : About.url() + "/downloads/opensource/pycairo-1.8.4.tar.gz",
+				"source" : About.url() + "/downloads/opensource/pycairo-1.8.8.tar.gz",
 			},
 			
 			{
