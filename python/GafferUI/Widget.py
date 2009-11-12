@@ -129,9 +129,9 @@ class Widget( object ) :
 					Widget.FontWeight.Bold : "bold",
 				}[weight],
 				"size" : {
-					Widget.FontSize.Small : str( 9 * 1000 ),
-					Widget.FontSize.Medium : str( 11 * 1000 ),
-					Widget.FontSize.Large : str( 14 * 1000 ),
+					Widget.FontSize.Small : str( 7 * 1000 ),
+					Widget.FontSize.Medium : str( 9 * 1000 ),
+					Widget.FontSize.Large : str( 11 * 1000 ),
 				}[size]
 			}
 		)
@@ -141,7 +141,7 @@ Widget._parseRCStyle(
 	"""
 	style "gafferWidget"
 	{
-		font_name = "Sans Bold 11"
+		font_name = "Sans Bold 9	"
 		bg[NORMAL] = $bgNormal
 		bg[ACTIVE] = $bgBlue
 		bg[PRELIGHT] = $bgBlue
