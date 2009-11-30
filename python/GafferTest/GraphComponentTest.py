@@ -3,6 +3,7 @@ import unittest
 import IECore
 
 import Gaffer
+import GafferTest
 
 class GraphComponentTest( unittest.TestCase ) :
 
@@ -185,7 +186,7 @@ class GraphComponentTest( unittest.TestCase ) :
 		s = Gaffer.ScriptNode()
 		a["scripts"]["one"] = s
 		
-		n = Gaffer.AddNode()
+		n = GafferTest.AddNode()
 		s["node"] = n
 		
 		self.assert_( n.ancestor( Gaffer.ScriptNode.staticTypeId() ).isSame( s ) )

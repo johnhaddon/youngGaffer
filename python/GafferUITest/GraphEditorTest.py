@@ -4,6 +4,7 @@ import IECore
 
 import Gaffer
 import GafferUI
+import GafferTest
 
 class GraphEditorTest( unittest.TestCase ) :
 
@@ -11,8 +12,8 @@ class GraphEditorTest( unittest.TestCase ) :
 	
 		s = Gaffer.ScriptNode()
 		
-		s["add1"] = Gaffer.AddNode()
-		s["add2"] = Gaffer.AddNode()
+		s["add1"] = GafferTest.AddNode()
+		s["add2"] = GafferTest.AddNode()
 		
 		s["add1"]["op1"].setInput( s["add2"]["sum"] )
 		

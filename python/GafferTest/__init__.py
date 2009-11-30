@@ -1,3 +1,4 @@
+from AddNode import AddNode
 from SignalsTest import SignalsTest
 from GCTest import GCTest
 from GraphComponentTest import GraphComponentTest

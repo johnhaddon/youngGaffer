@@ -3,6 +3,7 @@ import unittest
 import IECore
 
 import Gaffer
+import GafferTest
 
 class NodeTest( unittest.TestCase ) :
 
@@ -38,7 +39,7 @@ class NodeTest( unittest.TestCase ) :
 		
 			NodeTest.lastSet = plug.fullName()
 						
-		n1 = Gaffer.AddNode()
+		n1 = GafferTest.AddNode()
 		self.assertEqual( n1["sum"].getDirty(), True )
 		n1["sum"].getValue()
 		self.assertEqual( n1["sum"].getDirty(), False )
@@ -70,7 +71,7 @@ class NodeTest( unittest.TestCase ) :
 		
 		# connect another add node onto the output of this one
 		
-		n2 = Gaffer.AddNode()
+		n2 = GafferTest.AddNode()
 		n2.setName( "Add2" )
 		self.assertEqual( n2["sum"].getDirty(), True )
 		n2["sum"].getValue()
@@ -104,8 +105,8 @@ class NodeTest( unittest.TestCase ) :
 	
 	def testDirtyOfInputsWithConnections( self ) :
 	
-		n1 = Gaffer.AddNode()
-		n2 = Gaffer.AddNode()
+		n1 = GafferTest.AddNode()
+		n2 = GafferTest.AddNode()
 		
 		n2.getChild( "op1" ).setInput( n1.getChild( "sum" ) )
 		
@@ -120,8 +121,8 @@ class NodeTest( unittest.TestCase ) :
 	
 	def testDirtyPlugComputesSameValueAsBefore( self ) :
 	
-		n1 = Gaffer.AddNode( "N1" )
-		n2 = Gaffer.AddNode( "N2" )
+		n1 = GafferTest.AddNode( "N1" )
+		n2 = GafferTest.AddNode( "N2" )
 		
 		n2.getChild( "op1" ).setInput( n1.getChild( "sum" ) )
 		self.assertEqual( n2.getChild( "sum" ).getDirty(), True )
@@ -147,17 +148,17 @@ class NodeTest( unittest.TestCase ) :
 				
 		self.assertRaises( Exception, Gaffer.Node, "too", "many" )
 		
-		n = Gaffer.AddNode( "hello", inputs = { "op1" : 1, "op2" : 2 } )
+		n = GafferTest.AddNode( "hello", inputs = { "op1" : 1, "op2" : 2 } )
 		self.assertEqual( n.getName(), "hello" )
 		self.assertEqual( n["op1"].getValue(), 1 )
 		self.assertEqual( n["op2"].getValue(), 2 )
 		
-		n2 = Gaffer.AddNode( "goodbye", inputs = { "op1" : n["sum"] } )
+		n2 = GafferTest.AddNode( "goodbye", inputs = { "op1" : n["sum"] } )
 		self.assert_( n2["op1"].getInput().isSame( n["sum"] ) )
 	
 	def testOutputsDirtyForNewNodes( self ) :
 	
-		n = Gaffer.AddNode()
+		n = GafferTest.AddNode()
 		self.assertEqual( n["sum"].getDirty(), True )
 	
 	def testDynamicPlugSerialisationOrder( self ) :

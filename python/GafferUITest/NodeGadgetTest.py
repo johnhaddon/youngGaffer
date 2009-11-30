@@ -4,12 +4,13 @@ import IECore
 
 import Gaffer
 import GafferUI
+import GafferTest
 
 class NodeGadgetTest( unittest.TestCase ) :
 
 	def test( self ) :
 	
-		n = Gaffer.AddNode()
+		n = GafferTest.AddNode()
 		g = GafferUI.NodeGadget.create( n )
 		
 		self.assertEqual( n, g.node() )
@@ -19,7 +20,7 @@ class NodeGadgetTest( unittest.TestCase ) :
 		
 	def testDynamicPlugs( self ) :
 	
-		n = Gaffer.AddNode()
+		n = GafferTest.AddNode()
 		g = GafferUI.NodeGadget.create( n )
 		
 		self.assertEqual( n, g.node() )

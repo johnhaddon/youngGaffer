@@ -4,6 +4,7 @@ import unittest
 
 import IECore
 import Gaffer
+import GafferTest
 
 class UndoTest( unittest.TestCase ) :
 
@@ -35,8 +36,8 @@ class UndoTest( unittest.TestCase ) :
 	
 		s = Gaffer.ScriptNode()
 		
-		n1 = Gaffer.AddNode()
-		n2 = Gaffer.AddNode()
+		n1 = GafferTest.AddNode()
+		n2 = GafferTest.AddNode()
 		
 		s["n1"] = n1
 		s["n2"] = n2
@@ -70,9 +71,9 @@ class UndoTest( unittest.TestCase ) :
 	def testDelete( self ) :	
 		
 		s = Gaffer.ScriptNode()
-		n1 = Gaffer.AddNode()
-		n2 = Gaffer.AddNode()
-		n3 = Gaffer.AddNode()
+		n1 = GafferTest.AddNode()
+		n2 = GafferTest.AddNode()
+		n3 = GafferTest.AddNode()
 		
 		s.addChild( n1 )
 		s.addChild( n2 )

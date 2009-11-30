@@ -118,7 +118,7 @@ class CompoundNumericPlugTest( unittest.TestCase ) :
 	
 		s = Gaffer.ScriptNode()
 		n = GafferTest.CompoundNumericNode()
-		a = Gaffer.AddNode()
+		a = GafferTest.AddNode()
 		n["p"]["x"].setValue( 10 )
 		n["p"]["y"].setInput( a["sum"] )
 		s["n"] = n

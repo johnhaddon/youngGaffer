@@ -3,6 +3,7 @@ import unittest
 import IECore
 
 import Gaffer
+import GafferTest
 
 class SpeedTest( unittest.TestCase ) :
 
@@ -41,7 +42,7 @@ class SpeedTest( unittest.TestCase ) :
 		s = Gaffer.ScriptNode()
 		
 		for i in range( 0, 1000 ) :
-			n = Gaffer.AddNode()
+			n = GafferTest.AddNode()
 			s.addChild( n )	
 	
 	#
@@ -72,7 +73,7 @@ class SpeedTest( unittest.TestCase ) :
 			# explicitly setting the name to something unique
 			# avoids the overhead incurred by the example
 			# in testMakeNamesUnique
-			n = Gaffer.AddNode( "AddNode" + str( i ) )
+			n = GafferTest.AddNode( "AddNode" + str( i ) )
 			s.addChild( n )	
 		
 		for i in range( 0, 1000 ) :

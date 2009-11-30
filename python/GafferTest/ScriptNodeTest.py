@@ -87,8 +87,8 @@ class ScriptNodeTest( unittest.TestCase ) :
 	
 		s = Gaffer.ScriptNode()
 		
-		s["a1"] = Gaffer.AddNode( inputs = { "op1" : 5, "op2" : 6 } )
-		s["a2"] = Gaffer.AddNode( inputs = { "op1" : s["a1"]["sum"], "op2" : 10 } )
+		s["a1"] = GafferTest.AddNode( inputs = { "op1" : 5, "op2" : 6 } )
+		s["a2"] = GafferTest.AddNode( inputs = { "op1" : s["a1"]["sum"], "op2" : 10 } )
 		
 		s2 = Gaffer.ScriptNode()
 		se = s.serialise()
@@ -101,8 +101,8 @@ class ScriptNodeTest( unittest.TestCase ) :
 	
 		s1 = Gaffer.ScriptNode()
 		
-		s1["n1"] = Gaffer.AddNode()
-		s1["n2"] = Gaffer.AddNode()
+		s1["n1"] = GafferTest.AddNode()
+		s1["n2"] = GafferTest.AddNode()
 		s1["n1"]["dynamicPlug"] = Gaffer.IntPlug( flags=Gaffer.Plug.Flags.Dynamic )
 		s1["n1"]["dynamicPlug"].setInput( s1["n2"]["sum"] )
 		s1["n1"]["dynamicPlug2"] = Gaffer.IntPlug( flags=Gaffer.Plug.Flags.Dynamic )
@@ -131,8 +131,8 @@ class ScriptNodeTest( unittest.TestCase ) :
 	
 		s = Gaffer.ScriptNode()
 		
-		s["a1"] = Gaffer.AddNode( inputs = { "op1" : 5, "op2" : 6 } )
-		s["a2"] = Gaffer.AddNode( inputs = { "op1" : s["a1"]["sum"], "op2" : 10 } )
+		s["a1"] = GafferTest.AddNode( inputs = { "op1" : 5, "op2" : 6 } )
+		s["a2"] = GafferTest.AddNode( inputs = { "op1" : s["a1"]["sum"], "op2" : 10 } )
 		
 		s["fileName"].setValue( "/tmp/test.gfr" )
 		s.save()
@@ -146,7 +146,7 @@ class ScriptNodeTest( unittest.TestCase ) :
 	def testSaveFailureHandling( self ) :
 	
 		s = Gaffer.ScriptNode()
-		s["a1"] = Gaffer.AddNode( inputs = { "op1" : 5, "op2" : 6 } )
+		s["a1"] = GafferTest.AddNode( inputs = { "op1" : 5, "op2" : 6 } )
 
 		s["fileName"].setValue( "/this/directory/doesnt/exist" )
 		self.assertRaises( Exception, s.save )
@@ -154,7 +154,7 @@ class ScriptNodeTest( unittest.TestCase ) :
 	def testLoadFailureHandling( self ) :
 	
 		s = Gaffer.ScriptNode()
-		s["a1"] = Gaffer.AddNode( inputs = { "op1" : 5, "op2" : 6 } )
+		s["a1"] = GafferTest.AddNode( inputs = { "op1" : 5, "op2" : 6 } )
 
 		s["fileName"].setValue( "/this/file/doesnt/exist" )
 		self.assertRaises( Exception, s.load )
@@ -169,15 +169,15 @@ class ScriptNodeTest( unittest.TestCase ) :
 		app["scripts"]["s1"] = s1
 		app["scripts"]["s2"] = s2		
 		
-		n1 = Gaffer.AddNode()
+		n1 = GafferTest.AddNode()
 		s1["n1"] = n1
 		
 		s1.copy()
 		
 		s2.paste()
 		
-		self.assert_( s1["n1"].isInstanceOf( Gaffer.AddNode.staticTypeId() ) )
-		self.assert_( s2["n1"].isInstanceOf( Gaffer.AddNode.staticTypeId() ) )
+		self.assert_( s1["n1"].isInstanceOf( GafferTest.AddNode.staticTypeId() ) )
+		self.assert_( s2["n1"].isInstanceOf( GafferTest.AddNode.staticTypeId() ) )
 
 	def testSerialisationWithKeywords( self ) :
 			
@@ -204,12 +204,13 @@ class ScriptNodeTest( unittest.TestCase ) :
 	def testSerialisationPollution( self ) :
 	
 		s = Gaffer.ScriptNode()
-		s["n"] = Gaffer.AddNode()
-		s["n2"] = Gaffer.AddNode()
+		s["n"] = GafferTest.AddNode()
+		s["n2"] = GafferTest.AddNode()
 		s["n"]["op1"].setInput( s["n2"]["sum"] )
 		
 		s.execute( "import Gaffer" ) # we don't want to complain that this would be added by the serialisation and execution
-			
+		s.execute( "import GafferTest" ) # same here as our test module contains the AddNode
+		
 		se = s.serialise()
 				
 		l = s.evaluate( "set( locals().keys() )" )
