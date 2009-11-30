@@ -19,6 +19,7 @@ from CompoundPlugTest import CompoundPlugTest
 from CompoundPlugNode import CompoundPlugNode
 from TypedObjectPlugTest import TypedObjectPlugTest
 from SplinePlugTest import SplinePlugTest
+from AboutTest import AboutTest
 
 if __name__ == "__main__":
 	import unittest
