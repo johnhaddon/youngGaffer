@@ -21,13 +21,13 @@ options.Add(
 options.Add(
 	"INSTALL_DIR",
 	"The destination directory for the installation.",
-	"/Users/john/dev/install/gaffer",
+	"/Users/john/dev/install/gaffer-${GAFFER_MAJOR_VERSION}.${GAFFER_MINOR_VERSION}.${GAFFER_PATCH_VERSION}-${PLATFORM}",
 )
 
 options.Add(
 	"PACKAGE_FILE",
 	"The file in which the final gaffer file will be created by the package target.",
-	"/Users/john/dev/install/gaffer.tar.gz",
+	"${INSTALL_DIR}.tar.gz",
 )
 
 options.Add( 
@@ -138,6 +138,26 @@ options.Add(
 	"PKGCONFIG_SRC_DIR",
 	"The location of the pkg-config source to be used if BUILD_GTK is specified.",
 	"$DEPENDENCIES_SRC_DIR/pkg-config-0.23",
+)
+
+options.Add(
+	BoolVariable( "BUILD_GRAPHVIZ", "Set this to build the graphviz library.", "$BUILD_DEPENDENCIES" )
+)
+
+options.Add(
+	"GRAPHVIZ_SRC_DIR",
+	"The location of the graphviz source to be used if BUILD_GRAPHVIZ is specified.",
+	"$DEPENDENCIES_SRC_DIR/graphviz-2.24.0",
+)
+
+options.Add(
+	BoolVariable( "BUILD_DOXYGEN", "Set this to build doxygen.", "$BUILD_DEPENDENCIES" )
+)
+
+options.Add(
+	"DOXYGEN_SRC_DIR",
+	"The location of the doxygen source to be used if BUILD_DOXYGEN is specified.",
+	"$DEPENDENCIES_SRC_DIR/doxygen-1.6.1",
 )
 
 options.Add(
@@ -276,6 +296,12 @@ if depEnv["BUILD_PKGCONFIG"] :
 if depEnv["BUILD_PYTHON"] :
 	runCommand( "cd $PYTHON_SRC_DIR; ./configure --enable-framework=$BUILD_DIR/frameworks --prefix=$BUILD_DIR && make clean && make && make install" )
 	runCommand( "cd $BUILD_DIR/bin && ln -fsh python2.6 python" )
+
+if depEnv["BUILD_GRAPHVIZ"] :
+	runCommand( "cd $GRAPHVIZ_SRC_DIR && ./configure --enable-perl=no --prefix=$BUILD_DIR && make clean && make && make install" )
+
+if depEnv["BUILD_DOXYGEN"] :
+	runCommand( "cd $DOXYGEN_SRC_DIR && ./configure --prefix $BUILD_DIR && make && make install" )
 	
 if depEnv["BUILD_BOOST"] :
 	runCommand( "cd $BOOST_SRC_DIR; ./bootstrap.sh --prefix=$BUILD_DIR --with-python=$BUILD_DIR/bin/python2.6 --with-python-root=$BUILD_DIR && ./bjam install" )
@@ -297,7 +323,7 @@ if depEnv["BUILD_GLEW"] :
 	runCommand( "cd $GLEW_SRC_DIR && make clean && make install GLEW_DEST=$BUILD_DIR" )
 	
 if depEnv["BUILD_CORTEX"] :
-	runCommand( "cd $CORTEX_SRC_DIR; /usr/bin/python /opt/local/bin/scons install INSTALL_PREFIX=$BUILD_DIR INSTALL_PYTHON_DIR=$BUILD_DIR/lib/python2.6/site-packages PYTHON_CONFIG=$BUILD_DIR/bin/python2.6-config BOOST_INCLUDE_PATH=$BUILD_DIR/include/boost-1_40 LIBPATH=$BUILD_DIR/lib BOOST_LIB_SUFFIX='' OPENEXR_INCLUDE_PATH=$BUILD_DIR/include FREETYPE_INCLUDE_PATH=$BUILD_DIR/include/freetype2 RMAN_ROOT=/Applications/Graphics/3Delight-8.5.32 WITH_GL=1 GLEW_INCLUDE_PATH=$BUILD_DIR/include/GL" )
+	runCommand( "cd $CORTEX_SRC_DIR; /usr/bin/python /opt/local/bin/scons install DOXYGEN=$BUILD_DIR/bin/doxygen INSTALL_DOC_DIR=$BUILD_DIR/doc/cortex INSTALL_PREFIX=$BUILD_DIR INSTALL_PYTHON_DIR=$BUILD_DIR/lib/python2.6/site-packages PYTHON_CONFIG=$BUILD_DIR/bin/python2.6-config BOOST_INCLUDE_PATH=$BUILD_DIR/include/boost-1_40 LIBPATH=$BUILD_DIR/lib BOOST_LIB_SUFFIX='' OPENEXR_INCLUDE_PATH=$BUILD_DIR/include FREETYPE_INCLUDE_PATH=$BUILD_DIR/include/freetype2 RMAN_ROOT=/Applications/Graphics/3Delight-8.5.32 WITH_GL=1 GLEW_INCLUDE_PATH=$BUILD_DIR/include/GL" )
 	
 if depEnv["BUILD_GTK"] :
 
