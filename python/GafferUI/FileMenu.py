@@ -36,7 +36,7 @@ def open( menu ) :
 	dialogue = GafferUI.PathChooserDialogue( path, title="Open script", confirmLabel="Open" )
 	scriptWindow.addChildWindow( dialogue )
 	path = dialogue.waitForPath()
-	dialogue.close()		
+	dialogue.hide()
 
 	if not path :
 		return
@@ -80,7 +80,7 @@ def saveAs( menu ) :
 	dialogue = GafferUI.PathChooserDialogue( path, title="Save script", confirmLabel="Save" )
 	scriptWindow.addChildWindow( dialogue )
 	path = dialogue.waitForPath()
-	dialogue.close()		
+	dialogue.hide()		
 
 	if not path :
 		return

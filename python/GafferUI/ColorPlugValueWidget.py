@@ -51,7 +51,7 @@ class ColorPlugValueWidget( GafferUI.PlugValueWidget ) :
 		if button is self.__colorChooserDialogue.cancelButton :
 			self.getPlug().setValue( self.__colorChooserDialogue.colorChooser().getInitialColor() )
 			
-		self.__colorChooserDialogue.close()
+		self.__colorChooserDialogue.hide()
 		self.__colorChooserDialogue = None
 		
 	def __dialogueClosed( self, dialogue ) :

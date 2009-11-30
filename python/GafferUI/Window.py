@@ -73,14 +73,12 @@ class Window( GafferUI.ContainerWidget ) :
 	
 		return self.gtkWidget().get_property( "resizable" )
 
-	def close( self ) :
-	
-		self.gtkWidget().destroy()
-
 	def closedSignal( self ) :
 	
 		return self.__closedSignal
 	
 	def __deleted( self, gtkWidget, gtkEvent ) :
 	
-		return self.closedSignal()( self )		
+		self.hide()
+		self.closedSignal()( self )		
+		return True # keep the window alive so it can be reopened

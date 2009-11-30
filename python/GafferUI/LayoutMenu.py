@@ -40,7 +40,7 @@ def save( menu ) :
 
 	d = GafferUI.TextInputDialogue( initialText=layoutName, title="Save Layout", confirmLabel="Save" )
 	t = d.waitForText()
-	d.close()
+	d.hide()
 	
 	if t is None :
 		return
