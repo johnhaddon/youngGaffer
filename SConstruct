@@ -359,7 +359,7 @@ env = Environment(
 
 	GAFFER_MAJOR_VERSION = "0",
 	GAFFER_MINOR_VERSION = "1",
-	GAFFER_PATCH_VERSION = "0",
+	GAFFER_PATCH_VERSION = "1",
 
 	CPPPATH = [
 		"include",
