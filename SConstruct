@@ -491,7 +491,7 @@ gafferUIModuleInstall = env.Install( "$BUILD_DIR/lib/python2.6/site-packages/Gaf
 gafferUIModuleInstall += env.Install( "$BUILD_DIR/lib/python2.6/site-packages/GafferUI", glob.glob( "python/GafferUI/*.py" ) )
 env.Alias( "build", gafferUIModuleInstall )
 
-for module in ( "GafferTest", "GafferUITest" ) :
+for module in ( "GafferTest", "GafferUITest", "GafferRI", "GafferRIUI" ) :
 
 	moduleInstall = env.Install( "$BUILD_DIR/lib/python2.6/site-packages/" + module, glob.glob( "python/%s/*.py" % module ) )
 	env.Alias( "build", moduleInstall ) 
@@ -548,15 +548,21 @@ for v in ( "BUILD_DIR", "GAFFER_MAJOR_VERSION", "GAFFER_MINOR_VERSION", "GAFFER_
 gafferMunged = env.Command( "doc/src/Gaffer.py", "python/Gaffer/__init__.py", docMunger )
 env.Depends( gafferMunged, glob.glob( "python/Gaffer/*.py" ) )
 
+gafferRIMunged = env.Command( "doc/src/GafferRI.py", "python/GafferRI/__init__.py", docMunger )
+env.Depends( gafferRIMunged, glob.glob( "python/GafferRI/*.py" ) )
+
 gafferUIMunged = env.Command( "doc/src/GafferUI.py", "python/GafferUI/__init__.py", docMunger )
 env.Depends( gafferUIMunged, glob.glob( "python/GafferUI/*.py" ) )
 
+gafferRIUIMunged = env.Command( "doc/src/GafferRIUI.py", "python/GafferRIUI/__init__.py", docMunger )
+env.Depends( gafferRIUIMunged, glob.glob( "python/GafferRIUI/*.py" ) )
+
 docs = docEnv.Command( "doc/html/index.html", "doc/config/Doxyfile", "doxygen doc/config/Doxyfile" )
 env.NoCache( docs )
-docEnv.Depends( docs, glob.glob( "include/*/*.h" ) + gafferMunged + gafferUIMunged + glob.glob( "doc/src/*.dox" ) )
+docEnv.Depends( docs, glob.glob( "include/*/*.h" ) + gafferMunged + gafferRIMunged + gafferUIMunged + gafferRIUIMunged + glob.glob( "doc/src/*.dox" ) )
 
 docInstall = docEnv.Install( "$BUILD_DIR/doc/gaffer", "doc/html" )
-#docEnv.Alias( "build", docInstall )
+docEnv.Alias( "build", docInstall )
 
 #########################################################################################################
 # Installation
@@ -643,7 +649,9 @@ symlinks = [
 
 pythonSourceToCompile = [
 	"lib/python2.6/site-packages/Gaffer/*.py",
+	"lib/python2.6/site-packages/GafferRI/*.py",
 	"lib/python2.6/site-packages/GafferUI/*.py",
+	"lib/python2.6/site-packages/GafferRIUI/*.py",
 ]
 
 licenses = [

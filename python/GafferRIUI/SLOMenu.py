@@ -4,6 +4,7 @@ import IECore
 
 import Gaffer
 import GafferUI
+import GafferRI
 
 ## Returns a menu definition for the creation of SLO shader nodes.
 # This contains entries for all shaders found on the shader searchpath
@@ -34,7 +35,7 @@ def __createCommand( shaderName ) :
 		scriptWindow = menu.ancestor( GafferUI.ScriptWindow )
 		script = scriptWindow.getScript()
 
-		node = Gaffer.SLONode( name=os.path.split( shaderName )[-1] )
+		node = GafferRI.SLONode( name=os.path.split( shaderName )[-1] )
 		node["name"].setValue( shaderName )
 
 		with Gaffer.UndoContext( script ) :

@@ -10,7 +10,5 @@ from FileNamePathFilter import FileNamePathFilter
 from UndoContext import UndoContext
 from ReadNode import ReadNode
 from WriteNode import WriteNode
-from RIBRendererNode import RIBRendererNode
 from SphereNode import SphereNode
 from GroupNode import GroupNode
-from SLONode import SLONode

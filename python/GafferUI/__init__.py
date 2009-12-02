@@ -75,7 +75,6 @@ from ColorChooserDialogue import ColorChooserDialogue
 from SplineWidget import SplineWidget
 from SplinePlugValueWidget import SplinePlugValueWidget
 from SplineEditor import SplineEditor
-import SLOMenu
 from ShowURL import showURL
 from Label import Label
 from URLWidget import URLWidget

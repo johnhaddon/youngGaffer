@@ -15,4 +15,13 @@ GafferUI.LayoutMenu.appendDefinitions( scriptWindowMenu, name="/Layout" )
 GafferUI.NodeMenu.append( "/File/Read", Gaffer.ReadNode )
 GafferUI.NodeMenu.append( "/Primitive/Sphere", Gaffer.SphereNode )
 GafferUI.NodeMenu.append( "/Group", Gaffer.GroupNode )
-GafferUI.NodeMenu.definition().append( "/Shader/", { "subMenu" : GafferUI.SLOMenu.definition() } )
+
+haveRI = False
+try :
+	import GafferRIUI
+	haveRI = True
+except ImportError :
+	pass
+
+if haveRI :	
+	GafferUI.NodeMenu.definition().append( "/Shader/", { "subMenu" : GafferRIUI.SLOMenu.definition() } )
