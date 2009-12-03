@@ -359,7 +359,7 @@ env = Environment(
 
 	GAFFER_MAJOR_VERSION = "0",
 	GAFFER_MINOR_VERSION = "1",
-	GAFFER_PATCH_VERSION = "1",
+	GAFFER_PATCH_VERSION = "2",
 
 	CPPPATH = [
 		"include",
@@ -603,6 +603,7 @@ manifest = [
 	"lib/libgobject-2.0.0.dylib",
 	"lib/libgthread-2.0.0.dylib",
 	"lib/libglib-2.0.0.dylib",
+	"lib/libiconv.2.dylib",
 	"lib/libintl.8.dylib",
 	"lib/libgtk-x11-2.0.0.dylib",
 	"lib/libgdk-x11-2.0.0.dylib",
@@ -716,6 +717,10 @@ def installer( target, source, env ) :
 		
 		src = env.subst( os.path.join( "$BUILD_DIR", f ) )
 		dst = env.subst( os.path.join( "$INSTALL_DIR", f + "c" ) )
+		dstDir = os.path.dirname( dst )
+		
+		if not os.path.isdir( dstDir ) :
+			os.makedirs( dstDir )
 		
 		py_compile.compile( src, dst, doraise=True )
 		
