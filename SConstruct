@@ -262,6 +262,16 @@ options.Add(
 	"$DEPENDENCIES_SRC_DIR/PyOpenGL-3.0.0",
 )
 
+options.Add(
+	BoolVariable( "BUILD_GOOGLEPERFTOOLS", "Set this to build the google perftools.", "$BUILD_DEPENDENCIES" )
+)
+
+options.Add(
+	"GOOGLEPERFTOOLS_SRC_DIR",
+	"The location of the google performance tools source if BUILD_GOOGLEPERFTOOLS is specified.",
+	"$DEPENDENCIES_SRC_DIR/google-perftools-1.4",
+)
+
 ###############################################################################################
 # Dependencies
 # They doesn't fit into the SCons way of things too well so we just build them directly when
@@ -346,7 +356,11 @@ if depEnv["BUILD_GTK"] :
 	runCommand( "cd $GTKGLEXT_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include 'LDFLAGS=-L$BUILD_DIR/lib -L/usr/X11R6/lib' PKG_CONFIG=$BUILD_DIR/bin/pkg-config --with-gl-includedir=/usr/X11R6/include && make clean && make && make install" )
 	runCommand( "cd $PYGTKGLEXT_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib PKG_CONFIG=$BUILD_DIR/bin/pkg-config && make clean && make && make install" )
 	runCommand( "cd $PYOPENGL_SRC_DIR && python setup.py install" )
-	
+
+if depEnv["BUILD_GOOGLEPERFTOOLS"] :
+
+	runCommand( "cd $GOOGLEPERFTOOLS_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
+
 ###############################################################################################
 # Gaffer libraries
 ###############################################################################################
