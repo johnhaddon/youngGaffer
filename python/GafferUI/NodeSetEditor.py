@@ -1,6 +1,9 @@
 import Gaffer
 import GafferUI
 
+## The NodeSetEditor is a base class for all Editors which focus their
+# editing on a subset of nodes beneath a ScriptNode. This set defaults
+# to the ScriptNode.selection() but can be modified to be any Set of nodes.
 class NodeSetEditor( GafferUI.EditorWidget ) :
 
 	def __init__( self, gtkWidget, scriptNode ) :

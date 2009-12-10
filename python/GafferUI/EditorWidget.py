@@ -1,6 +1,8 @@
 from Gaffer import ScriptNode
 import GafferUI
 
+## The EditorWidget is a base class for all Widgets which somehow display or
+# manipulate a ScriptNode or its children.
 class EditorWidget( GafferUI.Widget ) :
 
 	def __init__( self, gtkWidget, scriptNode=None ) :
