@@ -61,6 +61,16 @@ options.Add(
 )
 
 options.Add(
+	BoolVariable( "BUILD_TBB", "Set this to build tbb.", "$BUILD_DEPENDENCIES" )
+)
+
+options.Add(
+	"TBB_SRC_DIR",
+	"The location of the tbb source to be used if BUILD_TBB is specified.",
+	"$DEPENDENCIES_SRC_DIR/tbb22_004oss",
+)
+
+options.Add(
 	BoolVariable( "BUILD_OPENEXR", "Set this to build openexr.", "$BUILD_DEPENDENCIES" )
 )
 
@@ -315,6 +325,10 @@ if depEnv["BUILD_DOXYGEN"] :
 	
 if depEnv["BUILD_BOOST"] :
 	runCommand( "cd $BOOST_SRC_DIR; ./bootstrap.sh --prefix=$BUILD_DIR --with-python=$BUILD_DIR/bin/python2.6 --with-python-root=$BUILD_DIR && ./bjam install" )
+
+if depEnv["BUILD_TBB"] :
+	runCommand( "cd $TBB_SRC_DIR; make clean; make" )
+	runCommand( "cd $TBB_SRC_DIR; cp build/macos_intel64_gcc_cc4.2.1_os10.6.2_release/*.dylib $BUILD_DIR/lib; cp -r include/tbb $BUILD_DIR/include" )
 
 if depEnv["BUILD_OPENEXR"] :
 	runCommand( "cd $ILMBASE_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
