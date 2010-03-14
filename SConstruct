@@ -57,7 +57,7 @@ options.Add(
 options.Add(
 	"BOOST_SRC_DIR",
 	"The location of the boost source to be used if BUILD_BOOST is specified.",
-	"$DEPENDENCIES_SRC_DIR/boost_1_40_0",
+	"$DEPENDENCIES_SRC_DIR/boost_1_42_0",
 )
 
 options.Add(
@@ -400,7 +400,6 @@ env = Environment(
 		"-Wall",
 		"-Werror",
 		"-O2",
-		"-D__i386__", # there's no way this is good! it's to workaround problems with boost::interval
 	],
 	
 	LIBPATH = [
