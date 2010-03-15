@@ -5,7 +5,7 @@
 #include "GafferBindings/PlugBinding.h"
 #include "Gaffer/CompoundPlug.h"
 
-#include "IECore/bindings/RunTimeTypedBinding.h"
+#include "IECorePython/RunTimeTypedBinding.h"
 
 using namespace boost::python;
 using namespace GafferBindings;
@@ -13,7 +13,7 @@ using namespace Gaffer;
 
 static std::string serialise( Serialiser &s, ConstGraphComponentPtr g )
 {
-	ConstCompoundPlugPtr plug = boost::static_pointer_cast<const CompoundPlug>( g );
+	ConstCompoundPlugPtr plug = IECore::staticPointerCast<const CompoundPlug>( g );
 	std::string result = s.modulePath( g ) + "." + g->typeName() + "( \"" + g->getName() + "\", ";
 	
 	if( plug->direction()!=Plug::In )
@@ -63,7 +63,7 @@ static CompoundPlugPtr construct(
 
 void GafferBindings::bindCompoundPlug()
 {
-	IECore::RunTimeTypedClass<CompoundPlug>()
+	IECorePython::RunTimeTypedClass<CompoundPlug>()
 		.def( "__init__", make_constructor( construct, default_call_policies(),
 				(
 					boost::python::arg_( "name" )=CompoundPlug::staticTypeName(),

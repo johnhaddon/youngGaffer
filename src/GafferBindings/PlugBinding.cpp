@@ -4,7 +4,7 @@
 #include "Gaffer/Plug.h"
 #include "Gaffer/Node.h"
 
-#include "IECore/bindings/RunTimeTypedBinding.h"
+#include "IECorePython/RunTimeTypedBinding.h"
 
 using namespace boost::python;
 using namespace GafferBindings;
@@ -72,7 +72,7 @@ static NodePtr node( Plug &p )
 void GafferBindings::bindPlug()
 {
 
-	IECore::RunTimeTypedClass<Plug> c;
+	IECorePython::RunTimeTypedClass<Plug> c;
 	{
 		scope s( c );
 		enum_<Plug::Direction>( "Direction" )

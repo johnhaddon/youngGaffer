@@ -5,7 +5,7 @@
 #include "GafferBindings/SignalBinding.h"
 #include "Gaffer/GraphComponent.h"
 
-#include "IECore/bindings/RunTimeTypedBinding.h"
+#include "IECorePython/RunTimeTypedBinding.h"
 
 using namespace boost::python;
 using namespace GafferBindings;
@@ -113,7 +113,7 @@ struct BinarySlotCaller
 void GafferBindings::bindGraphComponent()
 {
 
-	scope s = IECore::RunTimeTypedClass<GraphComponent>()
+	scope s = IECorePython::RunTimeTypedClass<GraphComponent>()
 		.def( init<>() )
 		.def( init<const std::string &>() )
 		.def( "setName", &GraphComponent::setName, return_value_policy<copy_const_reference>() )

@@ -6,8 +6,8 @@
 #include "Gaffer/TypedPlug.h"
 #include "Gaffer/Node.h"
 
-#include "IECore/bindings/Wrapper.h"
-#include "IECore/bindings/RunTimeTypedBinding.h"
+#include "IECorePython/Wrapper.h"
+#include "IECorePython/RunTimeTypedBinding.h"
 
 using namespace boost::python;
 using namespace GafferBindings;
@@ -16,7 +16,7 @@ using namespace Gaffer;
 template<typename T>
 static std::string serialise( Serialiser &s, ConstGraphComponentPtr g )
 {
-	typename T::ConstPtr plug = boost::static_pointer_cast<const T>( g );
+	typename T::ConstPtr plug = IECore::staticPointerCast<const T>( g );
 	std::string result = s.modulePath( g ) + "." + g->typeName() + "( \"" + g->getName() + "\", ";
 	
 	if( plug->direction()!=Plug::In )
@@ -48,7 +48,7 @@ static std::string serialise( Serialiser &s, ConstGraphComponentPtr g )
 	
 	if( !connected && plug->direction()==Plug::In )
 	{
-		typename T::Ptr p = boost::const_pointer_cast<T>( plug );
+		typename T::Ptr p = IECore::constPointerCast<T>( plug );
 		typename T::ValueType value = p->getValue();
 		if( value!=plug->defaultValue() )
 		{
@@ -93,7 +93,7 @@ static void bind()
 {
 	typedef typename T::ValueType V;
 	
-	IECore::RunTimeTypedClass<T>()
+	IECorePython::RunTimeTypedClass<T>()
 		.def( "__init__", make_constructor( construct<T>, default_call_policies(), 
 				(
 					boost::python::arg_( "name" )=T::staticTypeName(),

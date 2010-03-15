@@ -5,7 +5,7 @@
 
 #include "Gaffer/Plug.h"
 
-#include "IECore/bindings/RunTimeTypedBinding.h"
+#include "IECorePython/RunTimeTypedBinding.h"
 
 using namespace boost::python;
 using namespace GafferUIBindings;
@@ -13,7 +13,7 @@ using namespace GafferUI;
 
 void GafferUIBindings::bindNodule()
 {
-	IECore::RunTimeTypedClass<Nodule>()
+	IECorePython::RunTimeTypedClass<Nodule>()
 		.def( init<Gaffer::PlugPtr>() )
 	;
 }

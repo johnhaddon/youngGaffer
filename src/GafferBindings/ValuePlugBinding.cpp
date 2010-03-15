@@ -5,8 +5,8 @@
 #include "Gaffer/ValuePlug.h"
 #include "Gaffer/Node.h"
 
-#include "IECore/bindings/Wrapper.h"
-#include "IECore/bindings/RunTimeTypedBinding.h"
+#include "IECorePython/Wrapper.h"
+#include "IECorePython/RunTimeTypedBinding.h"
 
 using namespace boost::python;
 using namespace GafferBindings;
@@ -49,7 +49,7 @@ void GafferBindings::setPlugValue( PlugPtr plug, boost::python::object value )
 
 void GafferBindings::bindValuePlug()
 {
-	IECore::RunTimeTypedClass<ValuePlug>()
+	IECorePython::RunTimeTypedClass<ValuePlug>()
 		.def( "setDirty", &ValuePlug::setDirty )
 		.def( "getDirty", &ValuePlug::getDirty )
 	;	

@@ -31,7 +31,7 @@ void ValuePlug::setInput( PlugPtr input )
 	if( input )
 	{
 		// cast safe because acceptsInput checks type.
-		ValuePlugPtr vInput = boost::static_pointer_cast<ValuePlug>( input );
+		ValuePlugPtr vInput = IECore::staticPointerCast<ValuePlug>( input );
 		if( vInput->getDirty() )
 		{
 			setDirty();

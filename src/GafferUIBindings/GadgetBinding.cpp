@@ -7,7 +7,7 @@
 #include "GafferBindings/SignalBinding.h"
 #include "GafferBindings/CatchingSlotCaller.h"
 
-#include "IECore/bindings/RunTimeTypedBinding.h"
+#include "IECorePython/RunTimeTypedBinding.h"
 
 using namespace boost::python;
 using namespace GafferUIBindings;
@@ -27,7 +27,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( fullTransformOverloads, fullTransform, 0
 
 void GafferUIBindings::bindGadget()
 {
-	scope s = IECore::RunTimeTypedClass<Gadget>()
+	scope s = IECorePython::RunTimeTypedClass<Gadget>()
 		.def( "getStyle", &Gadget::getStyle )
 		.def( "setStyle", &Gadget::setStyle )
 		.def( "getTransform", &Gadget::getTransform, return_value_policy<copy_const_reference>() )

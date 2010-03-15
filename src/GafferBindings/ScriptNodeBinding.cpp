@@ -5,8 +5,8 @@
 #include "GafferBindings/Serialiser.h"
 #include "Gaffer/ScriptNode.h"
 
-#include "IECore/bindings/Wrapper.h"
-#include "IECore/bindings/RunTimeTypedBinding.h"
+#include "IECorePython/Wrapper.h"
+#include "IECorePython/RunTimeTypedBinding.h"
 
 #include "boost/tokenizer.hpp"
 
@@ -22,13 +22,13 @@ namespace GafferBindings
 /// components of the ScriptNode base class. In this way
 /// scripting is available provided that the ScriptNode was
 /// created from python.
-class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
+class ScriptNodeWrapper : public ScriptNode, public IECorePython::Wrapper<ScriptNode>
 {
 
 	public :
 
 		ScriptNodeWrapper( PyObject *self, const std::string &name=staticTypeName() )
-			:	ScriptNode( name ), IECore::Wrapper<ScriptNode>( self, this )
+			:	ScriptNode( name ), IECorePython::Wrapper<ScriptNode>( self, this )
 		{
 			dict executionGlobals;
 			dict executionLocals;
@@ -96,7 +96,7 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 		/// We need to consider implementing a delete() method first though.
 		virtual void load()
 		{
-			std::string fileName = boost::const_pointer_cast<StringPlug>( fileNamePlug() )->getValue();
+			std::string fileName = IECore::constPointerCast<StringPlug>( fileNamePlug() )->getValue();
 			std::ifstream f( fileName.c_str() );
 			if( !f.good() )
 			{
@@ -123,7 +123,7 @@ class ScriptNodeWrapper : public ScriptNode, public IECore::Wrapper<ScriptNode>
 		{
 			std::string s = serialise();
 			
-			std::string fileName = boost::const_pointer_cast<StringPlug>( fileNamePlug() )->getValue();
+			std::string fileName = IECore::constPointerCast<StringPlug>( fileNamePlug() )->getValue();
 			std::ofstream f( fileName.c_str() );
 			if( !f.good() )
 			{
@@ -182,7 +182,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( deleteNodesOverloads, deleteNodes, 0, 1 
 
 void bindScriptNode()
 {
-	scope s = IECore::RunTimeTypedClass<ScriptNode, ScriptNodeWrapperPtr>()
+	scope s = IECorePython::RunTimeTypedClass<ScriptNode, ScriptNodeWrapperPtr>()
 		.def( init<>() )
 		.def( init<const std::string &>() )
 		.def( "selection", (SetPtr (ScriptNode::*)())&ScriptNode::selection )

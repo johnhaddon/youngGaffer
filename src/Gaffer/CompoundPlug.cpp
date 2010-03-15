@@ -48,7 +48,7 @@ bool CompoundPlug::acceptsInput( ConstPlugPtr input ) const
 	ChildContainer::const_iterator it1, it2;
 	for( it1 = children().begin(), it2 = p->children().begin(); it1!=children().end(); it1++, it2++ )
 	{
-		if( !static_pointer_cast<Plug>( *it1 )->acceptsInput( static_pointer_cast<Plug>( *it2 ) ) )
+		if( !IECore::staticPointerCast<Plug>( *it1 )->acceptsInput( IECore::staticPointerCast<Plug>( *it2 ) ) )
 		{
 			return false;
 		}
@@ -62,16 +62,16 @@ void CompoundPlug::setInput( PlugPtr input )
 	{
 		for( ChildContainer::const_iterator it = children().begin(); it!=children().end(); it++ )
 		{
-			static_pointer_cast<Plug>( *it )->setInput( 0 );			
+			IECore::staticPointerCast<Plug>( *it )->setInput( 0 );			
 		}
 	}
 	else
 	{
-		CompoundPlugPtr p = static_pointer_cast<CompoundPlug>( input );
+		CompoundPlugPtr p = IECore::staticPointerCast<CompoundPlug>( input );
 		ChildContainer::const_iterator it1, it2;
 		for( it1 = children().begin(), it2 = p->children().begin(); it1!=children().end(); it1++, it2++ )
 		{
-			static_pointer_cast<Plug>( *it1 )->setInput( static_pointer_cast<Plug>( *it2 ) );
+			IECore::staticPointerCast<Plug>( *it1 )->setInput( IECore::staticPointerCast<Plug>( *it2 ) );
 		}
 	}
 	ValuePlug::setInput( input );
@@ -165,7 +165,7 @@ void CompoundPlug::updateInputFromChildInputs( PlugPtr checkFirst )
 
 	if( !checkFirst )
 	{
-		checkFirst = boost::static_pointer_cast<Plug>( *( children().begin() ) );
+		checkFirst = IECore::staticPointerCast<Plug>( *( children().begin() ) );
 	}
 
 	PlugPtr input = checkFirst->getInput<Plug>();	
@@ -183,7 +183,7 @@ void CompoundPlug::updateInputFromChildInputs( PlugPtr checkFirst )
 	ChildContainer::const_iterator it;
 	for( it = children().begin(); it!=children().end(); it++ )
 	{
-		input = boost::static_pointer_cast<Plug>(*it)->getInput<Plug>();
+		input = IECore::staticPointerCast<Plug>(*it)->getInput<Plug>();
 		if( !input || input->ancestor<CompoundPlug>()!=commonParent )
 		{
 			ValuePlug::setInput( 0 );

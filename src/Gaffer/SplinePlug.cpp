@@ -194,7 +194,7 @@ CompoundPlugPtr SplinePlug<T>::pointPlug( unsigned pointIndex )
 	{
 		it++;
 	}
-	return boost::static_pointer_cast<CompoundPlug>( *it );
+	return IECore::staticPointerCast<CompoundPlug>( *it );
 }
 
 template<typename T>
@@ -209,7 +209,7 @@ ConstCompoundPlugPtr SplinePlug<T>::pointPlug( unsigned pointIndex ) const
 	{
 		it++;
 	}
-	return boost::static_pointer_cast<CompoundPlug>( *it );
+	return IECore::staticPointerCast<CompoundPlug>( *it );
 }
 
 template<typename T>

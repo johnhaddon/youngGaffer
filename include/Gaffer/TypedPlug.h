@@ -15,8 +15,8 @@ class TypedPlug : public ValuePlug
 	public :
 
 		typedef T ValueType;
-		typedef boost::intrusive_ptr<TypedPlug> Ptr;
-		typedef boost::intrusive_ptr<const TypedPlug> ConstPtr;
+
+		IECORE_RUNTIMETYPED_DECLARETEMPLATE( TypedPlug<T>, ValuePlug );
 
 		TypedPlug(
 			const std::string &name = staticTypeName(),
@@ -25,20 +25,6 @@ class TypedPlug : public ValuePlug
 			unsigned flags = None
 		);
 		virtual ~TypedPlug();
-
-		//! @name RunTimeTyped functions
-		////////////////////////////////////
-		//@{
-		virtual IECore::TypeId typeId() const;
-		virtual const char *typeName() const;
-		virtual bool isInstanceOf( IECore::TypeId typeId ) const;
-		virtual bool isInstanceOf( const char *typeName ) const;
-		static IECore::TypeId staticTypeId();
-		static const char *staticTypeName();
-		static bool inheritsFrom( IECore::TypeId typeId );
-		static bool inheritsFrom( const char *typeName );
-		typedef ValuePlug BaseClass;
-		//@}
 
 		/// Accepts only instances of TypedPlug<T> or derived classes.
 		virtual bool acceptsInput( ConstPlugPtr input ) const;

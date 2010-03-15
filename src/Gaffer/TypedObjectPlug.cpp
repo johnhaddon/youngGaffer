@@ -7,70 +7,6 @@
 
 using namespace Gaffer;
 
-#define SPECIALISE( TNAME )															\
-																					\
-	template<>																		\
-	IECore::TypeId TNAME::staticTypeId()											\
-	{																				\
-		return (IECore::TypeId)TNAME ## TypeId;										\
-	}																				\
-																					\
-	template<>																		\
-	const char *TNAME::staticTypeName()												\
-	{																				\
-		return # TNAME;																\
-	}																				\
-																					\
-	template<> 																		\
-	const IECore::RunTimeTyped::TypeDescription<TNAME>  TNAME::g_typeDescription;	\
-
-template<class T>
-IECore::TypeId TypedObjectPlug<T>::typeId() const
-{
-	return staticTypeId();
-}
-
-template<class T>
-const char *TypedObjectPlug<T>::typeName() const
-{
-	return staticTypeName();
-}
-
-template<class T>
-bool TypedObjectPlug<T>::isInstanceOf( IECore::TypeId typeId ) const
-{
-	if( typeId==staticTypeId() )
-	{
-		return true;
-	}
-	return ValuePlug::isInstanceOf( typeId );
-}
-
-
-template<class T>
-bool TypedObjectPlug<T>::isInstanceOf( const char *typeName ) const
-{
-	if( 0==strcmp( typeName, staticTypeName() ) )
-	{
-		return true;
-	}
-	return ValuePlug::isInstanceOf( typeName );
-}
-
-
-template<class T>
-bool TypedObjectPlug<T>::inheritsFrom( IECore::TypeId typeId )
-{
-	return ValuePlug::staticTypeId()==typeId ? true : ValuePlug::inheritsFrom( typeId );
-}
-
-
-template<class T>
-bool TypedObjectPlug<T>::inheritsFrom( const char *typeName )
-{
-	return 0==strcmp( ValuePlug::staticTypeName(), typeName ) ? true : ValuePlug::inheritsFrom( typeName );
-}
-
 template<class T>
 TypedObjectPlug<T>::TypedObjectPlug(
 	const std::string &name,
@@ -149,7 +85,7 @@ void TypedObjectPlug<T>::setFromInput()
 namespace Gaffer
 {
 
-SPECIALISE( ObjectPlug )
+IECORE_RUNTIMETYPED_DEFINETEMPLATESPECIALISATION( ObjectPlug, ObjectPlugTypeId )
 
 }
 

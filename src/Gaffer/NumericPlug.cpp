@@ -116,10 +116,10 @@ void NumericPlug<T>::setFromInput()
 	switch( i->typeId() )
 	{
 		case FloatPlugTypeId :
-			setValue( boost::static_pointer_cast<FloatPlug>( i )->getValue() );
+			setValue( IECore::staticPointerCast<FloatPlug>( i )->getValue() );
 			break;
 		case IntPlugTypeId :
-			setValue( boost::static_pointer_cast<IntPlug>( i )->getValue() );
+			setValue( IECore::staticPointerCast<IntPlug>( i )->getValue() );
 			break;
 		default :
 			assert( 0 ); // shouldn't have connections of any other type

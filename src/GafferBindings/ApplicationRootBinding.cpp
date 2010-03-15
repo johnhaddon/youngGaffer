@@ -3,7 +3,7 @@
 #include "GafferBindings/ApplicationRootBinding.h"
 #include "Gaffer/ApplicationRoot.h"
 
-#include "IECore/bindings/RunTimeTypedBinding.h"
+#include "IECorePython/RunTimeTypedBinding.h"
 
 using namespace boost::python;
 using namespace GafferBindings;
@@ -21,7 +21,7 @@ static IECore::ObjectPtr getClipboardContents( ApplicationRoot &a )
 
 void GafferBindings::bindApplicationRoot()
 {
-	IECore::RunTimeTypedClass<ApplicationRoot>()
+	IECorePython::RunTimeTypedClass<ApplicationRoot>()
 		.def( init<>() )
 		.def( "getClipboardContents", &getClipboardContents )
 		.def( "setClipboardContents", &ApplicationRoot::setClipboardContents )

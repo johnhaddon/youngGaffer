@@ -5,7 +5,7 @@
 
 #include "Gaffer/Node.h"
 
-#include "IECore/bindings/RunTimeTypedBinding.h"
+#include "IECorePython/RunTimeTypedBinding.h"
 
 using namespace boost::python;
 using namespace GafferUIBindings;
@@ -14,7 +14,7 @@ using namespace GafferUI;
 void GafferUIBindings::bindLinearContainer()
 {
 	/// \todo It would be nice if we could make this behave a lot like the ListContainer
-	IECore::RunTimeTypedClass<LinearContainer> c;
+	IECorePython::RunTimeTypedClass<LinearContainer> c;
 		c.def( "setOrientation", &LinearContainer::setOrientation )
 		.def( "getOrientation", &LinearContainer::getOrientation )
 		.def( "setAlignment", &LinearContainer::setAlignment )

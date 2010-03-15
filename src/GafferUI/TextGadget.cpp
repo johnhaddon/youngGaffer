@@ -20,7 +20,7 @@ TextGadget::~TextGadget()
 
 IECore::ConstFontPtr TextGadget::getFont() const
 {
-	return const_pointer_cast<Font>( m_font ? m_font : getStyle()->labelFont() );
+	return IECore::constPointerCast<Font>( m_font ? m_font : getStyle()->labelFont() );
 }
 
 void TextGadget::setFont( IECore::FontPtr font )

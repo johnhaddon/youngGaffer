@@ -42,7 +42,7 @@ typename CompoundNumericPlug<T>::ChildType::Ptr CompoundNumericPlug<T>::getChild
 		it++;
 		i -= 1;
 	}
-	return static_pointer_cast<ChildType>( *it );
+	return IECore::staticPointerCast<ChildType>( *it );
 }
 
 template<typename T>
@@ -54,7 +54,7 @@ typename CompoundNumericPlug<T>::ChildType::ConstPtr CompoundNumericPlug<T>::get
 		it++;
 		i -= 1;
 	}
-	return static_pointer_cast<ChildType>( *it );
+	return IECore::staticPointerCast<ChildType>( *it );
 }
 
 template<typename T>

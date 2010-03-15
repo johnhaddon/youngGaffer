@@ -31,8 +31,8 @@ class FilteredChildIterator : public boost::filter_iterator<Predicate, GraphComp
 		typedef typename Predicate::ChildType ChildType;
 		typedef boost::filter_iterator<Predicate, GraphComponent::ChildIterator> BaseIterator;
 		
-		typedef const boost::intrusive_ptr<ChildType> &reference;
-		typedef const boost::intrusive_ptr<ChildType> *pointer;
+		typedef const typename ChildType::Ptr &reference;
+		typedef const typename ChildType::Ptr *pointer;
 		
 		FilteredChildIterator()
 			:	BaseIterator()

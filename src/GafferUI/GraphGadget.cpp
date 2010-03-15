@@ -80,7 +80,7 @@ void GraphGadget::doRender( IECore::RendererPtr renderer ) const
 	{
 		if( !((*it)->isInstanceOf( ConnectionGadget::staticTypeId() )) )
 		{
-			boost::static_pointer_cast<const Gadget>( *it )->render( renderer );
+			IECore::staticPointerCast<const Gadget>( *it )->render( renderer );
 		}
 	}
 }

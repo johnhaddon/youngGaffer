@@ -35,7 +35,7 @@ std::string Serialiser::serialise( Gaffer::ConstNodePtr context, Gaffer::ConstSe
 
 std::string Serialiser::modulePath( Gaffer::ConstGraphComponentPtr o )
 {
-	object po( boost::const_pointer_cast<Gaffer::GraphComponent>( o ) ); // we can only push non-const objects to python so we need the cast
+	object po( IECore::constPointerCast<Gaffer::GraphComponent>( o ) ); // we can only push non-const objects to python so we need the cast
 	return modulePath( po );
 }
 

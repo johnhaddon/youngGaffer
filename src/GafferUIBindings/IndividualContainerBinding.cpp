@@ -3,7 +3,7 @@
 #include "GafferUIBindings/IndividualContainerBinding.h"
 #include "GafferUI/IndividualContainer.h"
 
-#include "IECore/bindings/RunTimeTypedBinding.h"
+#include "IECorePython/RunTimeTypedBinding.h"
 
 using namespace boost::python;
 using namespace GafferUIBindings;
@@ -11,7 +11,7 @@ using namespace GafferUI;
 
 void GafferUIBindings::bindIndividualContainer()
 {
-	IECore::RunTimeTypedClass<IndividualContainer>()
+	IECorePython::RunTimeTypedClass<IndividualContainer>()
 		.def( init<GadgetPtr>() )
 		.def( "setChild", &IndividualContainer::setChild )
 		.def( "getChild", (GadgetPtr (IndividualContainer::*)())&IndividualContainer::getChild<Gadget> )

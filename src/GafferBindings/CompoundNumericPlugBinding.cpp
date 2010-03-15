@@ -7,7 +7,7 @@
 #include "GafferBindings/Serialiser.h"
 #include "Gaffer/CompoundNumericPlug.h"
 
-#include "IECore/bindings/RunTimeTypedBinding.h"
+#include "IECorePython/RunTimeTypedBinding.h"
 
 using namespace boost::python;
 using namespace GafferBindings;
@@ -24,7 +24,7 @@ static std::string serialiseValue( Serialiser &s, const T &value )
 template<typename T>
 static std::string serialise( Serialiser &s, ConstGraphComponentPtr g )
 {
-	typename T::ConstPtr plug = boost::static_pointer_cast<const T>( g );
+	typename T::ConstPtr plug = IECore::staticPointerCast<const T>( g );
 	std::string result = s.modulePath( g ) + "." + g->typeName() + "( \"" + g->getName() + "\", ";
 	
 	if( plug->direction()!=Plug::In )
@@ -56,7 +56,7 @@ static std::string serialise( Serialiser &s, ConstGraphComponentPtr g )
 	PlugIterator pIt( plug->children().begin(), plug->children().end() );
 	while( pIt!=plug->children().end() )
 	{
-		value += serialisePlugValue( s, boost::static_pointer_cast<ValuePlug>( *pIt++ ) ) + ", ";
+		value += serialisePlugValue( s, IECore::staticPointerCast<ValuePlug>( *pIt++ ) ) + ", ";
 	}
 	value += " )";
 	result += "value = " + value + ", ";
@@ -99,7 +99,7 @@ static typename T::Ptr construct(
 			PlugIterator pIt( result->children().begin(), result->children().end() );
 			while( pIt!=result->children().end() )
 			{
-				setPlugValue( boost::static_pointer_cast<ValuePlug>( *pIt++ ), t[i++] );
+				setPlugValue( IECore::staticPointerCast<ValuePlug>( *pIt++ ), t[i++] );
 			}
 		}
 	}
@@ -111,7 +111,7 @@ static void bind()
 {
 	typedef typename T::ValueType V;
 		
-	IECore::RunTimeTypedClass<T>()
+	IECorePython::RunTimeTypedClass<T>()
 		.def( "__init__", make_constructor( construct<T>, default_call_policies(),
 				(
 					boost::python::arg_( "name" )=T::staticTypeName(),

@@ -10,7 +10,7 @@ template<typename T>
 typename T::Ptr GraphComponent::getChild( const std::string &name )
 {
 	// preferring the nasty casts over mainaining two nearly identical implementations for getChild.
-	return boost::const_pointer_cast<T>( const_cast<const GraphComponent *>( this )->getChild<T>( name ) );
+	return IECore::constPointerCast<T>( const_cast<const GraphComponent *>( this )->getChild<T>( name ) );
 }
 
 template<typename T>

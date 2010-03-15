@@ -12,8 +12,8 @@
 #include "Gaffer/ScriptNode.h"
 #include "Gaffer/CompoundPlug.h"
 
-#include "IECore/bindings/Wrapper.h"
-#include "IECore/bindings/RunTimeTypedBinding.h"
+#include "IECorePython/Wrapper.h"
+#include "IECorePython/RunTimeTypedBinding.h"
 
 using namespace boost::python;
 using namespace GafferBindings;
@@ -45,7 +45,7 @@ static std::string serialisePlug( Serialiser &s, ConstGraphComponentPtr ancestor
 
 static std::string serialiseNode( Serialiser &s, ConstGraphComponentPtr g )
 {
-	ConstNodePtr node = boost::static_pointer_cast<const Node>( g );
+	ConstNodePtr node = IECore::staticPointerCast<const Node>( g );
 	
 	std::string result = boost::str( boost::format( "%s.%s( \"%s\", " )
 		% s.modulePath( g )
@@ -89,13 +89,13 @@ static std::string serialiseNode( Serialiser &s, ConstGraphComponentPtr g )
 	return result;
 }
 
-class NodeWrapper : public Node, public IECore::Wrapper<Node>
+class NodeWrapper : public Node, public IECorePython::Wrapper<Node>
 {
 
 	public :
 		
 		NodeWrapper( PyObject *self, const std::string &name, const dict &inputs, const tuple &dynamicPlugs )
-			:	Node( name ), IECore::Wrapper<Node>( self, this )
+			:	Node( name ), IECorePython::Wrapper<Node>( self, this )
 		{
 			initNode( this, inputs, dynamicPlugs );
 		}		
@@ -104,7 +104,7 @@ class NodeWrapper : public Node, public IECore::Wrapper<Node>
 		{
 			if( override f = this->get_override( "dirty" ) )
 			{
-				f( boost::const_pointer_cast<Plug>( dirty ) );
+				f( IECore::constPointerCast<Plug>( dirty ) );
 			}
 		}
 		
@@ -112,11 +112,11 @@ class NodeWrapper : public Node, public IECore::Wrapper<Node>
 		{
 			if( override f = this->get_override( "compute" ) )
 			{
-				f( boost::const_pointer_cast<Plug>( output ) );
+				f( IECore::constPointerCast<Plug>( output ) );
 			}
 		}
 		
-		IE_COREPYTHON_RUNTIMETYPEDWRAPPERFNS( Node );
+		IECOREPYTHON_RUNTIMETYPEDWRAPPERFNS( Node );
 
 };
 
@@ -162,7 +162,7 @@ void GafferBindings::initNode( Node *node, const boost::python::dict &inputs, co
 void GafferBindings::bindNode()
 {
 	
-	scope s = IECore::RunTimeTypedClass<Node, NodeWrapperPtr>()
+	scope s = IECorePython::RunTimeTypedClass<Node, NodeWrapperPtr>()
 		.def( 	init< const std::string &, const dict &, const tuple & >
 				(
 					(

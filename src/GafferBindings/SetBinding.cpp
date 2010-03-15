@@ -6,7 +6,7 @@
 
 #include "Gaffer/Set.h"
 
-#include "IECore/bindings/RunTimeTypedBinding.h"
+#include "IECorePython/RunTimeTypedBinding.h"
 
 using namespace Gaffer;
 
@@ -66,7 +66,7 @@ struct MemberAcceptanceSlotCaller
 	{
 		try
 		{
-			return slot( boost::const_pointer_cast<Set>( s ), boost::const_pointer_cast<IECore::RunTimeTyped>( m ) );
+			return slot( IECore::constPointerCast<Set>( s ), IECore::constPointerCast<IECore::RunTimeTyped>( m ) );
 		}
 		catch( const boost::python::error_already_set &e )
 		{
@@ -81,7 +81,7 @@ struct MemberAcceptanceSlotCaller
 void bindSet()
 {
 	
-	boost::python::scope s = IECore::RunTimeTypedClass<Set>()
+	boost::python::scope s = IECorePython::RunTimeTypedClass<Set>()
 		.def( boost::python::init<>() )
 		.def( "__init__", boost::python::make_constructor( Detail::setConstructor ) )
 		.def( "add", &Detail::addFromSequence )
