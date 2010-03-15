@@ -74,4 +74,4 @@ class SLONode( Gaffer.Node ) :
 		reader = IECoreRI.SLOReader( f )
 		return reader.read()
 			
-IECore.registerRunTimeTyped( SLONode, 405006, Gaffer.Node )
+IECore.registerRunTimeTyped( SLONode )

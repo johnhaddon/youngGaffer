@@ -38,4 +38,4 @@ class RIBRendererNode( Gaffer.Node ) :
 		# generated.
 		plug.setValue( 0 )
 
-IECore.registerRunTimeTyped( RIBRendererNode, 405004, Gaffer.Node )
+IECore.registerRunTimeTyped( RIBRendererNode )

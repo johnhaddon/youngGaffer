@@ -86,4 +86,4 @@ class GroupNode( Gaffer.Node ) :
 			for plug in inputs[lastConnected + 2:] :
 				self.removeChild( plug ) 
 				
-IECore.registerRunTimeTyped( GroupNode, 405005, Gaffer.Node )
+IECore.registerRunTimeTyped( GroupNode )

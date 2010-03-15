@@ -36,4 +36,4 @@ class ReadNode( Gaffer.Node ) :
 		
 		plug.setValue( result )
 
-IECore.registerRunTimeTyped( ReadNode, 405002, Gaffer.Node )
+IECore.registerRunTimeTyped( ReadNode )

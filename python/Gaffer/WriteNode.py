@@ -38,4 +38,4 @@ class WriteNode( Gaffer.Node ) :
 		
 		plug.setValue( filename )
 
-IECore.registerRunTimeTyped( WriteNode, 405003, Gaffer.Node )
+IECore.registerRunTimeTyped( WriteNode )

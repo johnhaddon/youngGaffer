@@ -31,4 +31,4 @@ class AddNode( Gaffer.Node ) :
 
 		plug.setValue( self.getChild("op1").getValue() + self.getChild("op2").getValue() )
 
-IECore.registerRunTimeTyped( AddNode, 405000, Gaffer.Node )
+IECore.registerRunTimeTyped( AddNode )

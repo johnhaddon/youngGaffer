@@ -38,4 +38,4 @@ class SphereNode( Gaffer.Node ) :
 		result = IECore.SpherePrimitive( self["radius"].getValue(), self["zMin"].getValue(), self["zMax"].getValue(), self["theta"].getValue() )
 		plug.setValue( result )
 
-IECore.registerRunTimeTyped( SphereNode, 405001, Gaffer.Node )
+IECore.registerRunTimeTyped( SphereNode )
