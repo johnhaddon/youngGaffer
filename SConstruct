@@ -533,7 +533,7 @@ scriptsInstall = env.Install( "$BUILD_DIR/bin", [ "bin/gaffer", "bin/gaffer.py" 
 env.Alias( "build", scriptsInstall )
 
 for app in ( "gui", "view", "test", "cli", "license" ) :
-	appInstall = env.Install( "$BUILD_DIR/apps", "apps/%s-1.py" % app )
+	appInstall = env.Install( "$BUILD_DIR/apps/%s" % app, "apps/%s/%s-1.py" % ( app, app ) )
 	env.Alias( "build", appInstall )
 
 startupScriptsInstall = env.Install( "$BUILD_DIR/startup/ui", glob.glob( "startup/ui/*.py" ) )

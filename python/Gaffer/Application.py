@@ -6,8 +6,7 @@ class Application( IECore.Parameterised ) :
 
 	def __init__( self ) :
 	
-		IECore.Parameterised.__init__( self, "Gaffer.Application", "" )
-		pass
+		IECore.Parameterised.__init__( self, "" )
 
 	def run( self ) :
 	
