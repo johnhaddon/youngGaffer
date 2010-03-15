@@ -415,6 +415,7 @@ env = Environment(
 		"boost_wave" + boostLibSuffix,
 		"boost_regex" + boostLibSuffix,		
 		"boost_system" + boostLibSuffix,
+		"tbb",
 		"Imath",
 		"IECore",
 	],
@@ -457,6 +458,7 @@ pythonEnv.Append(
 	
 	LIBS = [
 		"boost_python" + boostLibSuffix,
+		"IECorePython",
 		"Gaffer",
 	],
 	
@@ -531,7 +533,7 @@ scriptsInstall = env.Install( "$BUILD_DIR/bin", [ "bin/gaffer", "bin/gaffer.py" 
 env.Alias( "build", scriptsInstall )
 
 for app in ( "gui", "view", "test", "cli", "license" ) :
-	appInstall = env.Install( "$BUILD_DIR/apps/%s/1" % app, "apps/%s/1/%s.py" % ( app, app ) )
+	appInstall = env.Install( "$BUILD_DIR/apps", "apps/%s-1.py" % app )
 	env.Alias( "build", appInstall )
 
 startupScriptsInstall = env.Install( "$BUILD_DIR/startup/ui", glob.glob( "startup/ui/*.py" ) )
