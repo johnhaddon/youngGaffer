@@ -34,4 +34,4 @@ class UndoContext
 
 } // namespace Gaffer
 
-#endif GAFFER_UNDOCONTEXT_H
+#endif // GAFFER_UNDOCONTEXT_H

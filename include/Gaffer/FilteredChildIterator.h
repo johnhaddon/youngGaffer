@@ -83,4 +83,4 @@ class FilteredChildIterator : public boost::filter_iterator<Predicate, GraphComp
 
 } // namespace Gaffer
 
-#endif GAFFER_FILTEREDCHILDITERATOR_H
+#endif // GAFFER_FILTEREDCHILDITERATOR_H

@@ -35,4 +35,4 @@ typedef FilteredChildIterator<PlugPredicate<Plug::Out, Plug> > OutputPlugIterato
 
 } // namespace Gaffer
 
-#endif GAFFER_PLUGITERATOR_H
+#endif // GAFFER_PLUGITERATOR_H

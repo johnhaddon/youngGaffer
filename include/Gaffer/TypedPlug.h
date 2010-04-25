@@ -62,4 +62,4 @@ IE_CORE_DECLAREPTR( M44fPlug );
 
 } // namespace Gaffer
 
-#endif GAFFER_TYPEDPLUG_H
+#endif // GAFFER_TYPEDPLUG_H
