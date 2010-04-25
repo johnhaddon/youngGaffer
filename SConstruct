@@ -4,7 +4,7 @@ import glob
 import shutil
 import py_compile
 
-CacheDir( "/Users/john/dev/sconsBuildCache" )
+CacheDir( "/home/john/dev/sconsBuildCache" )
 
 ###############################################################################################
 # Command line options
@@ -15,13 +15,13 @@ options = Variables( "", ARGUMENTS )
 options.Add(
 	"BUILD_DIR",
 	"The destination directory in which the build will be made.",
-	"/Users/john/dev/build/gaffer"
+	"/home/john/dev/build/gaffer"
 )
 
 options.Add(
 	"INSTALL_DIR",
 	"The destination directory for the installation.",
-	"/Users/john/dev/install/gaffer-${GAFFER_MAJOR_VERSION}.${GAFFER_MINOR_VERSION}.${GAFFER_PATCH_VERSION}-${PLATFORM}",
+	"/home/john/dev/install/gaffer-${GAFFER_MAJOR_VERSION}.${GAFFER_MINOR_VERSION}.${GAFFER_PATCH_VERSION}-${PLATFORM}",
 )
 
 options.Add(
@@ -37,7 +37,7 @@ options.Add(
 options.Add(
 	"DEPENDENCIES_SRC_DIR",
 	"The location of a directory holding dependencies.",
-	"/Users/john/dev/gafferDependencies",
+	"/home/john/dev/gafferDependencies",
 )
 
 options.Add(
@@ -298,8 +298,9 @@ depEnv["CXX_MINOR_VERSION"] = depEnv["CXXVERSION"].split( "." )[1]
 def runCommand( command ) :
 
 	sys.stderr.write( command + "\n" )
-	command = "export PATH=%s DYLD_LIBRARY_PATH= M4PATH=%s PKG_CONFIG_PATH=%s MACOSX_DEPLOYMENT_TARGET=10.4 && %s " % (
+	command = "export PATH=%s DYLD_LIBRARY_PATH= LD_LIBRARY_PATH=%s M4PATH=%s PKG_CONFIG_PATH=%s MACOSX_DEPLOYMENT_TARGET=10.4 && %s " % (
 		depEnv.subst( "$BUILD_DIR/bin:/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin" ),
+		depEnv.subst( "$BUILD_DIR/lib" ),
 		depEnv.subst( "$BUILD_DIR/share/aclocal" ),
 		depEnv.subst( "$BUILD_DIR/lib/pkgconfig" ),
 		depEnv.subst( command )
@@ -314,9 +315,13 @@ if depEnv["BUILD_PKGCONFIG"] :
 	runCommand( "cd $PKGCONFIG_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
 
 if depEnv["BUILD_PYTHON"] :
-	runCommand( "cd $PYTHON_SRC_DIR; ./configure --enable-framework=$BUILD_DIR/frameworks --prefix=$BUILD_DIR && make clean && make && make install" )
-	runCommand( "cd $BUILD_DIR/bin && ln -fsh python2.6 python" )
-
+	
+	if depEnv["PLATFORM"]=="darwin" :
+		runCommand( "cd $PYTHON_SRC_DIR; ./configure --enable-framework=$BUILD_DIR/frameworks --prefix=$BUILD_DIR && make clean && make && make install" )
+		runCommand( "cd $BUILD_DIR/bin && ln -fsh python2.6 python" )
+	else :
+		runCommand( "cd $PYTHON_SRC_DIR; ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
+		
 if depEnv["BUILD_GRAPHVIZ"] :
 	runCommand( "cd $GRAPHVIZ_SRC_DIR && ./configure --enable-perl=no --prefix=$BUILD_DIR && make clean && make && make install" )
 
@@ -328,14 +333,17 @@ if depEnv["BUILD_BOOST"] :
 
 if depEnv["BUILD_TBB"] :
 	runCommand( "cd $TBB_SRC_DIR; make clean; make" )
-	runCommand( "cd $TBB_SRC_DIR; cp build/macos_intel64_gcc_cc4.2.1_os10.6.2_release/*.dylib $BUILD_DIR/lib; cp -r include/tbb $BUILD_DIR/include" )
+	if depEnv["PLATFORM"]=="darwin" :
+		runCommand( "cd $TBB_SRC_DIR; cp build/macos_intel64_gcc_cc4.2.1_os10.6.2_release/*.dylib $BUILD_DIR/lib; cp -r include/tbb $BUILD_DIR/include" )
+	else :
+		runCommand( "cd $TBB_SRC_DIR; cp build/linux_intel64_gcc_cc4.4.1_libc2.10.1_kernel2.6.31_release/*.so* $BUILD_DIR/lib; cp -r include/tbb $BUILD_DIR/include" )
 
 if depEnv["BUILD_OPENEXR"] :
 	runCommand( "cd $ILMBASE_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
 	runCommand( "cd $OPENEXR_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
 
 if depEnv["BUILD_JPEG"] :
-	runCommand( "cd $JPEG_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install-lib install-headers" )
+	runCommand( "cd $JPEG_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make CFLAGS='-O2 -fPIC' && make install-lib install-headers" )
 
 if depEnv["BUILD_TIFF"] :
 	runCommand( "cd $TIFF_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
@@ -347,7 +355,7 @@ if depEnv["BUILD_GLEW"] :
 	runCommand( "cd $GLEW_SRC_DIR && make clean && make install GLEW_DEST=$BUILD_DIR" )
 	
 if depEnv["BUILD_CORTEX"] :
-	runCommand( "cd $CORTEX_SRC_DIR; /usr/bin/python /opt/local/bin/scons install DOXYGEN=$BUILD_DIR/bin/doxygen INSTALL_DOC_DIR=$BUILD_DIR/doc/cortex INSTALL_PREFIX=$BUILD_DIR INSTALL_PYTHON_DIR=$BUILD_DIR/lib/python2.6/site-packages PYTHON_CONFIG=$BUILD_DIR/bin/python2.6-config BOOST_INCLUDE_PATH=$BUILD_DIR/include/boost-1_40 LIBPATH=$BUILD_DIR/lib BOOST_LIB_SUFFIX='' OPENEXR_INCLUDE_PATH=$BUILD_DIR/include FREETYPE_INCLUDE_PATH=$BUILD_DIR/include/freetype2 RMAN_ROOT=/Applications/Graphics/3Delight-8.5.32 WITH_GL=1 GLEW_INCLUDE_PATH=$BUILD_DIR/include/GL" )
+	runCommand( "cd $CORTEX_SRC_DIR; scons install -j 3 DOXYGEN=$BUILD_DIR/bin/doxygen INSTALL_DOC_DIR=$BUILD_DIR/doc/cortex INSTALL_PREFIX=$BUILD_DIR INSTALL_PYTHON_DIR=$BUILD_DIR/lib/python2.6/site-packages PYTHON_CONFIG=$BUILD_DIR/bin/python2.6-config BOOST_INCLUDE_PATH=$BUILD_DIR/include/boost-1_40 LIBPATH=$BUILD_DIR/lib BOOST_LIB_SUFFIX='' OPENEXR_INCLUDE_PATH=$BUILD_DIR/include FREETYPE_INCLUDE_PATH=$BUILD_DIR/include/freetype2 RMAN_ROOT=/Applications/Graphics/3Delight-8.5.32 WITH_GL=1 GLEW_INCLUDE_PATH=$BUILD_DIR/include/GL" )
 	
 if depEnv["BUILD_GTK"] :
 
@@ -370,10 +378,6 @@ if depEnv["BUILD_GTK"] :
 	runCommand( "cd $GTKGLEXT_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include 'LDFLAGS=-L$BUILD_DIR/lib -L/usr/X11R6/lib' PKG_CONFIG=$BUILD_DIR/bin/pkg-config --with-gl-includedir=/usr/X11R6/include && make clean && make && make install" )
 	runCommand( "cd $PYGTKGLEXT_SRC_DIR && ./configure --prefix=$BUILD_DIR CPPFLAGS=-I$BUILD_DIR/include LDFLAGS=-L$BUILD_DIR/lib PKG_CONFIG=$BUILD_DIR/bin/pkg-config && make clean && make && make install" )
 	runCommand( "cd $PYOPENGL_SRC_DIR && python setup.py install" )
-
-if depEnv["BUILD_GOOGLEPERFTOOLS"] :
-
-	runCommand( "cd $GOOGLEPERFTOOLS_SRC_DIR && ./configure --prefix=$BUILD_DIR && make clean && make && make install" )
 
 ###############################################################################################
 # Gaffer libraries
@@ -398,7 +402,7 @@ env = Environment(
 	
 	CXXFLAGS = [
 		"-Wall",
-		"-Werror",
+		#"-Werror", # \todo reintroduce when boost sorts itself out
 		"-O2",
 	],
 	
