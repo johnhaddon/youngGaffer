@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 # Wrapper script for gaffer. This ensures that relevant environment
 # variables are set appropriately and then runs gaffer.py in the 
@@ -24,18 +24,27 @@ export GAFFER_STARTUP_PATHS=~/gaffer/startup:$GAFFER_ROOT/startup${GAFFER_STARTU
 
 # Make sure we're running the right version of python
 
-export PYTHONHOME=$GAFFER_ROOT/frameworks/Python.framework/Versions/Current
+if [[ `uname` = "Linux" ]] ; then
+	export PYTHONHOME=$GAFFER_ROOT
+else
+	export PYTHONHOME=$GAFFER_ROOT/frameworks/Python.framework/Versions/Current
+fi
+
 export PYTHONPATH=$GAFFER_ROOT/lib/python2.6/site-packages${PYTHONPATH:+:}${PYTHONPATH:-}
 
 # Get library paths set up
 
-export DYLD_FRAMEWORK_PATH=$GAFFER_ROOT/frameworks${DYLD_FRAMEWORK_PATH:+:}${DYLD_FRAMEWORK_PATH:-}
-export DYLD_LIBRARY_PATH=$GAFFER_ROOT/lib/${DYLD_LIBRARY_PATH:+:}${DYLD_LIBRARY_PATH:-}
-export DYLD_LIBRARY_PATH=/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ImageIO.framework/Resources/:$DYLD_LIBRARY_PATH
-
-if [[ -n $DELIGHT ]] ; then
-	export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$DELIGHT/lib
+if [[ `uname` = "Linux" ]] ; then
+	export LD_LIBRARY_PATH=$GAFFER_ROOT/lib/${LD_LIBRARY_PATH:+:}${LD_LIBRARY_PATH:-}
+else
+	export DYLD_FRAMEWORK_PATH=$GAFFER_ROOT/frameworks${DYLD_FRAMEWORK_PATH:+:}${DYLD_FRAMEWORK_PATH:-}
+	export DYLD_LIBRARY_PATH=$GAFFER_ROOT/lib/${DYLD_LIBRARY_PATH:+:}${DYLD_LIBRARY_PATH:-}
+	export DYLD_LIBRARY_PATH=/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ImageIO.framework/Resources/:$DYLD_LIBRARY_PATH
+	if [[ -n $DELIGHT ]] ; then
+		export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$DELIGHT/lib
+	fi
 fi
+
 
 # Run gaffer itself
 
