@@ -18,7 +18,7 @@ class Viewer( GafferUI.NodeSetEditor ) :
 		self.__renderableGadget = GafferUI.RenderableGadget( None )
 		self.__gadgetWidget = GafferUI.GadgetWidget( self.__renderableGadget, bufferOptions=set( ( GafferUI.GLWidget.BufferOptions.Depth, ) ), cameraMode=GafferUI.GadgetWidget.CameraMode.Mode3D )
 		self.__gadgetWidget.gtkWidget().connect( "button-press-event", self.__buttonPress )
-		self.__gadgetWidget.baseState().add( IECoreGL.PrimitiveWireframe( True ) )
+		self.__gadgetWidget.baseState().add( IECoreGL.Primitive.DrawWireframe( True ) )
 		
 		self.gtkWidget().add( self.__gadgetWidget.gtkWidget() )
 		
@@ -73,10 +73,10 @@ class Viewer( GafferUI.NodeSetEditor ) :
 		
 			# right click menu
 			menuDefinition = copy.deepcopy( self.menuDefinition() )
-			menuDefinition.append( "/Style/Wireframe", { "checkBox" : IECore.curry( self.__baseState, componentType=IECoreGL.PrimitiveWireframe ), "command" : IECore.curry( self.__toggleBaseState, componentType=IECoreGL.PrimitiveWireframe ) } )
-			menuDefinition.append( "/Style/Solid", { "checkBox" : IECore.curry( self.__baseState, componentType=IECoreGL.PrimitiveSolid ), "command" : IECore.curry( self.__toggleBaseState, componentType=IECoreGL.PrimitiveSolid ) } )
-			menuDefinition.append( "/Style/Points", { "checkBox" : IECore.curry( self.__baseState, componentType=IECoreGL.PrimitivePoints ), "command" : IECore.curry( self.__toggleBaseState, componentType=IECoreGL.PrimitivePoints ) } )
-			menuDefinition.append( "/Style/Bound", { "checkBox" : IECore.curry( self.__baseState, componentType=IECoreGL.PrimitiveBound ), "command" : IECore.curry( self.__toggleBaseState, componentType=IECoreGL.PrimitiveBound ) } )
+			menuDefinition.append( "/Style/Wireframe", { "checkBox" : IECore.curry( self.__baseState, componentType=IECoreGL.Primitive.DrawWireframe ), "command" : IECore.curry( self.__toggleBaseState, componentType=IECoreGL.Primitive.DrawWireframe ) } )
+			menuDefinition.append( "/Style/Solid", { "checkBox" : IECore.curry( self.__baseState, componentType=IECoreGL.Primitive.DrawSolid ), "command" : IECore.curry( self.__toggleBaseState, componentType=IECoreGL.Primitive.DrawSolid ) } )
+			menuDefinition.append( "/Style/Points", { "checkBox" : IECore.curry( self.__baseState, componentType=IECoreGL.Primitive.DrawPoints ), "command" : IECore.curry( self.__toggleBaseState, componentType=IECoreGL.Primitive.DrawPoints ) } )
+			menuDefinition.append( "/Style/Bound", { "checkBox" : IECore.curry( self.__baseState, componentType=IECoreGL.Primitive.DrawBound ), "command" : IECore.curry( self.__toggleBaseState, componentType=IECoreGL.Primitive.DrawBound ) } )
 			
 			self.__m = GafferUI.Menu( menuDefinition )
 			self.__m.popup( self ) 
